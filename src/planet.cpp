@@ -4,7 +4,7 @@
 #include <cmath>
 
 #include "SDL_endian.h"
-
+	
 using namespace std;
 
 bool leftkey;
