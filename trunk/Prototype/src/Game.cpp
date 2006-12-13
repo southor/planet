@@ -200,8 +200,8 @@ namespace Prototype
 				break;
 			
 			case SDL_MOUSEMOTION:
-				xrel = event.motion.xrel;
-				yrel = event.motion.yrel;
+				//xrel = event.motion.xrel;
+				//yrel = event.motion.yrel;
 				//printf("Mouse moved by %d,%d to (%d,%d)\n", 
 				//event.motion.xrel, event.motion.yrel,
 				//event.motion.x, event.motion.y);
