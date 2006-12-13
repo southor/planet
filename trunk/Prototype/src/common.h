@@ -19,10 +19,14 @@
 //#include <string>
 //#include <cstdlib>
 
-
+#ifdef WIN32
 #include <GL/gl.h>
+#endif
 //#include <GL/glu.h>
-//#include "SDL_OpenGL.h"
+#ifndef WIN32
+#include "SDL_OpenGL.h"
+#endif
+
 #include "SDL.h"
 //#include "SDL_image.h"
 //#include "SDL_mixer.h"

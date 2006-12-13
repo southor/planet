@@ -4,6 +4,7 @@
 //#include <vector>
 
 #include "common.h"
+#include "keyhandler.h"
 
 namespace Prototype
 {
@@ -19,6 +20,7 @@ namespace Prototype
 		void init();
 
 		void draw(Uint32 time);
+		void render(Uint32 time);
 		void pollEvents();
 		Uint32 getTicks();
 
@@ -26,12 +28,12 @@ namespace Prototype
 		SDL_Surface *screen;
 		GLfloat renv;
 
-		float xrel;
-		float yrel;
+		KeyHandler kh;
 
+		float xrel;
+		float yrel;	
 		GLfloat cameraXAngle;
 		GLfloat cameraYAngle;
-
 
 		Uint32 mStartTime;
 	};
