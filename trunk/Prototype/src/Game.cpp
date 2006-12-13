@@ -21,7 +21,6 @@ namespace Prototype
 	{
 		SDL_Quit( );
 	}
-	int isFollowingSpline = 1;
 
 	Uint32 Game::getTicks()
 	{
@@ -50,7 +49,6 @@ namespace Prototype
 			lastTime = time;
 		}
 	}
-
 
 	void Game::render(Uint32 time)
 	{
