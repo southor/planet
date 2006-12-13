@@ -8,19 +8,6 @@
 
 namespace Prototype
 {
-
-
-	using namespace std;
-
-	bool leftkey;
-	bool rightkey;
-	bool upkey;
-	bool downkey;
-	bool akey;
-	bool skey;
-	bool dkey;
-	bool wkey;
-
 	unsigned int w;
 	unsigned int h;
 
@@ -28,17 +15,6 @@ namespace Prototype
 	{
 		init();
 		running = true;
-		renv = 0;
-
-		leftkey = false;
-		rightkey = false;
-		upkey = false;
-		downkey = false;
-
-		cameraXAngle = 0;
-		cameraYAngle = 0;
-		xrel = 0;
-		yrel = 0;
 	}
 
 	Game::~Game()
@@ -67,90 +43,47 @@ namespace Prototype
 			float diffInSec = diff/1000.0f;
 			float speed = 2*5.5556f; // 5.5556 m/s = 20 km/h
 
-			if(leftkey) {
-				cameraYAngle -= speed*diffInSec*10;
-			} else if(rightkey) {
-				cameraYAngle += speed*diffInSec*10;
-			}
-			if(upkey) {
-				cameraXAngle -= speed*diffInSec*10;
-			} else if(downkey) {
-				cameraXAngle += speed*diffInSec*10;
-			}
+			render(time);
 
-			if (xrel < 100 || yrel < 100) {
-				cameraXAngle += yrel/10;
-				cameraYAngle += xrel/10;
-			}
-			xrel = yrel = 0;
-
-			//hjŠlpberŠkningar
-			GLfloat m[16];				// modelview matrix
-			glPushMatrix();
-			glLoadIdentity();
-			glRotatef(-cameraYAngle, 0, 1, 0);
-			glRotatef(-cameraXAngle, 1, 0, 0);
-		  
-			GLfloat from[4];
-			GLfloat to[4];
-		  
-			from[0] = 0.0f;
-			from[1] = 0.0f;
-			from[2] = -1.0f;
-			from[3] = 0.0f;
-		  
-			glGetFloatv(GL_MODELVIEW_MATRIX, m); 
-			Vec3f::transformVec(m, from, to);
-		  
-	//		camera0->mLook.x = to[0];
-	//		camera0->mLook.y = to[1];
-	//		camera0->mLook.z = to[2];
-			glPopMatrix();
-			//hjŠlpberŠkningar slut
-
-			if (akey) {
-	//			camera0->mPos = camera0->mPos + camera0->mLook*(float)(speed*diffInSec);
-			} else if (skey) {
-	//			camera0->mPos = camera0->mPos - camera0->mLook*(float)(speed*diffInSec);
-			}
-
-	//		camera0->mLook = camera0->mPos + camera0->mLook;
-
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//			glViewport(0, 0, w, h/2);
-	//			camera0->setFrustumHeightScale(2);
-
-	//			glViewport(0, 0, w, h);
-	//			camera0->setFrustumHeightScale(1);
-
-			
-			draw(time);
-
-			glFlush();
-			SDL_GL_SwapBuffers();
-		  
-			//	  Sleep(30);
+			//sleep(0.001);
 
 			lastTime = time;
 		}
 	}
 
 
+	void Game::render(Uint32 time)
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glViewport(0, h/4, w/2, h/2);
+		glDisable(GL_LIGHTING);
+		draw(time);
+
+		glViewport(w/2, h/4, w/2, h/2);
+		draw(time);
+
+		glFlush();
+		SDL_GL_SwapBuffers();
+	}
 
 	void Game::draw(Uint32 time)
 	{
-		glBegin(GL_TRIANGLES);
-			glNormal3f(0.0f, 0.0f, 1.0f);
-			glColor3f(1.0f,0.0f,0.0f);
-			glVertex3f( 0.0f, 0.3f, 0.0f);
-			glColor3f(0.0f,1.0f,0.0f);
-			glVertex3f(-0.3f,-0.3f, 0.0f);
-			glColor3f(0.0f,0.0f,1.0f);
-			glVertex3f( 0.3f,-0.3f, 0.0f);
-		glEnd();
-
+		kh.getPressed(CMD_LEFT);
+		if (!kh.isDown(CMD_LEFT))
+		{
+			glBegin(GL_TRIANGLES);
+				//glNormal3f(0.0f, 0.0f, 1.0f);
+				glColor3f(1.0f,0.0f,0.0f);
+				glVertex3f( 0.0f, 0.3f, 0.0f);
+				glColor3f(0.0f,1.0f,0.0f);
+				glVertex3f(-0.3f,-0.3f, 0.0f);
+				glColor3f(0.0f,0.0f,1.0f);
+				glVertex3f( 0.3f,-0.3f, 0.0f);
+			glEnd();
+		}
+		
+		// Draw x, y, z axis in red, green, blue
 		glDisable(GL_LIGHTING);
 		glBegin(GL_LINES);
 			glColor3f(1.0f, 0.0f, 0.0f);
@@ -170,18 +103,16 @@ namespace Prototype
 		glEnable(GL_LIGHTING);
 	}
 
-
 	void Game::init()
 	{
 		running = true;
 
 		if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
 		{
-		fprintf(stderr, "Video initialization failed: %s\n",
-		   SDL_GetError() );
+		fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError() );
 		SDL_Quit( );
 		}
-	  
+  
 		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -244,6 +175,8 @@ namespace Prototype
 			{
 			case SDL_KEYDOWN:
 			{
+				kh.setKeyPressed(event.key.keysym.sym);
+			
 				switch(event.key.keysym.sym)
 				{
 				case SDLK_ESCAPE:
@@ -253,68 +186,20 @@ namespace Prototype
 						if (event.key.keysym.mod & KMOD_CTRL)
 							SDL_WM_ToggleFullScreen(screen);
 						break;
-
-				case SDLK_a:					
-					akey = 1;
-					break;
-				case SDLK_d:					
-					dkey = 1;
-					break;
-				case SDLK_w:					
-					wkey = 1;
-					break;
-				case SDLK_s:					
-					skey = 1;
-					break;
-				case SDLK_LEFT:
-					leftkey = true;
-					break;
-				case SDLK_RIGHT:
-					rightkey = true;
-					break;
-				case SDLK_UP:
-					upkey = true;
-					break;
-				case SDLK_DOWN:
-					downkey = true;
-					break;
-				  
 				default:
 					break;
 				} // end switch
 				break;
 			}
 			case SDL_KEYUP:
+				kh.setKeyReleased(event.key.keysym.sym);
+			
 				switch(event.key.keysym.sym)
-			{
-			case SDLK_a:					
-				akey = 0;
+				{
+				default:
+					break;
+				}
 				break;
-			case SDLK_d:					
-				dkey = 0;
-				break;
-			case SDLK_w:					
-				wkey = 0;
-				break;
-			case SDLK_s:					
-				skey = 0;
-				break;
-			case SDLK_LEFT:
-				leftkey = false;
-				break;
-			case SDLK_RIGHT:
-				rightkey = false;
-				break;
-			case SDLK_UP:
-				upkey = false;
-				break;
-			case SDLK_DOWN:
-				downkey = false;
-				break;
-			default:
-				break;
-			}
-			break;
 			
 			case SDL_MOUSEMOTION:
 				xrel = event.motion.xrel;
