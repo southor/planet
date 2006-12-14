@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "game.h"
 
 bool running;
 
