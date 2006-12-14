@@ -42,6 +42,19 @@ namespace Prototype
 			float diffInSec = diff/1000.0f;
 			float speed = 2*5.5556f; // 5.5556 m/s = 20 km/h
 
+/*
+			// NETWORK
+			Message message;
+			MessageSender *sender = virtualConnection.getMessageSender();
+			
+			//sender->pushMessage(message);
+			
+			std::cout << sender->getNMessages() << std::endl;
+*/			
+			
+
+
+			// RENDER
 			render(time);
 
 			//sleep(0.001);
