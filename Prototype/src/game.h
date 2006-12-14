@@ -5,6 +5,7 @@
 
 #include "common.h"
 #include "keyhandler.h"
+#include "virtualconnection.h"
 
 namespace Prototype
 {
@@ -29,6 +30,7 @@ namespace Prototype
 		GLfloat renv;
 
 		KeyHandler kh;
+		VirtualConnection virtualConnection;
 
 		float xrel;
 		float yrel;	

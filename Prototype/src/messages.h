@@ -31,7 +31,7 @@ namespace Prototype
 	{
 		int type;
 		void *data;
-		Message() : type(0), data(NULL)			{}
+		Message() : type(0), data(0)			{}
 	};
 
 	class MessageReciever
@@ -52,7 +52,7 @@ namespace Prototype
 		MessageSender();
 		virtual ~MessageSender();
 		
-		virtual pushMessage(const Message &message) = 0;
+		virtual void pushMessage(const Message &message) = 0;
 
 		// Get number of messages queued to be transmitted.
 		virtual int getNMessages() = 0;
