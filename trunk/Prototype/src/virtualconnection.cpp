@@ -1,4 +1,5 @@
 #include "virtualconnection.h"
+#include "assert.h"
 
 namespace Prototype
 {
@@ -42,6 +43,17 @@ namespace Prototype
 			
 	Message VirtualConnection::VirtualMessageReciever::popMessage()
 	{
+		//Message message;
+		//if (messageDeque->empty())
+		//{
+		//	//TODO throw exception
+		//	assert(false);
+		//}
+		//else
+		//{
+		//	message = messageDeque->back();
+		//	messageDeque->pop_back();
+		//}
 		Message message = messageDeque->back();
 		messageDeque->pop_back();
 		return message;

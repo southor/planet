@@ -3,7 +3,8 @@
 
 //#include <vector>
 
-#include "vec2.h"
+#include "Vec2.h"
+#include "assert.h"
 
 namespace Prototype
 {
