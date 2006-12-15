@@ -15,7 +15,7 @@ namespace Prototype
 		{
 		public:
 			VirtualMessageSender() : MessageSender() { }
-			~VirtualMessageSender();
+			~VirtualMessageSender()					{}
 		
 			void setMessageDeque(std::deque<Message> *messageDeque);
 
@@ -35,7 +35,7 @@ namespace Prototype
 		{
 		public:
 			VirtualMessageReciever() : MessageReciever() { }
-			~VirtualMessageReciever();
+			~VirtualMessageReciever()						{}
 
 			void setMessageDeque(std::deque<Message> *messageDeque);
 

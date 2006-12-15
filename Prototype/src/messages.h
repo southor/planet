@@ -37,8 +37,8 @@ namespace Prototype
 	class MessageReciever
 	{
 	public:
-		MessageReciever();
-		virtual ~MessageReciever();
+		MessageReciever()				{}
+		virtual ~MessageReciever()		{}
 		
 		// Get number of messages recieved.
 		virtual int getNMessages() = 0;		
@@ -49,8 +49,8 @@ namespace Prototype
 	class MessageSender
 	{
 	public:
-		MessageSender();
-		virtual ~MessageSender();
+		MessageSender()					{}
+		virtual ~MessageSender()		{}
 		
 		virtual void pushMessage(const Message &message) = 0;
 

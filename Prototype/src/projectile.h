@@ -5,8 +5,10 @@
 
 namespace Prototype
 {
-	class Projectile : public MovableObj, public 
+	class Projectile : public MovableObj, public Line
 	{
+	public:
+		Pos getPos()			{ return pos; }
 	};
 };
 
