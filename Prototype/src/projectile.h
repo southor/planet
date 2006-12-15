@@ -2,6 +2,8 @@
 #define __projectile_h__
 
 #include "movableobj.h"
+#include "line.h"
+#include "basic.h"
 
 namespace Prototype
 {

@@ -16,7 +16,7 @@ namespace Prototype
 
 		inline Line(Pos pos, Vec extension) : pos(pos), extension(extension)		{}
 
-		inline Line(int x, int y, int ex, int ey) : pos(x, y), extension(ex, ey)	{}
+		inline Line(float x, float y, float ex, float ey) : pos(x, y), extension(ex, ey)	{}
 	};
 };
 

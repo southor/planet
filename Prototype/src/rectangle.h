@@ -1,6 +1,8 @@
 #ifndef __rectangle_h__
 #define __rectangle_h__
 
+#include "basic.h"
+
 namespace Prototype
 {
 	class Rectangle
@@ -14,7 +16,7 @@ namespace Prototype
 
 		inline Rectangle(Pos pos, Vec size) : pos(pos), size(size)				{}
 
-		inline Rectangle(int x, int y, int w, int h) : pos(x, y), size(w, h)	{}
+		inline Rectangle(float x, float y, float w, float h) : pos(x, y), size(w, h)	{}
 
 
 		//inline int getX() const								{ return pos.x; }
