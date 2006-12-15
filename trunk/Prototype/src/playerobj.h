@@ -8,7 +8,7 @@ namespace Prototype
 	class PlayerObj : public MovableObj, public Rectangle
 	{
 	public:
-		Pos getPos()			{ return pos; }
+		Pos getPos() const			{ return pos; }
 	};
 };
 
