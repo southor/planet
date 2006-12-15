@@ -7,7 +7,8 @@ namespace Prototype
 {
 	class MovableObj : public GameObj
 	{
-		Pos pos;
+	public:
+		virtual Pos getPos() = 0;
 	};
 };
 
