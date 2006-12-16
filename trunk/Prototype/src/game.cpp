@@ -61,8 +61,7 @@ namespace Prototype
 			server.addClient(sender1, reciever2);
 			
 			
-			kh.getPressed(CMD_LEFT);
-			if (kh.isDown(CMD_LEFT))
+			if (kh.getPressed(CMD_LEFT))
 			{
 				client.sendMessage(message);
 			}
