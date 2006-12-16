@@ -38,26 +38,46 @@ namespace Prototype
 
 			Uint32 time = getTicks();      
 
+			/*
 			int diff = (int)(time-lastTime);		
 			float diffInSec = diff/1000.0f;
 			float speed = 2*5.5556f; // 5.5556 m/s = 20 km/h
+			*/
 
-/*
 			// NETWORK
 			Message message;
-			MessageSender *sender = virtualConnection.getMessageSender();
+			message.type = 5;
+			message.data = new std::string("test");
 			
-			//sender->pushMessage(message);
+			MessageSender *sender1 = virtualConnection1.getMessageSender();
+			MessageReciever *reciever1 = virtualConnection1.getMessageReciever();
+
+			MessageSender *sender2 = virtualConnection2.getMessageSender();
+			MessageReciever *reciever2 = virtualConnection2.getMessageReciever();
+
+			Client client(sender2, reciever1);
+
+			Server server;
+			server.addClient(sender1, reciever2);
 			
-			std::cout << sender->getNMessages() << std::endl;
-*/			
+			
+			kh.getPressed(CMD_LEFT);
+			if (kh.isDown(CMD_LEFT))
+			{
+				client.sendMessage(message);
+			}
+
+			server.logic();
+			
+			client.recieveMessages();
+			
 			
 
 
 			// RENDER
 			render(time);
 
-			//sleep(0.001);
+			sleep(0.1);
 
 			lastTime = time;
 		}
@@ -80,7 +100,6 @@ namespace Prototype
 
 	void Game::draw(Uint32 time)
 	{
-		kh.getPressed(CMD_LEFT);
 		if (!kh.isDown(CMD_LEFT))
 		{
 			glBegin(GL_TRIANGLES);

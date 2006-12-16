@@ -4,6 +4,7 @@
 #include "common.h"
 #include "keycmd.h"
 
+#include <vector>
 
 namespace Prototype
 {
@@ -104,7 +105,7 @@ namespace Prototype
 //		KeyCmd getKeyCommandFromKey(int key);
 
 	private:
-		KeyCmd cmds[NUMBER_OF_COMMANDS];
+		std::vector<KeyCmd> cmds;
 	};
 };
 #endif

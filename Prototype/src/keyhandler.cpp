@@ -5,6 +5,8 @@ namespace Prototype
 
 	KeyHandler::KeyHandler()
 	{
+		cmds.resize(NUMBER_OF_COMMANDS);
+	
 		cmds[CMD_LEFT] = KeyCmd(CMD_LEFT, SDLK_LEFT);
 		cmds[CMD_RIGHT] = KeyCmd(CMD_RIGHT, SDLK_RIGHT);
 		cmds[CMD_UP] = KeyCmd(CMD_UP, SDLK_UP);
