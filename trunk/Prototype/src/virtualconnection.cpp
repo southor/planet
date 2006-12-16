@@ -6,8 +6,18 @@ namespace Prototype
 	// VirtualConnection
 	VirtualConnection::VirtualConnection()
 	{
-		//virtualMessageSender.setMessageDeque(&messageDeque);
-		//virtualMessageReciever.setMessageDeque(&messageDeque);
+		virtualMessageSender.setMessageDeque(&messageDeque);
+		virtualMessageReciever.setMessageDeque(&messageDeque);
+	}
+
+	MessageSender* VirtualConnection::getMessageSender()
+	{
+		return &virtualMessageSender;
+	}
+
+	MessageReciever* VirtualConnection::getMessageReciever()
+	{
+		return &virtualMessageReciever;
 	}
 
 	// VirtualMessageSender
