@@ -1,8 +1,6 @@
 #ifndef __client_h__
 #define __client_h__
 
-#include <iostream>
-
 #include "common.h"
 #include "messages.h"
 #include "worldmodel.h"

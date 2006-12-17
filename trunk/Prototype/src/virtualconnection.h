@@ -3,6 +3,7 @@
 
 #include <deque>
 
+#include "common.h"
 #include "messages.h"
 
 namespace Prototype
@@ -29,13 +30,14 @@ namespace Prototype
 					
 		private:
 			std::deque<Message> *messageDeque;
+			std::deque<Message> sendDeque;
 		};
 
 		class VirtualMessageReciever : public MessageReciever
 		{
 		public:
-			VirtualMessageReciever() : MessageReciever() { }
-			~VirtualMessageReciever()						{}
+			VirtualMessageReciever() : MessageReciever(), lag(200) { }
+			~VirtualMessageReciever() {}
 
 			void setMessageDeque(std::deque<Message> *messageDeque);
 
@@ -44,13 +46,22 @@ namespace Prototype
 			
 			Message popMessage();
 		
+			void retrieve();
+		
+			void setConnectionLag(int lag);
+		
 		private:
 			std::deque<Message> *messageDeque;
+			std::deque<Message> recieveDeque;
+			
+			int lag;
 		};
 
 	public:
 		VirtualConnection();
 
+		void setConnectionLag(int lag);
+		
 		MessageSender* getMessageSender();
 		MessageReciever* getMessageReciever();
 

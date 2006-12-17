@@ -25,8 +25,11 @@ namespace Prototype
 	void Client::sendMessage(Message message)
 	{
 		std::cout << "sending message, type: " << message.type << ", data: " << *((std::string*)message.data) << std::endl;
-
+		
+		message.time = timeHandler.getTime();
+		
 		messageSender->pushMessage(message);
+		messageSender->transmit();
 	}
 	
 	void Client::recieveMessages()

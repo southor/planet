@@ -18,11 +18,12 @@
 
 //#include <string>
 //#include <cstdlib>
+#include <iostream>
+
 
 #ifdef _WIN32
 #include <GL/gl.h>
 #endif
-//#include <GL/glu.h>
 #ifndef _WIN32
 #include "SDL_OpenGL.h"
 #endif
@@ -30,15 +31,21 @@
 #include "SDL.h"
 //#include "SDL_image.h"
 //#include "SDL_mixer.h"
+//#include <GL/glu.h>
 //#include "vec3f.h"
 //#include <math.h>
 
-
-//#define WORLD_SIZE 200
-//#define OPTIMIZE_FROSTUM true
-
-
 //#define dmin(x, y) (x < y ? x : y)
 //#define dmax(x, y) (x > y ? x : y)
+
+#include "TimeHandler.h"
+
+namespace Prototype
+{
+	static TimeHandler timeHandler;
+};
+
+
+
 
 #endif

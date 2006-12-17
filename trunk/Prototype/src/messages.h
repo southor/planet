@@ -30,8 +30,9 @@ namespace Prototype
 	struct Message
 	{
 		int type;
+		int time;
 		void *data;
-		Message() : type(0), data(0)			{}
+		Message() : type(0), time(0), data(0)			{}
 	};
 
 	class MessageReciever
