@@ -76,7 +76,11 @@ namespace Prototype
 			// RENDER
 			render(time);
 
-			sleep(0.1);
+#ifdef _WIN32
+		 Sleep(100);
+#else
+		 sleep(0.1);
+#endif
 
 			lastTime = time;
 		}
@@ -84,7 +88,8 @@ namespace Prototype
 
 	void Game::render(Uint32 time)
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		glViewport(0, h/4, w/2, h/2);
 		glDisable(GL_LIGHTING);
@@ -188,8 +193,8 @@ namespace Prototype
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClearDepth(1.0f);
 		glClearAccum(0.0, 0.0, 0.0, 0.0);
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
+		//glEnable(GL_DEPTH_TEST);
+		//glDepthFunc(GL_LEQUAL);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	}

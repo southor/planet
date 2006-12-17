@@ -2,6 +2,7 @@
 #define __line_h__
 
 //#include <cmath>
+#include "basic.h"
 
 namespace Prototype
 {

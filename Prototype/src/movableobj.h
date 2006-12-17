@@ -2,6 +2,7 @@
 #define __movableobj_h__
 
 #include "gameobj.h"
+#include "basic.h"
 
 namespace Prototype
 {

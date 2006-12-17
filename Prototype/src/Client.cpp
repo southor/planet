@@ -1,4 +1,6 @@
 #include "Client.h"
+//#include <iostream>
+#include <string>
 
 namespace Prototype
 {
