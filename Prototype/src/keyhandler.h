@@ -20,42 +20,42 @@ namespace Prototype
 		/**
 		 * Checks if command is pressed and if so changes the state to KEY_STATE_DOWN
 		 * @param cmd Command to check
-		 * @return True if command is pressed
+		 * @return true if command is pressed
 		 */
 		bool getPressed(Cmd cmd);
 
 		/**
 		 * Checks if command is released and if so changes the state to KEY_STATE_UP
 		 * @param cmd Command to check
-		 * @return True if command is released
+		 * @return true if command is released
 		 */
 		bool getReleased(Cmd cmd);
 		
 		/**
 		 * Checks if keycommand is being pressed
 		 * @param cmd Command to check
-		 * @return True if keycommand is being pressed
+		 * @return true if keycommand is being pressed
 		 */
 		bool isPressed(Cmd cmd);
 		
 		/**
 		 * Checks if keycommand is being released
 		 * @param cmd Command to check
-		 * @return True if keycommand is being released
+		 * @return true if keycommand is being released
 		 */
 		bool isReleased(Cmd cmd);
 
 		/**
 		 * Checks if keycommand is up
 		 * @param cmd Command to check
-		 * @return True if keycommand is up
+		 * @return true if keycommand is up
 		 */
 		bool isUp(Cmd cmd);
 
 		/**
 		 * Checks if keycommand is down
 		 * @param cmd Command to check
-		 * @return True if keycommand is down
+		 * @return true if keycommand is down
 		 */
 		bool isDown(Cmd cmd);
 
@@ -73,13 +73,15 @@ namespace Prototype
 
 		/**
 		 * Changes all key commands with pressed state to down state
+		 * @return true if any key was pressed
 		 */
-//		void changePressedToDownState();
+		bool changePressedToDownState();
 
 		/**
 		 * Changes all key commands with released state to up state
+		 * @return true if any key was released
 		 */
-//		void changeReleasedToUpState();
+		bool changeReleasedToUpState();
 		
 		/**
 		 * @return Size of container holding all key commands, i.e. number of key commands

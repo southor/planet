@@ -6,6 +6,7 @@
 #include "worldmodel.h"
 #include "Player.h"
 #include "worldrenderer.h"
+#include "keyhandler.h"
 
 namespace Prototype
 {
@@ -27,10 +28,13 @@ namespace Prototype
 		void addPlayer(const Color &playerColor, const Pos &playerPos);
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
+		void setKeyHandler(KeyHandler *keyHandler);
 
 	private:
 		MessageSender *messageSender;
 		MessageReciever *messageReciever;
+
+		KeyHandler *kh;
 
 		WorldModel worldModel;
 		WorldRenderer worldRenderer;
