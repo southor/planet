@@ -98,11 +98,14 @@ namespace Prototype
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glViewport(0, h/4, w/2, h/2);
+
+		// rendering the same client to both render areas
+
+		glViewport(0, h/4, w/2, h*3/4);
 		//glDisable(GL_LIGHTING);		
 		draw(time);
 
-		glViewport(w/2, h/4, w/2, h/2);
+		glViewport(w/2, h/4, w/2, h*3/4);
 		draw(time);
 
 		glFlush();
@@ -114,23 +117,23 @@ namespace Prototype
 		glDisable(GL_LIGHTING);
 		if (!kh.isDown(CMD_LEFT))
 		{
-			glBegin(GL_TRIANGLES);
-				//glNormal3f(0.0f, 0.0f, 1.0f);
-				glColor3f(1.0f,0.0f,0.0f);
-				glVertex3f( 0.0f, 0.3f, 0.0f);
-				glColor3f(0.0f,1.0f,0.0f);
-				glVertex3f(-0.3f,-0.3f, 0.0f);
-				glColor3f(0.0f,0.0f,1.0f);
-				glVertex3f( 0.3f,-0.3f, 0.0f);
-			glEnd();
+			//glBegin(GL_TRIANGLES);
+			//	//glNormal3f(0.0f, 0.0f, 1.0f);
+			//	glColor3f(1.0f,0.0f,0.0f);
+			//	glVertex3f( 0.0f, 0.3f, 0.0f);
+			//	glColor3f(0.0f,1.0f,0.0f);
+			//	glVertex3f(-0.3f,-0.3f, 0.0f);
+			//	glColor3f(0.0f,0.0f,1.0f);
+			//	glVertex3f( 0.3f,-0.3f, 0.0f);
+			//glEnd();
 
-			//client.render();
+			client.render();
 		}
 		
 		// Draw x, y, z axis in red, green, blue
 		glDisable(GL_LIGHTING);
 		glPushMatrix();
-			//glScalef(50.0, 50.0, 1.0);
+			glScalef(50.0, 50.0, 1.0);
 			glBegin(GL_LINES);
 				glColor3f(1.0f, 0.0f, 0.0f);
 				glVertex3f(0.0f, 0.0f, 0.0f);
