@@ -21,10 +21,7 @@ namespace Prototype
 
 	private:
 
-		typedef std::vector<Color> PlayerColors;
-
 		RenderMode renderMode;
-		PlayerColors playerColors;
 		
 
 		// Functor for rendering a game object
@@ -41,13 +38,6 @@ namespace Prototype
 			void operator ()(const PlayerObj* playerObj);
 			void operator ()(const Projectile* projectile);
 		};
-
-	public:
-
-		inline void setPlayerColor(int playerId, Color &color)
-		{
-			playerColors[playerId] = color;
-		}
 
 	};
 };
