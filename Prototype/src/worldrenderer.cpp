@@ -14,17 +14,26 @@ namespace Prototype
 	// --------------------------------------------------------------------------------------
 
 
-	WorldRenderer::WorldRenderer(RenderMode renderMode, const Color &playerColor)
+	WorldRenderer::WorldRenderer(RenderMode renderMode)
 		: renderMode(renderMode)
 	{}
 
-	void WorldRenderer::render(WorldModel &worldModel, Players &players, PlayerObj *currentPlayer)
+	void WorldRenderer::setupProjection()
 	{
+		glMatrixMode(GL_PROJECTION);
+		glOrtho(0.0, WorldModel::WORLD_SIZE.x, 0.0, WorldModel::WORLD_SIZE.y, -1.0, 1.0);
+		glMatrixMode(GL_MODELVIEW);
+	}
+
+	void WorldRenderer::render(WorldModel &worldModel, Players &players, PlayerObj *localPlayerObj)
+	{
+		glLoadIdentity();
+		
 		// execute camera properties
 		switch(renderMode)
 		{
 		case HOLE_WORLD:
-			//TODO some gl calls here
+			// nothing to do, we are rendering the hole world
 			break;
 		default:
 			assert(false);
