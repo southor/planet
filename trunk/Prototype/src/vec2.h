@@ -50,17 +50,17 @@ namespace Prototype
 		
 		inline Vec2<T> operator+(const Vec2<T>& rh) const
 		{
-			return Vec2<T>(x + rh.x, y + rh.y,);
+			return Vec2<T>(x + rh.x, y + rh.y);
 		}
 
 		inline Vec2<T> operator-(const Vec2<T>& rh) const
 		{
-			return Vec2<T>(x - rh.x, y - rh.y,);
+			return Vec2<T>(x - rh.x, y - rh.y);
 		}
 
 		inline Vec2<T> operator*(const Vec2<T>& rh) const
 		{
-			return Vec2<T>(x * rh.x, y * rh.y,);
+			return Vec2<T>(x * rh.x, y * rh.y);
 		}
 
 		inline Vec2<T> operator/(const Vec2<T>& rh) const

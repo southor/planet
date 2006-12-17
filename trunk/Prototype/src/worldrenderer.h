@@ -2,6 +2,7 @@
 #define __worldrenderer_h__
 
 #include "worldmodel.h"
+#include "Player.h"
 
 namespace Prototype
 {
@@ -14,27 +15,40 @@ namespace Prototype
 			HOLE_WORLD
 		};
 
-		WorldRenderer(RenderMode renderMode);
+		WorldRenderer(RenderMode renderMode, const Color &playerColor);
 
-		void render(WorldModel &worldModel, PlayerObj *currentPlayer);
+		void render(WorldModel &worldModel, Players &players, PlayerObj *currentPlayer);
 
 	private:
 
+		typedef std::vector<Color> PlayerColors;
+
 		RenderMode renderMode;
+		PlayerColors playerColors;
+		
 
 		// Functor for rendering a game object
 		class RenderGameObj
 		{
 		private:
-			PlayerObj *currentPlayerObj;
+			Players *players;
 		public:
-			RenderGameObj(PlayerObj *currentPlayerObj) : currentPlayerObj(currentPlayerObj)
+			
+			RenderGameObj(Players *players) : players(players)
 			{}
 
 			void operator ()(const Obstacle* obstacle);
 			void operator ()(const PlayerObj* playerObj);
 			void operator ()(const Projectile* projectile);
 		};
+
+	public:
+
+		inline void setPlayerColor(int playerId, Color &color)
+		{
+			playerColors[playerId] = color;
+		}
+
 	};
 };
 

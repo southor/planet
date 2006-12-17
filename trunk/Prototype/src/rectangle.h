@@ -19,20 +19,20 @@ namespace Prototype
 		inline Rectangle(float x, float y, float w, float h) : pos(x, y), size(w, h)	{}
 
 
-		//inline int getX() const								{ return pos.x; }
-		//inline int getY() const								{ return pos.y; }
-		//inline int getWidth() const							{ return size.x; }
-		//inline int getHeight() const							{ return size.y; }
+		inline float getX() const								{ return pos.x; }
+		inline float getY() const								{ return pos.y; }
+		inline float getWidth() const							{ return size.x; }
+		inline float getHeight() const							{ return size.y; }
 
-		//inline int getLeft() const							{ return pos.x; }
-		//inline int getRight() const							{ return pos.x + size.x; }
-		//inline int getBottom() const							{ return pos.y; }
-		//inline int getTop() const								{ return pos.y + size.y; }
+		inline float getLeft() const							{ return pos.x; }
+		inline float getRight() const							{ return pos.x + size.x; }
+		inline float getBottom() const							{ return pos.y; }
+		inline float getTop() const								{ return pos.y + size.y; }
 
-		//inline Pos getBottomRight() const						{ return Pos(getRight(), getBottom()); }
-		//inline Pos getTopRight() const						{ return Pos(getRight(), getTop()); }
-		//inline Pos getTopLeft() const							{ return Pos(getLeft(), getTop()); }		
-		//inline Pos getBottomLeft() const						{ return pos; }
+		inline Pos getBottomRight() const						{ return Pos(getRight(), getBottom()); }
+		inline Pos getTopRight() const							{ return Pos(getRight(), getTop()); }
+		inline Pos getTopLeft() const							{ return Pos(getLeft(), getTop()); }		
+		inline Pos getBottomLeft() const						{ return pos; }
 
 
 

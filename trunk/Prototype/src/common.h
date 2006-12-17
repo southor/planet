@@ -1,7 +1,7 @@
 #ifndef __common_h__
 #define __common_h__
 
-#ifdef WIN32
+#ifdef _WIN32
 #pragma comment(lib, "SDL.lib")
 #pragma comment(lib, "SDLmain.lib")
 //#pragma comment(lib, "SDL_image.lib")
@@ -19,11 +19,11 @@
 //#include <string>
 //#include <cstdlib>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <GL/gl.h>
 #endif
 //#include <GL/glu.h>
-#ifndef WIN32
+#ifndef _WIN32
 #include "SDL_OpenGL.h"
 #endif
 
