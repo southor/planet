@@ -14,6 +14,23 @@ namespace Prototype
 
 	void Client::logic()
 	{
+		UserCmd *userCmd = new UserCmd();
+
+		// if some key was pressed or released send message
+		if (kh->changePressedToDownState() || kh->changeReleasedToUpState())
+		{
+			userCmd->cmd_left = kh->isDown(CMD_LEFT);
+			userCmd->cmd_right = kh->isDown(CMD_RIGHT);
+			userCmd->cmd_up = kh->isDown(CMD_UP);
+			userCmd->cmd_down = kh->isDown(CMD_DOWN);
+			userCmd->cmd_shoot = kh->isDown(CMD_SHOOT);
+
+			Message message;
+			message.type = USER_CMD;
+			message.data = userCmd;
+
+			sendMessage(message);
+		}
 	}
 
 	void Client::render()
@@ -24,7 +41,7 @@ namespace Prototype
 
 	void Client::sendMessage(Message message)
 	{
-		std::cout << "sending message, type: " << message.type << ", data: " << *((std::string*)message.data) << std::endl;
+		std::cout << "sending message, type: " << message.type << std::endl;
 		
 		message.time = timeHandler.getTime();
 		
@@ -38,7 +55,7 @@ namespace Prototype
 		{
 			Message message = messageReciever->popMessage();
 		
-			std::cout << "message recieved, type: " << message.type << ", data: " << *((std::string*)message.data) << std::endl;
+			std::cout << "message recieved, type: " << message.type << std::endl;
 		}
 	}
 
@@ -55,5 +72,9 @@ namespace Prototype
 		this->messageReciever = messageReciever;
 	}
 
+	void Client::setKeyHandler(KeyHandler *keyHandler)
+	{
+		this->kh = keyHandler;
+	}
 
 };

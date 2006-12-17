@@ -80,4 +80,38 @@ namespace Prototype
 			}
 		}
 	}
+
+	bool KeyHandler::changePressedToDownState()
+	{
+		bool someKeyPressed = false;
+		
+		for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
+		{
+			if (cmds[i].getKeyState() == KEY_STATE_PRESSED)
+			{
+				someKeyPressed = true;
+				cmds[i].setKeyState(KEY_STATE_DOWN);
+			}
+		}
+		
+		return someKeyPressed;
+	}
+	
+	bool KeyHandler::changeReleasedToUpState()
+	{
+		bool someKeyReleased = false;
+		
+		for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
+		{
+			if (cmds[i].getKeyState() == KEY_STATE_RELEASED)
+			{
+				someKeyReleased = true;
+				cmds[i].setKeyState(KEY_STATE_UP);
+			}
+		}
+		
+		return someKeyReleased;
+	}
+	
+
 };

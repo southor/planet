@@ -3,7 +3,7 @@
 
 //#include <vector>
 
-//#include "common.h"
+#include "basic.h"
 
 namespace Prototype
 {
@@ -26,6 +26,29 @@ namespace Prototype
 	//	int getType() const						{ return type; }
 	//	void* getData()	const					{ return data; }		
 	//};
+
+
+	enum MessageTypes
+	{
+		UPDATE_PLAYER,
+		
+		USER_CMD	
+	};
+
+	struct UpdatePlayer
+	{
+		Pos pos;
+		float angle;
+	};
+
+	struct UserCmd
+	{
+		bool cmd_left;
+		bool cmd_right;
+		bool cmd_up;
+		bool cmd_down;
+		bool cmd_shoot;
+	};
 
 	struct Message
 	{

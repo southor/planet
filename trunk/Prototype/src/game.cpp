@@ -53,6 +53,7 @@ namespace Prototype
 
 		//Client client(sender2, reciever1);
 		client.setConnection(sender2, reciever1);
+		client.setKeyHandler(&kh);
 
 		Server server;
 		server.addClient(sender1, reciever2);
@@ -74,12 +75,15 @@ namespace Prototype
 
 
 			
-			
+			/*
 			if (kh.getPressed(CMD_LEFT))
 			{
 				client.sendMessage(message);
 				client.sendMessage(message2);
 			}
+			*/
+
+			client.logic();
 
 			server.logic();
 			
