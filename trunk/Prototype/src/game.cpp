@@ -32,6 +32,27 @@ namespace Prototype
 		Uint32 lastTime = getTicks();
 		mStartTime = SDL_GetTicks();
 
+		// NETWORK
+		Message message;
+		message.type = 5;
+		std::string test("test");
+		message.data = &test;
+		
+		MessageSender *sender1 = virtualConnection1.getMessageSender();
+		MessageReciever *reciever1 = virtualConnection1.getMessageReciever();
+
+		MessageSender *sender2 = virtualConnection2.getMessageSender();
+		MessageReciever *reciever2 = virtualConnection2.getMessageReciever();
+
+		//Client client(sender2, reciever1);
+		client.setConnection(sender2, reciever1);
+
+		Server server;
+		server.addClient(sender1, reciever2);
+
+		// rendering
+		client.addPlayer(Color(0.0f, 0.0f, 1.0f), Pos(200.0f, 200.0f));
+
 		while (running) 
 		{
 			pollEvents();
@@ -44,21 +65,7 @@ namespace Prototype
 			float speed = 2*5.5556f; // 5.5556 m/s = 20 km/h
 			*/
 
-			// NETWORK
-			Message message;
-			message.type = 5;
-			message.data = new std::string("test");
-			
-			MessageSender *sender1 = virtualConnection1.getMessageSender();
-			MessageReciever *reciever1 = virtualConnection1.getMessageReciever();
 
-			MessageSender *sender2 = virtualConnection2.getMessageSender();
-			MessageReciever *reciever2 = virtualConnection2.getMessageReciever();
-
-			Client client(sender2, reciever1);
-
-			Server server;
-			server.addClient(sender1, reciever2);
 			
 			
 			if (kh.getPressed(CMD_LEFT))
@@ -92,7 +99,7 @@ namespace Prototype
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glViewport(0, h/4, w/2, h/2);
-		glDisable(GL_LIGHTING);
+		//glDisable(GL_LIGHTING);		
 		draw(time);
 
 		glViewport(w/2, h/4, w/2, h/2);
@@ -104,6 +111,7 @@ namespace Prototype
 
 	void Game::draw(Uint32 time)
 	{
+		glDisable(GL_LIGHTING);
 		if (!kh.isDown(CMD_LEFT))
 		{
 			glBegin(GL_TRIANGLES);
@@ -115,25 +123,30 @@ namespace Prototype
 				glColor3f(0.0f,0.0f,1.0f);
 				glVertex3f( 0.3f,-0.3f, 0.0f);
 			glEnd();
+
+			//client.render();
 		}
 		
 		// Draw x, y, z axis in red, green, blue
 		glDisable(GL_LIGHTING);
-		glBegin(GL_LINES);
-			glColor3f(1.0f, 0.0f, 0.0f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(5.0f, 0.0f, 0.0f);
-		glEnd();
-		glBegin(GL_LINES);
-			glColor3f(0.0f, 1.0f, 0.0f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(0.0f, 5.0f, 0.0f);
-		glEnd();
-		glBegin(GL_LINES);
-			glColor3f(0.0f, 0.0f, 1.0f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(0.0f, 0.0f, 5.0f);
-		glEnd();
+		glPushMatrix();
+			//glScalef(50.0, 50.0, 1.0);
+			glBegin(GL_LINES);
+				glColor3f(1.0f, 0.0f, 0.0f);
+				glVertex3f(0.0f, 0.0f, 0.0f);
+				glVertex3f(5.0f, 0.0f, 0.0f);
+			glEnd();
+			glBegin(GL_LINES);
+				glColor3f(0.0f, 1.0f, 0.0f);
+				glVertex3f(0.0f, 0.0f, 0.0f);
+				glVertex3f(0.0f, 5.0f, 0.0f);
+			glEnd();
+			glBegin(GL_LINES);
+				glColor3f(0.0f, 0.0f, 1.0f);
+				glVertex3f(0.0f, 0.0f, 0.0f);
+				glVertex3f(0.0f, 0.0f, 5.0f);
+			glEnd();
+		glPopMatrix();
 		glEnable(GL_LIGHTING);
 	}
 

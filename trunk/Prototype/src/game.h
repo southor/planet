@@ -34,6 +34,7 @@ namespace Prototype
 		KeyHandler kh;
 		VirtualConnection virtualConnection1;
 		VirtualConnection virtualConnection2;
+		Client client;
 
 		float xrel;
 		float yrel;	

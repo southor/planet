@@ -11,7 +11,7 @@ namespace Prototype
 	private:
 		int playerId;
 	public:
-		PlayerObj(int playerId) : playerId(playerId)	{}
+		PlayerObj(int playerId, const Pos &pos) : playerId(playerId), pos(pos)	{}
 
 		static const float RECTANGLE_SIZE;
 		Pos pos;

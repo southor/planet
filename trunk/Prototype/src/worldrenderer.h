@@ -15,9 +15,10 @@ namespace Prototype
 			HOLE_WORLD
 		};
 
-		WorldRenderer(RenderMode renderMode, const Color &playerColor);
+		WorldRenderer(RenderMode renderMode);
 
-		void render(WorldModel &worldModel, Players &players, PlayerObj *currentPlayer);
+		void setupProjection();
+		void render(WorldModel &worldModel, Players &players, PlayerObj *localPlayerObj);
 
 	private:
 

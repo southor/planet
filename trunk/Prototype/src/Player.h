@@ -9,6 +9,8 @@ namespace Prototype
 	{
 	public:
 		Color color;
+
+		Player(const Color &color) : color(color)	{}
 	};
 
 	typedef std::vector<Player> Players;
