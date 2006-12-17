@@ -34,7 +34,7 @@ namespace Prototype
 
 		inline Vec2<T> operator/(T scalar) const
 		{
-			return Vec2(x * scalar, y * scalar);
+			return Vec2(x / scalar, y / scalar);
 		}
 
 		friend inline Vec2<T> operator+(T scalar, const Vec2<T>& rh)
