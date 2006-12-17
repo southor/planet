@@ -33,7 +33,7 @@
 //#include "vec3f.h"
 //#include <math.h>
 
-//#define PI 3.141592654f
+
 //#define WORLD_SIZE 200
 //#define OPTIMIZE_FROSTUM true
 
