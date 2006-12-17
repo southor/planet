@@ -1,4 +1,5 @@
 #include "game.h"
+#include "KeyHandler.h"
 
 bool running;
 

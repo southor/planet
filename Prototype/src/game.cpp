@@ -1,5 +1,6 @@
 #include "game.h"
 #include "vec3f.h"
+#include "TimeHandler.h"
 
 #include <iostream>
 #include <cmath>
@@ -31,12 +32,18 @@ namespace Prototype
 	{
 		Uint32 lastTime = getTicks();
 		mStartTime = SDL_GetTicks();
+		timeHandler.setStartTime(mStartTime);
 
 		// NETWORK
 		Message message;
 		message.type = 5;
 		std::string test("test");
 		message.data = &test;
+		
+		Message message2;
+		message2.type = 8;
+		std::string other("other");
+		message2.data = &other;
 		
 		MessageSender *sender1 = virtualConnection1.getMessageSender();
 		MessageReciever *reciever1 = virtualConnection1.getMessageReciever();
@@ -71,15 +78,13 @@ namespace Prototype
 			if (kh.getPressed(CMD_LEFT))
 			{
 				client.sendMessage(message);
+				client.sendMessage(message2);
 			}
 
 			server.logic();
 			
 			client.recieveMessages();
 			
-			
-
-
 			// RENDER
 			render(time);
 

@@ -17,12 +17,11 @@ namespace Prototype
 	
 	void Server::logic()
 	{
-		// Respond with the same message to all clients
 		std::vector<ServerClient>::iterator it;
 		for (it = clients.begin(); it != clients.end(); it++)
 		{
 			ServerClient client = *it;
-		
+
 			MessageSender *messageSender = client.messageSender;
 			MessageReciever *messageReciever = client.messageReciever;
 			
