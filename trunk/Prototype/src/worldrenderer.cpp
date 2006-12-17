@@ -88,14 +88,20 @@ namespace Prototype
 			glVertex2fv(reinterpret_cast<float*>(&v3));
 		glEnd();
 
-		// Render triangle	
-		glBegin(GL_TRIANGLES);
-			glColor3fv(reinterpret_cast<float*>(&playerColor));
-			glVertex2fv(reinterpret_cast<float*>(&vp));
-			glColor3f(0.0f,0.0f,0.0f);
-			glVertex2fv(reinterpret_cast<float*>(&v2));
-			glVertex2fv(reinterpret_cast<float*>(&v3));
-		glEnd();
+
+		// Render triangle
+		glPushMatrix();
+			glTranslatef(playerObj->pos.x, playerObj->pos.y, 0.0f);
+			glRotatef(radianToDegree(playerObj->angle), 0.0f, 0.0f, 1.0f); 
+			glTranslatef(-playerObj->pos.x, -playerObj->pos.y, 0.0f);
+			glBegin(GL_TRIANGLES);
+				glColor3fv(reinterpret_cast<float*>(&playerColor));
+				glVertex2fv(reinterpret_cast<float*>(&vp));
+				glColor3f(0.0f,0.0f,0.0f);
+				glVertex2fv(reinterpret_cast<float*>(&v2));
+				glVertex2fv(reinterpret_cast<float*>(&v3));
+			glEnd();
+		glPopMatrix();
 	}
 
 	void WorldRenderer::RenderGameObj::operator ()(const Projectile* projectile)
