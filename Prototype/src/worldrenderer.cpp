@@ -55,7 +55,20 @@ namespace Prototype
 
 	void WorldRenderer::RenderGameObj::operator ()(const Obstacle* obstacle)
 	{
-		//TODO
+		// setup some vertexes
+		Vec2f v0(obstacle->getTopRight());
+		Vec2f v1(obstacle->getTopLeft());
+		Vec2f v2(obstacle->getBottomLeft());
+		Vec2f v3(obstacle->getBottomRight());
+
+		// Render rectangle
+		glBegin(GL_QUADS);
+			glColor3f(0.0f,0.0f,0.0f);
+			glVertex2fv(reinterpret_cast<float*>(&v0));
+			glVertex2fv(reinterpret_cast<float*>(&v1));
+			glVertex2fv(reinterpret_cast<float*>(&v2));
+			glVertex2fv(reinterpret_cast<float*>(&v3));
+		glEnd();
 	}
 
 	void WorldRenderer::RenderGameObj::operator ()(const PlayerObj* playerObj)
