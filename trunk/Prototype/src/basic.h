@@ -20,6 +20,21 @@ namespace Prototype
 	{
 		return angle * 360.0f / (2.0f * PI);
 	}
+
+	//// Functor
+	//template <class T>
+	//class HasId
+	//{
+	//private:
+	//	int id;
+	//public:
+	//	HasId(int id) : id(id)	{}
+	//	bool operator ()(const T &o)	{ return o.id == this->id; }
+	//	bool operator ()(const T *o)	{ return o->id == this->id; }
+	//};
+
+
+
 	
 };
 

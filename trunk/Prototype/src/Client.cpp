@@ -1,6 +1,8 @@
 #include "Client.h"
+#include "Player.h"
 //#include <iostream>
 #include <string>
+#include <algorithm>
 
 namespace Prototype
 {
@@ -25,6 +27,22 @@ namespace Prototype
 			if (message.type == UPDATE_PLAYER)
 			{
 				UpdatePlayer *updatePlayer = (UpdatePlayer*)message.data;
+				
+				//// make a function of this and throw exception when id is't found instead!
+				//WorldModel::PlayerObjContainer::iterator it =
+				//	std::find_if(worldModel.getPlayerObjs().begin(),
+				//	worldModel.getPlayerObjs().end(),
+				//	HasPlayerId<PlayerObj>(updatePlayer->playerId));
+				//if (it != worldModel.getPlayerObjs().end())
+				//{
+				//	PlayerObj *playerObj = *it;
+				//	playerObj->pos = updatePlayer->pos;
+				//	playerObj->angle = updatePlayer->angle;
+				//}
+				//else
+				//{
+				//	assert(false);
+				//}
 
 				WorldModel::PlayerObjContainer::iterator it;
 				for (it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); it++)
