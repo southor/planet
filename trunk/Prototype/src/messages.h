@@ -37,6 +37,7 @@ namespace Prototype
 
 	struct UpdatePlayer
 	{
+		int playerId;
 		Pos pos;
 		float angle;
 	};
