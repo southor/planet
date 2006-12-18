@@ -21,10 +21,22 @@ namespace Prototype
 		
 			std::cout << "message recieved, type: " << message.type << std::endl;
 
+			// TODO - move this message handling code
 			if (message.type == UPDATE_PLAYER)
 			{
 				UpdatePlayer *updatePlayer = (UpdatePlayer*)message.data;
 
+				WorldModel::PlayerObjContainer::iterator it;
+				for (it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); it++)
+				{
+					PlayerObj *playerObj = *it;
+
+					if (playerObj->getPlayerId() == updatePlayer->playerId)
+					{
+						playerObj->pos = updatePlayer->pos;
+						playerObj->angle = updatePlayer->angle;
+					}
+				}
 				
 			}
 		}
