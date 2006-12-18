@@ -16,7 +16,12 @@ namespace Prototype
 		Pos pos;
 		float angle;
 
-		PlayerObj(int playerId, const Pos &pos) : playerId(playerId), pos(pos), angle(0.0f)	{}
+		bool movingForward;
+		bool movingBackward;
+		bool strafingLeft;
+		bool strafingRight;
+
+		PlayerObj(int playerId, const Pos &pos);
 
 		Pos getPos() const			{ return pos; }
 		void getRectangle(Rectangle &rectangle) const;

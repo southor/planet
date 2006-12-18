@@ -6,6 +6,12 @@ namespace Prototype
 
 	const float PlayerObj::RECTANGLE_SIZE = 64.0f;
 
+	PlayerObj::PlayerObj(int playerId, const Pos &pos)
+		: playerId(playerId), pos(pos), angle(0.0f),
+		 movingForward(false), movingBackward(false),
+		 strafingLeft(false), strafingRight(false)
+	{}
+
 	void PlayerObj::getRectangle(Rectangle &rectangle) const
 	{
 		Vec size(RECTANGLE_SIZE, RECTANGLE_SIZE);
