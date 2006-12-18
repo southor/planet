@@ -17,6 +17,7 @@ namespace Prototype
 	
 	void Server::logic()
 	{
+		// Read messages from clients
 		std::vector<ServerClient>::iterator it;
 		for (it = clients.begin(); it != clients.end(); it++)
 		{
@@ -25,15 +26,38 @@ namespace Prototype
 			MessageSender *messageSender = client.messageSender;
 			MessageReciever *messageReciever = client.messageReciever;
 			
+
+
 			while (messageReciever->getNMessages() > 0)
 			{
 				Message message = messageReciever->popMessage();
-				
-				messageSender->pushMessage(message);
+
+				if (message.type == USER_CMD)
+				{
+					UserCmd *userCmd = (UserCmd*)message.data;
+
+					// TODO
+					
+					printf("userCmd.cmd_left = %d\n", userCmd->cmd_left);
+				}			
+
 			}
 
-			messageSender->transmit();
 		}		
+
+		// Send updates to clients
+		for (it = clients.begin(); it != clients.end(); it++)
+		{
+			ServerClient client = *it;
+
+			MessageSender *messageSender = client.messageSender;
+			MessageReciever *messageReciever = client.messageReciever;
+
+
+			// TODO
+			
+			messageSender->transmit();
+		}
 	}
 	
 };

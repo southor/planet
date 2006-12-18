@@ -14,9 +14,26 @@ namespace Prototype
 
 	void Client::logic()
 	{
+		// Read messages from server
+		while (messageReciever->getNMessages() > 0)
+		{
+			Message message = messageReciever->popMessage();
+		
+			std::cout << "message recieved, type: " << message.type << std::endl;
+
+			if (message.type == UPDATE_PLAYER)
+			{
+				UpdatePlayer *updatePlayer = (UpdatePlayer*)message.data;
+
+				
+			}
+		}
+
+
+		// Send changes to server
 		UserCmd *userCmd = new UserCmd();
 
-		// if some key was pressed or released send message
+		// If some key was pressed or released send message
 		if (kh->changePressedToDownState() || kh->changeReleasedToUpState())
 		{
 			userCmd->cmd_left = kh->isDown(CMD_LEFT);
@@ -51,12 +68,6 @@ namespace Prototype
 	
 	void Client::recieveMessages()
 	{
-		while (messageReciever->getNMessages() != 0)
-		{
-			Message message = messageReciever->popMessage();
-		
-			std::cout << "message recieved, type: " << message.type << std::endl;
-		}
 	}
 
 	void Client::addPlayer(const Color &playerColor, const Pos &playerPos)
