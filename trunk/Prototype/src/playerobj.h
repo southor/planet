@@ -11,11 +11,12 @@ namespace Prototype
 	private:
 		int playerId;
 	public:
-		PlayerObj(int playerId, const Pos &pos) : playerId(playerId), pos(pos), angle(0.0f)	{}
 
 		static const float RECTANGLE_SIZE;
 		Pos pos;
 		float angle;
+
+		PlayerObj(int playerId, const Pos &pos) : playerId(playerId), pos(pos), angle(0.0f)	{}
 
 		Pos getPos() const			{ return pos; }
 		void getRectangle(Rectangle &rectangle) const;
