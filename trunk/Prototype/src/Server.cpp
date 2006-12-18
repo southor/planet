@@ -40,7 +40,7 @@ namespace Prototype
 					
 					printf("userCmd.cmd_left = %d\n", userCmd->cmd_left);
 				}			
-
+				delete message.data;
 			}
 
 		}		
