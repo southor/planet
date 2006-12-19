@@ -29,6 +29,9 @@ namespace Prototype
 	void WorldRenderer::render(WorldModel &worldModel, Players &players, PlayerObj *localPlayerObj)
 	{
 		glLoadIdentity();
+
+		// render box around render area
+		renderViewBox();
 		
 		// execute camera properties
 		switch(renderMode)
@@ -41,8 +44,7 @@ namespace Prototype
 			break;
 		}
 
-		// render box around render area
-		renderViewBox();
+		
 
 		// render all objects
 		RenderGameObj renderGameObj(&players);
