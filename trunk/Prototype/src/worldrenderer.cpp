@@ -41,6 +41,9 @@ namespace Prototype
 			break;
 		}
 
+		// render box around render area
+		renderViewBox();
+
 		// render all objects
 		RenderGameObj renderGameObj(&players);
 		std::for_each(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);
@@ -48,22 +51,16 @@ namespace Prototype
 		std::for_each(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderGameObj);
 	}
 
-
-	// --------------------------------------------------------------------------------------
-	// -------------------------------   RenderGameObject  ----------------------------------
-	// --------------------------------------------------------------------------------------
-
-	void WorldRenderer::RenderGameObj::operator ()(const Obstacle* obstacle)
+	void WorldRenderer::renderRectangle(const Rectangle &rect, GLenum mode)
 	{
 		// setup some vertexes
-		Vec2f v0(obstacle->getTopRight());
-		Vec2f v1(obstacle->getTopLeft());
-		Vec2f v2(obstacle->getBottomLeft());
-		Vec2f v3(obstacle->getBottomRight());
+		Vec2f v0(rect.getTopRight());
+		Vec2f v1(rect.getTopLeft());
+		Vec2f v2(rect.getBottomLeft());
+		Vec2f v3(rect.getBottomRight());
 
 		// Render rectangle
-		glBegin(GL_QUADS);
-			glColor3f(0.0f,0.0f,0.0f);
+		glBegin(mode);
 			glVertex2fv(reinterpret_cast<float*>(&v0));
 			glVertex2fv(reinterpret_cast<float*>(&v1));
 			glVertex2fv(reinterpret_cast<float*>(&v2));
@@ -71,18 +68,36 @@ namespace Prototype
 		glEnd();
 	}
 
+	void WorldRenderer::renderViewBox()
+	{
+		// render rectangle
+		glColor3f(0.0f,0.0f,0.0f);
+		renderRectangle(Rectangle(Pos(0.0f, 0.0f), WorldModel::WORLD_SIZE), GL_LINE_LOOP);
+	}
+
+	// --------------------------------------------------------------------------------------
+	// -------------------------------   RenderGameObject  ----------------------------------
+	// --------------------------------------------------------------------------------------
+
+	void WorldRenderer::RenderGameObj::operator ()(const Obstacle* obstacle)
+	{
+		glColor3f(0.0f,0.0f,0.0f);
+		WorldRenderer::renderRectangle(*obstacle, GL_QUADS);
+	}
+
 	void WorldRenderer::RenderGameObj::operator ()(const PlayerObj* playerObj)
 	{
-		
 		Rectangle rect;
 		playerObj->getRectangle(rect);
+
+		// render rectangle
+		glColor3f(0.0f,0.0f,0.0f);
+		WorldRenderer::renderRectangle(rect, GL_QUADS);
 		
 		// setup some vertexes
-		Vec2f v0(rect.getTopRight());
-		Vec2f v1(rect.getTopLeft());
-		Vec2f v2(rect.getBottomLeft());
-		Vec2f v3(rect.getBottomRight());
-		Vec2f vp((v0+v1) / 2.0f);
+		Vec2f v0((rect.getTopLeft() + rect.getTopRight()) / 2.0f);
+		Vec2f v1(rect.getBottomLeft());
+		Vec2f v2(rect.getBottomRight());
 
 		// get a player color
 		int playerId = playerObj->getPlayerId();
@@ -92,27 +107,17 @@ namespace Prototype
 			playerColor = (*players)[playerId].color;
 		}
 
-		// Render rectangle
-		glBegin(GL_QUADS);
-			glColor3f(0.0f,0.0f,0.0f);
-			glVertex2fv(reinterpret_cast<float*>(&v0));
-			glVertex2fv(reinterpret_cast<float*>(&v1));
-			glVertex2fv(reinterpret_cast<float*>(&v2));
-			glVertex2fv(reinterpret_cast<float*>(&v3));
-		glEnd();
-
-
-		// Render triangle
+		// render triangle
 		glPushMatrix();
 			glTranslatef(playerObj->pos.x, playerObj->pos.y, 0.0f);
 			glRotatef(radianToDegree(playerObj->angle), 0.0f, 0.0f, 1.0f); 
 			glTranslatef(-playerObj->pos.x, -playerObj->pos.y, 0.0f);
 			glBegin(GL_TRIANGLES);
 				glColor3fv(reinterpret_cast<float*>(&playerColor));
-				glVertex2fv(reinterpret_cast<float*>(&vp));
+				glVertex2fv(reinterpret_cast<float*>(&v0));
 				glColor3f(0.0f,0.0f,0.0f);
+				glVertex2fv(reinterpret_cast<float*>(&v1));
 				glVertex2fv(reinterpret_cast<float*>(&v2));
-				glVertex2fv(reinterpret_cast<float*>(&v3));
 			glEnd();
 		glPopMatrix();
 	}
