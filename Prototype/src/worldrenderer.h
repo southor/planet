@@ -3,6 +3,7 @@
 
 #include "worldmodel.h"
 #include "Player.h"
+#include "common.h"
 
 namespace Prototype
 {
@@ -39,6 +40,10 @@ namespace Prototype
 			void operator ()(const PlayerObj* playerObj);
 			void operator ()(const Projectile* projectile);
 		};
+
+		static void renderRectangle(const Rectangle &rect, GLenum mode);
+
+		void renderViewBox();
 
 	};
 };
