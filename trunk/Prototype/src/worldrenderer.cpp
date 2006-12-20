@@ -44,8 +44,6 @@ namespace Prototype
 			break;
 		}
 
-		
-
 		// render all objects
 		RenderGameObj renderGameObj(&players);
 		std::for_each(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);

@@ -3,7 +3,7 @@
 
 #include "common.h"
 #include "messages.h"
-#include "worldmodel.h"
+#include "clientworldmodel.h"
 #include "Player.h"
 #include "worldrenderer.h"
 #include "keyhandler.h"
@@ -36,7 +36,7 @@ namespace Prototype
 
 		KeyHandler *kh;
 
-		WorldModel worldModel;
+		ClientWorldModel worldModel;
 		WorldRenderer worldRenderer;
 		Players players;
 	};
