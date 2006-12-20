@@ -27,16 +27,18 @@ namespace Prototype
 
 		static const Vec WORLD_SIZE;		
 
-		typedef std::vector<Obstacle*> ObstacleContainer;
-		typedef std::list<PlayerObj*> PlayerObjContainer;
-		typedef std::list<Projectile*> ProjectileContainer;
-		//typedef IdMap< ObstacleContainer;
+		//typedef std::vector<Obstacle*> ObstacleContainer;
 		//typedef std::list<PlayerObj*> PlayerObjContainer;
 		//typedef std::list<Projectile*> ProjectileContainer;
+		typedef IdMap<size_t, Obstacle*> ObstacleContainer;
+		typedef IdMap<size_t, PlayerObj*> PlayerObjContainer;
+		typedef IdMap<size_t, Projectile*> ProjectileContainer;
 
 
 
 		virtual ~WorldModel()		{}
+
+		void deleteAllObjs();
 		
 		virtual ObstacleContainer& getObstacles() = 0;
 		virtual PlayerObjContainer& getPlayerObjs() = 0;

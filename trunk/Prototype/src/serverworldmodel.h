@@ -2,6 +2,7 @@
 #define __serverworldmodel_h__
 
 #include "WorldModel.h"
+#include "ServerIdMap.h"
 
 namespace Prototype
 {
@@ -9,9 +10,12 @@ namespace Prototype
 	{
 	private:
 
-		typedef std::vector<Obstacle*> ServerObstacleContainer;
-		typedef std::list<PlayerObj*> ServerPlayerObjContainer;
-		typedef std::list<Projectile*> ServerProjectileContainer;
+		//typedef std::vector<Obstacle*> ServerObstacleContainer;
+		//typedef std::list<PlayerObj*> ServerPlayerObjContainer;
+		//typedef std::list<Projectile*> ServerProjectileContainer;
+		typedef ServerIdMap<size_t, Obstacle*> ServerObstacleContainer;
+		typedef ServerIdMap<size_t, PlayerObj*> ServerPlayerObjContainer;
+		typedef ServerIdMap<size_t, Projectile*> ServerProjectileContainer;
 
 		ServerObstacleContainer obstacles;
 		ServerPlayerObjContainer playerObjs;

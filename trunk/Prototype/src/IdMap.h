@@ -46,7 +46,7 @@ namespace Prototype
 
 			static bool standardUniCheck(const Iterator &it)
 			{
-				assert(isConsistent());
+				assert(it.isConsistent());
 				//assert(it.i >= 0); // check if valid index
 				return true;
 			}
@@ -137,7 +137,7 @@ namespace Prototype
 			}
 
 
-			inline Iterator &operator++()
+			inline Iterator& operator++()
 			{
 				assert(standardUniCheck());
 				if (!atEnd()) ++i;
@@ -159,8 +159,10 @@ namespace Prototype
 				return &((*iterOver)[i].element);
 			}
 
+			//std::forward_iterator_tag iterator_category()	{ return std::forward_iterator_tag; }
+
 			// debug
-			bool isConsistent() const		{ return i <= static_cast<int>(getSize()); }
+			bool isConsistent() const		{ return i <= iterOver->size(); }
 
 		};
 		

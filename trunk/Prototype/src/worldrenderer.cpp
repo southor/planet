@@ -46,9 +46,12 @@ namespace Prototype
 
 		// render all objects
 		RenderGameObj renderGameObj(&players);
-		std::for_each(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);
-		std::for_each(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderGameObj);
-		std::for_each(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderGameObj);
+		ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);
+		ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderGameObj);
+		ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderGameObj);
+		//std::for_each(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);
+		//std::for_each(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderGameObj);
+		//std::for_each(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderGameObj);
 	}
 
 	void WorldRenderer::renderRectangle(const Rectangle &rect, GLenum mode)
