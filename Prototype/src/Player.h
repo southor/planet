@@ -26,6 +26,7 @@ namespace Prototype
 	};
 
 	typedef std::vector<Player> Players;
+	//typedef Client
 };
 
 #endif

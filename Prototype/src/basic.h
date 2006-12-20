@@ -33,6 +33,15 @@ namespace Prototype
 	//	bool operator ()(const T *o)	{ return o->id == this->id; }
 	//};
 
+	template <class It, class Functor>
+	void ForEach(It begin, It end, Functor &fun)
+	{
+		It &it=begin;
+		for(; it!=end; ++it)
+		{
+			fun(*it);
+		}
+	}
 
 
 	

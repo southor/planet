@@ -44,8 +44,8 @@ namespace Prototype
 				//	assert(false);
 				//}
 
-				WorldModel::PlayerObjContainer::iterator it;
-				for (it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); it++)
+				WorldModel::PlayerObjContainer::Iterator it;
+				for (it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); ++it)
 				{
 					PlayerObj *playerObj = *it;
 
@@ -102,9 +102,10 @@ namespace Prototype
 
 	void Client::addPlayer(const Color &playerColor, const Pos &playerPos)
 	{
-		int playerId = static_cast<int>(players.size());
+		size_t playerId = players.size();		
 		players.push_back(Player(playerColor));
-		worldModel.getPlayerObjs().push_back(new PlayerObj(playerId, playerPos));
+		//worldModel.getPlayerObjs().push_back(new PlayerObj(playerId, playerPos));
+		worldModel.addPlayer(playerId, playerPos);
 	}
 
 	void Client::setConnection(MessageSender *messageSender, MessageReciever *messageReciever)
