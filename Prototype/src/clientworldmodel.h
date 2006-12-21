@@ -34,7 +34,7 @@ namespace Prototype
 		const ProjectileContainer& getProjectiles() const		{ return projectiles; }
 
 
-		void ClientWorldModel::addPlayer(size_t playerId, const Pos &playerPos);
+		void ClientWorldModel::addPlayerObj(size_t playerId, size_t playerObjId, const Pos &playerPos);
 
 	};
 };

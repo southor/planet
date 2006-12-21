@@ -21,6 +21,12 @@ namespace Prototype
 		ServerPlayerObjContainer playerObjs;
 		ServerProjectileContainer projectiles;
 
+		class Move
+		{
+		public:
+			void operator ()(const PlayerObjContainer::Pair &playerObjPair);
+		};
+
 	public:
 
 		~ServerWorldModel();
@@ -33,6 +39,10 @@ namespace Prototype
 		const PlayerObjContainer& getPlayerObjs() const			{ return playerObjs; }
 		const ProjectileContainer& getProjectiles() const		{ return projectiles; }
 
+
+		size_t addPlayerObj(size_t playerId, const Pos &playerPos);
+
+		void updatePlayerObjMovements();
 	};
 };
 

@@ -4,7 +4,7 @@
 #include "common.h"
 #include "messages.h"
 #include "clientworldmodel.h"
-#include "Player.h"
+#include "ClientPlayer.h"
 #include "worldrenderer.h"
 #include "keyhandler.h"
 
@@ -38,7 +38,7 @@ namespace Prototype
 
 		ClientWorldModel worldModel;
 		WorldRenderer worldRenderer;
-		Players players;
+		ClientPlayers players;
 	};
 };
 

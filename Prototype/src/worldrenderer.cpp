@@ -82,14 +82,16 @@ namespace Prototype
 	// -------------------------------   RenderGameObject  ----------------------------------
 	// --------------------------------------------------------------------------------------
 
-	void WorldRenderer::RenderGameObj::operator ()(const Obstacle* obstacle)
+	void WorldRenderer::RenderGameObj::operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair)
 	{
 		glColor3f(0.0f,0.0f,0.0f);
-		WorldRenderer::renderRectangle(*obstacle, GL_QUADS);
+		WorldRenderer::renderRectangle(*(obstaclePair.second), GL_QUADS);
 	}
 
-	void WorldRenderer::RenderGameObj::operator ()(const PlayerObj* playerObj)
+	void WorldRenderer::RenderGameObj::operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair)
 	{
+		PlayerObj *playerObj = playerObjPair.second;
+		
 		Rectangle rect;
 		playerObj->getRectangle(rect);
 
@@ -103,9 +105,9 @@ namespace Prototype
 		Vec2f v2(rect.getBottomRight());
 
 		// get a player color
-		int playerId = playerObj->getPlayerId();
+		size_t playerId = playerObj->getPlayerId();
 		Color playerColor(0.7f, 0.7f, 0.7f);
-		if ((static_cast<int>(players->size()) > playerId) && (playerId >= 0))
+		if (players->isValid(playerId))
 		{
 			playerColor = (*players)[playerId].color;
 		}
@@ -125,10 +127,14 @@ namespace Prototype
 		glPopMatrix();
 	}
 
-	void WorldRenderer::RenderGameObj::operator ()(const Projectile* projectile)
+	void WorldRenderer::RenderGameObj::operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair)
 	{
 		//TODO
 	}
+
+	
+	
+	
 
 };
 

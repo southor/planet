@@ -8,8 +8,8 @@ namespace Prototype
 		deleteAllObjs();
 	}
 
-	void ClientWorldModel::addPlayer(size_t playerId, const Pos &playerPos)
+	void ClientWorldModel::addPlayerObj(size_t playerId, size_t playerObjId, const Pos &playerPos)
 	{
-		playerObjs.add(playerId, new PlayerObj(playerId, playerPos));
+		playerObjs.add(playerObjId, new PlayerObj(playerId, playerPos));
 	}
 };

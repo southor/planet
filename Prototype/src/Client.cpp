@@ -9,7 +9,7 @@ namespace Prototype
 
 	Client::Client() : messageSender(0), messageReciever(0), worldRenderer(WorldRenderer::HOLE_WORLD)
 	{
-		players.reserve(MAX_N_PLAYERS);
+		//players.reserve(MAX_N_PLAYERS);
 		//(worldModel.getPlayerObjs()).reserve(MAX_N_PLAYERS);
 		//worldRenderer.setupProjection();
 	}
@@ -26,35 +26,40 @@ namespace Prototype
 			// TODO - move this message handling code
 			if (message.type == UPDATE_PLAYER)
 			{
-				UpdatePlayer *updatePlayer = (UpdatePlayer*)message.data;
+				UpdatePlayerObj *updatePlayerObj = (UpdatePlayerObj*)message.data;
 				
 				//// make a function of this and throw exception when id is't found instead!
 				//WorldModel::PlayerObjContainer::iterator it =
 				//	std::find_if(worldModel.getPlayerObjs().begin(),
 				//	worldModel.getPlayerObjs().end(),
-				//	HasPlayerId<PlayerObj>(updatePlayer->playerId));
+				//	HasPlayerId<PlayerObj>(updatePlayerObj->playerId));
 				//if (it != worldModel.getPlayerObjs().end())
 				//{
 				//	PlayerObj *playerObj = *it;
-				//	playerObj->pos = updatePlayer->pos;
-				//	playerObj->angle = updatePlayer->angle;
+				//	playerObj->pos = updatePlayerObj->pos;
+				//	playerObj->angle = updatePlayerObj->angle;
 				//}
 				//else
 				//{
 				//	assert(false);
 				//}
 
-				WorldModel::PlayerObjContainer::Iterator it;
-				for (it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); ++it)
-				{
-					PlayerObj *playerObj = *it;
+				//WorldModel::PlayerObjContainer::Iterator it;
+				//for (it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); ++it)
+				//{
+				//	PlayerObj *playerObj = *it;
 
-					if (playerObj->getPlayerId() == updatePlayer->playerId)
-					{
-						playerObj->pos = updatePlayer->pos;
-						playerObj->angle = updatePlayer->angle;
-					}
-				}
+				//	if (playerObj->getPlayerId() == updatePlayerObj->playerId)
+				//	{
+				//		playerObj->pos = updatePlayerObj->pos;
+				//		playerObj->angle = updatePlayerObj->angle;
+				//	}
+				//}
+
+				PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
+				playerObj->pos = updatePlayerObj->pos;
+				playerObj->angle = updatePlayerObj->angle;
+
 				
 			}
 		}
@@ -102,10 +107,11 @@ namespace Prototype
 
 	void Client::addPlayer(const Color &playerColor, const Pos &playerPos)
 	{
-		size_t playerId = players.size();		
-		players.push_back(Player(playerColor));
-		//worldModel.getPlayerObjs().push_back(new PlayerObj(playerId, playerPos));
-		worldModel.addPlayer(playerId, playerPos);
+		size_t playerId = players.getSize();
+		size_t playerObjId = playerId; // for now
+		players.add(playerId, Player(playerColor));
+		players[playerId].playerObjId = playerObjId;
+		worldModel.addPlayerObj(playerId, playerObjId, playerPos);
 	}
 
 	void Client::setConnection(MessageSender *messageSender, MessageReciever *messageReciever)

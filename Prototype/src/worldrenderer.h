@@ -36,9 +36,12 @@ namespace Prototype
 			RenderGameObj(Players *players) : players(players)
 			{}
 
-			void operator ()(const Obstacle* obstacle);
-			void operator ()(const PlayerObj* playerObj);
-			void operator ()(const Projectile* projectile);
+			//void operator ()(const Obstacle* obstacle);
+			//void operator ()(const PlayerObj* playerObj);
+			//void operator ()(const Projectile* projectile);
+			void operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair);
+			void operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair);
+			void operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair);
 		};
 
 		static void renderRectangle(const Rectangle &rect, GLenum mode);
