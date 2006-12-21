@@ -13,16 +13,6 @@ namespace Prototype
 {
 	class WorldModel
 	{
-	protected:
-
-		class Delete
-		{
-		public:
-			void operator ()(const Obstacle* obstacle)		{ delete obstacle; }
-			void operator ()(const PlayerObj* playerObj)	{ delete playerObj; }
-			void operator ()(const Projectile* projectile)	{ delete projectile; }
-		};
-
 	public:
 
 		static const Vec WORLD_SIZE;		
@@ -48,6 +38,15 @@ namespace Prototype
 		virtual const PlayerObjContainer& getPlayerObjs() const = 0;
 		virtual const ProjectileContainer& getProjectiles() const = 0;
 
+	protected:
+
+		class Delete
+		{
+		public:
+			void operator ()(const ObstacleContainer::Pair &obstaclePair)		{ delete obstaclePair.second; }
+			void operator ()(const PlayerObjContainer::Pair &playerObjPair)		{ delete playerObjPair.second; }
+			void operator ()(const ProjectileContainer::Pair &projectilePair)	{ delete projectilePair.second; }
+		};
 	};
 };
 

@@ -10,15 +10,30 @@ namespace Prototype
 	template <typename Id, typename T>
 	class IdMap
 	{
+	public:
+
+		struct Pair
+		{
+			// Same names as maps in STL
+			Id first;
+			T second;
+
+			Pair()			{}
+			Pair(Id first, const T &second) : first(first), second(second)
+			{}
+		};
+
 	protected:
-		
+
 		struct Entry
 		{
 			bool used;
-			T element;
+			//Pair pair;
+			mutable Pair pair;
+			//T element;
 
-			Entry() : used(false)							{}
-			Entry(T element) : used(true), element(element) {}
+			Entry() : used(false)								{}
+			Entry(const Pair &pair) : used(true), pair(pair)	{}
 		};
 		
 		std::vector<Entry> map;
@@ -145,18 +160,18 @@ namespace Prototype
 				return *this;
 			}
 
-			inline T& operator*()
+			inline const Pair& operator*()
 			{
 				assert(standardUniCheck());
 				assert(i >= 0); // is valid index
-				return (*iterOver)[i].element;
+				return (*iterOver)[i].pair;
 			}
 
-			inline T* operator->()
+			inline const Pair* operator->()
 			{
 				assert(standardUniCheck());
 				assert(i >= 0); // is valid index
-				return &((*iterOver)[i].element);
+				return &((*iterOver)[i].pair);
 			}
 
 			//std::forward_iterator_tag iterator_category()	{ return std::forward_iterator_tag; }
@@ -179,7 +194,7 @@ namespace Prototype
 		inline T& operator[](Id id)
 		{			
 			assert(map[id].used);			
-			return map[id].element;
+			return map[id].pair.second;
 		}
 
 	};

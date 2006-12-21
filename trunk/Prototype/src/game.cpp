@@ -56,10 +56,14 @@ namespace Prototype
 		client.setKeyHandler(&kh);
 
 		Server server;
-		server.addClient(sender1, reciever2);
+		//server.addClient(sender1, reciever2);
+		Pos startPos(200.0f, 200.0f);
+		
+		size_t playerId = server.addClient(Color(0.0f, 0.0f, 1.0f), sender1, reciever2);
+		server.addPlayerObj(playerId, startPos);
 
 		// rendering
-		client.addPlayer(Color(0.0f, 0.0f, 1.0f), Pos(200.0f, 200.0f));
+		client.addPlayer(Color(0.0f, 0.0f, 1.0f), startPos);
 
 		while (running) 
 		{
@@ -124,20 +128,21 @@ namespace Prototype
 	void Game::draw(Uint32 time)
 	{
 		glDisable(GL_LIGHTING);
-		if (!kh.isDown(CMD_LEFT))
-		{
-			//glBegin(GL_TRIANGLES);
-			//	//glNormal3f(0.0f, 0.0f, 1.0f);
-			//	glColor3f(1.0f,0.0f,0.0f);
-			//	glVertex3f( 0.0f, 0.3f, 0.0f);
-			//	glColor3f(0.0f,1.0f,0.0f);
-			//	glVertex3f(-0.3f,-0.3f, 0.0f);
-			//	glColor3f(0.0f,0.0f,1.0f);
-			//	glVertex3f( 0.3f,-0.3f, 0.0f);
-			//glEnd();
+		//if (!kh.isDown(CMD_LEFT))
+		//{
+		//	//glBegin(GL_TRIANGLES);
+		//	//	//glNormal3f(0.0f, 0.0f, 1.0f);
+		//	//	glColor3f(1.0f,0.0f,0.0f);
+		//	//	glVertex3f( 0.0f, 0.3f, 0.0f);
+		//	//	glColor3f(0.0f,1.0f,0.0f);
+		//	//	glVertex3f(-0.3f,-0.3f, 0.0f);
+		//	//	glColor3f(0.0f,0.0f,1.0f);
+		//	//	glVertex3f( 0.3f,-0.3f, 0.0f);
+		//	//glEnd();
 
-			client.render();
-		}
+		//	
+		//}
+		client.render();
 		
 		// Draw x, y, z axis in red, green, blue
 		glDisable(GL_LIGHTING);

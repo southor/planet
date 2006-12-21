@@ -26,12 +26,12 @@ namespace Prototype
 			{
 				id = freeIds.back();
 				freeIds.pop_back();
-				map[id] = Entry(item);
+				map[id] = Entry(Pair(id, item));
 			}
 			else
 			{
 				id = static_cast<Id>(map.size());
-				map.push_back(Entry(item));
+				map.push_back(Entry(Pair(id, item)));
 			}
 			++size;
 			return id;

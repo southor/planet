@@ -35,11 +35,16 @@ namespace Prototype
 		USER_CMD	
 	};
 
-	struct UpdatePlayer
+	struct UpdatePlayerObj
 	{
-		int playerId;
+		int playerObjId;
 		Pos pos;
 		float angle;
+
+		UpdatePlayerObj()		{}
+		UpdatePlayerObj(int playerObjId, const Pos &pos, float angle)
+			: playerObjId(playerObjId), pos(pos), angle(angle)
+		{}
 	};
 
 	struct UserCmd
@@ -56,7 +61,8 @@ namespace Prototype
 		int type;
 		int time;
 		void *data;
-		Message() : type(0), time(0), data(0)			{}
+		Message() : type(0), time(0), data(0)					{}
+		Message(int type, void *data) : type(type), data(data)	{}
 	};
 
 	class MessageReciever
@@ -84,6 +90,15 @@ namespace Prototype
 
 		// Transmits queued messages.
 		virtual void transmit() = 0;
+	};
+
+	struct Link
+	{
+		MessageSender *messageSender;
+		MessageReciever *messageReciever;
+
+		Link(MessageSender *messageSender, MessageReciever *messageReciever) 
+			: messageSender(messageSender), messageReciever(messageReciever) { }
 	};
 
 

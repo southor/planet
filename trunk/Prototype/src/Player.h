@@ -2,6 +2,7 @@
 #define __player_h__
 
 #include "color.h"
+#include "IdMap.h"
 
 namespace Prototype
 {
@@ -9,24 +10,13 @@ namespace Prototype
 	{
 	public:
 		Color color;
+		size_t playerObjId;
 		
-		Player(const Color &color) : color(color)	{}
+		Player()											{}
+		Player(const Color &color) : color(color)			{}
 	};
 
-	// Functor
-	template <class T>
-	class HasPlayerId
-	{
-	private:
-		int playerId;
-	public:
-		HasPlayerId(int playerId) : playerId(playerId)	{}
-		bool operator ()(const T &o)	{ return o.getPlayerId() == this->playerId; }
-		bool operator ()(const T *o)	{ return o->getPlayerId() == this->playerId; }
-	};
-
-	typedef std::vector<Player> Players;
-	//typedef Client
+	typedef IdMap<size_t, Player> Players;
 };
 
 #endif

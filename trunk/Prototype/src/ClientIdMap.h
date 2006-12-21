@@ -19,7 +19,7 @@ namespace Prototype
 			size_t mapsize = map.size();
 			if (id >= mapsize) map.resize(id+1);
 			assert(!map[id].used); //TODO throw			
-			map[id].element = item;
+			map[id] = Entry(Pair(id, item));
 		}
 
 		/**
