@@ -36,10 +36,6 @@ namespace Prototype
 		VirtualConnection virtualConnection2;
 		Client client;
 
-		float xrel;
-		float yrel;	
-		GLfloat cameraXAngle;
-		GLfloat cameraYAngle;
 
 		Uint32 mStartTime;
 	};

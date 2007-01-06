@@ -91,8 +91,6 @@ namespace Prototype
 
 			server.logic();
 			
-			client.recieveMessages();
-			
 			// RENDER
 			render(time);
 
