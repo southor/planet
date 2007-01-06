@@ -11,7 +11,7 @@ namespace Prototype
 	{
 	public:
 		
-		ClientIdMap() : IdMap()
+		ClientIdMap() : IdMap<Id, T>()
 		{}
 
 		void add(Id id, T item)
