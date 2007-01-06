@@ -16,7 +16,7 @@ namespace Prototype
 
 	public:
 		
-		ServerIdMap() : IdMap()
+		ServerIdMap() : IdMap<Id, T>()
 		{}
 
 		Id add(T item)
