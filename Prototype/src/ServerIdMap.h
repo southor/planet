@@ -26,14 +26,14 @@ namespace Prototype
 			{
 				id = freeIds.back();
 				freeIds.pop_back();
-				map[id] = Entry(Pair(id, item));
+				ServerIdMap::map[id] = Entry(Pair(id, item));
 			}
 			else
 			{
-				id = static_cast<Id>(map.size());
-				map.push_back(Entry(Pair(id, item)));
+				id = static_cast<Id>(ServerIdMap::map.size());
+				ServerIdMap::map.push_back(Entry(Pair(id, item)));
 			}
-			++size;
+			++ServerIdMap::size;
 			return id;
 		}
 
@@ -43,12 +43,12 @@ namespace Prototype
 		 */
 		bool remove(Id id)
 		{
-			Entry &entry = map[id];
+			ServerIdMap::Entry &entry = ServerIdMap::map[id];
 			if (entry.used)
 			{
 				entry.used = false;
 				freeIds.push_back(id);
-				--size;
+				--ServerIdMap::size;
 				return true;
 			}
 			return false;

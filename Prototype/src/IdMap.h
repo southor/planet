@@ -35,7 +35,7 @@ namespace Prototype
 			Entry() : used(false)								{}
 			Entry(const Pair &pair) : used(true), pair(pair)	{}
 		};
-		
+
 		std::vector<Entry> map;
 
 		// The number of used id's in map.
