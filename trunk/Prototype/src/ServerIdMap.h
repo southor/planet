@@ -15,7 +15,8 @@ namespace Prototype
 		std::vector<Id> freeIds;
 
 	public:
-		
+	
+			
 		ServerIdMap() : IdMap<Id, T>()
 		{}
 
@@ -26,12 +27,12 @@ namespace Prototype
 			{
 				id = freeIds.back();
 				freeIds.pop_back();
-				ServerIdMap::map[id] = Entry(Pair(id, item));
+				ServerIdMap::map[id] = typename ServerIdMap::Entry(typename ServerIdMap::Pair(id, item));
 			}
 			else
 			{
 				id = static_cast<Id>(ServerIdMap::map.size());
-				ServerIdMap::map.push_back(Entry(Pair(id, item)));
+				ServerIdMap::map.push_back(typename ServerIdMap::Entry(typename ServerIdMap::Pair(id, item)));
 			}
 			++ServerIdMap::size;
 			return id;
@@ -43,7 +44,7 @@ namespace Prototype
 		 */
 		bool remove(Id id)
 		{
-			ServerIdMap::Entry &entry = ServerIdMap::map[id];
+			typename ServerIdMap::Entry &entry = ServerIdMap::map[id];
 			if (entry.used)
 			{
 				entry.used = false;
