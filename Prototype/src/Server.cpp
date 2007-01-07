@@ -3,7 +3,7 @@
 namespace Prototype
 {
 
-	size_t Server::addClient(Color color, MessageSender *messageSender, MessageReciever *messageReciever)
+	size_t Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 	{
 
 		

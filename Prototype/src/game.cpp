@@ -58,8 +58,8 @@ namespace Prototype
 		Server server;
 		//server.addClient(sender1, reciever2);
 		Pos startPos(200.0f, 200.0f);
-		
-		size_t playerId = server.addClient(Color(0.0f, 0.0f, 1.0f), sender1, reciever2);
+		Color color = Color(0.0f, 0.0f, 1.0f);
+		size_t playerId = server.addClient(color, sender1, reciever2);
 		server.addPlayerObj(playerId, startPos);
 
 		// rendering
