@@ -65,7 +65,7 @@ namespace Prototype
 
 		inline Vec2<T> operator/(const Vec2<T>& rh) const
 		{
-			return Vec3f<T>(x / rh.x, y / rh.y);						
+			return Vec2<T>(x / rh.x, y / rh.y);						
 		}
 
 		inline const Vec2<T>& operator +=(const Vec2<T>& rh)
@@ -96,7 +96,7 @@ namespace Prototype
 
 		inline T length() const
 		{
-			return std::sqrt(x*x + y*y);
+			return sqrt(x*x + y*y);
 		}
 
 		inline T length2() const
@@ -109,7 +109,7 @@ namespace Prototype
 			float tmp = 1.0f / length();
 			x = x * tmp;
 			y = y * tmp;
-			z = z * tmp;
+			//z = z * tmp;
 		}
 
 	};

@@ -16,10 +16,10 @@ namespace Prototype
 
 		void add(Id id, T item)
 		{
-			size_t mapsize = map.size();
-			if (id >= mapsize) map.resize(id+1);
-			assert(!map[id].used); //TODO throw			
-			map[id] = Entry(Pair(id, item));
+			size_t mapsize = ClientIdMap::map.size();
+			if (id >= mapsize) ClientIdMap::map.resize(id+1);
+			assert(!ClientIdMap::map[id].used); //TODO throw			
+			ClientIdMap::map[id] = Entry(Pair(id, item));
 		}
 
 		/**
@@ -28,11 +28,11 @@ namespace Prototype
 		 */
 		bool remove(Id id)
 		{
-			Entry &entry = map[id];
+			ClientIdMap::Entry &entry = ClientIdMap::map[id];
 			if (entry.used)
 			{
 				entry.used = false;
-				--size;
+				--ClientIdMap::size;
 				return true;
 			}
 			return false;
