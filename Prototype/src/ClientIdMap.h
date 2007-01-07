@@ -19,7 +19,7 @@ namespace Prototype
 			size_t mapsize = ClientIdMap::map.size();
 			if (id >= mapsize) ClientIdMap::map.resize(id+1);
 			assert(!ClientIdMap::map[id].used); //TODO throw			
-			ClientIdMap::map[id] = Entry(Pair(id, item));
+			ClientIdMap::map[id] = typename ClientIdMap::Entry(typename ClientIdMap::Pair(id, item));
 		}
 
 		/**
@@ -28,7 +28,7 @@ namespace Prototype
 		 */
 		bool remove(Id id)
 		{
-			ClientIdMap::Entry &entry = ClientIdMap::map[id];
+			typename ClientIdMap::Entry &entry = ClientIdMap::map[id];
 			if (entry.used)
 			{
 				entry.used = false;
