@@ -34,7 +34,10 @@ namespace Prototype
 		KeyHandler kh;
 		VirtualConnection virtualConnection1;
 		VirtualConnection virtualConnection2;
-		Client client;
+		VirtualConnection virtualConnection3;
+		VirtualConnection virtualConnection4;
+		Client client1;
+		Client client2;
 
 
 		Uint32 mStartTime;
