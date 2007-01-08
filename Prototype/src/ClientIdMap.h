@@ -18,6 +18,7 @@ namespace Prototype
 		{
 			size_t mapsize = ClientIdMap::map.size();
 			if (id >= mapsize) ClientIdMap::map.resize(id+1);
+			++ClientIdMap::size;
 			assert(!ClientIdMap::map[id].used); //TODO throw			
 			ClientIdMap::map[id] = typename ClientIdMap::Entry(typename ClientIdMap::Pair(id, item));
 		}

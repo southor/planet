@@ -51,19 +51,38 @@ namespace Prototype
 		MessageSender *sender2 = virtualConnection2.getMessageSender();
 		MessageReciever *reciever2 = virtualConnection2.getMessageReciever();
 
-		//Client client(sender2, reciever1);
-		client.setConnection(sender2, reciever1);
-		client.setKeyHandler(&kh);
+		MessageSender *sender3 = virtualConnection3.getMessageSender();
+		MessageReciever *reciever3 = virtualConnection3.getMessageReciever();
+
+		MessageSender *sender4 = virtualConnection4.getMessageSender();
+		MessageReciever *reciever4 = virtualConnection4.getMessageReciever();
+
+
+		client1.setConnection(sender2, reciever1);
+		client1.setKeyHandler(&kh);
+
+		client2.setConnection(sender4, reciever3);
+		client2.setKeyHandler(&kh);
 
 		Server server;
 		//server.addClient(sender1, reciever2);
 		Pos startPos(200.0f, 200.0f);
-		Color color = Color(0.0f, 0.0f, 1.0f);
-		size_t playerId = server.addClient(color, sender1, reciever2);
+		Pos startPos2(200.0f, 250.0f);
+
+		Color color1 = Color(0.0f, 0.0f, 1.0f);
+		size_t playerId = server.addClient(color1, sender1, reciever2);
 		server.addPlayerObj(playerId, startPos);
 
+		Color color2 = Color(0.0f, 1.0f, 0.0f);
+		size_t playerId2 = server.addClient(color2, sender3, reciever4);
+		server.addPlayerObj(playerId2, startPos2);
+
+
 		// rendering
-		client.addPlayer(Color(0.0f, 0.0f, 1.0f), startPos);
+		client1.addPlayer(color1, startPos);
+		client1.addPlayer(color2, startPos2);
+		client2.addPlayer(color1, startPos);
+		client2.addPlayer(color2, startPos2);
 
 		while (running) 
 		{
@@ -87,7 +106,8 @@ namespace Prototype
 			}
 			*/
 
-			client.logic();
+			client1.logic();
+			client2.logic();
 
 			server.logic();
 			
@@ -111,14 +131,18 @@ namespace Prototype
 
 
 		// rendering the same client to both render areas
+		glDisable(GL_LIGHTING);
 
 		glViewport(0, h/4, w/2, h*3/4);
-		//glDisable(GL_LIGHTING);		
-		draw(time);
+		client1.render();
 
 		glViewport(w/2, h/4, w/2, h*3/4);
+		client2.render();
+
+
 		draw(time);
 
+		glEnable(GL_LIGHTING);
 		glFlush();
 		SDL_GL_SwapBuffers();
 	}
@@ -126,21 +150,6 @@ namespace Prototype
 	void Game::draw(Uint32 time)
 	{
 		glDisable(GL_LIGHTING);
-		//if (!kh.isDown(CMD_LEFT))
-		//{
-		//	//glBegin(GL_TRIANGLES);
-		//	//	//glNormal3f(0.0f, 0.0f, 1.0f);
-		//	//	glColor3f(1.0f,0.0f,0.0f);
-		//	//	glVertex3f( 0.0f, 0.3f, 0.0f);
-		//	//	glColor3f(0.0f,1.0f,0.0f);
-		//	//	glVertex3f(-0.3f,-0.3f, 0.0f);
-		//	//	glColor3f(0.0f,0.0f,1.0f);
-		//	//	glVertex3f( 0.3f,-0.3f, 0.0f);
-		//	//glEnd();
-
-		//	
-		//}
-		client.render();
 		
 		// Draw x, y, z axis in red, green, blue
 		glDisable(GL_LIGHTING);
