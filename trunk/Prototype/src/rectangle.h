@@ -35,7 +35,7 @@ namespace Prototype
 		inline Pos getBottomLeft() const						{ return pos; }
 
 
-
+		bool overlapping(const Rectangle &rectangle);
 
 
 
