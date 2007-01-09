@@ -94,6 +94,16 @@ namespace Prototype
 			return Vec2(-x, -y);
 		}
 
+
+
+
+		inline bool operator!=(const Vec2<T>& rh) const
+		{
+			return (rh.x != x) || (rh.y != y);
+		}
+
+
+
 		inline T length() const
 		{
 			return sqrt(x*x + y*y);

@@ -23,7 +23,12 @@ namespace Prototype
 
 		class Move
 		{
+		private:
+			ServerObstacleContainer *obstacles;
+
+			Obstacle* findAnyOverlap(const Rectangle &rectangle);
 		public:
+			Move(ServerObstacleContainer *obstacles) : obstacles(obstacles)	{}
 			void operator ()(const PlayerObjContainer::Pair &playerObjPair);
 		};
 
