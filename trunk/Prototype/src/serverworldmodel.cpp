@@ -22,8 +22,9 @@ namespace Prototype
 
 	Obstacle* ServerWorldModel::Move::findAnyOverlap(const Rectangle &rectangle)
 	{
-		ServerObstacleContainer::Iterator it;
-		ServerObstacleContainer::Iterator end;		
+		assert(obstacles);
+		ServerObstacleContainer::Iterator it = obstacles->begin();
+		ServerObstacleContainer::Iterator end = obstacles->end();		
 		for(; it != end; ++it)
 		{
 			Obstacle *obstacle = it->second;
