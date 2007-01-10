@@ -40,29 +40,43 @@ namespace Prototype
 			size_t playerId = pair.first;
 			ServerPlayer &player = pair.second;
 
-			MessageSender *messageSender = player.link.messageSender;
-			MessageReciever *messageReciever = player.link.messageReciever;
-			
-
-
-			while (messageReciever->getNMessages() > 0)
+			while (player.link.hasMessageOnQueue())
 			{
-				Message message = messageReciever->popMessage();
-
-				if (message.type == USER_CMD)
+				int messageType = player.link.popMessage();
+				if (messageType == USER_CMD)
 				{
-					UserCmd *userCmd = (UserCmd*)message.data;
+					UserCmd *userCmd = player.link.getPoppedUserCmd();
 
 					PlayerObj *playerObj = (worldModel.getPlayerObjs())[player.playerObjId];
-					playerObj->movingForward = userCmd->cmd_up;
-					playerObj->movingBackward = userCmd->cmd_down;
-					playerObj->strafingLeft = userCmd->cmd_left;
-					playerObj->strafingRight = userCmd->cmd_right;
-					
-					printf("userCmd.cmd_left = %d\n", userCmd->cmd_left);
-				}			
-				delete message.data;
+					playerObj->movingForward = userCmd->cmdUp;
+					playerObj->movingBackward = userCmd->cmdDown;
+					playerObj->strafingLeft = userCmd->cmdLeft;
+					playerObj->strafingRight = userCmd->cmdRight;
+				}
 			}
+
+
+			//MessageSender *messageSender = player.link.messageSender;
+			//MessageReciever *messageReciever = player.link.messageReciever;
+
+			//while (messageReciever->getNMessages() > 0)
+			//{
+			//	Message message = messageReciever->popMessage();
+
+			//	if (message.type == USER_CMD)
+			//	{
+			//		UserCmd *userCmd = reinterpret_cast<UserCmd*>(message.data);
+
+			//		PlayerObj *playerObj = (worldModel.getPlayerObjs())[player.playerObjId];
+			//		playerObj->movingForward = userCmd->cmdUp;
+			//		playerObj->movingBackward = userCmd->cmdDown;
+			//		playerObj->strafingLeft = userCmd->cmdLeft;
+			//		playerObj->strafingRight = userCmd->cmdRight;
+			//		
+			//		printf("userCmd.cmdLeft = %d\n", userCmd->cmdLeft);
+			//	}			
+			//	delete message.data;
+			//}
 
 		}
 
@@ -76,24 +90,30 @@ namespace Prototype
 			ServerPlayers::Pair pair = *it;
 			ServerPlayer &player = pair.second;
 
-			MessageSender *messageSender = player.link.messageSender;
-			MessageReciever *messageReciever = player.link.messageReciever;
-
-
-			
-
 			WorldModel::PlayerObjContainer::Iterator it;
 			for(it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); ++it)
 			{
 				size_t playerObjId = it->first;
 				PlayerObj *playerObj = it->second;
-				Message message(UPDATE_PLAYER, new UpdatePlayerObj(playerObjId, playerObj->pos, playerObj->angle));
-				messageSender->pushMessage(message);
+				UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
+				player.link.pushMessage(updatePlayerObj);
 			}
 
-			
-			
-			messageSender->transmit();
+			player.link.transmit();
+
+			//MessageSender *messageSender = player.link.messageSender;
+			//MessageReciever *messageReciever = player.link.messageReciever;
+
+			//WorldModel::PlayerObjContainer::Iterator it;
+			//for(it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); ++it)
+			//{
+			//	size_t playerObjId = it->first;
+			//	PlayerObj *playerObj = it->second;
+			//	Message message(UPDATE_PLAYER, new UpdatePlayerObj(playerObjId, playerObj->pos, playerObj->angle));
+			//	messageSender->pushMessage(message);
+			//}
+
+			//messageSender->transmit();
 		}
 	}
 	

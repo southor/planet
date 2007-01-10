@@ -2,7 +2,7 @@
 #define __client_h__
 
 #include "common.h"
-#include "messages.h"
+#include "Link.h"
 #include "clientworldmodel.h"
 #include "ClientPlayer.h"
 #include "worldrenderer.h"
@@ -21,7 +21,7 @@ namespace Prototype
 		void logic();
 		void render();
 		
-		void sendMessage(Message message);
+		//void sendMessage(Message message);
 		void recieveMessages();
 
 		//TODO not the correct way for players to be added
@@ -31,8 +31,9 @@ namespace Prototype
 		void setKeyHandler(KeyHandler *keyHandler);
 
 	private:
-		MessageSender *messageSender;
-		MessageReciever *messageReciever;
+		//MessageSender *messageSender;
+		//MessageReciever *messageReciever;
+		Link link;
 
 		KeyHandler *kh;
 

@@ -27,42 +27,14 @@ namespace Prototype
 	//	void* getData()	const					{ return data; }		
 	//};
 
-
-	enum MessageTypes
-	{
-		UPDATE_PLAYER,
-		
-		USER_CMD	
-	};
-
-	struct UpdatePlayerObj
-	{
-		int playerObjId;
-		Pos pos;
-		float angle;
-
-		UpdatePlayerObj()		{}
-		UpdatePlayerObj(int playerObjId, const Pos &pos, float angle)
-			: playerObjId(playerObjId), pos(pos), angle(angle)
-		{}
-	};
-
-	struct UserCmd
-	{
-		bool cmd_left;
-		bool cmd_right;
-		bool cmd_up;
-		bool cmd_down;
-		bool cmd_shoot;
-	};
-
 	struct Message
 	{
 		int type;
 		int time;
 		void *data;
-		Message() : type(0), time(0), data(0)					{}
-		Message(int type, void *data) : type(type), data(data)	{}
+		Message() : type(0),  data(0), time(0)		{}
+		Message(int type, void *data, int time)
+			: type(type), data(data), time(time)	{}
 	};
 
 	class MessageReciever
@@ -90,15 +62,6 @@ namespace Prototype
 
 		// Transmits queued messages.
 		virtual void transmit() = 0;
-	};
-
-	struct Link
-	{
-		MessageSender *messageSender;
-		MessageReciever *messageReciever;
-
-		Link(MessageSender *messageSender, MessageReciever *messageReciever) 
-			: messageSender(messageSender), messageReciever(messageReciever) { }
 	};
 
 

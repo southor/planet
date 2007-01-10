@@ -2,7 +2,7 @@
 #define __serverplayer_h__
 
 #include "Player.h"
-#include "messages.h"
+#include "Link.h"
 #include "ServerIdMap.h"
 
 namespace Prototype
