@@ -13,7 +13,7 @@ namespace Prototype
 	class Server
 	{
 	public:
-		Server() { }
+		Server();
 
 		void logic();
 
@@ -21,7 +21,14 @@ namespace Prototype
 		size_t addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever);
 
 		// @return The PlayerObjId that the new player object got
-		size_t Server::addPlayerObj(size_t playerId, const Pos &playerPos);
+		size_t addPlayerObj(size_t playerId, const Pos &playerPos);
+
+
+		// @return The ObstacleId that the new obstacle got		 
+		//size_t addObstacle(const Rectangle &obstacleArea);
+
+		// start game, no more clients can join
+		void startGame();
 
 	private:
 		

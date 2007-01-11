@@ -24,10 +24,15 @@ namespace Prototype
 			if (messageType == UPDATE_PLAYER_OBJ)
 			{
 				UpdatePlayerObj *updatePlayerObj = link.getPoppedUpdatePlayerObj();
-
+				
 				PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
 				playerObj->pos = updatePlayerObj->pos;
-				playerObj->angle = updatePlayerObj->angle;	
+				playerObj->angle = updatePlayerObj->angle;
+			}
+			else if (messageType == ADD_OBSTACLE)
+			{
+				AddObstacle *addObstacle = link.getPoppedAddObstacle();
+				worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
 			}
 		}
 

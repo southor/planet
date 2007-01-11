@@ -107,10 +107,10 @@ namespace Prototype
 		// get a player color
 		size_t playerId = playerObj->getPlayerId();
 		Color playerColor(0.7f, 0.7f, 0.7f);
-		if (players->isValid(playerId))
-		{
-			playerColor = (*players)[playerId].color;
-		}
+		//if (players->isValid(playerId))
+		//{
+		playerColor = (*players)[playerId].color;
+		//}
 
 		// render triangle
 		glPushMatrix();

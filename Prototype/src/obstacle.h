@@ -8,6 +8,8 @@ namespace Prototype
 {
 	class Obstacle : public Rectangle, public GameObj
 	{
+	public:
+		Obstacle(const Rectangle &area) : Rectangle(area)	{}
 	};
 };
 
