@@ -84,6 +84,8 @@ namespace Prototype
 		client2.addPlayer(color1, startPos);
 		client2.addPlayer(color2, startPos2);
 
+		server.startGame();
+
 		while (running) 
 		{
 			pollEvents();

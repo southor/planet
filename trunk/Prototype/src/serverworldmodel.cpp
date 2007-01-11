@@ -14,6 +14,11 @@ namespace Prototype
 		return playerObjs.add(new PlayerObj(playerId, playerPos));
 	}
 
+	size_t ServerWorldModel::addObstacle(const Rectangle &obstacleArea)
+	{
+		return obstacles.add(new Obstacle(obstacleArea));
+	}
+
 	void ServerWorldModel::updatePlayerObjMovements()
 	{
 		Move move(&obstacles);
@@ -57,39 +62,46 @@ namespace Prototype
 			moveVec += Vec(sin(angle + PI/2.0f) * 3.0f, cos(angle + PI/2.0f) * 3.0f);
 		}
 
-		Vec zeroVec(0.0f, 0.0f);
+		Vec zeroVec(0.0f, 0.0f);		
 		if (moveVec != zeroVec)
 		{
 			// ----- fix any collisions with obstacles ------
+			Vec usedMoveVec(moveVec);
 			
 			Rectangle playerRectangle;
 			playerObj->getRectangle(playerRectangle);
-			assert(findAnyOverlap(playerRectangle) == NULL);
+			assert(findAnyOverlap(playerRectangle) == 0);
 
-			Rectangle tmpRectangle;
+			Rectangle tmpRectangle(playerRectangle);			
 			Obstacle *obstacle;
 		
-			tmpRectangle.pos = playerRectangle.pos + moveVec;
+			tmpRectangle.pos = playerRectangle.pos + usedMoveVec;
 			obstacle = findAnyOverlap(tmpRectangle);
 
 			if (obstacle)
 			{
-				moveVec.x = 0.0f;
-				tmpRectangle.pos = playerRectangle.pos + moveVec;
+				usedMoveVec.x = 0.0f;
+				tmpRectangle.pos = playerRectangle.pos + usedMoveVec;
 				
 				if (obstacle->overlapping(tmpRectangle))
 				{
-					moveVec.y = 0.0f;
+					usedMoveVec.x = moveVec.x;
+					usedMoveVec.y = 0.0f;
+					tmpRectangle.pos = playerRectangle.pos + usedMoveVec;
+					
+					if (findAnyOverlap(tmpRectangle))
+					{
+						usedMoveVec = zeroVec;
+					}
 				}
-				else
+				else if (findAnyOverlap(tmpRectangle))
 				{
-					obstacle = findAnyOverlap(tmpRectangle);
-					if (obstacle) moveVec.y = 0.0f;
+					usedMoveVec = zeroVec;
 				}
 			}
 
 			// finally move player
-			playerObj->pos += moveVec;
+			playerObj->pos += usedMoveVec;
 		}
 	}
 };

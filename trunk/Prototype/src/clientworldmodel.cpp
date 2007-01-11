@@ -12,4 +12,10 @@ namespace Prototype
 	{
 		playerObjs.add(playerObjId, new PlayerObj(playerId, playerPos));
 	}
+
+	void ClientWorldModel::addObstacle(size_t obstacleId, const Rectangle &obstacleArea)
+	{
+		obstacles.add(obstacleId, new Obstacle(obstacleArea));
+	}
+
 };

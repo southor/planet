@@ -3,6 +3,14 @@
 namespace Prototype
 {
 
+	Server::Server()
+	{
+		Rectangle obstacleArea(50.0f, 70.0f, 150.0f, 80.0f);
+		worldModel.addObstacle(obstacleArea);
+		obstacleArea.pos.x = 300.0f;
+		worldModel.addObstacle(obstacleArea);
+	}
+
 	size_t Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 	{
 
@@ -29,16 +37,43 @@ namespace Prototype
 		players[playerId].playerObjId = playerObjId;
 		return playerObjId;
 	}
+
+	void Server::startGame()
+	{
+		// TODO Send the hole worldmodel to clients, all players and everything
+		ServerPlayers::Iterator playersIt;
+		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
+		{			
+			const ServerPlayer &player = playersIt->second;
+
+			WorldModel::ObstacleContainer::Iterator obstaclesIt = worldModel.getObstacles().begin();
+			WorldModel::ObstacleContainer::Iterator obstaclesEnd = worldModel.getObstacles().end();
+			for(; obstaclesIt != obstaclesEnd; ++obstaclesIt)
+			{
+				size_t obstacleId = obstaclesIt->first;
+				Obstacle *obstacle = obstaclesIt->second;
+				
+				AddObstacle addObstacle(obstacleId, *obstacle);
+				player.link.pushMessage(addObstacle);
+			}
+
+			player.link.transmit();
+		}
+	}
+
+	//size_t Server::addObstacle(const Rectangle &obstacleArea)
+	//{
+	//	return worldModel.addObstacle(obstacleArea);
+	//}
 	
 	void Server::logic()
 	{
 		// Read messages from clients
-		ServerPlayers::Iterator it;
-		for (it = players.begin(); it != players.end(); ++it)
+		ServerPlayers::Iterator playersIt;
+		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 		{
-			ServerPlayers::Pair pair = *it;
-			size_t playerId = pair.first;
-			ServerPlayer &player = pair.second;
+			size_t playerId = playersIt->first;
+			ServerPlayer player(playersIt->second);
 
 			while (player.link.hasMessageOnQueue())
 			{
@@ -85,16 +120,16 @@ namespace Prototype
 
 
 		// Send updates to clients
-		for (it = players.begin(); it != players.end(); ++it)
+		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 		{
-			ServerPlayers::Pair pair = *it;
-			ServerPlayer &player = pair.second;
+			ServerPlayer player(playersIt->second);
 
-			WorldModel::PlayerObjContainer::Iterator it;
-			for(it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); ++it)
+			WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
+			WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{
-				size_t playerObjId = it->first;
-				PlayerObj *playerObj = it->second;
+				size_t playerObjId = playerObjsIt->first;
+				PlayerObj *playerObj = playerObjsIt->second;
 				UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
 				player.link.pushMessage(updatePlayerObj);
 			}

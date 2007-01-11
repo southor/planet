@@ -41,6 +41,8 @@ namespace Prototype
 		// The number of used id's in map.
 		size_t size;
 
+		bool isValid(Id id) const			{ return id >= 0 && id < map.size(); }
+
 	public:
 
 		class Iterator
@@ -75,6 +77,8 @@ namespace Prototype
 				assert(it.iterOver == this->iterOver);		
 				return true;
 			}
+
+			
 
 		public:
 
@@ -189,12 +193,15 @@ namespace Prototype
 		inline Iterator begin()				{ return Iterator(&map, 0); }
 		inline Iterator end()				{ return Iterator(&map); }
 
-		bool isValid(Id id) const			{ return id >= 0 && id < map.size(); }
+		bool objExists(Id id)				{ bool result = false;
+											  if (isValid(id)) result = map[id].used;
+											  return result; }
 
 		inline T& operator[](Id id)
 		{			
+			assert(isValid(id));
 			assert(map[id].used);			
-			return map[id].pair.second;
+			return map[id].pair.second;			
 		}
 
 	};

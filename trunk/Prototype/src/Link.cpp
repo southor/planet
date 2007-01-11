@@ -15,7 +15,7 @@ namespace Prototype
 	}
 
 	// pushes a Message to the send queue, also sets time of message
-	void Link::pushMessage(int type, void *data)
+	void Link::pushMessage(int type, void *data) const
 	{
 		assert(messageSender);
 		Message message(type, data, timeHandler.getTime());
@@ -23,7 +23,7 @@ namespace Prototype
 	}
 
 	// returns the data member of the popped message
-	void* Link::getPoppedData()
+	void* Link::getPoppedData() const
 	{
 		assert(messageReciever);
 		assert(hasPoppedMessage);
@@ -34,20 +34,25 @@ namespace Prototype
 	// ------------------------------------- sending messages -----------------------------
 	// ------------------------------------------------------------------------------------
 
-	// pushes a UserCmd to the send queue
-	void Link::pushMessage(const UserCmd &userCmd)
-	{
-		pushMessage(USER_CMD, new UserCmd(userCmd));
-	}
+	//// pushes a UserCmd to the send queue
+	//void Link::pushMessage(const UserCmd &userCmd)
+	//{
+	//	pushMessage(USER_CMD, new UserCmd(userCmd));
+	//}
 
-	// pushes a UpdatePlayerObj to the send queue	
-	void Link::pushMessage(const UpdatePlayerObj &updatePlayerObj)
-	{
-		pushMessage(UPDATE_PLAYER_OBJ,  new UpdatePlayerObj(updatePlayerObj));
-	}
+	//// pushes a UpdatePlayerObj to the send queue	
+	//void Link::pushMessage(const UpdatePlayerObj &updatePlayerObj)
+	//{
+	//	pushMessage(UPDATE_PLAYER_OBJ,  new UpdatePlayerObj(updatePlayerObj));
+	//}
+
+	//// pushes an AddObstacle to the send queue
+	//void pushMessage(const AddObstacle &addObstacle)
+	//{
+	//}
 
 	// transmits all messages to the send queue
-	void Link::transmit()
+	void Link::transmit() const
 	{
 		assert(messageSender);
 		messageSender->transmit();
@@ -58,14 +63,14 @@ namespace Prototype
 	// ------------------------------------------------------------------------------------
 
 	// returns number of recieve messages on the queue
-	int Link::getNMessages()
+	int Link::getNMessages() const
 	{
 		assert(messageReciever);
 		return messageReciever->getNMessages();
 	}
 
 	// returns if at lesat 1 message on recieve queue
-	bool Link::hasMessageOnQueue()
+	bool Link::hasMessageOnQueue() const
 	{
 		return getNMessages() >= 1;
 	}
@@ -84,22 +89,22 @@ namespace Prototype
 	}
 
 	// returns the type member of the popped message
-	int Link::getPoppedType()
+	int Link::getPoppedType() const
 	{
 		assert(hasPoppedMessage);
 		return poppedMessage.type;
 	}
 
-	// returns the data member as a UserCmd
-	UserCmd* Link::getPoppedUserCmd()
-	{
-		return reinterpret_cast<UserCmd*>(getPoppedData());
-	}
+	//// returns the data member as a UserCmd
+	//UserCmd* Link::getPoppedUserCmd()
+	//{
+	//	return reinterpret_cast<UserCmd*>(getPoppedData());
+	//}
 
-	// returns the data member as an UpdatePlayerObj
-	UpdatePlayerObj* Link::getPoppedUpdatePlayerObj()
-	{
-		return reinterpret_cast<UpdatePlayerObj*>(getPoppedData());
-	}
+	//// returns the data member as an UpdatePlayerObj
+	//UpdatePlayerObj* Link::getPoppedUpdatePlayerObj()
+	//{
+	//	return reinterpret_cast<UpdatePlayerObj*>(getPoppedData());
+	//}
 
 };

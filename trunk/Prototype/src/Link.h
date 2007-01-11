@@ -2,25 +2,26 @@
 #define __Link_h__
 
 #include "messages.h"
+#include "Rectangle.h"
 
 namespace Prototype
 {
 
 	enum MessageTypes
 	{
-		UPDATE_PLAYER_OBJ,
-		
-		USER_CMD
+		UPDATE_PLAYER_OBJ,		
+		USER_CMD,
+		ADD_OBSTACLE
 	};
 
 	struct UpdatePlayerObj
 	{
-		int playerObjId;
+		size_t playerObjId;
 		Pos pos;
 		float angle;
 
 		UpdatePlayerObj()		{}
-		UpdatePlayerObj(int playerObjId, const Pos &pos, float angle)
+		UpdatePlayerObj(size_t playerObjId, const Pos &pos, float angle)
 			: playerObjId(playerObjId), pos(pos), angle(angle)
 		{}
 	};
@@ -32,6 +33,15 @@ namespace Prototype
 		bool cmdUp;
 		bool cmdDown;
 		bool cmdShoot;
+	};
+
+	struct AddObstacle
+	{
+		size_t obstacleId;
+		Rectangle obstacleArea;
+		AddObstacle(size_t obstacleId, const Rectangle &obstacleArea)
+			: obstacleId(obstacleId), obstacleArea(obstacleArea)
+		{}
 	};
 
 
@@ -51,10 +61,10 @@ namespace Prototype
 		void destroyPoppedMessage();
 
 		// pushes a Message to the send queue, also sets time of message
-		void pushMessage(int type, void *data);
+		void pushMessage(int type, void *data) const;
 
 		// returns the data member of the popped message
-		void* getPoppedData();
+		void* getPoppedData() const;
 
 	public:
 		
@@ -85,18 +95,28 @@ namespace Prototype
 			destroyPoppedMessage();
 		}
 
-		// sending messages
-		void pushMessage(const UserCmd &userCmd); // pushes a UserCmd to the send queue
-		void pushMessage(const UpdatePlayerObj &updatePlayerObj); // pushes a UpdatePlayerObj to the send queue
-		void transmit(); // transmits all messages to the send queue
+		// --------------------------------- sending messages ------------------------------
 
-		// recieving messages		
-		int getNMessages(); // returns number of recieve messages on the queue
-		bool hasMessageOnQueue(); // returns true if at lesat 1 message is on recieve queue
+		void transmit() const; // transmits all messages to the send queue
+
+		void pushMessage(const UserCmd &userCmd) const					{ pushMessage(USER_CMD, new UserCmd(userCmd)); }
+		void pushMessage(const UpdatePlayerObj &updatePlayerObj) const	{ pushMessage(UPDATE_PLAYER_OBJ,  new UpdatePlayerObj(updatePlayerObj)); }
+		void pushMessage(const AddObstacle &addObstacle) const			{ pushMessage(ADD_OBSTACLE,  new AddObstacle(addObstacle)); }
+
+
+
+
+		// --------------------------------- recieving messages ------------------------------
+
+		int getNMessages() const; // returns number of recieve messages on the queue
+		bool hasMessageOnQueue() const; // returns true if at lesat 1 message is on recieve queue
 		int popMessage(); // returns the type member of the popped message, (will destroy the last message)	
-		int getPoppedType(); // returns the type member of the popped message		
-		UserCmd* getPoppedUserCmd(); // returns the data member as a UserCmd
-		UpdatePlayerObj* getPoppedUpdatePlayerObj(); // returns the data member as an UpdatePlayerObj
+		int getPoppedType() const; // returns the type member of the popped message		
+		
+		
+		UserCmd* getPoppedUserCmd()	const						{ return reinterpret_cast<UserCmd*>(getPoppedData()); }
+		UpdatePlayerObj* getPoppedUpdatePlayerObj() const		{ return reinterpret_cast<UpdatePlayerObj*>(getPoppedData()); }
+		AddObstacle* getPoppedAddObstacle() const				{ return reinterpret_cast<AddObstacle*>(getPoppedData()); }
 
 
 	};
