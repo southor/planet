@@ -90,7 +90,9 @@ namespace Prototype
 
 	void WorldRenderer::RenderGameObj::operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair)
 	{
+		size_t playerId = playerObjPair.first;
 		PlayerObj *playerObj = playerObjPair.second;
+		
 		
 		Rectangle rect;
 		playerObj->getRectangle(rect);
@@ -105,7 +107,7 @@ namespace Prototype
 		Vec2f v2(rect.getBottomRight());
 
 		// get a player color
-		size_t playerId = playerObj->getPlayerId();
+		//size_t playerId = playerObj->getPlayerId();
 		Color playerColor(0.7f, 0.7f, 0.7f);
 		//if (players->isValid(playerId))
 		//{

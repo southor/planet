@@ -25,7 +25,8 @@ namespace Prototype
 			{
 				UpdatePlayerObj *updatePlayerObj = link.getPoppedUpdatePlayerObj();
 				
-				PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
+				//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
+				PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
 				playerObj->pos = updatePlayerObj->pos;
 				playerObj->angle = updatePlayerObj->angle;
 			}
@@ -115,10 +116,11 @@ namespace Prototype
 	void Client::addPlayer(const Color &playerColor, const Pos &playerPos)
 	{
 		size_t playerId = players.getSize();
-		size_t playerObjId = playerId; // for now
+		//size_t playerObjId = playerId; // for now
 		players.add(playerId, Player(playerColor));
-		players[playerId].playerObjId = playerObjId;
-		worldModel.addPlayerObj(playerId, playerObjId, playerPos);
+		//players[playerId].playerObjId = playerObjId;
+		//worldModel.addPlayerObj(playerId, playerObjId, playerPos);
+		worldModel.addPlayerObj(playerId, playerPos);
 	}
 
 	void Client::setConnection(MessageSender *messageSender, MessageReciever *messageReciever)

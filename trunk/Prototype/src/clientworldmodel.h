@@ -34,7 +34,8 @@ namespace Prototype
 		const ProjectileContainer& getProjectiles() const		{ return projectiles; }
 
 
-		void addPlayerObj(size_t playerId, size_t playerObjId, const Pos &playerPos);
+		//void addPlayerObj(size_t playerId, size_t playerObjId, const Pos &playerPos);
+		void addPlayerObj(size_t playerId, const Pos &playerPos);
 		void addObstacle(size_t obstacleId, const Rectangle &obstacleArea);
 
 	};

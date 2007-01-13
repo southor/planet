@@ -16,13 +16,16 @@ namespace Prototype
 
 	struct UpdatePlayerObj
 	{
-		size_t playerObjId;
+		//size_t playerObjId;
+		size_t playerId;
 		Pos pos;
 		float angle;
 
 		UpdatePlayerObj()		{}
-		UpdatePlayerObj(size_t playerObjId, const Pos &pos, float angle)
-			: playerObjId(playerObjId), pos(pos), angle(angle)
+		//UpdatePlayerObj(size_t playerObjId, const Pos &pos, float angle)
+		//	: playerObjId(playerObjId), pos(pos), angle(angle)
+		UpdatePlayerObj(size_t playerId, const Pos &pos, float angle)
+			: playerId(playerId), pos(pos), angle(angle)
 		{}
 	};
 

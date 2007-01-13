@@ -9,7 +9,7 @@ namespace Prototype
 	class PlayerObj : public MovableObj
 	{
 	private:
-		size_t playerId;
+		//size_t playerId;
 	public:
 
 		static const float RECTANGLE_SIZE;
@@ -21,11 +21,12 @@ namespace Prototype
 		bool strafingLeft;
 		bool strafingRight;
 
-		PlayerObj(size_t playerId, const Pos &pos);
+		//PlayerObj(size_t playerId, const Pos &pos);
+		PlayerObj(const Pos &pos);
 
 		Pos getPos() const			{ return pos; }
 		void getRectangle(Rectangle &rectangle) const;
-		size_t getPlayerId() const		{ return playerId; }
+		//size_t getPlayerId() const		{ return playerId; }
 	};
 };
 
