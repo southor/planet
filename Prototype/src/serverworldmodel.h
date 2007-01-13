@@ -45,7 +45,7 @@ namespace Prototype
 		const ProjectileContainer& getProjectiles() const		{ return projectiles; }
 
 
-		size_t addPlayerObj(size_t playerId, const Pos &playerPos);
+		void addPlayerObj(size_t playerId, const Pos &playerPos);
 		size_t addObstacle(const Rectangle &obstacleArea);
 
 		void updatePlayerObjMovements();

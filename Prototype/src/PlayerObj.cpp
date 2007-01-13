@@ -6,8 +6,14 @@ namespace Prototype
 
 	const float PlayerObj::RECTANGLE_SIZE = 64.0f;
 
-	PlayerObj::PlayerObj(size_t playerId, const Pos &pos)
-		: playerId(playerId), pos(pos), angle(0.0f),
+	//PlayerObj::PlayerObj(size_t playerId, const Pos &pos)
+	//	: playerId(playerId), pos(pos), angle(0.0f),
+	//	 movingForward(false), movingBackward(false),
+	//	 strafingLeft(false), strafingRight(false)
+	//{}
+
+	PlayerObj::PlayerObj(const Pos &pos)
+		: pos(pos), angle(0.0f),
 		 movingForward(false), movingBackward(false),
 		 strafingLeft(false), strafingRight(false)
 	{}

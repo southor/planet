@@ -31,11 +31,12 @@ namespace Prototype
 	//	//clients.push_back(client);
 	//}
 
-	size_t Server::addPlayerObj(size_t playerId, const Pos &playerPos)
+	void Server::addPlayerObj(size_t playerId, const Pos &playerPos)
 	{
-		size_t playerObjId = worldModel.addPlayerObj(playerId, playerPos);
-		players[playerId].playerObjId = playerObjId;
-		return playerObjId;
+		worldModel.addPlayerObj(playerId, playerPos);
+		//size_t playerObjId = worldModel.addPlayerObj(playerId, playerPos);
+		//players[playerId].playerObjId = playerObjId;
+		//return playerObjId;
 	}
 
 	void Server::startGame()
@@ -82,7 +83,8 @@ namespace Prototype
 				{
 					UserCmd *userCmd = player.link.getPoppedUserCmd();
 
-					PlayerObj *playerObj = (worldModel.getPlayerObjs())[player.playerObjId];
+					//PlayerObj *playerObj = (worldModel.getPlayerObjs())[player.playerObjId];
+					PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 					playerObj->movingForward = userCmd->cmdUp;
 					playerObj->movingBackward = userCmd->cmdDown;
 					playerObj->strafingLeft = userCmd->cmdLeft;
@@ -128,9 +130,11 @@ namespace Prototype
 			WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{
-				size_t playerObjId = playerObjsIt->first;
+				//size_t playerObjId = playerObjsIt->first;
+				size_t playerId = playerObjsIt->first;
 				PlayerObj *playerObj = playerObjsIt->second;
-				UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
+				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
+				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle);
 				player.link.pushMessage(updatePlayerObj);
 			}
 

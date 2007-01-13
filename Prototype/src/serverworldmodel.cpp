@@ -9,11 +9,9 @@ namespace Prototype
 		deleteAllObjs();
 	}
 
-	size_t ServerWorldModel::addPlayerObj(size_t playerId, const Pos &playerPos)
+	void ServerWorldModel::addPlayerObj(size_t playerId, const Pos &playerPos)
 	{
-		size_t playerObjId = playerObjs.findFreeId();
-		playerObjs.add(playerObjId, new PlayerObj(playerId, playerPos));
-		return playerObjId;
+		playerObjs.add(playerId, new PlayerObj(playerPos));
 	}
 
 	size_t ServerWorldModel::addObstacle(const Rectangle &obstacleArea)
