@@ -41,6 +41,8 @@ namespace Prototype
 		// The number of used id's in map.
 		size_t size;
 
+		std::vector<Id> freeIds;
+
 		bool isValid(Id id) const			{ return id >= 0 && id < map.size(); }
 
 	public:
@@ -193,9 +195,73 @@ namespace Prototype
 		inline Iterator begin()				{ return Iterator(&map, 0); }
 		inline Iterator end()				{ return Iterator(&map); }
 
-		bool objExists(Id id)				{ bool result = false;
-											  if (isValid(id)) result = map[id].used;
-											  return result; }
+		//bool itemExists(Id id)			{ bool result = false;
+		//									  if (isValid(id)) result = map[id].used;
+		//									  return result; }
+
+		Id findFreeId()
+		{
+			while(freeIds.size() > 0)
+			{
+				Id id = freeIds.back();
+				freeIds.pop_back();
+				if (map[id].used == false) return id;
+			}
+			Entry unusedEntry;
+			map.push_back(unusedEntry);
+			
+			return map.size()-1;
+		}
+
+		void add(Id id, T item)
+		{
+			Entry entryAdd(Pair(id, item));
+			
+			if (isValid(id))
+			{
+				assert(map[id].used == false);
+				map[id] = entryAdd;				
+			}
+			else
+			{
+				assert(id >= map.size());
+				
+				Entry unusedEntry;
+				while(id > map.size())
+				{
+					map.push_back(unusedEntry);
+					freeIds.push_back(map.size());
+				}
+				assert(id == map.size());
+				map.push_back(entryAdd);
+			}
+			++size;
+		}
+
+		/**
+		 * @param id The id to be freed.
+		 * @return Returns false if id is already removed, otherwise true.
+		 */
+		bool remove(Id id)
+		{
+			if (isValied(id))
+			{
+				Entry &entry = map[id];
+				if (entry.used)
+				{
+					entry.used = false;
+					freeIds.push_back(id);
+					--size;
+					return true;
+				}
+				return false;
+			}
+			else
+			{
+				assert(false);
+				return false;
+			}
+		}
 
 		inline T& operator[](Id id)
 		{			

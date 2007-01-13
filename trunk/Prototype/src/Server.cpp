@@ -14,8 +14,8 @@ namespace Prototype
 	size_t Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 	{
 
-		
-		size_t playerId = players.add(ServerPlayer(color, messageSender, messageReciever));
+		size_t playerId = players.findFreeId();
+		players.add(playerId, ServerPlayer(color, messageSender, messageReciever));
 		return playerId;
 		
 

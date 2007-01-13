@@ -11,12 +11,16 @@ namespace Prototype
 
 	size_t ServerWorldModel::addPlayerObj(size_t playerId, const Pos &playerPos)
 	{
-		return playerObjs.add(new PlayerObj(playerId, playerPos));
+		size_t playerObjId = playerObjs.findFreeId();
+		playerObjs.add(playerObjId, new PlayerObj(playerId, playerPos));
+		return playerObjId;
 	}
 
 	size_t ServerWorldModel::addObstacle(const Rectangle &obstacleArea)
 	{
-		return obstacles.add(new Obstacle(obstacleArea));
+		size_t obstacleId = obstacles.findFreeId();
+		obstacles.add(obstacleId, new Obstacle(obstacleArea));
+		return obstacleId;
 	}
 
 	void ServerWorldModel::updatePlayerObjMovements()

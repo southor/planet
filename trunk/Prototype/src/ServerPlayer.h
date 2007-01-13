@@ -3,7 +3,7 @@
 
 #include "Player.h"
 #include "Link.h"
-#include "ServerIdMap.h"
+#include "IdMap.h"
 
 namespace Prototype
 {
@@ -11,13 +11,15 @@ namespace Prototype
 	{
 	public:
 		Link link;
+
+		ServerPlayer()		{}
 		
 		ServerPlayer(const Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 			: Player(color), link(messageSender, messageReciever)
 		{}
 	};
 
-	typedef ServerIdMap<size_t, ServerPlayer> ServerPlayers;
+	typedef IdMap<size_t, ServerPlayer> ServerPlayers;
 };
 
 #endif

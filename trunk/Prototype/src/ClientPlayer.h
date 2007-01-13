@@ -2,13 +2,13 @@
 #define __clientplayer_h__
 
 #include "Player.h"
-#include "ClientIdMap.h"
+#include "IdMap.h"
 
 namespace Prototype
 {
 	typedef Player ClientPlayer;
 
-	typedef ClientIdMap<size_t, ClientPlayer> ClientPlayers;
+	typedef IdMap<size_t, ClientPlayer> ClientPlayers;
 };
 
 #endif

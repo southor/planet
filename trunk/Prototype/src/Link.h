@@ -81,7 +81,9 @@ namespace Prototype
 		}
 
 		Link() : messageSender(0), messageReciever(0)
-		{}
+		{
+			hasPoppedMessage = false;
+		}
 
 		Link(MessageSender *messageSender, MessageReciever *messageReciever) 
 			: messageSender(messageSender), messageReciever(messageReciever)
