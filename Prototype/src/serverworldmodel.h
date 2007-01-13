@@ -2,7 +2,7 @@
 #define __serverworldmodel_h__
 
 #include "WorldModel.h"
-#include "ServerIdMap.h"
+#include "IdMap.h"
 
 namespace Prototype
 {
@@ -13,9 +13,9 @@ namespace Prototype
 		//typedef std::vector<Obstacle*> ServerObstacleContainer;
 		//typedef std::list<PlayerObj*> ServerPlayerObjContainer;
 		//typedef std::list<Projectile*> ServerProjectileContainer;
-		typedef ServerIdMap<size_t, Obstacle*> ServerObstacleContainer;
-		typedef ServerIdMap<size_t, PlayerObj*> ServerPlayerObjContainer;
-		typedef ServerIdMap<size_t, Projectile*> ServerProjectileContainer;
+		typedef IdMap<size_t, Obstacle*> ServerObstacleContainer;
+		typedef IdMap<size_t, PlayerObj*> ServerPlayerObjContainer;
+		typedef IdMap<size_t, Projectile*> ServerProjectileContainer;
 
 		ServerObstacleContainer obstacles;
 		ServerPlayerObjContainer playerObjs;

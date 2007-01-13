@@ -2,7 +2,7 @@
 #define __clientworldmodel_h__
 
 #include "WorldModel.h"
-#include "ClientIdMap.h"
+#include "IdMap.h"
 
 namespace Prototype
 {
@@ -13,9 +13,9 @@ namespace Prototype
 		//typedef std::vector<Obstacle*> ClientObstacleContainer;
 		//typedef std::list<PlayerObj*> ClientPlayerObjContainer;
 		//typedef std::list<Projectile*> ClientProjectileContainer;
-		typedef ClientIdMap<size_t, Obstacle*> ClientObstacleContainer;
-		typedef ClientIdMap<size_t, PlayerObj*> ClientPlayerObjContainer;
-		typedef ClientIdMap<size_t, Projectile*> ClientProjectileContainer;
+		typedef IdMap<size_t, Obstacle*> ClientObstacleContainer;
+		typedef IdMap<size_t, PlayerObj*> ClientPlayerObjContainer;
+		typedef IdMap<size_t, Projectile*> ClientProjectileContainer;
 
 		ClientObstacleContainer obstacles;
 		ClientPlayerObjContainer playerObjs;
