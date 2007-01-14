@@ -12,6 +12,8 @@ namespace Prototype
 		//size_t playerId;
 	public:
 
+		static const float FORWARD_BACKWARD_SPEED;
+		static const float STRAFE_SPEED;
 		static const float RECTANGLE_SIZE;
 		Pos pos;
 		float angle;

@@ -21,9 +21,9 @@ namespace Prototype
 		return obstacleId;
 	}
 
-	void ServerWorldModel::updatePlayerObjMovements()
+	void ServerWorldModel::updatePlayerObjMovements(float deltaTime)
 	{
-		Move move(&obstacles);
+		Move move(&obstacles, deltaTime);
 		ForEach(playerObjs.begin(), playerObjs.end(), move);
 	}
 
@@ -42,6 +42,9 @@ namespace Prototype
 
 	void ServerWorldModel::Move::operator ()(const PlayerObjContainer::Pair &playerObjPair)
 	{
+		float fbMoveDistance = deltaTime * PlayerObj::FORWARD_BACKWARD_SPEED;
+		float strafeMoveDistance = deltaTime * PlayerObj::STRAFE_SPEED;
+
 		// ----- produce a movevector from current actions and angle of playerObj ------
 
 		PlayerObj *playerObj = playerObjPair.second;
@@ -49,19 +52,19 @@ namespace Prototype
 		Vec moveVec(0.0f, 0.0f);
 		if (playerObj->movingForward == true)
 		{
-			moveVec += Vec(sin(angle) * 5.0f, cos(angle) * 5.0f);
+			moveVec += Vec(sin(angle) * fbMoveDistance, cos(angle) * fbMoveDistance);
 		}
 		if (playerObj->movingBackward == true)
 		{
-			moveVec += Vec(sin(angle + PI) * 5.0f, cos(angle + PI) * 5.0f);
+			moveVec += Vec(sin(angle + PI) * fbMoveDistance, cos(angle + PI) * fbMoveDistance);
 		}
 		if (playerObj->strafingLeft == true)
 		{
-			moveVec += Vec(sin(angle + PI/2.0f) * 3.0f, cos(angle + PI/2.0f) * 3.0f);
+			moveVec += Vec(sin(angle + PI/2.0f) * strafeMoveDistance, cos(angle + PI/2.0f) * strafeMoveDistance);
 		}
 		if (playerObj->strafingRight == true)
 		{
-			moveVec += Vec(sin(angle - PI/2.0f) * 3.0f, cos(angle - PI/2.0f) * 3.0f);
+			moveVec += Vec(sin(angle - PI/2.0f) * strafeMoveDistance, cos(angle - PI/2.0f) * strafeMoveDistance);
 		}
 
 		Vec zeroVec(0.0f, 0.0f);		

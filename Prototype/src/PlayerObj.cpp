@@ -4,6 +4,8 @@
 namespace Prototype
 {
 
+	const float PlayerObj::FORWARD_BACKWARD_SPEED = 100.0f;
+	const float PlayerObj::STRAFE_SPEED = 100.0f;
 	const float PlayerObj::RECTANGLE_SIZE = 64.0f;
 
 	//PlayerObj::PlayerObj(size_t playerId, const Pos &pos)

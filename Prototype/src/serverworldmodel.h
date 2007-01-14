@@ -25,10 +25,15 @@ namespace Prototype
 		{
 		private:
 			ServerObstacleContainer *obstacles;
+			float deltaTime; // Time in seconds since last move.
 
 			Obstacle* findAnyOverlap(const Rectangle &rectangle);
 		public:
-			Move(ServerObstacleContainer *obstacles) : obstacles(obstacles)	{}
+			// @param deltaTime Time in seconds since last move.
+			Move(ServerObstacleContainer *obstacles, float deltaTime)
+				: obstacles(obstacles), deltaTime(deltaTime)
+			{}
+
 			void operator ()(const PlayerObjContainer::Pair &playerObjPair);
 		};
 
@@ -48,7 +53,8 @@ namespace Prototype
 		void addPlayerObj(size_t playerId, const Pos &playerPos);
 		size_t addObstacle(const Rectangle &obstacleArea);
 
-		void updatePlayerObjMovements();
+		// @param deltaTime Time in seconds since last move.
+		void updatePlayerObjMovements(float deltaTime);
 	};
 };
 
