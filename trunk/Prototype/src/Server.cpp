@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "common.h"
 
 namespace Prototype
 {
@@ -117,8 +118,9 @@ namespace Prototype
 
 		}
 
-		// update movements of players
-		worldModel.updatePlayerObjMovements();
+		// update movements of players		
+		float deltaTime = 0.02f; // TODO set deltaTime in correct way
+		worldModel.updatePlayerObjMovements(deltaTime);
 
 
 		// Send updates to clients
