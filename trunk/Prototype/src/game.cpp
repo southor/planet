@@ -116,11 +116,11 @@ namespace Prototype
 			// RENDER
 			render(time);
 
-#ifdef _WIN32
-		 Sleep(100);
-#else
-		 sleep(0.1);
-#endif
+//#ifdef _WIN32
+//		 Sleep(100);
+//#else
+		 SDL_Delay(20);
+//#endif
 
 			lastTime = time;
 		}
