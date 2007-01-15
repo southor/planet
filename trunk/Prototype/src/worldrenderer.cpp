@@ -98,7 +98,7 @@ namespace Prototype
 		playerObj->getRectangle(rect);
 
 		// render rectangle
-		glColor3f(0.0f,0.0f,0.0f);
+		glColor4f(0.7f,0.7f,0.7f, 0.5f);
 		WorldRenderer::renderRectangle(rect, GL_QUADS);
 		
 		// setup some vertexes
