@@ -70,10 +70,13 @@ namespace Prototype
 	
 	void Server::logic()
 	{
+		timeHandler.nextStep();
+
 		// Read messages from clients
 		ServerPlayers::Iterator playersIt;
 		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
-		{
+		{			
+
 			size_t playerId = playersIt->first;
 			ServerPlayer player(playersIt->second);
 
@@ -96,7 +99,9 @@ namespace Prototype
 		}
 
 		// update movements of players		
-		float deltaTime = 0.02f; // TODO set deltaTime in correct way
+
+		
+		float deltaTime = timeHandler.getDeltaTimef();
 		worldModel.updatePlayerObjMovements(deltaTime);
 
 

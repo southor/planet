@@ -52,19 +52,19 @@ namespace Prototype
 		Vec moveVec(0.0f, 0.0f);
 		if (playerObj->movingForward == true)
 		{
-			moveVec += Vec(sin(-angle) * fbMoveDistance, cos(-angle) * fbMoveDistance);
+			moveVec += Vec(cos(angle) * fbMoveDistance, sin(angle) * fbMoveDistance);
 		}
 		if (playerObj->movingBackward == true)
 		{
-			moveVec += Vec(sin(-angle + PI) * fbMoveDistance, cos(-angle + PI) * fbMoveDistance);
+			moveVec += Vec(cos(angle + PI) * fbMoveDistance, sin(angle + PI) * fbMoveDistance);
 		}
 		if (playerObj->strafingLeft == true)
 		{
-			moveVec += Vec(sin(-angle - PI/2.0f) * strafeMoveDistance, cos(-angle - PI/2.0f) * strafeMoveDistance);
+			moveVec += Vec(cos(angle + PI/2.0f) * strafeMoveDistance, sin(angle + PI/2.0f) * strafeMoveDistance);
 		}
 		if (playerObj->strafingRight == true)
 		{
-			moveVec += Vec(sin(-angle + PI/2.0f) * strafeMoveDistance, cos(-angle + PI/2.0f) * strafeMoveDistance);
+			moveVec += Vec(cos(angle - PI/2.0f) * strafeMoveDistance, sin(angle - PI/2.0f) * strafeMoveDistance);
 		}
 
 		Vec zeroVec(0.0f, 0.0f);		
