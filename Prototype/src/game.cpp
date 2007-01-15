@@ -69,7 +69,7 @@ namespace Prototype
 		Pos startPos(200.0f, 200.0f);
 		Pos startPos2(200.0f, 250.0f);
 
-		Color color1 = Color(0.0f, 0.0f, 1.0f);
+		Color color1 = Color(1.0f, 0.0f, 0.0f);
 		size_t playerId = server.addClient(color1, sender1, reciever2);
 		server.addPlayerObj(playerId, startPos);
 		client1.setPlayerId(playerId);
@@ -77,7 +77,7 @@ namespace Prototype
 		Color color2 = Color(0.0f, 1.0f, 0.0f);
 		size_t playerId2 = server.addClient(color2, sender3, reciever4);
 		server.addPlayerObj(playerId2, startPos2);
-		client2.setPlayerId(playerId);
+		client2.setPlayerId(playerId2);
 
 		// rendering
 		client1.addPlayer(color1, startPos);

@@ -24,10 +24,10 @@ namespace Prototype
 	{
 		cmds.resize(NUMBER_OF_COMMANDS);
 	
-		cmds[CMD_LEFT] = KeyCmd(CMD_LEFT, SDLK_k);
-		cmds[CMD_RIGHT] = KeyCmd(CMD_RIGHT, SDLK_SEMICOLON);
-		cmds[CMD_UP] = KeyCmd(CMD_UP, SDLK_o);
-		cmds[CMD_DOWN] = KeyCmd(CMD_DOWN, SDLK_l);
+		cmds[CMD_LEFT] = KeyCmd(CMD_LEFT, SDLK_j);
+		cmds[CMD_RIGHT] = KeyCmd(CMD_RIGHT, SDLK_l);
+		cmds[CMD_UP] = KeyCmd(CMD_UP, SDLK_i);
+		cmds[CMD_DOWN] = KeyCmd(CMD_DOWN, SDLK_k);
 		cmds[CMD_ROTATE_LEFT] = KeyCmd(CMD_ROTATE_LEFT, SDLK_LEFT);
 		cmds[CMD_ROTATE_RIGHT] = KeyCmd(CMD_ROTATE_RIGHT, SDLK_RIGHT);
 		cmds[CMD_SHOOT] = KeyCmd(CMD_SHOOT, SDLK_RSHIFT);
