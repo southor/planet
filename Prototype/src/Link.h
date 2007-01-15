@@ -36,6 +36,7 @@ namespace Prototype
 		bool cmdUp;
 		bool cmdDown;
 		bool cmdShoot;
+		float viewangle;
 	};
 
 	struct AddObstacle

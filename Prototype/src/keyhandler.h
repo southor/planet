@@ -16,6 +16,9 @@ namespace Prototype
 		 * Default constructor
 		 */
 		KeyHandler();
+		
+		void KeyHandler::setClient1Keys();
+		void KeyHandler::setClient2Keys();
 
 		/**
 		 * Checks if command is pressed and if so changes the state to KEY_STATE_DOWN

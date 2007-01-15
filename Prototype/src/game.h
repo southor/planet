@@ -8,11 +8,10 @@
 #include "virtualconnection.h"
 #include "client.h"
 #include "server.h"
-
+//#include "Gui.h"
 
 namespace Prototype
 {
-
 	class Game 
 	{
 	public:
@@ -33,7 +32,6 @@ namespace Prototype
 		SDL_Surface *screen;
 		GLfloat renv;
 
-		KeyHandler kh;
 		VirtualConnection virtualConnection1;
 		VirtualConnection virtualConnection2;
 		VirtualConnection virtualConnection3;
@@ -41,7 +39,7 @@ namespace Prototype
 		Client client1;
 		Client client2;
 
-		//Gui gui;
+//		Gui gui;
 
 		Uint32 mStartTime;
 	};

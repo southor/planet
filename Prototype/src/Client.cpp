@@ -11,12 +11,29 @@ namespace Prototype
 	{
 	}
 
-	//Client::Client() : messageSender(0), messageReciever(0), worldRenderer(WorldRenderer::HOLE_WORLD)
-	//{
-	//}
+	void Client::handleEvents()
+	{
+		PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+
+		kh.isPressed(CMD_ROTATE_LEFT);
+		kh.isReleased(CMD_ROTATE_LEFT);
+		if (kh.isDown(CMD_ROTATE_LEFT))
+		{
+			playerObj->angle += 0.1f;	
+		}
+
+		kh.isPressed(CMD_ROTATE_RIGHT);
+		kh.isReleased(CMD_ROTATE_RIGHT);
+		if (kh.isDown(CMD_ROTATE_RIGHT))
+		{
+			playerObj->angle -= 0.1f;	
+		}
+	}
 
 	void Client::logic()
 	{
+		handleEvents();
+
 		// Read messages from server
 		while(link.hasMessageOnQueue())
 		{
@@ -28,7 +45,11 @@ namespace Prototype
 				//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
 				PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
 				playerObj->pos = updatePlayerObj->pos;
-				playerObj->angle = updatePlayerObj->angle;
+				
+				if (playerId != updatePlayerObj->playerId)
+				{
+					playerObj->angle = updatePlayerObj->angle;
+				}
 			}
 			else if (messageType == ADD_OBSTACLE)
 			{
@@ -37,80 +58,27 @@ namespace Prototype
 			}
 		}
 
-		//while (messageReciever->getNMessages() > 0)
-		//{
-		//	Message message = messageReciever->popMessage();
-		//
-		//	std::cout << "message recieved, type: " << message.type << std::endl;
-
-		//	// TODO - move this message handling code
-		//	if (message.type == UPDATE_PLAYER)
-		//	{
-		//		UpdatePlayerObj *updatePlayerObj = (UpdatePlayerObj*)message.data;
-
-		//		PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
-		//		playerObj->pos = updatePlayerObj->pos;
-		//		playerObj->angle = updatePlayerObj->angle;	
-		//	}
-		//}
-
-		
-
 		// If some key was pressed or released send message
-		if (kh->changePressedToDownState() || kh->changeReleasedToUpState())
+		if (kh.changePressedToDownState() || kh.changeReleasedToUpState())
 		{
 			UserCmd userCmd;
 			
-			userCmd.cmdLeft = kh->isDown(CMD_LEFT);
-			userCmd.cmdRight = kh->isDown(CMD_RIGHT);
-			userCmd.cmdUp = kh->isDown(CMD_UP);
-			userCmd.cmdDown = kh->isDown(CMD_DOWN);
-			userCmd.cmdShoot = kh->isDown(CMD_SHOOT);
+			userCmd.cmdLeft = kh.isDown(CMD_LEFT);
+			userCmd.cmdRight = kh.isDown(CMD_RIGHT);
+			userCmd.cmdUp = kh.isDown(CMD_UP);
+			userCmd.cmdDown = kh.isDown(CMD_DOWN);
+			userCmd.cmdShoot = kh.isDown(CMD_SHOOT);
+			userCmd.viewangle = ((worldModel.getPlayerObjs())[playerId])->angle;
 
 			link.pushMessage(userCmd);
 			link.transmit();
 		}
-
-		
-
-		//// Send changes to server
-		//UserCmd *userCmd = new UserCmd();
-
-		//// If some key was pressed or released send message
-		//if (kh->changePressedToDownState() || kh->changeReleasedToUpState())
-		//{
-		//	userCmd->cmdLeft = kh->isDown(CMD_LEFT);
-		//	userCmd->cmdRight = kh->isDown(CMD_RIGHT);
-		//	userCmd->cmdUp = kh->isDown(CMD_UP);
-		//	userCmd->cmdDown = kh->isDown(CMD_DOWN);
-		//	userCmd->cmdShoot = kh->isDown(CMD_SHOOT);
-
-		//	Message message;
-		//	message.type = USER_CMD;
-		//	message.data = userCmd;
-
-		//	sendMessage(message);
-		//}
 	}
 
 	void Client::render()
 	{
 		worldRenderer.setupProjection();
 		worldRenderer.render(worldModel, players, 0);
-	}
-
-	//void Client::sendMessage(Message message)
-	//{
-	//	std::cout << "sending message, type: " << message.type << std::endl;
-	//	
-	//	message.time = timeHandler.getTime();
-	//	
-	//	messageSender->pushMessage(message);
-	//	messageSender->transmit();
-	//}
-	
-	void Client::recieveMessages()
-	{
 	}
 
 	void Client::addPlayer(const Color &playerColor, const Pos &playerPos)
@@ -131,9 +99,9 @@ namespace Prototype
 		link.setMessageReciever(messageReciever);
 	}
 
-	void Client::setKeyHandler(KeyHandler *keyHandler)
+	KeyHandler* Client::getKeyHandler()
 	{
-		this->kh = keyHandler;
+		return &kh;
 	}
 
 };

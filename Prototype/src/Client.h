@@ -18,28 +18,30 @@ namespace Prototype
 
 		Client();
 
+		void handleEvents();
 		void logic();
 		void render();
 		
-		//void sendMessage(Message message);
-		void recieveMessages();
-
 		//TODO not the correct way for players to be added
 		void addPlayer(const Color &playerColor, const Pos &playerPos);
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
-		void setKeyHandler(KeyHandler *keyHandler);
+		KeyHandler* getKeyHandler();
+		
+		void setPlayerId(size_t playerId) { this->playerId = playerId; }
 
 	private:
 		//MessageSender *messageSender;
 		//MessageReciever *messageReciever;
 		Link link;
 
-		KeyHandler *kh;
+		KeyHandler kh;
 
 		ClientWorldModel worldModel;
 		WorldRenderer worldRenderer;
 		ClientPlayers players;
+
+		size_t playerId;
 	};
 };
 

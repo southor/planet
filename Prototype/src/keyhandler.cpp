@@ -5,14 +5,32 @@ namespace Prototype
 
 	KeyHandler::KeyHandler()
 	{
+	}
+
+	void KeyHandler::setClient1Keys()
+	{
 		cmds.resize(NUMBER_OF_COMMANDS);
 	
-		cmds[CMD_LEFT] = KeyCmd(CMD_LEFT, SDLK_LEFT);
-		cmds[CMD_RIGHT] = KeyCmd(CMD_RIGHT, SDLK_RIGHT);
-		cmds[CMD_UP] = KeyCmd(CMD_UP, SDLK_UP);
-		cmds[CMD_DOWN] = KeyCmd(CMD_DOWN, SDLK_DOWN);
+		cmds[CMD_LEFT] = KeyCmd(CMD_LEFT, SDLK_a);
+		cmds[CMD_RIGHT] = KeyCmd(CMD_RIGHT, SDLK_d);
+		cmds[CMD_UP] = KeyCmd(CMD_UP, SDLK_w);
+		cmds[CMD_DOWN] = KeyCmd(CMD_DOWN, SDLK_s);
+		cmds[CMD_ROTATE_LEFT] = KeyCmd(CMD_ROTATE_LEFT, SDLK_c);
+		cmds[CMD_ROTATE_RIGHT] = KeyCmd(CMD_ROTATE_RIGHT, SDLK_v);
 		cmds[CMD_SHOOT] = KeyCmd(CMD_SHOOT, SDLK_SPACE);
+	}
 
+	void KeyHandler::setClient2Keys()
+	{
+		cmds.resize(NUMBER_OF_COMMANDS);
+	
+		cmds[CMD_LEFT] = KeyCmd(CMD_LEFT, SDLK_k);
+		cmds[CMD_RIGHT] = KeyCmd(CMD_RIGHT, SDLK_SEMICOLON);
+		cmds[CMD_UP] = KeyCmd(CMD_UP, SDLK_o);
+		cmds[CMD_DOWN] = KeyCmd(CMD_DOWN, SDLK_l);
+		cmds[CMD_ROTATE_LEFT] = KeyCmd(CMD_ROTATE_LEFT, SDLK_LEFT);
+		cmds[CMD_ROTATE_RIGHT] = KeyCmd(CMD_ROTATE_RIGHT, SDLK_RIGHT);
+		cmds[CMD_SHOOT] = KeyCmd(CMD_SHOOT, SDLK_RSHIFT);
 	}
 
 	bool KeyHandler::getPressed(Cmd cmd)

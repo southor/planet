@@ -1,7 +1,7 @@
 #ifndef __keycmd_h__
 #define __keycmd_h__
 
-#define NUMBER_OF_COMMANDS 5
+#define NUMBER_OF_COMMANDS 7
 
 namespace Prototype
 {
@@ -12,6 +12,8 @@ namespace Prototype
 		CMD_RIGHT,
 		CMD_UP,
 		CMD_DOWN,
+		CMD_ROTATE_LEFT,
+		CMD_ROTATE_RIGHT,
 		CMD_SHOOT
 	};
 

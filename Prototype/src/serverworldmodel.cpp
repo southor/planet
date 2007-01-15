@@ -60,11 +60,11 @@ namespace Prototype
 		}
 		if (playerObj->strafingLeft == true)
 		{
-			moveVec += Vec(sin(angle + PI/2.0f) * strafeMoveDistance, cos(angle + PI/2.0f) * strafeMoveDistance);
+			moveVec += Vec(sin(angle - PI/2.0f) * strafeMoveDistance, cos(angle - PI/2.0f) * strafeMoveDistance);
 		}
 		if (playerObj->strafingRight == true)
 		{
-			moveVec += Vec(sin(angle - PI/2.0f) * strafeMoveDistance, cos(angle - PI/2.0f) * strafeMoveDistance);
+			moveVec += Vec(sin(angle + PI/2.0f) * strafeMoveDistance, cos(angle + PI/2.0f) * strafeMoveDistance);
 		}
 
 		Vec zeroVec(0.0f, 0.0f);		
