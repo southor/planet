@@ -9,12 +9,15 @@
 
 namespace Prototype
 {
+
+
 	unsigned int w;
 	unsigned int h;
 
 	Game::Game()
 	{
 		init();
+		gui.init();
 		running = true;
 	}
 
@@ -113,6 +116,10 @@ namespace Prototype
 
 			server.logic();
 			
+			// guichan
+			gui.gui->logic();
+
+
 			// RENDER
 			render(time);
 
@@ -140,6 +147,11 @@ namespace Prototype
 
 		glViewport(w/2, h/4, w/2, h*3/4);
 		client2.render();
+
+		// guichan
+		glViewport(0, 0, w, h);
+		gui.gui->draw();
+
 
 
 		draw(time);
@@ -198,10 +210,10 @@ namespace Prototype
 
 		
 		unsigned int flags = SDL_HWSURFACE | SDL_OPENGL; // |SDL_FULLSCREEN;
-		w = 1024;
-		h = 768;
-		//	w = 640;
-		//	h = 400;
+		//w = 1024;
+		//h = 768;
+		w = 640;
+		h = 480;
 
 		unsigned int bpp = 32;	
 
@@ -211,8 +223,10 @@ namespace Prototype
 			//throw EXCEPTION("Failed to set video mode");
 		}
 
-		SDL_ShowCursor(SDL_DISABLE);
+		SDL_ShowCursor(SDL_ENABLE);
 		glViewport(0, 0, w, h);
+		
+		SDL_EnableUNICODE(1);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);	
@@ -235,7 +249,6 @@ namespace Prototype
 		//glEnable(GL_DEPTH_TEST);
 		//glDepthFunc(GL_LEQUAL);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
 	}
 
 	void Game::pollEvents()
@@ -290,5 +303,8 @@ namespace Prototype
 	     
 			} // end switch
 		} // end while
+		
+		// Pass event to guichan
+		gui.input->pushInput(event);
 	}
 };
