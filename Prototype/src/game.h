@@ -8,7 +8,6 @@
 #include "virtualconnection.h"
 #include "client.h"
 #include "server.h"
-#include "gui.h"
 
 
 namespace Prototype
@@ -42,7 +41,7 @@ namespace Prototype
 		Client client1;
 		Client client2;
 
-		Gui gui;
+		//Gui gui;
 
 		Uint32 mStartTime;
 	};
