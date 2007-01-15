@@ -33,7 +33,7 @@ namespace Prototype
 	{
 		Uint32 lastTime = getTicks();
 		mStartTime = SDL_GetTicks();
-		timeHandler.setStartTime(mStartTime);
+		timeHandler.reset();
 
 		// NETWORK
 		Message message;

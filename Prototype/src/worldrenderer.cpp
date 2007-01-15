@@ -90,6 +90,9 @@ namespace Prototype
 
 	void WorldRenderer::RenderGameObj::operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair)
 	{
+		static const Color PLAYER_RECTANGLE_COLOR = Color(0.7f,0.7f,0.7f);
+		static const float PLAYER_RECTANGLE_ALPHA = 0.5f;
+		
 		size_t playerId = playerObjPair.first;
 		PlayerObj *playerObj = playerObjPair.second;
 		
@@ -98,7 +101,7 @@ namespace Prototype
 		playerObj->getRectangle(rect);
 
 		// render rectangle
-		glColor4f(0.7f,0.7f,0.7f, 0.5f);
+		glColor4f(PLAYER_RECTANGLE_COLOR.r, PLAYER_RECTANGLE_COLOR.g, PLAYER_RECTANGLE_COLOR.b, PLAYER_RECTANGLE_ALPHA);
 		WorldRenderer::renderRectangle(rect, GL_QUADS);
 		
 		// setup some vertexes
@@ -108,21 +111,21 @@ namespace Prototype
 
 		// get a player color
 		//size_t playerId = playerObj->getPlayerId();
-		Color playerColor(0.7f, 0.7f, 0.7f);
+		//Color playerColor(0.7f, 0.7f, 0.7f);
 		//if (players->isValid(playerId))
 		//{
-		playerColor = (*players)[playerId].color;
+		Color playerColor = (*players)[playerId].color;
 		//}
 
 		// render triangle
 		glPushMatrix();
 			glTranslatef(playerObj->pos.x, playerObj->pos.y, 0.0f);
-			glRotatef(radianToDegree(playerObj->angle), 0.0f, 0.0f, 1.0f); 
+			glRotatef(radianToDegree(playerObj->angle) - 90.0f, 0.0f, 0.0f, 1.0f); 
 			glTranslatef(-playerObj->pos.x, -playerObj->pos.y, 0.0f);
 			glBegin(GL_TRIANGLES);
 				glColor3fv(reinterpret_cast<float*>(&playerColor));
 				glVertex2fv(reinterpret_cast<float*>(&v0));
-				glColor3f(0.0f,0.0f,0.0f);
+				glColor4f(PLAYER_RECTANGLE_COLOR.r, PLAYER_RECTANGLE_COLOR.g, PLAYER_RECTANGLE_COLOR.b, PLAYER_RECTANGLE_ALPHA);
 				glVertex2fv(reinterpret_cast<float*>(&v1));
 				glVertex2fv(reinterpret_cast<float*>(&v2));
 			glEnd();
