@@ -90,32 +90,9 @@ namespace Prototype
 					playerObj->movingBackward = userCmd->cmdDown;
 					playerObj->strafingLeft = userCmd->cmdLeft;
 					playerObj->strafingRight = userCmd->cmdRight;
+					playerObj->angle = userCmd->viewangle;
 				}
 			}
-
-
-			//MessageSender *messageSender = player.link.messageSender;
-			//MessageReciever *messageReciever = player.link.messageReciever;
-
-			//while (messageReciever->getNMessages() > 0)
-			//{
-			//	Message message = messageReciever->popMessage();
-
-			//	if (message.type == USER_CMD)
-			//	{
-			//		UserCmd *userCmd = reinterpret_cast<UserCmd*>(message.data);
-
-			//		PlayerObj *playerObj = (worldModel.getPlayerObjs())[player.playerObjId];
-			//		playerObj->movingForward = userCmd->cmdUp;
-			//		playerObj->movingBackward = userCmd->cmdDown;
-			//		playerObj->strafingLeft = userCmd->cmdLeft;
-			//		playerObj->strafingRight = userCmd->cmdRight;
-			//		
-			//		printf("userCmd.cmdLeft = %d\n", userCmd->cmdLeft);
-			//	}			
-			//	delete message.data;
-			//}
-
 		}
 
 		// update movements of players		
@@ -141,20 +118,6 @@ namespace Prototype
 			}
 
 			player.link.transmit();
-
-			//MessageSender *messageSender = player.link.messageSender;
-			//MessageReciever *messageReciever = player.link.messageReciever;
-
-			//WorldModel::PlayerObjContainer::Iterator it;
-			//for(it = worldModel.getPlayerObjs().begin(); it != worldModel.getPlayerObjs().end(); ++it)
-			//{
-			//	size_t playerObjId = it->first;
-			//	PlayerObj *playerObj = it->second;
-			//	Message message(UPDATE_PLAYER, new UpdatePlayerObj(playerObjId, playerObj->pos, playerObj->angle));
-			//	messageSender->pushMessage(message);
-			//}
-
-			//messageSender->transmit();
 		}
 	}
 	

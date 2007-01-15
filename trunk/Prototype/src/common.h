@@ -4,11 +4,12 @@
 #ifdef _WIN32
 #pragma comment(lib, "SDL.lib")
 #pragma comment(lib, "SDLmain.lib")
-//#pragma comment(lib, "SDL_image.lib")
+#pragma comment(lib, "SDL_image.lib")
 //#pragma comment(lib, "SDL_mixer.lib")
 #pragma comment( lib, "opengl32.lib" )
 //#pragma comment( lib, "glu32.lib" )
 //#pragma comment( lib, "glaux.lib" )
+
 #endif
 
 #if defined _WIN32
@@ -29,7 +30,7 @@
 #endif
 
 #include "SDL.h"
-//#include "SDL_image.h"
+#include "SDL_image.h"
 //#include "SDL_mixer.h"
 //#include <GL/glu.h>
 //#include "vec3f.h"

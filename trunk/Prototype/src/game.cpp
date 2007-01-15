@@ -9,8 +9,6 @@
 
 namespace Prototype
 {
-
-
 	unsigned int w;
 	unsigned int h;
 
@@ -60,12 +58,11 @@ namespace Prototype
 		MessageSender *sender4 = virtualConnection4.getMessageSender();
 		MessageReciever *reciever4 = virtualConnection4.getMessageReciever();
 
+		client1.getKeyHandler()->setClient1Keys();
+		client2.getKeyHandler()->setClient2Keys();
 
 		client1.setConnection(sender2, reciever1);
-		client1.setKeyHandler(&kh);
-
 		client2.setConnection(sender4, reciever3);
-		client2.setKeyHandler(&kh);
 
 		Server server;
 		//server.addClient(sender1, reciever2);
@@ -75,11 +72,12 @@ namespace Prototype
 		Color color1 = Color(0.0f, 0.0f, 1.0f);
 		size_t playerId = server.addClient(color1, sender1, reciever2);
 		server.addPlayerObj(playerId, startPos);
+		client1.setPlayerId(playerId);
 
 		Color color2 = Color(0.0f, 1.0f, 0.0f);
 		size_t playerId2 = server.addClient(color2, sender3, reciever4);
 		server.addPlayerObj(playerId2, startPos2);
-
+		client2.setPlayerId(playerId);
 
 		// rendering
 		client1.addPlayer(color1, startPos);
@@ -261,7 +259,8 @@ namespace Prototype
 			{
 			case SDL_KEYDOWN:
 			{
-				kh.setKeyPressed(event.key.keysym.sym);
+				client1.getKeyHandler()->setKeyPressed(event.key.keysym.sym);
+				client2.getKeyHandler()->setKeyPressed(event.key.keysym.sym);
 			
 				switch(event.key.keysym.sym)
 				{
@@ -278,7 +277,8 @@ namespace Prototype
 				break;
 			}
 			case SDL_KEYUP:
-				kh.setKeyReleased(event.key.keysym.sym);
+				client1.getKeyHandler()->setKeyReleased(event.key.keysym.sym);
+				client2.getKeyHandler()->setKeyReleased(event.key.keysym.sym);
 			
 				switch(event.key.keysym.sym)
 				{
