@@ -12,6 +12,7 @@ namespace Prototype
 	{
 		UPDATE_PLAYER_OBJ,		
 		USER_CMD,
+		SHOOT_CMD,
 		ADD_OBSTACLE,
 		WELCOME_CLIENT,
 		ADD_PLAYER,
@@ -86,6 +87,9 @@ namespace Prototype
 		float viewangle;
 	};
 
+	struct ShootCmd
+	{
+	};
 
 
 
@@ -145,6 +149,7 @@ namespace Prototype
 		void transmit() const; // transmits all messages to the send queue
 
 		void pushMessage(const UserCmd &userCmd) const					{ pushMessage(USER_CMD, new UserCmd(userCmd)); }
+		void pushMessage(const ShootCmd &shootCmd) const				{ pushMessage(SHOOT_CMD, new ShootCmd(shootCmd)); }
 		void pushMessage(const UpdatePlayerObj &updatePlayerObj) const	{ pushMessage(UPDATE_PLAYER_OBJ,  new UpdatePlayerObj(updatePlayerObj)); }
 		void pushMessage(const AddObstacle &addObstacle) const			{ pushMessage(ADD_OBSTACLE,  new AddObstacle(addObstacle)); }
 		void pushMessage(const InitClient &initClient) const			{ pushMessage(INIT_CLIENT, new InitClient(initClient)); }
@@ -161,6 +166,7 @@ namespace Prototype
 		
 		
 		UserCmd* getPoppedUserCmd()	const						{ return reinterpret_cast<UserCmd*>(getPoppedData()); }
+		ShootCmd* getPoppedShootCmd()	const					{ return reinterpret_cast<ShootCmd*>(getPoppedData()); }
 		UpdatePlayerObj* getPoppedUpdatePlayerObj() const		{ return reinterpret_cast<UpdatePlayerObj*>(getPoppedData()); }
 		AddObstacle* getPoppedAddObstacle() const				{ return reinterpret_cast<AddObstacle*>(getPoppedData()); }
 		InitClient* getPoppedInitClient() const					{ return reinterpret_cast<InitClient*>(getPoppedData()); }
