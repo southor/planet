@@ -12,11 +12,46 @@ namespace Prototype
 		worldModel.addObstacle(obstacleArea);
 	}
 
-	size_t Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
+	void Server::clientConnected(MessageSender *messageSender, MessageReciever *messageReciever)
+	{
+		Link link = Link(messageSender, messageReciever);
+
+		// TODO: wait for this message to arive
+		if (link.hasMessageOnQueue())
+		{
+			int messageType = link.popMessage();
+			if (messageType == INIT_CLIENT)
+			{
+				// retrieve InitClient message from client
+				InitClient *initClient = link.getPoppedInitClient();
+				Color color = initClient->color;
+				
+				
+				// add player to server
+				size_t playerId = addClient(color, link);  // link will get copied here, problem?
+
+				Pos startPos(200.0f + playerId * 50.0f, 200.0f);
+				addPlayerObj(playerId, startPos);
+
+				// send WelcomeClient with playerId to client
+				WelcomeClient welcomeClient = WelcomeClient(playerId);
+				link.pushMessage(welcomeClient);
+				link.transmit();
+			}
+		}
+		else
+		{
+			assert(false);
+		}
+		
+	}
+
+	// TODO: MAKE PRIVATE
+	size_t Server::addClient(Color &color, Link link)
 	{
 
 		size_t playerId = players.findFreeId();
-		players.add(playerId, ServerPlayer(color, messageSender, messageReciever));
+		players.add(playerId, ServerPlayer(color, link)); // link will get copied here, problem?
 		return playerId;
 		
 
@@ -26,12 +61,7 @@ namespace Prototype
 		//addClient(client);
 	}
 
-	//size_t Server::addPlayer(const ServerPlayer &player)
-	//{
-	//	return players.add(player);
-	//	//clients.push_back(client);
-	//}
-
+	// TODO: MAKE PRIVATE
 	void Server::addPlayerObj(size_t playerId, const Pos &playerPos)
 	{
 		worldModel.addPlayerObj(playerId, playerPos);

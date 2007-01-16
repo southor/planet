@@ -81,6 +81,33 @@ namespace Prototype
 		worldRenderer.render(worldModel, players, 0);
 	}
 
+	void Client::initConnection()
+	{
+		// send init package to server
+		InitClient initClient = InitClient(color);
+		link.pushMessage(initClient);
+		link.transmit();
+	}
+
+	void Client::initConnectionAgain()
+	{
+		// TODO: wait for this message to arive
+		if (link.hasMessageOnQueue())
+		{
+			int messageType = link.popMessage();
+			if (messageType == WELCOME_CLIENT)
+			{
+				WelcomeClient *welcomeClient = link.getPoppedWelcomeClient();
+			
+				setPlayerId(welcomeClient->playerId);
+			}
+		}
+		else
+		{
+			assert(false);
+		}
+	}
+
 	void Client::addPlayer(const Color &playerColor, const Pos &playerPos)
 	{
 		size_t playerId = players.getSize();
