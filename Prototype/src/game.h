@@ -26,7 +26,6 @@ namespace Prototype
 		void draw(Uint32 time);
 		void render(Uint32 time);
 		void pollEvents();
-		Uint32 getTicks();
 
 		bool running;
 		SDL_Surface *screen;
@@ -40,8 +39,6 @@ namespace Prototype
 		Client client2;
 
 //		Gui gui;
-
-		Uint32 mStartTime;
 	};
 };
 

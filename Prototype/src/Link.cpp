@@ -66,7 +66,8 @@ namespace Prototype
 	int Link::getNMessages() const
 	{
 		assert(messageReciever);
-		return messageReciever->getNMessages();
+		int nmess = messageReciever->getNMessages();
+		return nmess;
 	}
 
 	// returns if at lesat 1 message on recieve queue

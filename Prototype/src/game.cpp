@@ -24,28 +24,14 @@ namespace Prototype
 		SDL_Quit( );
 	}
 
-	Uint32 Game::getTicks()
-	{
-	  return SDL_GetTicks() - mStartTime;
-	}
-
 	void Game::run()
 	{
-		Uint32 lastTime = getTicks();
-		mStartTime = SDL_GetTicks();
 		timeHandler.reset();
 
-		// NETWORK
-		Message message;
-		message.type = 5;
-		std::string test("test");
-		message.data = &test;
-		
-		Message message2;
-		message2.type = 8;
-		std::string other("other");
-		message2.data = &other;
-		
+		client1.getKeyHandler()->setClient1Keys();
+		client2.getKeyHandler()->setClient2Keys();
+
+		// Initialize virtual connections
 		MessageSender *sender1 = virtualConnection1.getMessageSender();
 		MessageReciever *reciever1 = virtualConnection1.getMessageReciever();
 
@@ -58,56 +44,52 @@ namespace Prototype
 		MessageSender *sender4 = virtualConnection4.getMessageSender();
 		MessageReciever *reciever4 = virtualConnection4.getMessageReciever();
 
-		client1.getKeyHandler()->setClient1Keys();
-		client2.getKeyHandler()->setClient2Keys();
-
 		client1.setConnection(sender2, reciever1);
+		//client1.setColor(Color(0.0f, 1.0f, 0.0f));
+		//client1.initConnection();
+		
 		client2.setConnection(sender4, reciever3);
-
+		//client2.setColor(Color(1.0f, 0.0f, 0.0f));
+		//client2.initConnection();
+		
 		Server server;
-		//server.addClient(sender1, reciever2);
-		Pos startPos(200.0f, 200.0f);
-		Pos startPos2(200.0f, 250.0f);
 
-		Color color1 = Color(1.0f, 0.0f, 0.0f);
-		size_t playerId = server.addClient(color1, sender1, reciever2);
-		server.addPlayerObj(playerId, startPos);
-		client1.setPlayerId(playerId);
+		// clientConnected is called when we detect a new network connection
+		/*
+		server.clientConnected(sender1, reciever2);
+		server.clientConnected(sender3, reciever4);
 
-		Color color2 = Color(0.0f, 1.0f, 0.0f);
-		size_t playerId2 = server.addClient(color2, sender3, reciever4);
-		server.addPlayerObj(playerId2, startPos2);
-		client2.setPlayerId(playerId2);
+		client1.initConnectionAgain();
+		client2.initConnectionAgain();
+		*/
+
+		Color color1 = Color(0.0f, 1.0f, 0.0f);							// handle by packet
+		Color color2 = Color(1.0f, 0.0f, 0.0f);							// handle by packet
+		Pos startPos(200.0f, 200.0f);									// handle by packet
+		Pos startPos2(200.0f, 250.0f);									// handle by packet
+		Link link = Link(sender1, reciever2);
+		size_t playerId = server.addClient(color1, link);
+		server.addPlayerObj(playerId, startPos);						// handle by packet
+		client1.setPlayerId(playerId);									// handle by packet
+
+		Link link2 = Link(sender3, reciever4);
+		size_t playerId2 = server.addClient(color2, link2);
+		server.addPlayerObj(playerId2, startPos2);						// handle by packet
+		client2.setPlayerId(playerId2);									// handle by packet
+
 
 		// rendering
-		client1.addPlayer(color1, startPos);
-		client1.addPlayer(color2, startPos2);
-		client2.addPlayer(color1, startPos);
-		client2.addPlayer(color2, startPos2);
+		client1.addPlayer(color1, startPos);							// handle by packet
+		client1.addPlayer(color2, startPos2);							// handle by packet
+		client2.addPlayer(color1, startPos);							// handle by packet
+		client2.addPlayer(color2, startPos2);							// handle by packet
+
 
 		server.startGame();
 
 		while (running) 
 		{
 			pollEvents();
-
-			Uint32 time = getTicks();      
-
-			/*
-			int diff = (int)(time-lastTime);		
-			float diffInSec = diff/1000.0f;
-			float speed = 2*5.5556f; // 5.5556 m/s = 20 km/h
-			*/
-
-
-			
-			/*
-			if (kh.getPressed(CMD_LEFT))
-			{
-				client.sendMessage(message);
-				client.sendMessage(message2);
-			}
-			*/
 
 			client1.logic();
 			client2.logic();
@@ -117,17 +99,10 @@ namespace Prototype
 			// guichan
 			//gui.gui->logic();
 
-
 			// RENDER
-			render(time);
+			render(0.0f);
 
-//#ifdef _WIN32
-//		 Sleep(100);
-//#else
-		 SDL_Delay(20);
-//#endif
-
-			lastTime = time;
+			SDL_Delay(20);
 		}
 	}
 

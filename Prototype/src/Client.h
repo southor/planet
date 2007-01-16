@@ -22,6 +22,10 @@ namespace Prototype
 		void logic();
 		void render();
 		
+		void initConnection();
+		// TODO: shouldn't need to call to initConnection
+		void initConnectionAgain();
+		
 		//TODO not the correct way for players to be added
 		void addPlayer(const Color &playerColor, const Pos &playerPos);
 
@@ -29,6 +33,7 @@ namespace Prototype
 		KeyHandler* getKeyHandler();
 		
 		void setPlayerId(size_t playerId) { this->playerId = playerId; }
+		void setColor(Color color) { this->color = color; }
 
 	private:
 		//MessageSender *messageSender;
@@ -42,6 +47,7 @@ namespace Prototype
 		ClientPlayers players;
 
 		size_t playerId;
+		Color color;	// should this exist or should the client have an Player object before we connect to server?
 	};
 };
 

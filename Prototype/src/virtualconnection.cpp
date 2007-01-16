@@ -90,6 +90,7 @@ namespace Prototype
 		//	message = messageDeque->back();
 		//	messageDeque->pop_back();
 		//}
+		retrieve();
 		
 		Message message = recieveDeque.back();
 		recieveDeque.pop_back();
@@ -106,7 +107,8 @@ namespace Prototype
 
 			int currentTime = timeHandler.getTime();
 
-			while (message.time < currentTime - lag)
+			//while (message.time < currentTime - lag)
+			while (true)
 			{
 				messageDeque->pop_back();
 

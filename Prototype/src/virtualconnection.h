@@ -65,6 +65,8 @@ namespace Prototype
 		MessageSender* getMessageSender();
 		MessageReciever* getMessageReciever();
 
+		int getNPendingMessages() { return messageDeque.size(); }
+
 	private:
 		std::deque<Message> messageDeque;
 		
