@@ -125,6 +125,12 @@ namespace Prototype
 					playerObj->strafingRight = userCmd->cmdRight;
 					playerObj->angle = userCmd->viewangle;
 				}
+				if (messageType == SHOOT_CMD)
+				{
+					ShootCmd *shootCmd = player.link.getPoppedShootCmd();
+					
+					assert(false);
+				}
 			}
 		}
 

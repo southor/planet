@@ -58,6 +58,14 @@ namespace Prototype
 			}
 		}
 
+		if (kh.isPressed(CMD_SHOOT))
+		{
+			ShootCmd shootCmd;
+			
+			link.pushMessage(shootCmd);
+			link.transmit();
+		}
+
 		// If some key was pressed or released send message
 		if (kh.changePressedToDownState() || kh.changeReleasedToUpState())
 		{
