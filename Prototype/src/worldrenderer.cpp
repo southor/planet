@@ -134,11 +134,27 @@ namespace Prototype
 
 	void WorldRenderer::RenderGameObj::operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair)
 	{
-		//TODO
-	}
+		static const Color projectileColors[Projectile::N_TYPES] = {Color(0.0f,0.0f,0.0f), Color(0.0f, 0.0f, 0.0f)};
+		static const float projectileWidths[Projectile::N_TYPES] = {1.2f, 4.0f};
+		static const float projectileAlphas[Projectile::N_TYPES] = {0.3f, 0.3f};
+		
+		Projectile::Type type = projectilePair.second->getType();
+		Line line(projectilePair.second->getLine());
 
-	
-	
+		Pos startPos(line.pos);
+		Pos endPos(line.getEndPos());
+
+		const Color &color = projectileColors[type];
+		glLineWidth(projectileWidths[type]);
+		glPushMatrix();			
+			glBegin(GL_LINES);
+				glColor4f(color.r, color.g, color.b, projectileAlphas[type]);
+				glVertex2fv(reinterpret_cast<float*>(&startPos));				
+				glVertex2fv(reinterpret_cast<float*>(&endPos));				
+			glEnd();
+		glPopMatrix();
+
+	}
 	
 
 };

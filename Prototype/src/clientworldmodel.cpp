@@ -23,4 +23,9 @@ namespace Prototype
 		obstacles.add(obstacleId, new Obstacle(obstacleArea));
 	}
 
+	void ClientWorldModel::addProjectile(size_t projectileId, Projectile::Type type, const Pos &pos, float angle)
+	{
+		projectiles.add(projectileId, new Projectile(type, pos, angle));
+	}
+
 };

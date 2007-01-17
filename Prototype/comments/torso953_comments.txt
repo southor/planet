@@ -1,0 +1,15 @@
+maybe Packet should be Message instead.
+maybe Client::sendMessage should not take a message since it adds time to it.
+odd naming in UserCmd struct
+__name_h__   correct way?   add name of project?
+constants instead of defines
+how to write number of ?
+start with exceptions
+Rename Client and Server to mething else now that we
+have namespaces that has taken their names.
+Move Container typedefs out from WolrdModel class
+set id as a member of T in IdMap instead of using Pair?
+Add methods to Link to use to send messages?
+Use Obstacles as name instead of ObstacleContainer ??  Use the same sytem everywhere.
+Fix template functions for sending messages via Link??
+vector normalize, return a new vector instead of chagning?

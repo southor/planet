@@ -1,7 +1,7 @@
 #ifndef __vec2_h__
 #define __vec2_h__
 
-//#include <cmath>
+#include <cmath>
 
 namespace Prototype
 {

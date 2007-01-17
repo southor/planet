@@ -56,11 +56,22 @@ namespace Prototype
 				AddObstacle *addObstacle = link.getPoppedAddObstacle();
 				worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
 			}
+			else if (messageType == ADD_PROJECTILE)
+			{
+				AddProjectile *addProjectile = link.getPoppedAddProjectile();
+				worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle);
+			}
+			else if (messageType == UPDATE_PROJECTILE)
+			{
+				UpdateProjectile *updateProjectile = link.getPoppedUpdateProjectile();
+				Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
+				projectile->pos = updateProjectile->pos;
+			}
 		}
 
 		if (kh.isPressed(CMD_SHOOT))
 		{
-			ShootCmd shootCmd;
+			ShootCmd shootCmd = {playerId};
 			
 			link.pushMessage(shootCmd);
 			link.transmit();

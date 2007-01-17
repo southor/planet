@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "messages.h"
-#include "ServerPlayer.h"
+#include "ServerPlayers.h"
 #include "serverworldmodel.h"
 
 namespace Prototype

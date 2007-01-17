@@ -35,6 +35,7 @@ namespace Prototype
 			{}
 
 			void operator ()(const PlayerObjContainer::Pair &playerObjPair);
+			void operator ()(const ProjectileContainer::Pair &projectilePair);
 		};
 
 	public:
@@ -55,6 +56,10 @@ namespace Prototype
 
 		// @param deltaTime Time in seconds since last move.
 		void updatePlayerObjMovements(float deltaTime);
+		void updateProjectileMovements(float deltaTime);
+
+		// @retunr projectileId
+		size_t playerShoot(size_t playerId);
 	};
 };
 

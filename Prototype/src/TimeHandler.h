@@ -1,11 +1,18 @@
 #ifndef __timehandler_h__
 #define __timehandler_h__
 
+#include "SDL.h"
+
 namespace Prototype
 {
 	class TimeHandler
 	{
 	public:
+
+		static const int DELTA_TIME_MAX = 1000/20;
+
+		static const float DELTA_TIME_MAX_F;
+
 		TimeHandler() : startTime(0), stepTime(0), deltaTime(1)
 		{}
 
@@ -17,20 +24,9 @@ namespace Prototype
 
 		float getDeltaTimef()				{ return static_cast<float>(deltaTime); }
 		
-		void reset() 
-		{ 
-			startTime = SDL_GetTicks();
-			stepTime = 0;
-			deltaTime = 1;
-		}
+		void reset();
 
-		void nextStep()
-		{
-			int preStepTime = stepTime;
-			stepTime = getTime();
-			deltaTime = stepTime - preStepTime;
-			if (deltaTime == 0) deltaTime = 1; // avoiding division with zero problems
-		}
+		void nextStep();
 		
 	private:
 		int startTime;

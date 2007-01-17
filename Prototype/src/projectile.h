@@ -7,10 +7,49 @@
 
 namespace Prototype
 {
-	class Projectile : public MovableObj, public Line
+	class Projectile : public MovableObj
 	{
 	public:
-		Pos getPos() const			{ return pos; }
+
+		struct Properties
+		{
+			float speed;
+			int directDamage;
+			int blastDamage;
+			float blastDistance;
+
+			//Properties(float speed, int directDamage, int blastDamage, float blastDistance)
+			//	: speed(speed), directDamage(directDamage), blastDamage(blastDamage), blastDistance(blastDistance)
+			//{}
+		};
+
+		static const int N_TYPES = 2;
+		enum Type
+		{			
+			BULLET,
+			ROCKET
+		};
+
+		Pos pos;
+
+		Projectile(Type type, const Pos &pos, float angle);
+
+		inline Pos getPos() const					{ return pos; }
+		inline Type getType() const					{ return type; }
+		inline float getAngle() const				{ return angle; }
+
+		Line getLine() const;
+
+		inline float getSpeed() const				{ return properties[type].speed; }
+		inline int getDirectDamage() const			{ return properties[type].directDamage; }
+		inline int getBlastDamage() const			{ return properties[type].blastDamage; }
+		inline float getBlastDistance() const		{ return properties[type].blastDistance; }
+
+	private:
+		static const Properties properties[N_TYPES];
+
+		Type type;		
+		float angle;
 	};
 };
 

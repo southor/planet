@@ -11,12 +11,15 @@ namespace Prototype
 	enum MessageTypes
 	{
 		UPDATE_PLAYER_OBJ,		
-		USER_CMD,
-		SHOOT_CMD,
 		ADD_OBSTACLE,
 		WELCOME_CLIENT,
 		ADD_PLAYER,
-		INIT_CLIENT	
+		INIT_CLIENT,
+		ADD_PROJECTILE,
+		UPDATE_PROJECTILE,
+		REMOVE_PROJECTILE,
+		USER_CMD,
+		SHOOT_CMD,
 	};
 
 	// --------------------------------------------------------------------------------
@@ -65,6 +68,36 @@ namespace Prototype
 			: playerId(playerId), color(color), startPos(startPos) {}
 	};
 
+	struct AddProjectile
+	{
+		size_t projectileId;
+		int type;
+		Pos pos;
+		float angle;
+
+		AddProjectile(size_t projectileId, int type, Pos pos, float angle)
+			: projectileId(projectileId), type(type), pos(pos), angle(angle)
+		{}
+	};
+
+	struct UpdateProjectile
+	{
+		size_t projectileId;
+		Pos pos;
+
+		UpdateProjectile(size_t projectileId, Pos pos)
+			: projectileId(projectileId), pos(pos)
+		{}
+	};
+
+	struct RemoveProjectile
+	{
+		size_t projectileId;
+
+		RemoveProjectile() : projectileId(projectileId)
+		{}
+	};
+
 
 	// --------------------------------------------------------------------------------
 	// --------------------------------- client messages ------------------------------
@@ -89,7 +122,10 @@ namespace Prototype
 
 	struct ShootCmd
 	{
+		size_t playerId;
 	};
+
+
 
 
 
@@ -148,12 +184,17 @@ namespace Prototype
 
 		void transmit() const; // transmits all messages to the send queue
 
-		void pushMessage(const UserCmd &userCmd) const					{ pushMessage(USER_CMD, new UserCmd(userCmd)); }
-		void pushMessage(const ShootCmd &shootCmd) const				{ pushMessage(SHOOT_CMD, new ShootCmd(shootCmd)); }
-		void pushMessage(const UpdatePlayerObj &updatePlayerObj) const	{ pushMessage(UPDATE_PLAYER_OBJ,  new UpdatePlayerObj(updatePlayerObj)); }
-		void pushMessage(const AddObstacle &addObstacle) const			{ pushMessage(ADD_OBSTACLE,  new AddObstacle(addObstacle)); }
-		void pushMessage(const InitClient &initClient) const			{ pushMessage(INIT_CLIENT, new InitClient(initClient)); }
-		void pushMessage(const WelcomeClient &welcomeClient) const		{ pushMessage(WELCOME_CLIENT, new WelcomeClient(welcomeClient)); }
+		void pushMessage(const UserCmd &userCmd) const						{ pushMessage(USER_CMD, new UserCmd(userCmd)); }
+		void pushMessage(const ShootCmd &shootCmd) const					{ pushMessage(SHOOT_CMD, new ShootCmd(shootCmd)); }
+		
+		void pushMessage(const UpdatePlayerObj &updatePlayerObj) const		{ pushMessage(UPDATE_PLAYER_OBJ,  new UpdatePlayerObj(updatePlayerObj)); }
+		void pushMessage(const AddObstacle &addObstacle) const				{ pushMessage(ADD_OBSTACLE,  new AddObstacle(addObstacle)); }
+		void pushMessage(const AddProjectile &addProjectile) const			{ pushMessage(ADD_PROJECTILE, new AddProjectile(addProjectile)); }
+		void pushMessage(const UpdateProjectile &updateProjectile) const	{ pushMessage(UPDATE_PROJECTILE, new UpdateProjectile(updateProjectile)); }
+		void pushMessage(const RemoveProjectile &removeProjectile) const	{ pushMessage(REMOVE_PROJECTILE, new RemoveProjectile(removeProjectile)); }
+		
+		void pushMessage(const InitClient &initClient) const				{ pushMessage(INIT_CLIENT, new InitClient(initClient)); }
+		void pushMessage(const WelcomeClient &welcomeClient) const			{ pushMessage(WELCOME_CLIENT, new WelcomeClient(welcomeClient)); }
 
 
 
@@ -169,6 +210,9 @@ namespace Prototype
 		ShootCmd* getPoppedShootCmd()	const					{ return reinterpret_cast<ShootCmd*>(getPoppedData()); }
 		UpdatePlayerObj* getPoppedUpdatePlayerObj() const		{ return reinterpret_cast<UpdatePlayerObj*>(getPoppedData()); }
 		AddObstacle* getPoppedAddObstacle() const				{ return reinterpret_cast<AddObstacle*>(getPoppedData()); }
+		AddProjectile* getPoppedAddProjectile() const			{ return reinterpret_cast<AddProjectile*>(getPoppedData()); }
+		UpdateProjectile* getPoppedUpdateProjectile() const		{ return reinterpret_cast<UpdateProjectile*>(getPoppedData()); }
+		RemoveProjectile* getPoppedRemoveProjectile() const		{ return reinterpret_cast<RemoveProjectile*>(getPoppedData()); }
 		InitClient* getPoppedInitClient() const					{ return reinterpret_cast<InitClient*>(getPoppedData()); }
 		WelcomeClient* getPoppedWelcomeClient() const			{ return reinterpret_cast<WelcomeClient*>(getPoppedData()); }
 
