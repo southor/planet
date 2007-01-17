@@ -15,7 +15,7 @@ namespace Prototype
 	Game::Game()
 	{
 		init();
-		//gui.init();
+//		gui.init();
 		running = true;
 	}
 
