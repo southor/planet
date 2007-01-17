@@ -101,6 +101,7 @@ namespace Prototype
 	void Server::logic()
 	{
 		timeHandler.nextStep();
+		float deltaTime = timeHandler.getDeltaTimef();
 
 		// Read messages from clients
 		ServerPlayers::Iterator playersIt;
@@ -125,41 +126,50 @@ namespace Prototype
 					playerObj->strafingRight = userCmd->cmdRight;
 					playerObj->angle = userCmd->viewangle;
 				}
-				if (messageType == SHOOT_CMD)
+				else if (messageType == SHOOT_CMD)
 				{
-					ShootCmd *shootCmd = player.link.getPoppedShootCmd();
-					
-					assert(false);
+					// player shoots
+					ShootCmd *shootCmd = player.link.getPoppedShootCmd();					
+					size_t projectileId = worldModel.playerShoot(shootCmd->playerId);
+					Projectile *projectile = (worldModel.getProjectiles())[projectileId];
+
+					// send projectile to all clients
+					AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(), projectile->getAngle());
+					pushMessageToAll(players, addProjectile);
 				}
 			}
-		}
+		}		
 
-		// update movements of players		
-
-		
-		float deltaTime = timeHandler.getDeltaTimef();
+		// update movements of players
 		worldModel.updatePlayerObjMovements(deltaTime);
+		worldModel.updateProjectileMovements(deltaTime);
 
-
-		// Send updates to clients
-		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
+		// Send playerObj updates
+		WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
+		WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+		for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 		{
-			ServerPlayer player(playersIt->second);
+			//size_t playerObjId = playerObjsIt->first;
+			size_t playerId = playerObjsIt->first;
+			PlayerObj *playerObj = playerObjsIt->second;
+			//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
+			UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle);
 
-			WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
-			WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
-			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
-			{
-				//size_t playerObjId = playerObjsIt->first;
-				size_t playerId = playerObjsIt->first;
-				PlayerObj *playerObj = playerObjsIt->second;
-				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
-				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle);
-				player.link.pushMessage(updatePlayerObj);
-			}
-
-			player.link.transmit();
+			pushMessageToAll(players, updatePlayerObj);
 		}
+
+		// Send projectile updates
+		WorldModel::ProjectileContainer::Iterator projectilesIt = worldModel.getProjectiles().begin();
+		WorldModel::ProjectileContainer::Iterator projectilesEnd = worldModel.getProjectiles().end();
+		for(; projectilesIt != projectilesEnd; ++projectilesIt)
+		{			
+			UpdateProjectile updateProjectile(projectilesIt->first, projectilesIt->second->getPos());
+			
+			pushMessageToAll(players, updateProjectile);
+		}
+
+		transmitAll(players);
+
 	}
 	
 };

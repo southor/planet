@@ -18,8 +18,6 @@ namespace Prototype
 			: Player(color), link(link)
 		{}
 	};
-
-	typedef IdMap<size_t, ServerPlayer> ServerPlayers;
 };
 
 #endif

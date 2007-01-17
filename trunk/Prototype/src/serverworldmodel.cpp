@@ -27,6 +27,12 @@ namespace Prototype
 		ForEach(playerObjs.begin(), playerObjs.end(), move);
 	}
 
+	void ServerWorldModel::updateProjectileMovements(float deltaTime)
+	{
+		Move move(&obstacles, deltaTime);
+		ForEach(projectiles.begin(), projectiles.end(), move);
+	}
+
 	Obstacle* ServerWorldModel::Move::findAnyOverlap(const Rectangle &rectangle)
 	{
 		assert(obstacles);
@@ -108,5 +114,27 @@ namespace Prototype
 			// finally move player
 			playerObj->pos += usedMoveVec;
 		}
+	}
+
+	void ServerWorldModel::Move::operator ()(const ProjectileContainer::Pair &projectilePair)
+	{
+		Projectile *projectile = projectilePair.second;
+		Vec moveVec(projectile->getLine().getDirection() * projectile->getSpeed() * deltaTime);
+		projectile->pos = projectile->pos + moveVec;
+
+		//TODO hitcollision, removing projectile, damages etc.
+	}
+
+	size_t ServerWorldModel::playerShoot(size_t playerId)
+	{
+		PlayerObj *playerObj = getPlayerObjs()[playerId];
+		Pos pos(playerObj->getPos());
+		float angle = playerObj->angle;
+		Projectile::Type type = Projectile::BULLET;
+
+		size_t projectileId = getProjectiles().findFreeId();
+		getProjectiles().add(projectileId, new Projectile(type, pos, angle));
+
+		return projectileId;
 	}
 };

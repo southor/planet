@@ -11,13 +11,34 @@ namespace Prototype
 	public:
 
 		Pos pos;
-		Vec extension;
+		Vec ext;
 
-		inline Line()																{}
+		inline Line()																	{}
 
-		inline Line(Pos pos, Vec extension) : pos(pos), extension(extension)		{}
+		inline Line(Pos pos, Vec ext) : pos(pos), ext(ext)								{}
 
-		inline Line(float x, float y, float ex, float ey) : pos(x, y), extension(ex, ey)	{}
+		inline Line(float x, float y, float ex, float ey) : pos(x, y), ext(ex, ey)		{}
+
+		// @return A normalized direction vector
+		inline Vec getDirection()
+		{
+			Vec direction(ext);
+			direction.normalize();
+			return direction;
+		}
+
+		inline Pos getEndPos()
+		{
+			return pos+ext;
+		}
+
+		float crossPoint(const Line &line);
+
+		inline bool crossing(const Line &line)
+		{
+			float d = crossPoint(line);
+			return (d >= 0.0f) && (d <= 1.0f);
+		}
 	};
 };
 
