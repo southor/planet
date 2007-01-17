@@ -58,7 +58,7 @@ namespace Prototype
 		// The ImageLoader in use is static and must be set to be
 		// able to load images
 		gcn::Image::setImageLoader(imageLoader);
-		graphics = new gcn::OpenGLGraphics();
+			graphics = new gcn::OpenGLGraphics();
 		// We need to tell OpenGL graphics how big the screen is.
 		graphics->setTargetPlane(640, 480);
 		input = new gcn::SDLInput();
