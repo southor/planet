@@ -44,6 +44,20 @@ namespace Prototype
 	}
 
 
+
+	template <typename T>
+	inline T tmin(T a, T b)			{ return a < b ? a : b; }
+
+	template <typename T>
+	inline T tmax(T a, T b)			{ return a > b ? a : b; }
+
+	template <typename T>
+	T tmin(T a, T b, T c, T d)
+	{
+		return tmin(tmin(a, b), tmin(c, d));		
+	}
+
+
 	
 };
 

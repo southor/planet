@@ -18,6 +18,8 @@ namespace Prototype
 		Pos pos;
 		float angle;
 
+		int health;
+
 		bool movingForward;
 		bool movingBackward;
 		bool strafingLeft;

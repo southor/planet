@@ -71,6 +71,20 @@ namespace Prototype
 		glEnd();
 	}
 
+	void WorldRenderer::renderLine(const Line &line, float lineWidth, float alpha)
+	{
+		Pos startPos(line.pos);
+		Pos endPos(line.getEndPos());
+
+		glLineWidth(lineWidth);
+		glPushMatrix();			
+			glBegin(GL_LINES);
+				glVertex2fv(reinterpret_cast<float*>(&startPos));				
+				glVertex2fv(reinterpret_cast<float*>(&endPos));				
+			glEnd();
+		glPopMatrix();
+	}
+
 	void WorldRenderer::renderViewBox()
 	{
 		// render rectangle
@@ -141,19 +155,9 @@ namespace Prototype
 		Projectile::Type type = projectilePair.second->getType();
 		Line line(projectilePair.second->getLine());
 
-		Pos startPos(line.pos);
-		Pos endPos(line.getEndPos());
-
-		const Color &color = projectileColors[type];
-		glLineWidth(projectileWidths[type]);
-		glPushMatrix();			
-			glBegin(GL_LINES);
-				glColor4f(color.r, color.g, color.b, projectileAlphas[type]);
-				glVertex2fv(reinterpret_cast<float*>(&startPos));				
-				glVertex2fv(reinterpret_cast<float*>(&endPos));				
-			glEnd();
-		glPopMatrix();
-
+		Color color(projectileColors[type]);
+		glColor4f(color.r, color.g, color.b, projectileAlphas[type]);
+		WorldRenderer::renderLine(line, projectileWidths[type], projectileAlphas[type]);
 	}
 	
 

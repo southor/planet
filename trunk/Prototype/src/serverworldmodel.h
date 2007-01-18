@@ -3,6 +3,9 @@
 
 #include "WorldModel.h"
 #include "IdMap.h"
+#include "ServerPlayers.h"
+
+#include <vector>
 
 namespace Prototype
 {
@@ -25,14 +28,27 @@ namespace Prototype
 		{
 		private:
 			ServerObstacleContainer *obstacles;
-			float deltaTime; // Time in seconds since last move.
+			float deltaTime; // Time in milliseconds since last move.
+			ServerPlayers *players;
+			ServerPlayerObjContainer *playerObjs;
+			std::vector<size_t> projectilesHit;
 
 			Obstacle* findAnyOverlap(const Rectangle &rectangle);
 		public:
-			// @param deltaTime Time in seconds since last move.
+			// @param deltaTime Time in milliseconds since last move.
 			Move(ServerObstacleContainer *obstacles, float deltaTime)
-				: obstacles(obstacles), deltaTime(deltaTime)
+				: obstacles(obstacles), deltaTime(deltaTime), players(0), playerObjs(0)
 			{}
+
+			// @param deltaTime Time in milliseconds since last move.
+			Move(ServerObstacleContainer *obstacles, float deltaTime, ServerPlayers *players, ServerPlayerObjContainer *playerObjs)
+				: obstacles(obstacles), deltaTime(deltaTime), players(players), playerObjs(playerObjs)
+			{}
+
+			inline std::vector<size_t>& getProjectilesHit()	
+			{
+				return projectilesHit;
+			}
 
 			void operator ()(const PlayerObjContainer::Pair &playerObjPair);
 			void operator ()(const ProjectileContainer::Pair &projectilePair);
@@ -53,10 +69,9 @@ namespace Prototype
 
 		void addPlayerObj(size_t playerId, const Pos &playerPos);
 		size_t addObstacle(const Rectangle &obstacleArea);
-
-		// @param deltaTime Time in seconds since last move.
+		
 		void updatePlayerObjMovements(float deltaTime);
-		void updateProjectileMovements(float deltaTime);
+		void updateProjectileMovements(float deltaTime, ServerPlayers &players);
 
 		// @retunr projectileId
 		size_t playerShoot(size_t playerId);

@@ -74,9 +74,10 @@ namespace Prototype
 		int type;
 		Pos pos;
 		float angle;
+		size_t shooterId;
 
-		AddProjectile(size_t projectileId, int type, Pos pos, float angle)
-			: projectileId(projectileId), type(type), pos(pos), angle(angle)
+		AddProjectile(size_t projectileId, int type, Pos pos, float angle, size_t shooterId)
+			: projectileId(projectileId), type(type), pos(pos), angle(angle), shooterId(shooterId)
 		{}
 	};
 
@@ -94,7 +95,7 @@ namespace Prototype
 	{
 		size_t projectileId;
 
-		RemoveProjectile() : projectileId(projectileId)
+		RemoveProjectile(size_t projectileId) : projectileId(projectileId)
 		{}
 	};
 

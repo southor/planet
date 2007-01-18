@@ -2,6 +2,7 @@
 #define __rectangle_h__
 
 #include "basic.h"
+#include "Line.h"
 
 namespace Prototype
 {
@@ -12,11 +13,11 @@ namespace Prototype
 		Pos pos;
 		Vec size;
 
-		inline Rectangle()														{}
-
-		inline Rectangle(Pos pos, Vec size) : pos(pos), size(size)				{}
-
-		inline Rectangle(float x, float y, float w, float h) : pos(x, y), size(w, h)	{}
+		inline Rectangle()												{}
+		inline Rectangle(Pos pos, Vec size) : pos(pos), size(size)		{}		
+		inline Rectangle(float x, float y, float w, float h)
+			: pos(x, y), size(w, h)										{}
+		Rectangle(Pos centerPos, float size);
 
 
 		inline float getX() const								{ return pos.x; }
@@ -34,8 +35,14 @@ namespace Prototype
 		inline Pos getTopLeft() const							{ return Pos(getLeft(), getTop()); }		
 		inline Pos getBottomLeft() const						{ return pos; }
 
+		Line getLeftLine() const;
+		Line getRightLine() const;
+		Line getTopLine() const;
+		Line getBottomLine() const;
+
 
 		bool overlapping(const Rectangle &rectangle);
+		bool contains(const Pos &pos) const;
 
 
 

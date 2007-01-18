@@ -134,15 +134,15 @@ namespace Prototype
 					Projectile *projectile = (worldModel.getProjectiles())[projectileId];
 
 					// send projectile to all clients
-					AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(), projectile->getAngle());
+					AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(), projectile->getAngle(), projectile->getShooterId());
 					pushMessageToAll(players, addProjectile);
 				}
 			}
 		}		
 
-		// update movements of players
+		// update movements of objects
 		worldModel.updatePlayerObjMovements(deltaTime);
-		worldModel.updateProjectileMovements(deltaTime);
+		worldModel.updateProjectileMovements(deltaTime, players);
 
 		// Send playerObj updates
 		WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();

@@ -59,13 +59,17 @@ namespace Prototype
 			else if (messageType == ADD_PROJECTILE)
 			{
 				AddProjectile *addProjectile = link.getPoppedAddProjectile();
-				worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle);
+				worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
 			}
 			else if (messageType == UPDATE_PROJECTILE)
 			{
 				UpdateProjectile *updateProjectile = link.getPoppedUpdateProjectile();
 				Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
 				projectile->pos = updateProjectile->pos;
+			}
+			else if (messageType ==REMOVE_PROJECTILE)
+			{
+				worldModel.getProjectiles().remove(link.getPoppedRemoveProjectile()->projectileId);
 			}
 		}
 
@@ -98,6 +102,36 @@ namespace Prototype
 	{
 		worldRenderer.setupProjection();
 		worldRenderer.render(worldModel, players, 0);
+
+
+
+		//// testing Line testing cross point
+		
+		//static float x = 0.0f;
+		//x += 0.5f;
+		//Line testLine1(0.0f, 0.0f, 200.0f, 200.0f);
+		//Line testLine2(0.0f, x, 200.0f, 0.0f);
+		//Rectangle crossBox(testLine1.getPosAlong(testLine1.crossPoint(testLine2)), 15.0f);
+
+		//glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+		//WorldRenderer::renderLine(testLine1, 2.0f, 1.0f);
+		//glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+		//WorldRenderer::renderLine(testLine2, 2.0f, 1.0f);
+		//glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+		//WorldRenderer::renderRectangle(crossBox, GL_QUADS);
+
+		//Rectangle rect;
+		//(worldModel.getPlayerObjs())[0]->getRectangle(rect);		
+		//Line leftTest(rect.getLeftLine());
+		//Line rightTest(rect.getRightLine());
+		//Line topTest(rect.getTopLine());
+		//Line bottomTest(rect.getBottomLine());
+
+		//glColor4f(1.0f, 0.5f, 0.0f, 1.0f);
+		//WorldRenderer::renderLine(leftTest, 1.0f, 1.0f);
+		//WorldRenderer::renderLine(rightTest, 1.0f, 1.0f);
+		//WorldRenderer::renderLine(topTest, 1.0f, 1.0f);
+		//WorldRenderer::renderLine(bottomTest, 1.0f, 1.0f);
 	}
 
 	void Client::initConnection()

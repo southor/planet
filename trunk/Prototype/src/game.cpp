@@ -108,8 +108,7 @@ namespace Prototype
 
 	void Game::render(Uint32 time)
 	{
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT);
 
 
 		// rendering the same client to both render areas
@@ -122,7 +121,7 @@ namespace Prototype
 		client2.render();
 
 		// guichan
-		glViewport(0, 0, w, h);
+		//glViewport(0, 0, w, h); 
 		//gui.gui->draw();
 
 
@@ -132,6 +131,8 @@ namespace Prototype
 		glEnable(GL_LIGHTING);
 		glFlush();
 		SDL_GL_SwapBuffers();
+
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void Game::draw(Uint32 time)
