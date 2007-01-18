@@ -15,7 +15,7 @@ namespace Prototype
 	bool Server::clientConnected(MessageSender *messageSender, MessageReciever *messageReciever)
 	{
 		// Temp Link used to simplify sending and retrieving messages during this connection phase.
-		Link link = Link(messageSender, messageReciever);
+		Link link(messageSender, messageReciever);
 
 		if (link.hasMessageOnQueue())
 		{

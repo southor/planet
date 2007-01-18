@@ -20,9 +20,8 @@ namespace Prototype
 
 		void handleEvents();
 		void logic();
-		void render();
-		
 		bool initConnection();
+		void render();
 		
 		//TODO not the correct way for players to be added
 		void addPlayer(const Color &playerColor, const Pos &playerPos);
@@ -34,8 +33,6 @@ namespace Prototype
 		void setColor(Color color) { this->color = color; }
 
 	private:
-		//MessageSender *messageSender;
-		//MessageReciever *messageReciever;
 		Link link;
 		size_t connectionPhase;
 

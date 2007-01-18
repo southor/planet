@@ -31,7 +31,7 @@ namespace Prototype
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
 
-		// Initialize virtual connections
+		// Initialize virtual conn3ections
 		MessageSender *sender1 = virtualConnection1.getMessageSender();
 		MessageReciever *reciever1 = virtualConnection1.getMessageReciever();
 
@@ -70,12 +70,12 @@ namespace Prototype
 			// --------------
 			// Loop at client 1
 			// --------------
-			client1Connected = client1.initConnection();
+			client1Connected |= client1.initConnection();
 
 			// --------------
 			// Loop at client 2
 			// --------------
-			client2Connected = client2.initConnection();
+			client2Connected |= client2.initConnection();
 		}
 		
 
