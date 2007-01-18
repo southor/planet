@@ -36,7 +36,7 @@ namespace Prototype
 		class VirtualMessageReciever : public MessageReciever
 		{
 		public:
-			VirtualMessageReciever() : MessageReciever(), lag(200) { }
+			VirtualMessageReciever() : MessageReciever(), lag(50) { }
 			~VirtualMessageReciever() {}
 
 			void setMessageDeque(std::deque<Message> *messageDeque);

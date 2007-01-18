@@ -36,6 +36,9 @@ namespace Prototype
 		VirtualConnection virtualConnection2;
 		VirtualConnection virtualConnection3;
 		VirtualConnection virtualConnection4;
+
+		Server server;
+
 		Client client1;
 		Client client2;
 

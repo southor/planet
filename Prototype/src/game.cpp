@@ -28,6 +28,11 @@ namespace Prototype
 	{
 		timeHandler.reset();
 
+		Color color1 = Color(0.0f, 1.0f, 0.0f);							// handle by packet
+		Color color2 = Color(1.0f, 0.0f, 0.0f);							// handle by packet
+		Pos startPos(200.0f, 200.0f);									// handle by packet
+		Pos startPos2(200.0f, 250.0f);									// handle by packet
+
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
 
@@ -45,28 +50,45 @@ namespace Prototype
 		MessageReciever *reciever4 = virtualConnection4.getMessageReciever();
 
 		client1.setConnection(sender2, reciever1);
-		//client1.setColor(Color(0.0f, 1.0f, 0.0f));
-		//client1.initConnection();
+		client1.setColor(Color(0.0f, 1.0f, 0.0f));
 		
 		client2.setConnection(sender4, reciever3);
-		//client2.setColor(Color(1.0f, 0.0f, 0.0f));
-		//client2.initConnection();
+		client2.setColor(Color(1.0f, 0.0f, 0.0f));
+
+
+
+
 		
-		Server server;
+		bool client1Connected = false;
+		bool client2Connected = false;
+		
+		while (!client1Connected || !client2Connected)
+		{
+			// --------------
+			// Loop at server 
+			// Run clientConnected when a new connection is detected. (Here we simulate that two clients is detected)
+			// --------------
+			if (!client1Connected)
+				server.clientConnected(sender1, reciever2);
+			
+			if (!client2Connected)
+				server.clientConnected(sender3, reciever4);
 
-		// clientConnected is called when we detect a new network connection
-		/*
-		server.clientConnected(sender1, reciever2);
-		server.clientConnected(sender3, reciever4);
+			// --------------
+			// Loop at client 1
+			// --------------
+			client1Connected = client1.initConnection();
 
-		client1.initConnectionAgain();
-		client2.initConnectionAgain();
-		*/
+			// --------------
+			// Loop at client 2
+			// --------------
+			client2Connected = client2.initConnection();
+		}		
 
-		Color color1 = Color(0.0f, 1.0f, 0.0f);							// handle by packet
-		Color color2 = Color(1.0f, 0.0f, 0.0f);							// handle by packet
-		Pos startPos(200.0f, 200.0f);									// handle by packet
-		Pos startPos2(200.0f, 250.0f);									// handle by packet
+/*
+		// ----------------------------------------------------
+		// NOT NEEDED ANY MORE. IS KEPT HERE FOR DEBUG PURPOSE.
+		// ----------------------------------------------------
 		Link link = Link(sender1, reciever2);
 		size_t playerId = server.addClient(color1, link);
 		server.addPlayerObj(playerId, startPos);						// handle by packet
@@ -77,12 +99,12 @@ namespace Prototype
 		server.addPlayerObj(playerId2, startPos2);						// handle by packet
 		client2.setPlayerId(playerId2);									// handle by packet
 
-
 		// rendering
 		client1.addPlayer(color1, startPos);							// handle by packet
 		client1.addPlayer(color2, startPos2);							// handle by packet
 		client2.addPlayer(color1, startPos);							// handle by packet
 		client2.addPlayer(color2, startPos2);							// handle by packet
+*/
 
 
 		server.startGame();

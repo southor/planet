@@ -22,9 +22,7 @@ namespace Prototype
 		void logic();
 		void render();
 		
-		void initConnection();
-		// TODO: shouldn't need to call to initConnection
-		void initConnectionAgain();
+		bool initConnection();
 		
 		//TODO not the correct way for players to be added
 		void addPlayer(const Color &playerColor, const Pos &playerPos);
@@ -39,6 +37,8 @@ namespace Prototype
 		//MessageSender *messageSender;
 		//MessageReciever *messageReciever;
 		Link link;
+		size_t connectionPhase;
+
 
 		KeyHandler kh;
 
