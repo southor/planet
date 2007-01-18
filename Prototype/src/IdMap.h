@@ -205,7 +205,10 @@ namespace Prototype
 			{
 				Id id = freeIds.back();
 				freeIds.pop_back();
-				if (map[id].used == false) return id;
+				if (isValid(id))
+				{
+					if (map[id].used == false) return id;
+				}
 			}
 			Entry unusedEntry;
 			map.push_back(unusedEntry);
@@ -220,7 +223,7 @@ namespace Prototype
 			if (isValid(id))
 			{
 				assert(map[id].used == false);
-				map[id] = entryAdd;				
+				map[id] = entryAdd;
 			}
 			else
 			{
@@ -229,8 +232,8 @@ namespace Prototype
 				Entry unusedEntry;
 				while(id > map.size())
 				{
-					map.push_back(unusedEntry);
 					freeIds.push_back(map.size());
+					map.push_back(unusedEntry);					
 				}
 				assert(id == map.size());
 				map.push_back(entryAdd);
@@ -244,14 +247,29 @@ namespace Prototype
 		 */
 		bool remove(Id id)
 		{
-			if (isValied(id))
+			if (isValid(id))
 			{
 				Entry &entry = map[id];
 				if (entry.used)
-				{
-					entry.used = false;
-					freeIds.push_back(id);
+				{					
+					if (id == map.size()-1) // is last id?
+					{
+						map.pop_back();
+						
+						// cleanup other unused id's if possible
+						while(map.size() > 0)
+						{
+							if (map.back().used) break;
+							map.pop_back();
+						}
+					}
+					else
+					{
+						entry.used = false;
+						freeIds.push_back(id);
+					}					
 					--size;
+
 					return true;
 				}
 				return false;
@@ -265,6 +283,7 @@ namespace Prototype
 
 		inline T& operator[](Id id)
 		{			
+			assert(size > 0);
 			assert(isValid(id));
 			assert(map[id].used);			
 			return map[id].pair.second;			

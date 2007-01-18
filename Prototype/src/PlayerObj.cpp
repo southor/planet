@@ -15,7 +15,7 @@ namespace Prototype
 	//{}
 
 	PlayerObj::PlayerObj(const Pos &pos)
-		: pos(pos), angle(PI/2.0f),
+		: pos(pos), angle(PI/2.0f), health(100),
 		 movingForward(false), movingBackward(false),
 		 strafingLeft(false), strafingRight(false)
 	{}

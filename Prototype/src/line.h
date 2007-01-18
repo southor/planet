@@ -6,6 +6,9 @@
 
 namespace Prototype
 {
+
+	class Rectangle;
+
 	class Line
 	{
 	public:
@@ -27,17 +30,34 @@ namespace Prototype
 			return direction;
 		}
 
-		inline Pos getEndPos()
-		{
-			return pos+ext;
-		}
+		inline Pos getEndPos() const						{ return pos+ext; }
 
+		bool rightSide(const Pos &pos);
+
+		bool crossingRectangle(const Rectangle & rectangle);
+
+		// @return position along line
 		float crossPoint(const Line &line);
+
+		// @return position along line
+		float minCrossPoint(const Rectangle &rectangle);
+
+		// @param d position along line
+		inline static bool crossing(const float d)
+		{
+			return (d >= 0.0f) && (d <= 1.0f);
+		}
 
 		inline bool crossing(const Line &line)
 		{
 			float d = crossPoint(line);
-			return (d >= 0.0f) && (d <= 1.0f);
+			return crossing(d);			
+		}
+
+		// @param d position along line
+		inline Pos getPosAlong(float d)
+		{
+			return pos + ext * d;
 		}
 	};
 };

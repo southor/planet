@@ -96,6 +96,10 @@ namespace Prototype
 
 
 
+		inline bool operator==(const Vec2<T>& rh) const
+		{
+			return (rh.x == x) && (rh.y == y);
+		}
 
 		inline bool operator!=(const Vec2<T>& rh) const
 		{

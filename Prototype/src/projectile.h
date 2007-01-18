@@ -32,7 +32,7 @@ namespace Prototype
 
 		Pos pos;
 
-		Projectile(Type type, const Pos &pos, float angle);
+		Projectile(Type type, const Pos &pos, float angle, size_t shooterId);
 
 		inline Pos getPos() const					{ return pos; }
 		inline Type getType() const					{ return type; }
@@ -42,14 +42,17 @@ namespace Prototype
 
 		inline float getSpeed() const				{ return properties[type].speed; }
 		inline int getDirectDamage() const			{ return properties[type].directDamage; }
-		inline int getBlastDamage() const			{ return properties[type].blastDamage; }
-		inline float getBlastDistance() const		{ return properties[type].blastDistance; }
+		//inline int getBlastDamage() const			{ return properties[type].blastDamage; }
+		int getBlastDamage(const Pos &pos) const;
+		//inline float getBlastDistance() const		{ return properties[type].blastDistance; }
+		size_t getShooterId() const					{ return shooterId; }
 
 	private:
 		static const Properties properties[N_TYPES];
 
-		Type type;		
+		Type type;
 		float angle;
+		size_t shooterId;
 	};
 };
 

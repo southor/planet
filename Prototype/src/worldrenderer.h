@@ -21,6 +21,9 @@ namespace Prototype
 		void setupProjection();
 		void render(WorldModel &worldModel, Players &players, PlayerObj *localPlayerObj);
 
+		static void renderRectangle(const Rectangle &rect, GLenum mode);
+		static void renderLine(const Line &line, float lineWidth, float alpha);
+
 	private:
 
 		RenderMode renderMode;
@@ -44,7 +47,7 @@ namespace Prototype
 			void operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair);
 		};
 
-		static void renderRectangle(const Rectangle &rect, GLenum mode);
+
 
 		void renderViewBox();
 

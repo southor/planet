@@ -13,3 +13,7 @@ Add methods to Link to use to send messages?
 Use Obstacles as name instead of ObstacleContainer ??  Use the same sytem everywhere.
 Fix template functions for sending messages via Link??
 vector normalize, return a new vector instead of chagning?
+Discuss MessageSender/MessageReciever Lag etc..
+In the real game: use macros for get/set functions?
+begin to use different game objects (playerObj, projectile, etc..) for server and client?
+in real game: use a macro to be able to switch between call by reference and call by value (because of standard C++ problems)
