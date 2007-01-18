@@ -12,11 +12,11 @@ namespace Prototype
 		worldModel.addObstacle(obstacleArea);
 	}
 
-	void Server::clientConnected(MessageSender *messageSender, MessageReciever *messageReciever)
+	bool Server::clientConnected(MessageSender *messageSender, MessageReciever *messageReciever)
 	{
+		// Temp Link used to simplify sending and retrieving messages during this connection phase.
 		Link link = Link(messageSender, messageReciever);
 
-		// TODO: wait for this message to arive
 		if (link.hasMessageOnQueue())
 		{
 			int messageType = link.popMessage();
@@ -25,10 +25,9 @@ namespace Prototype
 				// retrieve InitClient message from client
 				InitClient *initClient = link.getPoppedInitClient();
 				Color color = initClient->color;
-				
-				
+
 				// add player to server
-				size_t playerId = addClient(color, link);  // link will get copied here, problem?
+				size_t playerId = addClient(color, messageSender, messageReciever);
 
 				Pos startPos(200.0f + playerId * 50.0f, 200.0f);
 				addPlayerObj(playerId, startPos);
@@ -37,24 +36,25 @@ namespace Prototype
 				WelcomeClient welcomeClient = WelcomeClient(playerId);
 				link.pushMessage(welcomeClient);
 				link.transmit();
+				
+				return true;
+			}
+			else
+			{
+				assert(false);
 			}
 		}
-		else
-		{
-			assert(false);
-		}
 		
+		return false; // no client did try to connect
 	}
 
 	// TODO: MAKE PRIVATE
-	size_t Server::addClient(Color &color, Link link)
+	size_t Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 	{
 
 		size_t playerId = players.findFreeId();
-		players.add(playerId, ServerPlayer(color, link)); // link will get copied here, problem?
+		players.add(playerId, ServerPlayer(color, messageSender, messageReciever));
 		return playerId;
-		
-
 		
 		//ServerClient client(messageSender, messageReciever);
 
@@ -72,6 +72,20 @@ namespace Prototype
 
 	void Server::startGame()
 	{
+		WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
+		WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+		for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
+		{
+			size_t playerId = playerObjsIt->first;
+			PlayerObj *playerObj = playerObjsIt->second;
+
+			Color color(playerId, 1.0f-playerId, 0.0f); // the correct color should be retrieved from Player
+
+			AddPlayerObj addPlayerObj(color, playerObj->pos);
+
+			pushMessageToAll(players, addPlayerObj);
+		}
+	
 		// TODO Send the hole worldmodel to clients, all players and everything
 		ServerPlayers::Iterator playersIt;
 		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)

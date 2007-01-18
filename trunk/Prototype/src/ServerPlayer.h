@@ -14,8 +14,8 @@ namespace Prototype
 
 		ServerPlayer()		{}
 		
-		ServerPlayer(const Color &color, Link link)
-			: Player(color), link(link)
+		ServerPlayer(const Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
+			: Player(color), link(messageSender, messageReciever)
 		{}
 	};
 };

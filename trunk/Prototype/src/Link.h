@@ -10,7 +10,8 @@ namespace Prototype
 
 	enum MessageTypes
 	{
-		UPDATE_PLAYER_OBJ,		
+		UPDATE_PLAYER_OBJ = 0,
+		ADD_PLAYER_OBJ,		
 		ADD_OBSTACLE,
 		WELCOME_CLIENT,
 		ADD_PLAYER,
@@ -34,11 +35,18 @@ namespace Prototype
 		float angle;
 
 		UpdatePlayerObj()		{}
-		//UpdatePlayerObj(size_t playerObjId, const Pos &pos, float angle)
-		//	: playerObjId(playerObjId), pos(pos), angle(angle)
 		UpdatePlayerObj(size_t playerId, const Pos &pos, float angle)
 			: playerId(playerId), pos(pos), angle(angle)
 		{}
+	};
+	
+	struct AddPlayerObj
+	{
+		Color color;
+		Pos pos;
+	
+		AddPlayerObj(const Color &color, const Pos &pos)
+			: color(color), pos(pos) {}
 	};
 
 	struct AddObstacle
@@ -133,7 +141,7 @@ namespace Prototype
 
 	class Link
 	{
-	public:
+	private:
 		MessageSender *messageSender;
 		MessageReciever *messageReciever;
 		
@@ -189,6 +197,7 @@ namespace Prototype
 		void pushMessage(const ShootCmd &shootCmd) const					{ pushMessage(SHOOT_CMD, new ShootCmd(shootCmd)); }
 		
 		void pushMessage(const UpdatePlayerObj &updatePlayerObj) const		{ pushMessage(UPDATE_PLAYER_OBJ,  new UpdatePlayerObj(updatePlayerObj)); }
+		void pushMessage(const AddPlayerObj &addPlayerObj) const			{ pushMessage(ADD_PLAYER_OBJ,  new AddPlayerObj(addPlayerObj)); }
 		void pushMessage(const AddObstacle &addObstacle) const				{ pushMessage(ADD_OBSTACLE,  new AddObstacle(addObstacle)); }
 		void pushMessage(const AddProjectile &addProjectile) const			{ pushMessage(ADD_PROJECTILE, new AddProjectile(addProjectile)); }
 		void pushMessage(const UpdateProjectile &updateProjectile) const	{ pushMessage(UPDATE_PROJECTILE, new UpdateProjectile(updateProjectile)); }
@@ -210,6 +219,7 @@ namespace Prototype
 		UserCmd* getPoppedUserCmd()	const						{ return reinterpret_cast<UserCmd*>(getPoppedData()); }
 		ShootCmd* getPoppedShootCmd()	const					{ return reinterpret_cast<ShootCmd*>(getPoppedData()); }
 		UpdatePlayerObj* getPoppedUpdatePlayerObj() const		{ return reinterpret_cast<UpdatePlayerObj*>(getPoppedData()); }
+		AddPlayerObj* getPoppedAddPlayerObj() const				{ return reinterpret_cast<AddPlayerObj*>(getPoppedData()); }
 		AddObstacle* getPoppedAddObstacle() const				{ return reinterpret_cast<AddObstacle*>(getPoppedData()); }
 		AddProjectile* getPoppedAddProjectile() const			{ return reinterpret_cast<AddProjectile*>(getPoppedData()); }
 		UpdateProjectile* getPoppedUpdateProjectile() const		{ return reinterpret_cast<UpdateProjectile*>(getPoppedData()); }

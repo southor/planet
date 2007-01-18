@@ -107,8 +107,8 @@ namespace Prototype
 
 			int currentTime = timeHandler.getTime();
 
-			//while (message.time < currentTime - lag)
-			while (true)
+			while (message.time < currentTime - lag)
+			//while (true)
 			{
 				messageDeque->pop_back();
 

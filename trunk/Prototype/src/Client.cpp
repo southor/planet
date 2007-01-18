@@ -7,7 +7,7 @@
 namespace Prototype
 {
 
-	Client::Client() : worldRenderer(WorldRenderer::HOLE_WORLD)
+	Client::Client() : worldRenderer(WorldRenderer::HOLE_WORLD), connectionPhase(0)
 	{
 	}
 
@@ -32,8 +32,6 @@ namespace Prototype
 
 	void Client::logic()
 	{
-		handleEvents();
-
 		// Read messages from server
 		while(link.hasMessageOnQueue())
 		{
@@ -51,10 +49,17 @@ namespace Prototype
 					playerObj->angle = updatePlayerObj->angle;
 				}
 			}
+			else if (messageType == ADD_PLAYER_OBJ)
+			{
+				AddPlayerObj *addPlayerObj = link.getPoppedAddPlayerObj();
+				addPlayer(addPlayerObj->color, addPlayerObj->pos);
+				connectionPhase++;
+			}
 			else if (messageType == ADD_OBSTACLE)
 			{
 				AddObstacle *addObstacle = link.getPoppedAddObstacle();
 				worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
+				connectionPhase++;
 			}
 			else if (messageType == ADD_PROJECTILE)
 			{
@@ -67,34 +72,39 @@ namespace Prototype
 				Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
 				projectile->pos = updateProjectile->pos;
 			}
-			else if (messageType ==REMOVE_PROJECTILE)
+			else if (messageType == REMOVE_PROJECTILE)
 			{
 				worldModel.getProjectiles().remove(link.getPoppedRemoveProjectile()->projectileId);
 			}
 		}
 
-		if (kh.isPressed(CMD_SHOOT))
+		if (connectionPhase >= 3)
 		{
-			ShootCmd shootCmd = {playerId};
-			
-			link.pushMessage(shootCmd);
-			link.transmit();
-		}
+			handleEvents();
 
-		// If some key was pressed or released send message
-		if (kh.changePressedToDownState() || kh.changeReleasedToUpState())
-		{
-			UserCmd userCmd;
-			
-			userCmd.cmdLeft = kh.isDown(CMD_LEFT);
-			userCmd.cmdRight = kh.isDown(CMD_RIGHT);
-			userCmd.cmdUp = kh.isDown(CMD_UP);
-			userCmd.cmdDown = kh.isDown(CMD_DOWN);
-			userCmd.cmdShoot = kh.isDown(CMD_SHOOT);
-			userCmd.viewangle = ((worldModel.getPlayerObjs())[playerId])->angle;
+			if (kh.isPressed(CMD_SHOOT))
+			{
+				ShootCmd shootCmd = {playerId};
+				
+				link.pushMessage(shootCmd);
+				link.transmit();
+			}
 
-			link.pushMessage(userCmd);
-			link.transmit();
+			// If some key was pressed or released send message
+			if (kh.changePressedToDownState() || kh.changeReleasedToUpState())
+			{
+				UserCmd userCmd;
+				
+				userCmd.cmdLeft = kh.isDown(CMD_LEFT);
+				userCmd.cmdRight = kh.isDown(CMD_RIGHT);
+				userCmd.cmdUp = kh.isDown(CMD_UP);
+				userCmd.cmdDown = kh.isDown(CMD_DOWN);
+				userCmd.cmdShoot = kh.isDown(CMD_SHOOT);
+				userCmd.viewangle = ((worldModel.getPlayerObjs())[playerId])->angle;
+
+				link.pushMessage(userCmd);
+				link.transmit();
+			}
 		}
 	}
 
@@ -134,31 +144,39 @@ namespace Prototype
 		//WorldRenderer::renderLine(bottomTest, 1.0f, 1.0f);
 	}
 
-	void Client::initConnection()
+	bool Client::initConnection()
 	{
-		// send init package to server
-		InitClient initClient = InitClient(color);
-		link.pushMessage(initClient);
-		link.transmit();
-	}
-
-	void Client::initConnectionAgain()
-	{
-		// TODO: wait for this message to arive
-		if (link.hasMessageOnQueue())
+		if (connectionPhase == 0)
 		{
-			int messageType = link.popMessage();
-			if (messageType == WELCOME_CLIENT)
+			// send init package to server
+			InitClient initClient = InitClient(color);
+			link.pushMessage(initClient);
+			link.transmit();
+
+			connectionPhase++;
+		}
+
+		if (connectionPhase == 1)
+		{
+			if (link.hasMessageOnQueue())
 			{
-				WelcomeClient *welcomeClient = link.getPoppedWelcomeClient();
-			
-				setPlayerId(welcomeClient->playerId);
+				int messageType = link.popMessage();
+				if (messageType == WELCOME_CLIENT)
+				{
+					WelcomeClient *welcomeClient = link.getPoppedWelcomeClient();
+				
+					setPlayerId(welcomeClient->playerId);
+					
+					return true;
+				}
+				else
+				{
+					assert(false);
+				}
 			}
 		}
-		else
-		{
-			assert(false);
-		}
+		
+		return false;
 	}
 
 	void Client::addPlayer(const Color &playerColor, const Pos &playerPos)
