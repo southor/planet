@@ -53,13 +53,15 @@ namespace Prototype
 			{
 				AddPlayerObj *addPlayerObj = link.getPoppedAddPlayerObj();
 				addPlayer(addPlayerObj->color, addPlayerObj->pos);
-				connectionPhase++;
+
+				if (connectionPhase == 2) connectionPhase++; 
 			}
 			else if (messageType == ADD_OBSTACLE)
 			{
 				AddObstacle *addObstacle = link.getPoppedAddObstacle();
 				worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
-				connectionPhase++;
+				
+				if (connectionPhase == 3) connectionPhase++; 
 			}
 			else if (messageType == ADD_PROJECTILE)
 			{
@@ -78,7 +80,7 @@ namespace Prototype
 			}
 		}
 
-		if (connectionPhase >= 3)
+		if (connectionPhase == 4)
 		{
 			handleEvents();
 
@@ -106,6 +108,43 @@ namespace Prototype
 				link.transmit();
 			}
 		}
+	}
+
+	bool Client::initConnection()
+	{
+		if (connectionPhase == 0)
+		{
+			// send init package to server
+			InitClient initClient = InitClient(color);
+			link.pushMessage(initClient);
+			link.transmit();
+
+			connectionPhase++;
+		}
+
+		if (connectionPhase == 1)
+		{
+			if (link.hasMessageOnQueue())
+			{
+				int messageType = link.popMessage();
+				if (messageType == WELCOME_CLIENT)
+				{
+					WelcomeClient *welcomeClient = link.getPoppedWelcomeClient();
+				
+					setPlayerId(welcomeClient->playerId);
+					
+					connectionPhase++;
+					
+					return true;
+				}
+				else
+				{
+					assert(false);
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	void Client::render()
@@ -142,41 +181,6 @@ namespace Prototype
 		//WorldRenderer::renderLine(rightTest, 1.0f, 1.0f);
 		//WorldRenderer::renderLine(topTest, 1.0f, 1.0f);
 		//WorldRenderer::renderLine(bottomTest, 1.0f, 1.0f);
-	}
-
-	bool Client::initConnection()
-	{
-		if (connectionPhase == 0)
-		{
-			// send init package to server
-			InitClient initClient = InitClient(color);
-			link.pushMessage(initClient);
-			link.transmit();
-
-			connectionPhase++;
-		}
-
-		if (connectionPhase == 1)
-		{
-			if (link.hasMessageOnQueue())
-			{
-				int messageType = link.popMessage();
-				if (messageType == WELCOME_CLIENT)
-				{
-					WelcomeClient *welcomeClient = link.getPoppedWelcomeClient();
-				
-					setPlayerId(welcomeClient->playerId);
-					
-					return true;
-				}
-				else
-				{
-					assert(false);
-				}
-			}
-		}
-		
-		return false;
 	}
 
 	void Client::addPlayer(const Color &playerColor, const Pos &playerPos)

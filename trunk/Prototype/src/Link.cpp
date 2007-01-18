@@ -70,7 +70,7 @@ namespace Prototype
 		return nmess;
 	}
 
-	// returns if at lesat 1 message on recieve queue
+	// returns if at least 1 message on recieve queue
 	bool Link::hasMessageOnQueue() const
 	{
 		return getNMessages() >= 1;
@@ -86,6 +86,7 @@ namespace Prototype
 		assert(hasMessageOnQueue());
 		poppedMessage = messageReciever->popMessage();
 		hasPoppedMessage = true;
+
 		return poppedMessage.type;
 	}
 
