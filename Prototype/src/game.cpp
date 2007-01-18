@@ -28,11 +28,6 @@ namespace Prototype
 	{
 		timeHandler.reset();
 
-		Color color1 = Color(0.0f, 1.0f, 0.0f);							// handle by packet
-		Color color2 = Color(1.0f, 0.0f, 0.0f);							// handle by packet
-		Pos startPos(200.0f, 200.0f);									// handle by packet
-		Pos startPos2(200.0f, 250.0f);									// handle by packet
-
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
 
@@ -54,8 +49,6 @@ namespace Prototype
 		
 		client2.setConnection(sender4, reciever3);
 		client2.setColor(Color(1.0f, 0.0f, 0.0f));
-
-
 
 
 		
@@ -83,12 +76,19 @@ namespace Prototype
 			// Loop at client 2
 			// --------------
 			client2Connected = client2.initConnection();
-		}		
+		}
+		
 
 /*
 		// ----------------------------------------------------
 		// NOT NEEDED ANY MORE. IS KEPT HERE FOR DEBUG PURPOSE.
 		// ----------------------------------------------------
+
+		Color color1 = Color(0.0f, 1.0f, 0.0f);							// handle by packet
+		Color color2 = Color(1.0f, 0.0f, 0.0f);							// handle by packet
+		Pos startPos(200.0f, 200.0f);									// handle by packet
+		Pos startPos2(200.0f, 250.0f);									// handle by packet
+
 		Link link = Link(sender1, reciever2);
 		size_t playerId = server.addClient(color1, link);
 		server.addPlayerObj(playerId, startPos);						// handle by packet
@@ -132,8 +132,6 @@ namespace Prototype
 	{
 		//glClear(GL_COLOR_BUFFER_BIT);
 
-
-		// rendering the same client to both render areas
 		glDisable(GL_LIGHTING);
 
 		glViewport(0, h/4, w/2, h*3/4);
@@ -145,7 +143,6 @@ namespace Prototype
 		// guichan
 		//glViewport(0, 0, w, h); 
 		//gui.gui->draw();
-
 
 
 		draw(time);
