@@ -189,10 +189,10 @@ namespace Prototype
 		{
 			Pos hitPos(projectileLine.getPosAlong(minHitDist));
 
-			// debug render hit pos
-			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-			Rectangle crossBox(hitPos, 15.0f);	
-			WorldRenderer::renderRectangle(crossBox, GL_QUADS);
+			//// debug render hit pos
+			//glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+			//Rectangle crossBox(hitPos, 15.0f);	
+			//WorldRenderer::renderRectangle(crossBox, GL_QUADS);
 
 			// Apply damage
 			playerObjIt = playerObjs->begin();

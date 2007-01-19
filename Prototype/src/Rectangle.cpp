@@ -27,28 +27,24 @@ namespace Prototype
 				(pos.y > getBottom()) && (pos.y < getTop());
 	}
 
-	Line Rectangle::getLeftLine() const
-	{		
-		Vec ext(0.0f, size.y);
-		return Line(getBottomLeft(), ext);
+	OrthogonalLine Rectangle::getLeftLine() const
+	{
+		return OrthogonalLine(OrthogonalLine::Y_AXIS, getBottomLeft(), size.y);
 	}
 
-	Line Rectangle::getRightLine() const
+	OrthogonalLine Rectangle::getRightLine() const
 	{
-		Vec ext(0.0f, size.y);
-		return Line(getBottomRight(), ext);
+		return OrthogonalLine(OrthogonalLine::Y_AXIS, getBottomRight(), size.y);
 	}
 
-	Line Rectangle::getTopLine() const
+	OrthogonalLine Rectangle::getTopLine() const
 	{
-		Vec ext(size.x, 0.0f);
-		return Line(getTopLeft(), ext);
+		return OrthogonalLine(OrthogonalLine::X_AXIS, getTopLeft(), size.x);
 	}
 
-	Line Rectangle::getBottomLine() const
+	OrthogonalLine Rectangle::getBottomLine() const
 	{
-		Vec ext(size.x, 0.0f);
-		return Line(getBottomLeft(), ext);
+		return OrthogonalLine(OrthogonalLine::X_AXIS, getBottomLeft(), size.x);
 	}
 
 };
