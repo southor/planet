@@ -152,7 +152,7 @@ namespace Prototype
 		top->add(checkBox1, 500, 130);
 		top->add(checkBox2, 500, 150);
 		top->add(radioButton1, 500, 200);
-		top->add(radioButton2, 500, 220);
+			top->add(radioButton2, 500, 220);
 		top->add(radioButton3, 500, 240);
 		top->add(slider, 500, 300);
 		top->add(window, 100, 350);
