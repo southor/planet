@@ -2,7 +2,7 @@
 #define __rectangle_h__
 
 #include "basic.h"
-#include "Line.h"
+#include "OrthogonalLine.h"
 
 namespace Prototype
 {
@@ -35,10 +35,10 @@ namespace Prototype
 		inline Pos getTopLeft() const							{ return Pos(getLeft(), getTop()); }		
 		inline Pos getBottomLeft() const						{ return pos; }
 
-		Line getLeftLine() const;
-		Line getRightLine() const;
-		Line getTopLine() const;
-		Line getBottomLine() const;
+		OrthogonalLine getLeftLine() const;
+		OrthogonalLine getRightLine() const;
+		OrthogonalLine getTopLine() const;
+		OrthogonalLine getBottomLine() const;
 
 
 		bool overlapping(const Rectangle &rectangle);

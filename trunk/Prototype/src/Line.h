@@ -2,7 +2,7 @@
 #define __line_h__
 
 //#include <cmath>
-#include "basic.h"
+#include "OrthogonalLine.h"
 
 namespace Prototype
 {
@@ -22,6 +22,9 @@ namespace Prototype
 
 		inline Line(float x, float y, float ex, float ey) : pos(x, y), ext(ex, ey)		{}
 
+		inline Line(OrthogonalLine orthogonalLine) : pos(orthogonalLine.pos), ext(orthogonalLine.getExtVec())
+		{}
+
 		// @return A normalized direction vector
 		inline Vec getDirection()
 		{
@@ -36,8 +39,9 @@ namespace Prototype
 
 		bool crossingRectangle(const Rectangle & rectangle);
 
-		// @return position along line
-		float crossPoint(const Line &line);
+		////@return position along line
+		//float crossPoint(const Line &line);
+		float crossPoint(OrthogonalLine line);
 
 		// @return position along line
 		float minCrossPoint(const Rectangle &rectangle);
@@ -48,11 +52,11 @@ namespace Prototype
 			return (d >= 0.0f) && (d <= 1.0f);
 		}
 
-		inline bool crossing(const Line &line)
-		{
-			float d = crossPoint(line);
-			return crossing(d);			
-		}
+		//inline bool crossing(const Line &line)
+		//{
+		//	float d = crossPoint(line);
+		//	return crossing(d);			
+		//}
 
 		// @param d position along line
 		inline Pos getPosAlong(float d)
