@@ -15,7 +15,7 @@ namespace Prototype
 	Game::Game()
 	{
 		init();
-		//gui.init();
+		gui.init();
 		running = true;
 	}
 
@@ -119,7 +119,7 @@ namespace Prototype
 			server.logic();
 			
 			// guichan
-			//gui.gui->logic();
+			gui.gui->logic();
 
 			// RENDER
 			render(0.0f);
@@ -141,7 +141,7 @@ namespace Prototype
 		client2.render();
 
 		// guichan
-		//glViewport(0, 0, w, h); 
+		glViewport(0, 0, w, h); 
 		//gui.gui->draw();
 
 
@@ -299,7 +299,7 @@ namespace Prototype
 			} // end switch
 
 			// Pass event to guichan
-			//gui.input->pushInput(event);
+			gui.input->pushInput(event);
 		} // end while
 		
 	}

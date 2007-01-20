@@ -62,18 +62,19 @@ namespace Prototype
 	// ------------------------------------- recieving messages ---------------------------
 	// ------------------------------------------------------------------------------------
 
-	// returns number of recieve messages on the queue
-	int Link::getNMessages() const
-	{
-		assert(messageReciever);
-		int nmess = messageReciever->getNMessages();
-		return nmess;
-	}
+	//// returns number of recieve messages on the queue
+	//int Link::getNMessages() const
+	//{
+	//	assert(messageReciever);
+	//	int nmess = messageReciever->getNMessages();
+	//	return nmess;
+	//}
 
 	// returns if at least 1 message on recieve queue
 	bool Link::hasMessageOnQueue() const
 	{
-		return getNMessages() >= 1;
+		//return getNMessages() >= 1;
+		return messageReciever->hasMessageOnQueue();
 	}
 
 	// returns the type member of the popped message, (will destroy the last message)		

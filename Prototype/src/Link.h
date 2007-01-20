@@ -225,7 +225,7 @@ namespace Prototype
 
 		// --------------------------------- recieving messages ------------------------------
 
-		int getNMessages() const; // returns number of recieve messages on the queue
+		//int getNMessages() const; // returns number of recieve messages on the queue
 		bool hasMessageOnQueue() const; // returns true if at least 1 message is on recieve queue
 		int popMessage(); // returns the type member of the popped message, (will destroy the last message)	
 		int getPoppedType() const; // returns the type member of the popped message		

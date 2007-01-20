@@ -81,10 +81,7 @@ namespace Prototype
 		gcn::RadioButton* radioButton2;
 		gcn::RadioButton* radioButton3;
 		gcn::Slider* slider;                 // A slider
-		gcn::Image *image;                   // An image for the icon
 		gcn::Window *window;
-		gcn::Image *darkbitsImage;
-		gcn::Icon* darkbitsIcon;
 		gcn::ScrollArea* nestedScrollArea;
 		gcn::Container* nestedContainer;
 		gcn::Slider* nestedSlider;
