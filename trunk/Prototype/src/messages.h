@@ -64,6 +64,8 @@ namespace Prototype
 		//int getNMessages();
 
 		bool hasMessageOnQueue();
+
+		void setSimulatedLag(int lag)			{ assert(lag >= 0); this->lag = lag; }
 		
 		void putMessageToLagQueue(const Message &message);
 		Message popMessage();
