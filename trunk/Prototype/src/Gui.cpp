@@ -20,7 +20,6 @@ namespace Prototype
 		 */
 		delete top;
 		delete label;
-		delete icon;
 		delete button;
 		delete textField;
 		delete textBox;
@@ -34,8 +33,6 @@ namespace Prototype
 		delete radioButton3;
 		delete slider;
 		delete window;
-		delete darkbitsIcon;
-		delete darkbitsImage;
 		delete nestedScrollArea;
 		delete nestedContainer;
 		delete nestedSlider;
@@ -92,9 +89,6 @@ namespace Prototype
 		 */
 		label = new gcn::Label("Label");
 
-		image = gcn::Image::load("gui-chan.bmp");
-		icon = new gcn::Icon(image);
-
 		button = new gcn::Button("Button");
 
 		textField = new gcn::TextField("Text field");
@@ -123,9 +117,6 @@ namespace Prototype
 		window = new gcn::Window("I am a window  Drag me");
 		window->setBaseColor(gcn::Color(255, 150, 200, 190));
 
-		darkbitsImage = gcn::Image::load("darkbitslogo_by_haiko.bmp");
-		darkbitsIcon = new gcn::Icon(darkbitsImage);
-		window->add(darkbitsIcon);
 		window->resizeToContent();
 
 		nestedSlider = new gcn::Slider(0, 10);
@@ -143,7 +134,6 @@ namespace Prototype
 		 * Add them to the top container
 		 */
 		top->add(label, 10, 10);
-		top->add(icon, 10, 30);
 		top->add(button, 200, 10);
 		top->add(textField, 250, 10);
 		top->add(textBoxScrollArea, 200, 50);

@@ -5,6 +5,8 @@
 
 #include "basic.h"
 
+#include <deque>
+
 namespace Prototype
 {
 	//class Message
@@ -39,14 +41,33 @@ namespace Prototype
 
 	class MessageReciever
 	{
+	private:
+		struct LagMessage
+		{
+			Message message;
+			int time;
+			
+			LagMessage(const Message &message, int time)
+				: message(message), time(time)
+			{}
+		};
+
+		int lag;
+		std::deque<LagMessage> lagQueue;
+
 	public:
-		MessageReciever()				{}
+
+		MessageReciever() : lag(0)		{}
 		virtual ~MessageReciever()		{}
 		
-		// Get number of messages recieved.
-		virtual int getNMessages() = 0;		
+		//// Get number of messages recieved.
+		//int getNMessages();
+
+		bool hasMessageOnQueue();
 		
-		virtual Message popMessage() = 0;
+		void putMessageToLagQueue(const Message &message);
+		Message popMessage();
+		
 	};
 
 	class MessageSender
