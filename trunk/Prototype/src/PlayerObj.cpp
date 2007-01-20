@@ -27,4 +27,17 @@ namespace Prototype
 		rectangle.pos = this->pos - size/2.0f;
 		rectangle.size = size;
 	}
+
+	void PlayerObj::hurt(int damage)
+	{
+		health -= damage;
+		//if (health <= 0) nDeaths++;
+	}
+
+	void PlayerObj::respawn(const Pos &respawnPos)
+	{ 
+		assert(isDead());
+		this->pos = respawnPos;
+		health = 100;
+	}
 }

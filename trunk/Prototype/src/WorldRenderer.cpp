@@ -9,6 +9,9 @@
 namespace Prototype
 {
 
+	const float WorldRenderer::Explosion::BULLET_EXPLOSION_SIZE = 10.0f;
+	const float WorldRenderer::Explosion::ROCKET_EXPLOSION_SIZE = 25.0f;
+
 	// --------------------------------------------------------------------------------------
 	// ----------------------------------   WorldRenderer  ----------------------------------
 	// --------------------------------------------------------------------------------------
@@ -49,9 +52,22 @@ namespace Prototype
 		ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);
 		ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderGameObj);
 		ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderGameObj);
-		//std::for_each(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);
-		//std::for_each(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderGameObj);
-		//std::for_each(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderGameObj);
+		
+		//render explosion
+		ForEach(explosions.begin(), explosions.end(), renderGameObj);
+		explosions.clear();
+	}
+
+	void WorldRenderer::projectileHit(Projectile *projectile, const Pos &hitPos)
+	{
+		float size;
+		Color color = Color::BLACK;
+
+		if (projectile->getType() == Projectile::BULLET) size = Explosion::BULLET_EXPLOSION_SIZE;
+		else if (projectile->getType() == Projectile::ROCKET) size = Explosion::ROCKET_EXPLOSION_SIZE;
+		
+		Explosion explosion = {hitPos, size, color};
+		explosions.push_back(explosion);
 	}
 
 	void WorldRenderer::renderRectangle(const Rectangle &rect, GLenum mode)
@@ -158,6 +174,14 @@ namespace Prototype
 		Color color(projectileColors[type]);
 		glColor4f(color.r, color.g, color.b, projectileAlphas[type]);
 		WorldRenderer::renderLine(line, projectileWidths[type], projectileAlphas[type]);
+	}
+
+	void WorldRenderer::RenderGameObj::operator ()(const Explosion &explosion)
+	{
+		const Color &color = explosion.color;
+		glColor4f(color.r, color.g, color.b, 0.3f);
+		Rectangle explosionRectangle(explosion.pos, explosion.size);
+		WorldRenderer::renderRectangle(explosionRectangle, GL_QUADS);
 	}
 	
 

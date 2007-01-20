@@ -42,9 +42,10 @@ namespace Prototype
 
 		inline float getSpeed() const				{ return properties[type].speed; }
 		inline int getDirectDamage() const			{ return properties[type].directDamage; }
-		//inline int getBlastDamage() const			{ return properties[type].blastDamage; }
-		int getBlastDamage(const Pos &pos) const;
-		//inline float getBlastDistance() const		{ return properties[type].blastDistance; }
+		
+		// @param blastPos The d-position along the line, 0.0 is beginning of line, 1.0 is end of line
+		int getBlastDamage(float blastPos, const Pos &targetPos) const;
+		
 		size_t getShooterId() const					{ return shooterId; }
 
 	private:

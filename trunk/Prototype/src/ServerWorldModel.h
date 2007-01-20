@@ -18,11 +18,14 @@ namespace Prototype
 		//typedef std::list<Projectile*> ServerProjectileContainer;
 		typedef IdMap<size_t, Obstacle*> ServerObstacleContainer;
 		typedef IdMap<size_t, PlayerObj*> ServerPlayerObjContainer;
-		typedef IdMap<size_t, Projectile*> ServerProjectileContainer;
+		typedef IdMap<size_t, Projectile*> ServerProjectileContainer;		
 
 		ServerObstacleContainer obstacles;
 		ServerPlayerObjContainer playerObjs;
 		ServerProjectileContainer projectiles;
+
+		typedef std::vector<Pos> RespawnPoss;
+		RespawnPoss respawnPoss;
 
 		class Move
 		{
@@ -31,21 +34,22 @@ namespace Prototype
 			float deltaTime; // Time in milliseconds since last move.
 			ServerPlayers *players;
 			ServerPlayerObjContainer *playerObjs;
-			std::vector<size_t> projectilesHit;
+			std::vector<RemoveProjectile> projectilesHit;
+			RespawnPoss *respawnPoss;
 
 			Obstacle* findAnyOverlap(const Rectangle &rectangle);
 		public:
 			// @param deltaTime Time in milliseconds since last move.
-			Move(ServerObstacleContainer *obstacles, float deltaTime)
-				: obstacles(obstacles), deltaTime(deltaTime), players(0), playerObjs(0)
+			Move(ServerObstacleContainer *obstacles, ServerPlayers *players, ServerPlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
+				: obstacles(obstacles), players(players), playerObjs(playerObjs), respawnPoss(respawnPoss), deltaTime(deltaTime)
 			{}
 
 			// @param deltaTime Time in milliseconds since last move.
-			Move(ServerObstacleContainer *obstacles, float deltaTime, ServerPlayers *players, ServerPlayerObjContainer *playerObjs)
-				: obstacles(obstacles), deltaTime(deltaTime), players(players), playerObjs(playerObjs)
+			Move(ServerObstacleContainer *obstacles, float deltaTime)
+				: obstacles(obstacles), players(0), playerObjs(0), respawnPoss(0), deltaTime(deltaTime)
 			{}
 
-			inline std::vector<size_t>& getProjectilesHit()	
+			inline std::vector<RemoveProjectile>& getProjectilesHit()	
 			{
 				return projectilesHit;
 			}
@@ -69,6 +73,8 @@ namespace Prototype
 
 		void addPlayerObj(size_t playerId, const Pos &playerPos);
 		size_t addObstacle(const Rectangle &obstacleArea);
+
+		void addRespawnPos(Pos pos)						{ respawnPoss.push_back(pos); }
 		
 		void updatePlayerObjMovements(float deltaTime);
 		void updateProjectileMovements(float deltaTime, ServerPlayers &players);

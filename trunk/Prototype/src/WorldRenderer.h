@@ -20,6 +20,7 @@ namespace Prototype
 
 		void setupProjection();
 		void render(WorldModel &worldModel, Players &players, PlayerObj *localPlayerObj);
+		void projectileHit(Projectile *projectile, const Pos &hitPos);
 
 		static void renderRectangle(const Rectangle &rect, GLenum mode);
 		static void renderLine(const Line &line, float lineWidth, float alpha);
@@ -27,6 +28,17 @@ namespace Prototype
 	private:
 
 		RenderMode renderMode;
+
+		struct Explosion
+		{
+			static const float BULLET_EXPLOSION_SIZE;
+			static const float ROCKET_EXPLOSION_SIZE;
+
+			Pos pos;
+			float size;
+			Color color;
+		};
+		std::vector<Explosion> explosions;
 		
 
 		// Functor for rendering a game object
@@ -39,12 +51,13 @@ namespace Prototype
 			RenderGameObj(Players *players) : players(players)
 			{}
 
-			//void operator ()(const Obstacle* obstacle);
-			//void operator ()(const PlayerObj* playerObj);
-			//void operator ()(const Projectile* projectile);
+			// game objects
 			void operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair);
 			void operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair);
 			void operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair);
+			
+			// visual effects
+			void operator ()(const Explosion &explosion);
 		};
 
 

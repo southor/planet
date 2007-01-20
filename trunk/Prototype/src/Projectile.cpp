@@ -20,14 +20,17 @@ namespace Prototype
 		return line;
 	}
 
-	int Projectile::getBlastDamage(const Pos &pos) const
+	int Projectile::getBlastDamage(float blastPos, const Pos &targetPos) const
 	{
-		float distance = tmax(abs(this->pos.x - pos.x), abs(this->pos.y - pos.y));		
+		assert(properties[type].blastDistance >= 0.0f);
+		
+		Pos blastPos2(getLine().getPosAlong(blastPos));
+		float distance = tmax(abs(blastPos2.x - targetPos.x), abs(blastPos2.y - targetPos.y));		
 		float blastDistance = properties[type].blastDistance;
-		float blastDamage = 0.0f;
+		int blastDamage = 0;
 		if (distance < blastDistance)
 		{
-			blastDamage = properties[type].blastDamage * tmax(0.0f, (1.0f - (distance / blastDistance)));
+			blastDamage = static_cast<int>(properties[type].blastDamage * (1.0f - distance / blastDistance)) + 1;
 		}
 		return blastDamage;
 	}
