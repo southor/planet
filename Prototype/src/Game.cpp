@@ -34,15 +34,19 @@ namespace Prototype
 		// Initialize virtual conn3ections
 		MessageSender *sender1 = virtualConnection1.getMessageSender();
 		MessageReciever *reciever1 = virtualConnection1.getMessageReciever();
+		reciever1->setSimulatedLag(50);
 
 		MessageSender *sender2 = virtualConnection2.getMessageSender();
 		MessageReciever *reciever2 = virtualConnection2.getMessageReciever();
+		reciever2->setSimulatedLag(50);
 
 		MessageSender *sender3 = virtualConnection3.getMessageSender();
 		MessageReciever *reciever3 = virtualConnection3.getMessageReciever();
+		reciever3->setSimulatedLag(50);
 
 		MessageSender *sender4 = virtualConnection4.getMessageSender();
 		MessageReciever *reciever4 = virtualConnection4.getMessageReciever();
+		reciever4->setSimulatedLag(50);
 
 		client1.setConnection(sender2, reciever1);
 		client1.setColor(Color(0.0f, 1.0f, 0.0f));
