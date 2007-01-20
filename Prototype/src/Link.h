@@ -10,7 +10,7 @@ namespace Prototype
 
 	enum MessageTypes
 	{
-		UPDATE_PLAYER_OBJ = 0,
+		UPDATE_PLAYER_OBJ = 0, // ?
 		ADD_PLAYER_OBJ,		
 		ADD_OBSTACLE,
 		WELCOME_CLIENT,
@@ -19,6 +19,7 @@ namespace Prototype
 		ADD_PROJECTILE,
 		UPDATE_PROJECTILE,
 		REMOVE_PROJECTILE,
+		KILL,
 		USER_CMD,
 		SHOOT_CMD,
 	};
@@ -102,8 +103,21 @@ namespace Prototype
 	struct RemoveProjectile
 	{
 		size_t projectileId;
+		Pos hitPosition;
 
-		RemoveProjectile(size_t projectileId) : projectileId(projectileId)
+		RemoveProjectile(size_t projectileId, Pos hitPosition)
+			: projectileId(projectileId), hitPosition(hitPosition)
+		{}
+	};
+
+	struct Kill
+	{
+		size_t killerId;
+		size_t killedId;
+		Pos respawnPos;
+
+		Kill(size_t killerId, size_t killedId, Pos respawnPos)
+			: killerId(killerId), killedId(killedId), respawnPos(respawnPos)
 		{}
 	};
 
@@ -202,6 +216,7 @@ namespace Prototype
 		void pushMessage(const AddProjectile &addProjectile) const			{ pushMessage(ADD_PROJECTILE, new AddProjectile(addProjectile)); }
 		void pushMessage(const UpdateProjectile &updateProjectile) const	{ pushMessage(UPDATE_PROJECTILE, new UpdateProjectile(updateProjectile)); }
 		void pushMessage(const RemoveProjectile &removeProjectile) const	{ pushMessage(REMOVE_PROJECTILE, new RemoveProjectile(removeProjectile)); }
+		void pushMessage(const Kill &kill) const							{ pushMessage(KILL, new Kill(kill)); }
 		
 		void pushMessage(const InitClient &initClient) const				{ pushMessage(INIT_CLIENT, new InitClient(initClient)); }
 		void pushMessage(const WelcomeClient &welcomeClient) const			{ pushMessage(WELCOME_CLIENT, new WelcomeClient(welcomeClient)); }
@@ -224,6 +239,7 @@ namespace Prototype
 		AddProjectile* getPoppedAddProjectile() const			{ return reinterpret_cast<AddProjectile*>(getPoppedData()); }
 		UpdateProjectile* getPoppedUpdateProjectile() const		{ return reinterpret_cast<UpdateProjectile*>(getPoppedData()); }
 		RemoveProjectile* getPoppedRemoveProjectile() const		{ return reinterpret_cast<RemoveProjectile*>(getPoppedData()); }
+		Kill* getPoppedKill() const								{ return reinterpret_cast<Kill*>(getPoppedData()); }
 		InitClient* getPoppedInitClient() const					{ return reinterpret_cast<InitClient*>(getPoppedData()); }
 		WelcomeClient* getPoppedWelcomeClient() const			{ return reinterpret_cast<WelcomeClient*>(getPoppedData()); }
 

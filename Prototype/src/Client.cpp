@@ -76,7 +76,15 @@ namespace Prototype
 			}
 			else if (messageType == REMOVE_PROJECTILE)
 			{
-				worldModel.getProjectiles().remove(link.getPoppedRemoveProjectile()->projectileId);
+				RemoveProjectile *removeProjectile = link.getPoppedRemoveProjectile();
+				worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
+				worldModel.getProjectiles().remove(removeProjectile->projectileId);
+				
+			}
+			else if (messageType == KILL)
+			{
+				Kill *kill = link.getPoppedKill();
+				(worldModel.getPlayerObjs())[kill->killedId]->pos = kill->respawnPos;
 			}
 		}
 

@@ -34,18 +34,17 @@ namespace Prototype
 
 	void ServerWorldModel::updateProjectileMovements(float deltaTime, ServerPlayers &players)
 	{
-		Move move(&obstacles, deltaTime, &players, &(getPlayerObjs()));
+		Move move(&obstacles, &players, &(getPlayerObjs()), &respawnPoss, deltaTime);
 		ForEach(projectiles.begin(), projectiles.end(), move);
 		
-		std::vector<size_t>::iterator it = move.getProjectilesHit().begin();
-		std::vector<size_t>::iterator end = move.getProjectilesHit().end();
+		std::vector<RemoveProjectile>::iterator it = move.getProjectilesHit().begin();
+		std::vector<RemoveProjectile>::iterator end = move.getProjectilesHit().end();
 		for(; it != end ; ++it)
 		{
-			projectiles.remove(*it);
+			projectiles.remove(it->projectileId);
 			
-			// send message
-			RemoveProjectile removeProjectile(*it);
-			pushMessageToAll(players, removeProjectile);
+			// send message			
+			pushMessageToAll(players, *it);
 		}
 	}
 
@@ -185,7 +184,7 @@ namespace Prototype
 		
 
 		
-		if (minHitDist <= 1.0f) // was a hit?
+		if (minHitDist <= 1.0f) // did hit any object?
 		{
 			Pos hitPos(projectileLine.getPosAlong(minHitDist));
 
@@ -194,25 +193,54 @@ namespace Prototype
 			//Rectangle crossBox(hitPos, 15.0f);	
 			//WorldRenderer::renderRectangle(crossBox, GL_QUADS);
 
-			// Apply damage
+			// Calculate and apply damage to playerobjects
 			playerObjIt = playerObjs->begin();
 			playerObjEnd = playerObjs->end();		
 			for(; playerObjIt != playerObjEnd; ++playerObjIt)
 			{
+				size_t targetPlayerId = playerObjIt->first;
 				PlayerObj *playerObj = playerObjIt->second;
-				float blastDamage = projectile->getBlastDamage(playerObj->getPos());
-				float directDamage = hitPlayerObj ? projectile->getDirectDamage() : 0.0f;
-				float totalDamage = blastDamage + directDamage;
-				if (totalDamage > 0.0f)
-				{					
-					playerObj->health -= static_cast<int>(totalDamage);
-					// TODO check if playerObj died
-						//TODO send die message to all players if died
+
+				// calculate damage
+				int damage;
+				if (hitPlayerObj && (targetPlayerId == playerIdHit))
+				{
+					// direct hit damage
+					damage = projectile->getDirectDamage();
+				}
+				else
+				{
+					// blast damage
+					damage = projectile->getBlastDamage(minHitDist, playerObj->getPos());
+				}
+				
+				// apply damage to playerobject
+				if (damage > 0)
+				{
+					playerObj->hurt(damage);	
+					if (playerObj->isDead())
+					{
+						// player was kiled
+						size_t killerId = projectile->getShooterId();
+						//++((*playerObjs)[killerId]->frags);
+						
+						// produce an unpredictable respawn place
+						Pos tmpPos = playerObj->pos.x + projectile->pos;
+						size_t respawnPosId = static_cast<size_t>(abs(playerObj->health + static_cast<int>(tmpPos.x + tmpPos.y))) % respawnPoss->size();
+						
+						Pos &respawnPos = (*respawnPoss)[respawnPosId];						
+						playerObj->respawn(respawnPos);
+
+						// send kill message to all players
+						Kill kill(killerId, targetPlayerId, respawnPos);
+						pushMessageToAll(*players, kill);
+					}
 				}
 			}
 
-			// Add to projectile hit list (will be removed)
-			projectilesHit.push_back(projectilePair.first);
+			// remove projectile later
+			RemoveProjectile removeProjectile(projectilePair.first, hitPos);
+			projectilesHit.push_back(removeProjectile);
 			
 		}
 		

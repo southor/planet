@@ -30,7 +30,13 @@ namespace Prototype
 
 		Pos getPos() const			{ return pos; }
 		void getRectangle(Rectangle &rectangle) const;
-		//size_t getPlayerId() const		{ return playerId; }
+		//size_t getPlayerId() const		{ return playerId; }	
+
+		void hurt(int damage);
+
+		bool isDead()			{ return health <= 0; }
+
+		void respawn(const Pos &respawnPos);
 	};
 };
 

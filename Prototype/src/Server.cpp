@@ -10,6 +10,11 @@ namespace Prototype
 		worldModel.addObstacle(obstacleArea);
 		obstacleArea.pos.x = 300.0f;
 		worldModel.addObstacle(obstacleArea);
+
+		Pos respawnPos1(50.0f, 250.0f);
+		Pos respawnPos2(300.0f, 250.0f);
+		worldModel.addRespawnPos(respawnPos1);
+		worldModel.addRespawnPos(respawnPos2);
 	}
 
 	bool Server::clientConnected(MessageSender *messageSender, MessageReciever *messageReciever)
