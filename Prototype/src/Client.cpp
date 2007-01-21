@@ -32,89 +32,188 @@ namespace Prototype
 
 	void Client::logic()
 	{
+		timeHandler.nextStep();
+		
 		// Read messages from server
 		while(link.hasMessageOnQueue())
 		{
 			int messageType = link.popMessage();
-			if (messageType == UPDATE_PLAYER_OBJ)
+			switch(messageType)
 			{
-				UpdatePlayerObj *updatePlayerObj = link.getPoppedUpdatePlayerObj();
-				
-				//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
-				PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
-				playerObj->pos = updatePlayerObj->pos;
-				
-				if (playerId != updatePlayerObj->playerId)
+			case UPDATE_PLAYER_OBJ:
 				{
-					playerObj->angle = updatePlayerObj->angle;
+					UpdatePlayerObj *updatePlayerObj = link.getPoppedUpdatePlayerObj();
+					
+					//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
+					PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
+					playerObj->pos = updatePlayerObj->pos;
+					
+					if (playerId != updatePlayerObj->playerId)
+					{
+						playerObj->angle = updatePlayerObj->angle;
+					}
 				}
-			}
-			else if (messageType == ADD_PLAYER_OBJ)
-			{
-				AddPlayerObj *addPlayerObj = link.getPoppedAddPlayerObj();
-				addPlayer(addPlayerObj->color, addPlayerObj->pos);
+				break;
+			case ADD_PLAYER_OBJ:
+				{
+					AddPlayerObj *addPlayerObj = link.getPoppedAddPlayerObj();
+					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos);				
 
-				if (connectionPhase == 2) connectionPhase++; 
-			}
-			else if (messageType == ADD_OBSTACLE)
-			{
-				AddObstacle *addObstacle = link.getPoppedAddObstacle();
-				worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
-				
-				if (connectionPhase == 3) connectionPhase++; 
-			}
-			else if (messageType == ADD_PROJECTILE)
-			{
-				AddProjectile *addProjectile = link.getPoppedAddProjectile();
-				worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
-			}
-			else if (messageType == UPDATE_PROJECTILE)
-			{
-				UpdateProjectile *updateProjectile = link.getPoppedUpdateProjectile();
-				Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
-				projectile->pos = updateProjectile->pos;
-			}
-			else if (messageType == REMOVE_PROJECTILE)
-			{
-				RemoveProjectile *removeProjectile = link.getPoppedRemoveProjectile();
-				worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
-				worldModel.getProjectiles().remove(removeProjectile->projectileId);
-				
-			}
-			else if (messageType == KILL)
-			{
-				Kill *kill = link.getPoppedKill();
-				(worldModel.getPlayerObjs())[kill->killedId]->pos = kill->respawnPos;
-			}
+					if (connectionPhase == 2) connectionPhase++; 
+				}
+				break;
+			case ADD_OBSTACLE:
+				{
+					AddObstacle *addObstacle = link.getPoppedAddObstacle();
+					worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
+					
+					if (connectionPhase == 3) connectionPhase++; 
+				}
+				break;
+			case ADD_PROJECTILE:
+				{
+					AddProjectile *addProjectile = link.getPoppedAddProjectile();
+					worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
+				}
+				break;
+			case UPDATE_PROJECTILE:
+				{
+					UpdateProjectile *updateProjectile = link.getPoppedUpdateProjectile();
+					Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
+					projectile->pos = updateProjectile->pos;
+				}
+				break;
+			case REMOVE_PROJECTILE:
+				{
+					RemoveProjectile *removeProjectile = link.getPoppedRemoveProjectile();
+					worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
+					worldModel.getProjectiles().remove(removeProjectile->projectileId);					
+				}
+				break;
+			case KILL:
+				{
+					Kill *kill = link.getPoppedKill();
+					PlayerObj *killer = (worldModel.getPlayerObjs())[kill->killerId];
+					PlayerObj *killed = (worldModel.getPlayerObjs())[kill->killedId];
+					killed->pos = kill->respawnPos;
+					killed->setAmmoSupply(static_cast<int>(killed->pos.x + killed->pos.y + killer->pos.x + killer->pos.y));
+				}
+				break;
+			case START_GAME:
+				timeHandler.reset();
+				break;
+			default:
+				break;
+			};
+
+			//if (messageType == UPDATE_PLAYER_OBJ)
+			//{
+			//	UpdatePlayerObj *updatePlayerObj = link.getPoppedUpdatePlayerObj();
+			//	
+			//	//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
+			//	PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
+			//	playerObj->pos = updatePlayerObj->pos;
+			//	
+			//	if (playerId != updatePlayerObj->playerId)
+			//	{
+			//		playerObj->angle = updatePlayerObj->angle;
+			//	}
+			//}
+			//else if (messageType == ADD_PLAYER_OBJ)
+			//{
+			//	AddPlayerObj *addPlayerObj = link.getPoppedAddPlayerObj();
+			//	addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos);				
+
+			//	if (connectionPhase == 2) connectionPhase++; 
+			//}
+			//else if (messageType == ADD_OBSTACLE)
+			//{
+			//	AddObstacle *addObstacle = link.getPoppedAddObstacle();
+			//	worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
+			//	
+			//	if (connectionPhase == 3) connectionPhase++; 
+			//}
+			//else if (messageType == ADD_PROJECTILE)
+			//{
+			//	AddProjectile *addProjectile = link.getPoppedAddProjectile();
+			//	worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
+			//}
+			//else if (messageType == UPDATE_PROJECTILE)
+			//{
+			//	UpdateProjectile *updateProjectile = link.getPoppedUpdateProjectile();
+			//	Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
+			//	projectile->pos = updateProjectile->pos;
+			//}
+			//else if (messageType == REMOVE_PROJECTILE)
+			//{
+			//	RemoveProjectile *removeProjectile = link.getPoppedRemoveProjectile();
+			//	worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
+			//	worldModel.getProjectiles().remove(removeProjectile->projectileId);
+			//	
+			//}
+			//else if (messageType == KILL)
+			//{
+			//	Kill *kill = link.getPoppedKill();
+			//	PlayerObj *killer = (worldModel.getPlayerObjs())[kill->killerId];
+			//	PlayerObj *killed = (worldModel.getPlayerObjs())[kill->killedId];
+			//	killed->pos = kill->respawnPos;
+			//	killed->setAmmoSupply(static_cast<int>(killed->pos.x + killed->pos.y + killer->pos.x + killer->pos.y));
+			//}
 		}
 
 		if (connectionPhase == 4)
 		{
 			handleEvents();
+			int time = timeHandler.getStepTime();
 
-			if (kh.isPressed(CMD_SHOOT))
+			
+
+			//if (kh.isPressed(CMD_SHOOT))
+			//{
+			//	ShootCmd shootCmd = {playerId};
+			//	
+			//	link.pushMessage(shootCmd);
+			//	link.transmit();
+			//}
+
+			PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+
+			if (kh.isPressed(CMD_SWITCH_WEAPON))
 			{
-				ShootCmd shootCmd = {playerId};
-				
-				link.pushMessage(shootCmd);
-				link.transmit();
+				playerObj->switchWeapon();
+			}
+			
+			bool wasKeyEvent = kh.changePressedToDownState() || kh.changeReleasedToUpState();
+
+			// handle shooting
+			if (kh.isDown(CMD_SHOOT))
+			{					
+				if (playerObj->canShoot(time))
+				{
+					Projectile::Type weapon = playerObj->getCurrentWeapon();
+					playerObj->shoot(time);
+					ShootCmd shootCmd(playerId, weapon);
+					link.pushMessage(shootCmd);
+				}
 			}
 
 			// If some key was pressed or released send message
-			if (kh.changePressedToDownState() || kh.changeReleasedToUpState())
+			if (wasKeyEvent)
 			{
-				UserCmd userCmd;
-				
+				// handle rest of the commands
+				UserCmd userCmd;				
 				userCmd.cmdLeft = kh.isDown(CMD_LEFT);
 				userCmd.cmdRight = kh.isDown(CMD_RIGHT);
 				userCmd.cmdUp = kh.isDown(CMD_UP);
 				userCmd.cmdDown = kh.isDown(CMD_DOWN);
-				userCmd.cmdShoot = kh.isDown(CMD_SHOOT);
+				//userCmd.cmdShoot = kh.isDown(CMD_SHOOT);
 				userCmd.viewangle = ((worldModel.getPlayerObjs())[playerId])->angle;
 
 				link.pushMessage(userCmd);
-				link.transmit();
 			}
+
+			// transmit any messages
+			link.transmit();
 		}
 	}
 
@@ -191,14 +290,22 @@ namespace Prototype
 		//WorldRenderer::renderLine(bottomTest, 1.0f, 1.0f);
 	}
 
-	void Client::addPlayer(const Color &playerColor, const Pos &playerPos)
+	void Client::addPlayer(size_t playerId, const Color &playerColor, const Pos &playerPos)
 	{
-		size_t playerId = players.getSize();
+		
+		//size_t playerId = players.getSize();
 		//size_t playerObjId = playerId; // for now
 		players.add(playerId, Player(playerColor));
 		//players[playerId].playerObjId = playerObjId;
 		//worldModel.addPlayerObj(playerId, playerObjId, playerPos);
 		worldModel.addPlayerObj(playerId, playerPos);
+		
+		// if this is me
+		if (playerId == this->playerId)
+		{
+			// set ammo supply
+			(worldModel.getPlayerObjs())[playerId]->setAmmoSupply(playerPos.x + playerPos.y);
+		}
 	}
 
 	void Client::setConnection(MessageSender *messageSender, MessageReciever *messageReciever)

@@ -246,15 +246,14 @@ namespace Prototype
 		
 	}
 
-	size_t ServerWorldModel::playerShoot(size_t playerId)
+	size_t ServerWorldModel::playerShoot(size_t playerId, Projectile::Type weapon)
 	{
 		PlayerObj *playerObj = getPlayerObjs()[playerId];
 		Pos pos(playerObj->getPos());
 		float angle = playerObj->angle;
-		Projectile::Type type = Projectile::BULLET;
 
 		size_t projectileId = getProjectiles().findFreeId();
-		getProjectiles().add(projectileId, new Projectile(type, pos, angle, playerId));
+		getProjectiles().add(projectileId, new Projectile(weapon, pos, angle, playerId));
 
 		return projectileId;
 	}

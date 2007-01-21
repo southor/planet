@@ -23,8 +23,7 @@ namespace Prototype
 		bool initConnection();
 		void render();
 		
-		//TODO not the correct way for players to be added
-		void addPlayer(const Color &playerColor, const Pos &playerPos);
+		void addPlayer(size_t playerId, const Color &playerColor, const Pos &playerPos);
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		KeyHandler* getKeyHandler();
@@ -35,6 +34,7 @@ namespace Prototype
 	private:
 		Link link;
 		size_t connectionPhase;
+		TimeHandler timeHandler;
 
 
 		KeyHandler kh;

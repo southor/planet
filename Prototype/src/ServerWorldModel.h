@@ -80,7 +80,7 @@ namespace Prototype
 		void updateProjectileMovements(float deltaTime, ServerPlayers &players);
 
 		// @retunr projectileId
-		size_t playerShoot(size_t playerId);
+		size_t playerShoot(size_t playerId, Projectile::Type weapon);
 	};
 };
 

@@ -17,8 +17,29 @@ namespace Prototype
 	PlayerObj::PlayerObj(const Pos &pos)
 		: pos(pos), angle(PI/2.0f), health(100),
 		 movingForward(false), movingBackward(false),
-		 strafingLeft(false), strafingRight(false)
-	{}
+		 strafingLeft(false), strafingRight(false),
+		 currentWeapon(0), nextShootTime(0)
+	{
+		setAmmoSupply(0);
+		if (N_WEAPONS >= 2) ammo[1] = 10;
+	}
+
+	void PlayerObj::setAmmoSupply(int seed)
+	{		
+		for(int i=0; i<N_WEAPONS; ++i)
+		{			
+			if (((seed % N_WEAPONS) == 0) || ((seed % (N_WEAPONS + 2)) == 0))
+			{
+				ammo[i] = 200 * ((seed % 4)+1) / Projectile::getDirectDamage(i);
+			}
+			else
+			{
+				ammo[i] = 0;
+			}
+		}
+		ammo[0] = 10000;
+		//ammo[1] = 10000;
+	}
 
 	void PlayerObj::getRectangle(Rectangle &rectangle) const
 	{
@@ -39,5 +60,21 @@ namespace Prototype
 		assert(isDead());
 		this->pos = respawnPos;
 		health = 100;
+	}
+
+	void PlayerObj::switchWeapon()
+	{		
+		for(int i=1; i<=N_WEAPONS; ++i)
+		{
+			currentWeapon = (currentWeapon + 1) % N_WEAPONS;
+			if (ammo[currentWeapon] > 0) break;
+		}
+	}
+	
+	void PlayerObj::shoot(int time)
+	{
+		ammo[currentWeapon]--;
+		nextShootTime = time + Projectile::getShootInterval(currentWeapon);
+		if (ammo[currentWeapon] == 0) switchWeapon();		
 	}
 }

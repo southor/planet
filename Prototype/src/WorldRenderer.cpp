@@ -99,6 +99,7 @@ namespace Prototype
 				glVertex2fv(reinterpret_cast<float*>(&endPos));				
 			glEnd();
 		glPopMatrix();
+		glLineWidth(1.0f);
 	}
 
 	void WorldRenderer::renderViewBox()

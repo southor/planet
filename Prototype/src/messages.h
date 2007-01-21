@@ -4,8 +4,10 @@
 //#include <vector>
 
 #include "basic.h"
+#include "TimeHandler.h"
 
 #include <deque>
+
 
 namespace Prototype
 {
@@ -54,6 +56,7 @@ namespace Prototype
 
 		int lag;
 		std::deque<LagMessage> lagQueue;
+		TimeHandler timeHandler;
 
 	public:
 

@@ -3,6 +3,7 @@
 
 #include "movableobj.h"
 #include "rectangle.h"
+#include "Projectile.h"
 
 namespace Prototype
 {
@@ -10,6 +11,12 @@ namespace Prototype
 	{
 	private:
 		//size_t playerId;
+		
+		static const int N_WEAPONS = Projectile::N_TYPES;
+
+		Projectile::Type currentWeapon; // used by client
+		int ammo[N_WEAPONS]; // used by client
+		int nextShootTime; // used by client
 	public:
 
 		static const float FORWARD_BACKWARD_SPEED;
@@ -37,6 +44,14 @@ namespace Prototype
 		bool isDead()			{ return health <= 0; }
 
 		void respawn(const Pos &respawnPos);
+
+		// memberfunctions used by client
+		inline Projectile::Type getCurrentWeapon() const	{return currentWeapon; }
+		void setAmmoSupply(int seed);
+		void switchWeapon();
+		inline bool canShoot(int time) const				{ return (ammo[currentWeapon] > 0) && (nextShootTime <= time); }
+		void shoot(int time);
+
 	};
 };
 

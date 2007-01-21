@@ -18,6 +18,7 @@ namespace Prototype
 		cmds[CMD_ROTATE_LEFT] = KeyCmd(CMD_ROTATE_LEFT, SDLK_c);
 		cmds[CMD_ROTATE_RIGHT] = KeyCmd(CMD_ROTATE_RIGHT, SDLK_v);
 		cmds[CMD_SHOOT] = KeyCmd(CMD_SHOOT, SDLK_SPACE);
+		cmds[CMD_SWITCH_WEAPON] = KeyCmd(CMD_SWITCH_WEAPON, SDLK_x);
 	}
 
 	void KeyHandler::setClient2Keys()
@@ -31,6 +32,7 @@ namespace Prototype
 		cmds[CMD_ROTATE_LEFT] = KeyCmd(CMD_ROTATE_LEFT, SDLK_LEFT);
 		cmds[CMD_ROTATE_RIGHT] = KeyCmd(CMD_ROTATE_RIGHT, SDLK_RIGHT);
 		cmds[CMD_SHOOT] = KeyCmd(CMD_SHOOT, SDLK_UP);
+		cmds[CMD_SWITCH_WEAPON] = KeyCmd(CMD_SWITCH_WEAPON, SDLK_DOWN);
 	}
 
 	bool KeyHandler::getPressed(Cmd cmd)
