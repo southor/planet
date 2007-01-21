@@ -1,6 +1,7 @@
-#include "game.h"
+#include "Game.h"
 #include "vec3f.h"
 #include "TimeHandler.h"
+#include "NetworkConnection.h"
 
 #include <iostream>
 #include <cmath>
@@ -22,10 +23,15 @@ namespace Prototype
 	Game::~Game()
 	{
 		SDL_Quit( );
+		SDLNet_Quit();
 	}
 
 	void Game::run()
 	{
+		//NetworkConnection connection;
+		
+		//connection.waitForClient();
+	
 		//timeHandler.reset();
 
 		client1.getKeyHandler()->setClient1Keys();
@@ -189,10 +195,16 @@ namespace Prototype
 	{
 		running = true;
 
-		if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+		if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		{
-		fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError() );
-		SDL_Quit( );
+			fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError());
+			SDL_Quit();
+		}
+
+		if (SDLNet_Init() < 0)
+		{
+			fprintf(stderr, "Network initialization failed: %s\n", SDL_GetError());
+			SDLNet_Quit();		
 		}
   
 		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);

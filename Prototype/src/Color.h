@@ -3,6 +3,7 @@
 
 namespace Prototype
 {
+
 	struct Color
 	{
 		float r;
@@ -16,8 +17,6 @@ namespace Prototype
 		static const Color RED;
 		static const Color YELLOW;
 	};
-
-	
 
 };
 

@@ -61,7 +61,7 @@ namespace Prototype
 	void WorldRenderer::projectileHit(Projectile *projectile, const Pos &hitPos)
 	{
 		float size;
-		Color color = Color::BLACK;
+		Color color = Color(1.0f, 1.0f, 1.0f); //Color::BLACK;
 
 		if (projectile->getType() == Projectile::BULLET) size = Explosion::BULLET_EXPLOSION_SIZE;
 		else if (projectile->getType() == Projectile::ROCKET) size = Explosion::ROCKET_EXPLOSION_SIZE;
