@@ -44,6 +44,8 @@ namespace Prototype
 		ServerWorldModel worldModel;
 		ServerPlayers players;
 
+		TimeHandler timeHandler;
+
 		//std::vector<ServerClient> clients;
 
 	};

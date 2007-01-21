@@ -44,7 +44,7 @@
 
 namespace Prototype
 {
-	static TimeHandler timeHandler;
+	//static TimeHandler timeHandler;
 };
 
 

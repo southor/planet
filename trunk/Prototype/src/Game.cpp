@@ -26,7 +26,7 @@ namespace Prototype
 
 	void Game::run()
 	{
-		timeHandler.reset();
+		//timeHandler.reset();
 
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();

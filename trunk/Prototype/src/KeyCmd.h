@@ -1,7 +1,7 @@
 #ifndef __keycmd_h__
 #define __keycmd_h__
 
-#define NUMBER_OF_COMMANDS 7
+#define NUMBER_OF_COMMANDS 8
 
 namespace Prototype
 {
@@ -14,7 +14,8 @@ namespace Prototype
 		CMD_DOWN,
 		CMD_ROTATE_LEFT,
 		CMD_ROTATE_RIGHT,
-		CMD_SHOOT
+		CMD_SHOOT,
+		CMD_SWITCH_WEAPON
 	};
 
 	enum KeyState

@@ -9,7 +9,7 @@ namespace Prototype
 	{
 	public:
 
-		static const int DELTA_TIME_MAX = 1000/20;
+		static const int DELTA_TIME_MAX = 1000/30;
 
 		static const float DELTA_TIME_MAX_F;
 

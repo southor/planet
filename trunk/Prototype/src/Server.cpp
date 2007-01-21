@@ -77,6 +77,8 @@ namespace Prototype
 
 	void Server::startGame()
 	{
+		timeHandler.reset();
+		
 		WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
 		WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 		for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
@@ -84,9 +86,9 @@ namespace Prototype
 			size_t playerId = playerObjsIt->first;
 			PlayerObj *playerObj = playerObjsIt->second;
 
-			Color color(playerId, 1.0f-playerId, 0.0f); // the correct color should be retrieved from Player
+			Color color(static_cast<float>(playerId), 1.0f-static_cast<float>(playerId), 0.0f); // the correct color should be retrieved from Player
 
-			AddPlayerObj addPlayerObj(color, playerObj->pos);
+			AddPlayerObj addPlayerObj(playerId, color, playerObj->pos);
 
 			pushMessageToAll(players, addPlayerObj);
 		}
@@ -149,7 +151,7 @@ namespace Prototype
 				{
 					// player shoots
 					ShootCmd *shootCmd = player.link.getPoppedShootCmd();					
-					size_t projectileId = worldModel.playerShoot(shootCmd->playerId);
+					size_t projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
 					Projectile *projectile = (worldModel.getProjectiles())[projectileId];
 
 					// send projectile to all clients

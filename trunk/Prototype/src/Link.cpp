@@ -18,7 +18,7 @@ namespace Prototype
 	void Link::pushMessage(int type, void *data) const
 	{
 		assert(messageSender);
-		Message message(type, data, timeHandler.getTime());
+		Message message(type, data, 0);
 		messageSender->pushMessage(message);
 	}
 

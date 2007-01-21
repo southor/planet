@@ -8,7 +8,7 @@
 namespace Prototype
 {
 
-	enum MessageTypes
+	enum MessageType
 	{
 		UPDATE_PLAYER_OBJ = 0, // ?
 		ADD_PLAYER_OBJ,		
@@ -20,6 +20,7 @@ namespace Prototype
 		UPDATE_PROJECTILE,
 		REMOVE_PROJECTILE,
 		KILL,
+		START_GAME,
 		USER_CMD,
 		SHOOT_CMD,
 	};
@@ -45,9 +46,10 @@ namespace Prototype
 	{
 		Color color;
 		Pos pos;
+		size_t playerId;
 	
-		AddPlayerObj(const Color &color, const Pos &pos)
-			: color(color), pos(pos) {}
+		AddPlayerObj(size_t playerId, const Color &color, const Pos &pos)
+			: playerId(playerId), color(color), pos(pos) {}
 	};
 
 	struct AddObstacle
@@ -121,7 +123,6 @@ namespace Prototype
 		{}
 	};
 
-
 	// --------------------------------------------------------------------------------
 	// --------------------------------- client messages ------------------------------
 	// --------------------------------------------------------------------------------
@@ -139,13 +140,18 @@ namespace Prototype
 		bool cmdRight;
 		bool cmdUp;
 		bool cmdDown;
-		bool cmdShoot;
+		//bool cmdShoot;
 		float viewangle;
 	};
 
 	struct ShootCmd
 	{
 		size_t playerId;
+		int weapon;
+		
+		ShootCmd(size_t playerId, int weapon)
+			: playerId(playerId), weapon(weapon)
+		{}
 	};
 
 
@@ -217,6 +223,7 @@ namespace Prototype
 		void pushMessage(const UpdateProjectile &updateProjectile) const	{ pushMessage(UPDATE_PROJECTILE, new UpdateProjectile(updateProjectile)); }
 		void pushMessage(const RemoveProjectile &removeProjectile) const	{ pushMessage(REMOVE_PROJECTILE, new RemoveProjectile(removeProjectile)); }
 		void pushMessage(const Kill &kill) const							{ pushMessage(KILL, new Kill(kill)); }
+		void pushMessage(MessageType messageType) const						{ pushMessage(messageType, 0); }
 		
 		void pushMessage(const InitClient &initClient) const				{ pushMessage(INIT_CLIENT, new InitClient(initClient)); }
 		void pushMessage(const WelcomeClient &welcomeClient) const			{ pushMessage(WELCOME_CLIENT, new WelcomeClient(welcomeClient)); }
