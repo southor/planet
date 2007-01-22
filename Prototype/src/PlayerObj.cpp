@@ -73,6 +73,7 @@ namespace Prototype
 	
 	void PlayerObj::shoot(int time)
 	{
+		assert(ammo[currentWeapon] >= 0);
 		ammo[currentWeapon]--;
 		nextShootTime = time + Projectile::getShootInterval(currentWeapon);
 		if (ammo[currentWeapon] == 0) switchWeapon();		

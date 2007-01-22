@@ -49,6 +49,7 @@ namespace Prototype
 		inline Projectile::Type getCurrentWeapon() const	{return currentWeapon; }
 		void setAmmoSupply(int seed);
 		void switchWeapon();
+		int getAmmoCurrentWeapon() const					{ return ammo[currentWeapon]; }
 		inline bool canShoot(int time) const				{ return (ammo[currentWeapon] > 0) && (nextShootTime <= time); }
 		void shoot(int time);
 
