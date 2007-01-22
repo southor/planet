@@ -97,6 +97,7 @@ namespace Prototype
 					PlayerObj *killed = (worldModel.getPlayerObjs())[kill->killedId];
 					killed->pos = kill->respawnPos;
 					killed->setAmmoSupply(static_cast<int>(killed->pos.x + killed->pos.y + killer->pos.x + killer->pos.y));
+					if (killed->getAmmoCurrentWeapon() <= 0) killed->switchWeapon();
 				}
 				break;
 			case START_GAME:

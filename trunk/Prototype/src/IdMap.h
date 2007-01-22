@@ -284,6 +284,7 @@ namespace Prototype
 		inline T& operator[](Id id)
 		{			
 			assert(size > 0);
+			assert(map.size() >= size);
 			assert(isValid(id));
 			assert(map[id].used);			
 			return map[id].pair.second;			
