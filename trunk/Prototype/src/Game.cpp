@@ -28,9 +28,22 @@ namespace Prototype
 
 	void Game::run()
 	{
-		//NetworkConnection connection;
+		NetworkConnection connection;
 		
-		//connection.waitForClient();
+		bool clientConnected = false;
+		
+		connection.startServer();
+		
+		while (!clientConnected)
+		{
+			connection.openClientConnection();
+
+			clientConnected = connection.waitForClient();
+		}
+		
+		connection.closeClientConnection();
+		connection.closeServer();
+		
 	
 		//timeHandler.reset();
 
