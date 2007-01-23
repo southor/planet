@@ -94,6 +94,13 @@ namespace Prototype
 			return Vec2(-x, -y);
 		}
 
+		//inline Vec2<T>& operator=(const Vec2<T>& rh)
+		//{
+		//	x = rh.x;
+		//	y = rh.y;
+		//	return *this;
+		//}
+
 
 
 		inline bool operator==(const Vec2<T>& rh) const

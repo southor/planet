@@ -36,17 +36,18 @@ namespace Prototype
 			ServerPlayerObjContainer *playerObjs;
 			std::vector<RemoveProjectile> projectilesHit;
 			RespawnPoss *respawnPoss;
+			bool moveAlignedToAngle;
 
 			Obstacle* findAnyOverlap(const Rectangle &rectangle);
 		public:
 			// @param deltaTime Time in milliseconds since last move.
 			Move(ServerObstacleContainer *obstacles, ServerPlayers *players, ServerPlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
-				: obstacles(obstacles), players(players), playerObjs(playerObjs), respawnPoss(respawnPoss), deltaTime(deltaTime)
+				: obstacles(obstacles), players(players), playerObjs(playerObjs), respawnPoss(respawnPoss), deltaTime(deltaTime), moveAlignedToAngle(false)
 			{}
 
 			// @param deltaTime Time in milliseconds since last move.
-			Move(ServerObstacleContainer *obstacles, float deltaTime)
-				: obstacles(obstacles), players(0), playerObjs(0), respawnPoss(0), deltaTime(deltaTime)
+			Move(ServerObstacleContainer *obstacles, float deltaTime, bool moveAlignedToAngle)
+				: obstacles(obstacles), players(0), playerObjs(0), respawnPoss(0), deltaTime(deltaTime), moveAlignedToAngle(moveAlignedToAngle)
 			{}
 
 			inline std::vector<RemoveProjectile>& getProjectilesHit()	
@@ -59,6 +60,11 @@ namespace Prototype
 		};
 
 	public:
+
+		bool moveAlignedToAngle;
+
+		ServerWorldModel() : moveAlignedToAngle(false)
+		{}
 
 		~ServerWorldModel();
 		

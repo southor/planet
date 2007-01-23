@@ -7,7 +7,7 @@
 namespace Prototype
 {
 
-	Client::Client() : worldRenderer(WorldRenderer::HOLE_WORLD), connectionPhase(0)
+	Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), connectionPhase(0)
 	{
 	}
 
@@ -260,7 +260,7 @@ namespace Prototype
 	void Client::render()
 	{
 		worldRenderer.setupProjection();
-		worldRenderer.render(worldModel, players, 0);
+		worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);
 
 
 

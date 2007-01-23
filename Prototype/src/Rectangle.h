@@ -35,10 +35,17 @@ namespace Prototype
 		inline Pos getTopLeft() const							{ return Pos(getLeft(), getTop()); }		
 		inline Pos getBottomLeft() const						{ return pos; }
 
+		inline Pos getCenterPos() const							{ return pos + size / 2.0f; }
+
 		OrthogonalLine getLeftLine() const;
 		OrthogonalLine getRightLine() const;
 		OrthogonalLine getTopLine() const;
 		OrthogonalLine getBottomLine() const;
+
+		void setCenterPos(const Pos &centerPos)
+		{
+			pos = centerPos - this->size / 2.0f;
+		}
 
 
 		bool overlapping(const Rectangle &rectangle);
