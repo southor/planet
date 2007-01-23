@@ -124,6 +124,8 @@ namespace Prototype
 		timeHandler.nextStep();
 		float deltaTime = timeHandler.getDeltaTimef();
 
+		worldModel.isConsistent();
+
 		// Read messages from clients
 		ServerPlayers::Iterator playersIt;
 		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)

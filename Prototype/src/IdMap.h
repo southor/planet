@@ -14,13 +14,21 @@ namespace Prototype
 
 		struct Pair
 		{
-			// Same names as maps in STL
+			// Same names as map in STL
 			Id first;
 			T second;
 
 			Pair()			{}
 			Pair(Id first, const T &second) : first(first), second(second)
 			{}
+		};
+
+		// debugging
+		enum Inconsistency
+		{
+			OK = 0, // no inconsistency
+			SIZE_ERROR,
+			LAST_UNUSED
 		};
 
 	protected:
@@ -161,8 +169,16 @@ namespace Prototype
 			inline Iterator& operator++()
 			{
 				assert(standardUniCheck());
-				if (!atEnd()) ++i;
-				for(;!atEnd() && !(*iterOver)[i].used; ++i);
+				if (atEnd())
+				{
+					assert(false);
+					return *this;
+				}				
+				++i;
+				for(;!atEnd(); ++i)
+				{
+					if ((*iterOver)[i].used) break;
+				}
 				return *this;
 			}
 
@@ -201,6 +217,7 @@ namespace Prototype
 
 		Id findFreeId()
 		{
+			assert(isConsistent());
 			while(freeIds.size() > 0)
 			{
 				Id id = freeIds.back();
@@ -210,14 +227,20 @@ namespace Prototype
 					if (map[id].used == false) return id;
 				}
 			}
-			Entry unusedEntry;
-			map.push_back(unusedEntry);
 			
-			return map.size()-1;
+			//Entry unusedEntry;
+			//map.push_back(unusedEntry);			
+			//return map.size()-1;
+			
+			assert(isConsistent());
+
+			return map.size();
 		}
 
 		void add(Id id, T item)
 		{
+			assert(isConsistent());
+
 			Entry entryAdd(Pair(id, item));
 			
 			if (isValid(id))
@@ -239,6 +262,8 @@ namespace Prototype
 				map.push_back(entryAdd);
 			}
 			++size;
+
+			assert(isConsistent());
 		}
 
 		/**
@@ -247,12 +272,16 @@ namespace Prototype
 		 */
 		bool remove(Id id)
 		{
+			assert(isConsistent());
+
 			if (isValid(id))
 			{
+				assert(map.size() > 0);
+
 				Entry &entry = map[id];
 				if (entry.used)
 				{					
-					if (id == map.size()-1) // is last id?
+					if (id == (map.size()-1)) // is last id?
 					{
 						map.pop_back();
 						
@@ -272,6 +301,10 @@ namespace Prototype
 
 					return true;
 				}
+				else
+				{
+					assert(false);
+				}
 				return false;
 			}
 			else
@@ -279,15 +312,43 @@ namespace Prototype
 				assert(false);
 				return false;
 			}
+
+			assert(isConsistent());
 		}
 
 		inline T& operator[](Id id)
 		{			
+			assert(isConsistent());
+			
 			assert(size > 0);
 			assert(map.size() >= size);
 			assert(isValid(id));
 			assert(map[id].used);			
 			return map[id].pair.second;			
+		}
+
+		// debugging
+		Inconsistency getInconsistency()
+		{
+			int nUsed = 0;
+			for(size_t i=0; i<map.size(); ++i)
+			{
+				if (map[i].used) ++nUsed;
+			}
+			if (nUsed != size) return SIZE_ERROR;
+
+			if (map.size() > 0)
+			{
+				if (map.back().used == false) return LAST_UNUSED;
+			}
+			
+			return OK;
+		}
+
+		// debugging
+		inline bool isConsistent()
+		{	
+			return getInconsistency() == OK;
 		}
 
 	};

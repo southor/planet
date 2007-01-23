@@ -10,7 +10,7 @@ namespace Prototype
 
 	enum MessageType
 	{
-		UPDATE_PLAYER_OBJ = 0, // ?
+		UPDATE_PLAYER_OBJ,
 		ADD_PLAYER_OBJ,		
 		ADD_OBSTACLE,
 		WELCOME_CLIENT,
