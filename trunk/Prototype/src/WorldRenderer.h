@@ -13,8 +13,32 @@ namespace Prototype
 		
 		enum RenderMode
 		{
-			HOLE_WORLD
+			HOLE_WORLD,
+			FOLLOW_PLAYER
 		};
+
+		static const Vec RENDER_SIZE;
+
+		inline Rectangle getRenderArea(PlayerObj *localPlayerObj)
+		{
+			if (renderMode == HOLE_WORLD)
+			{
+				return Rectangle(Pos(0.0f, 0.0f), WorldModel::WORLD_SIZE);
+			}
+			else if (renderMode == FOLLOW_PLAYER)
+			{
+				// setting center pos
+				Pos tmpPos;
+				Rectangle rectangle(tmpPos, RENDER_SIZE);
+				rectangle.setCenterPos(localPlayerObj->pos);
+				return rectangle;
+			}
+			else
+			{
+				assert(false);
+				return Rectangle(0.0f, 0.0f, 0.0f, 0.0f);
+			}
+		}
 
 		WorldRenderer(RenderMode renderMode);
 

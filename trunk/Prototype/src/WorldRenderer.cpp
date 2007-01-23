@@ -9,6 +9,8 @@
 namespace Prototype
 {
 
+	const Vec WorldRenderer::RENDER_SIZE = Vec(400.0f / 2.0f, 300.0f * (3.0f / 4.0f));
+
 	const float WorldRenderer::Explosion::BULLET_EXPLOSION_SIZE = 10.0f;
 	const float WorldRenderer::Explosion::ROCKET_EXPLOSION_SIZE = 25.0f;
 
@@ -35,27 +37,42 @@ namespace Prototype
 
 		// render box around render area
 		renderViewBox();
-		
-		// execute camera properties
-		switch(renderMode)
-		{
-		case HOLE_WORLD:
-			// nothing to do, we are rendering the hole world
-			break;
-		default:
-			assert(false);
-			break;
-		}
 
-		// render all objects
-		RenderGameObj renderGameObj(&players);
-		ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);
-		ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderGameObj);
-		ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderGameObj);
-		
-		//render explosion
-		ForEach(explosions.begin(), explosions.end(), renderGameObj);
-		explosions.clear();
+		// camera
+		glPushMatrix();
+			{			
+				Rectangle renderArea(getRenderArea(localPlayerObj));
+				Vec scaleAmount = WorldModel::WORLD_SIZE / renderArea.size;
+				glScalef(scaleAmount.x, scaleAmount.y, 1.0f);
+				glTranslatef(-renderArea.pos.x, -renderArea.pos.y, 0.0f);			
+			}		
+			
+			//// execute camera properties
+			//switch(renderMode)
+			//{
+			//case HOLE_WORLD:
+			//	// nothing to do, we are rendering the hole world
+			//	break;
+			//case FOLLOW_PLAYER:
+			//	{
+			//		
+			//	}
+			//	break;
+			//default:
+			//	assert(false);
+			//	break;
+			//}
+
+			// render all objects
+			RenderGameObj renderGameObj(&players);
+			ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);
+			ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderGameObj);
+			ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderGameObj);
+			
+			//render explosion
+			ForEach(explosions.begin(), explosions.end(), renderGameObj);
+			explosions.clear();
+		glPopMatrix();
 	}
 
 	void WorldRenderer::projectileHit(Projectile *projectile, const Pos &hitPos)

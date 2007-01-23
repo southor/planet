@@ -28,7 +28,7 @@ namespace Prototype
 
 	void ServerWorldModel::updatePlayerObjMovements(float deltaTime)
 	{
-		Move move(&obstacles, deltaTime);
+		Move move(&obstacles, deltaTime, moveAlignedToAngle);
 		ForEach(playerObjs.begin(), playerObjs.end(), move);
 	}
 
@@ -69,23 +69,25 @@ namespace Prototype
 		// ----- produce a movevector from current actions and angle of playerObj ------
 
 		PlayerObj *playerObj = playerObjPair.second;
-		float angle = playerObj->angle;
+		float moveAngle;
+		if (moveAlignedToAngle) moveAngle = playerObj->angle;
+		else moveAngle = PI/2.0f;
 		Vec moveVec(0.0f, 0.0f);
 		if (playerObj->movingForward == true)
 		{
-			moveVec += Vec(cos(angle) * fbMoveDistance, sin(angle) * fbMoveDistance);
+			moveVec += Vec(cos(moveAngle) * fbMoveDistance, sin(moveAngle) * fbMoveDistance);
 		}
 		if (playerObj->movingBackward == true)
 		{
-			moveVec += Vec(cos(angle + PI) * fbMoveDistance, sin(angle + PI) * fbMoveDistance);
+			moveVec += Vec(cos(moveAngle + PI) * fbMoveDistance, sin(moveAngle + PI) * fbMoveDistance);
 		}
 		if (playerObj->strafingLeft == true)
 		{
-			moveVec += Vec(cos(angle + PI/2.0f) * strafeMoveDistance, sin(angle + PI/2.0f) * strafeMoveDistance);
+			moveVec += Vec(cos(moveAngle + PI/2.0f) * strafeMoveDistance, sin(moveAngle + PI/2.0f) * strafeMoveDistance);
 		}
 		if (playerObj->strafingRight == true)
 		{
-			moveVec += Vec(cos(angle - PI/2.0f) * strafeMoveDistance, sin(angle - PI/2.0f) * strafeMoveDistance);
+			moveVec += Vec(cos(moveAngle - PI/2.0f) * strafeMoveDistance, sin(moveAngle - PI/2.0f) * strafeMoveDistance);
 		}
 
 		Vec zeroVec(0.0f, 0.0f);		
