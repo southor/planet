@@ -37,7 +37,7 @@ namespace Prototype
 		int time;
 		void *data;
 		Message() : type(0),  data(0), time(0)		{}
-		Message(int type, void *data, int time)
+		Message(int type, void *data, int time = 0)
 			: type(type), data(data), time(time)	{}
 	};
 

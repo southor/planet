@@ -33,6 +33,8 @@ namespace Prototype
 	void Client::logic()
 	{
 		timeHandler.nextStep();
+
+		worldModel.isConsistent();
 		
 		// Read messages from server
 		while(link.hasMessageOnQueue())

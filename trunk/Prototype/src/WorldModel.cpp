@@ -11,4 +11,11 @@ namespace Prototype
 		ForEach(getPlayerObjs().begin(), getPlayerObjs().end(), del);
 		ForEach(getProjectiles().begin(), getProjectiles().end(), del);
 	}
+
+	bool WorldModel::isConsistent()
+	{
+		return getObstacles().isConsistent() &&
+				getPlayerObjs().isConsistent() &&
+				getProjectiles().isConsistent();
+	}
 };

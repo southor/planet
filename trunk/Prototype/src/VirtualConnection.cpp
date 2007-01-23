@@ -59,7 +59,6 @@ namespace Prototype
 			//messageDeque->push_front(message);
 			messageReciever->putMessageToLagQueue(message);
 		}
-
 	}
 	
 

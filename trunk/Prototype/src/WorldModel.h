@@ -38,6 +38,8 @@ namespace Prototype
 		virtual const PlayerObjContainer& getPlayerObjs() const = 0;
 		virtual const ProjectileContainer& getProjectiles() const = 0;
 
+		bool isConsistent();
+
 	protected:
 
 		class Delete
