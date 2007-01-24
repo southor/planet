@@ -89,6 +89,20 @@ namespace Prototype
 			return *(this);
 		}
 
+		inline const Vec2<T>& operator *=(const Vec2<T>& rh)
+		{
+			x *= rh.x;
+			y *= rh.y;
+			return *(this);
+		}
+
+		inline const Vec2<T>& operator /=(const Vec2<T>& rh)
+		{
+			x /= rh.x;
+			y /= rh.y;
+			return *(this);
+		}
+
 		inline Vec2<T> operator-() const
 		{
 			return Vec2(-x, -y);

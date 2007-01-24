@@ -18,3 +18,4 @@ In the real game: use macros for get/set functions?
 begin to use different game objects (playerObj, projectile, etc..) for server and client?
 in real game: use a macro to be able to switch between call by reference and call by value (because of standard C++ problems)
 Could need log messages that is sent, for debugging.
+Not put special includes in common.h? Only those who needs it?

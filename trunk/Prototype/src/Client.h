@@ -3,10 +3,11 @@
 
 #include "common.h"
 #include "Link.h"
-#include "clientworldmodel.h"
+#include "ClientWorldModel.h"
 #include "ClientPlayer.h"
-#include "worldrenderer.h"
-#include "keyhandler.h"
+#include "WorldRenderer.h"
+#include "KeyHandler.h"
+#include "ViewportHandler.h"
 
 namespace Prototype
 {
@@ -30,6 +31,14 @@ namespace Prototype
 		
 		void setPlayerId(size_t playerId) { this->playerId = playerId; }
 		void setColor(Color color) { this->color = color; }
+		inline void setViewport(int x, int y, int w, int h)
+		{
+			viewportHandler.screenRenderPos.x = x;
+			viewportHandler.screenRenderPos.y = y;
+			viewportHandler.screenRenderSize.x = w;
+			viewportHandler.screenRenderSize.y = h;
+		}
+		inline void useViewport()			{ viewportHandler.useViewport(); }
 
 	private:
 		Link link;
@@ -45,6 +54,9 @@ namespace Prototype
 
 		size_t playerId;
 		Color color;	// should this exist or should the client have an Player object before we connect to server?
+
+		// stores viewport parameters
+		ViewportHandler viewportHandler;
 	};
 };
 

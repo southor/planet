@@ -28,6 +28,9 @@ namespace Prototype
 
 	void Game::run()
 	{
+		
+		
+		
 		NetworkConnection connection;
 		
 		bool clientConnected = false;
@@ -157,10 +160,16 @@ namespace Prototype
 
 		glDisable(GL_LIGHTING);
 
-		glViewport(0, h/4, w/2, h*3/4);
+		//viewportHandler1.setupViewport();
+		//glViewport(0, h/4, w/2, (h*3)/4);
+		client1.useViewport();
 		client1.render();
 
-		glViewport(w/2, h/4, w/2, h*3/4);
+		//viewportHandler.screenRenderPos = Vec2<int>(w/2, h/4);
+		//viewportHandler.screenRenderSize = Vec2<int>(w/2, (h*3)/4);
+		//glViewport(w/2, h/4, w/2, (h*3)/4);
+		//viewportHandler2.setupViewport();
+		client2.useViewport();
 		client2.render();
 
 		// guichan
@@ -271,6 +280,15 @@ namespace Prototype
 		//glEnable(GL_DEPTH_TEST);
 		//glDepthFunc(GL_LEQUAL);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+		// ------- set viewports -----------
+		client1.setViewport(0, h/4, w/2, (h*3)/4);
+		client2.setViewport(w/2, h/4, w/2, (h*3)/4);
+
+		//client1.viewportHandler.screenRenderPos = Vec2<int>(0, h/4);
+		//viewportHandler1.screenRenderSize = Vec2<int>(w/2, (h*3)/4);
+		//viewportHandler2.screenRenderPos = Vec2<int>(w/2, h/4);
+		//viewportHandler2.screenRenderSize = viewportHandler1.screenRenderSize;
 	}
 
 	void Game::pollEvents()
