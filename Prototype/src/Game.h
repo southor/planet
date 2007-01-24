@@ -42,6 +42,10 @@ namespace Prototype
 		Client client1;
 		Client client2;
 
+		//// used for storing viewport and translating positions from screen to game
+		//ViewportHandler viewportHandler1;
+		//ViewportHandler viewportHandler1;
+
 		Gui gui;
 
 		Uint32 mStartTime;
