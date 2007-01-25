@@ -11,8 +11,8 @@ namespace Prototype
 
 	const Vec WorldRenderer::RENDER_SIZE = Vec(400.0f / 2.0f, 300.0f * (3.0f / 4.0f));
 
-	const float WorldRenderer::Explosion::BULLET_EXPLOSION_SIZE = 10.0f;
-	const float WorldRenderer::Explosion::ROCKET_EXPLOSION_SIZE = 25.0f;
+	const float WorldRenderer::Explosion::BULLET_EXPLOSION_SIZE = 5.0f;
+	const float WorldRenderer::Explosion::ROCKET_EXPLOSION_SIZE = 20.0f;
 
 	// --------------------------------------------------------------------------------------
 	// ----------------------------------   WorldRenderer  ----------------------------------
@@ -78,7 +78,7 @@ namespace Prototype
 	void WorldRenderer::projectileHit(Projectile *projectile, const Pos &hitPos)
 	{
 		float size;
-		Color color = Color(1.0f, 1.0f, 1.0f); //Color::BLACK;
+		Color color = Color(0.0f, 0.0f, 0.0f); //Color::BLACK;
 
 		if (projectile->getType() == Projectile::BULLET) size = Explosion::BULLET_EXPLOSION_SIZE;
 		else if (projectile->getType() == Projectile::ROCKET) size = Explosion::ROCKET_EXPLOSION_SIZE;

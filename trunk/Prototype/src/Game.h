@@ -49,6 +49,8 @@ namespace Prototype
 		Gui gui;
 
 		Uint32 mStartTime;
+
+		static const Vec2<int> WINDOW_SIZE;
 	};
 };
 

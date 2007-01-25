@@ -37,6 +37,7 @@ namespace Prototype
 		Projectile(Type type, const Pos &pos, float angle, size_t shooterId);
 
 		inline Pos getPos() const						{ return pos; }
+		inline void setPos(const Pos &pos)				{ this->pos = pos; }
 		inline Type getType() const						{ return type; }
 		inline float getAngle() const					{ return angle; }
 

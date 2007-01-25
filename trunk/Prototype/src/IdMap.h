@@ -211,9 +211,9 @@ namespace Prototype
 		inline Iterator begin()				{ return Iterator(&map, 0); }
 		inline Iterator end()				{ return Iterator(&map); }
 
-		//bool itemExists(Id id)			{ bool result = false;
-		//									  if (isValid(id)) result = map[id].used;
-		//									  return result; }
+		bool exists(Id id)					{ bool result = false;
+											  if (isValid(id)) result = map[id].used;
+											  return result; }
 
 		Id findFreeId()
 		{

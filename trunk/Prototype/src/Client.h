@@ -17,6 +17,12 @@ namespace Prototype
 
 		static const int MAX_N_PLAYERS = 2;
 
+		enum AimMode
+		{
+			KEYBOARD,
+			MOUSE			
+		};
+
 		Client();
 
 		void handleEvents();
@@ -39,8 +45,17 @@ namespace Prototype
 			viewportHandler.screenRenderSize.y = h;
 		}
 		inline void useViewport()			{ viewportHandler.useViewport(); }
+		void setCurrentMousePos(Vec2<int> mouseScreenPos);
+		inline void setAimMode(AimMode aimMode)				{ this->aimMode = aimMode; }
+		
 
 	private:
+
+		
+		Pos mousePos; // mouse position in game coordinates
+		bool mousePosChanged;
+		AimMode aimMode; // aiming for shooting, mouse or keyboard
+
 		Link link;
 		size_t connectionPhase;
 		TimeHandler timeHandler;
@@ -57,6 +72,9 @@ namespace Prototype
 
 		// stores viewport parameters
 		ViewportHandler viewportHandler;
+
+		// will set player object angle if player aiming is mouse controlled
+		void updatePlayerObjAngle();
 	};
 };
 
