@@ -7,26 +7,30 @@
 namespace Prototype
 {
 
-	Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), connectionPhase(0)
+	Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), connectionPhase(0),
+		mousePos(0.0f, 0.0f), aimMode(KEYBOARD)
 	{
 	}
 
 	void Client::handleEvents()
 	{
-		PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-
-		kh.isPressed(CMD_ROTATE_LEFT);
-		kh.isReleased(CMD_ROTATE_LEFT);
-		if (kh.isDown(CMD_ROTATE_LEFT))
+		if (aimMode == KEYBOARD)
 		{
-			playerObj->angle += 0.1f;	
-		}
+			PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 
-		kh.isPressed(CMD_ROTATE_RIGHT);
-		kh.isReleased(CMD_ROTATE_RIGHT);
-		if (kh.isDown(CMD_ROTATE_RIGHT))
-		{
-			playerObj->angle -= 0.1f;	
+			kh.isPressed(CMD_ROTATE_LEFT);
+			kh.isReleased(CMD_ROTATE_LEFT);
+			if (kh.isDown(CMD_ROTATE_LEFT))
+			{
+				playerObj->angle += 0.1f;	
+			}
+
+			kh.isPressed(CMD_ROTATE_RIGHT);
+			kh.isReleased(CMD_ROTATE_RIGHT);
+			if (kh.isDown(CMD_ROTATE_RIGHT))
+			{
+				playerObj->angle -= 0.1f;	
+			}
 		}
 	}
 
@@ -82,7 +86,7 @@ namespace Prototype
 				{
 					UpdateProjectile *updateProjectile = link.getPoppedUpdateProjectile();
 					Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
-					projectile->pos = updateProjectile->pos;
+					projectile->setPos(updateProjectile->pos);
 				}
 				break;
 			case REMOVE_PROJECTILE:
@@ -165,7 +169,9 @@ namespace Prototype
 		}
 
 		if (connectionPhase == 4)
-		{
+		{			
+
+
 			handleEvents();
 			int time = timeHandler.getStepTime();
 
@@ -201,8 +207,14 @@ namespace Prototype
 			}
 
 			// If some key was pressed or released send message
-			if (wasKeyEvent)
+			if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
 			{
+				if (this->mousePosChanged && (this->aimMode == MOUSE))
+				{
+					updatePlayerObjAngle();
+					this->mousePosChanged = false;
+				}
+				
 				// handle rest of the commands
 				UserCmd userCmd;				
 				userCmd.cmdLeft = kh.isDown(CMD_LEFT);
@@ -213,6 +225,7 @@ namespace Prototype
 				userCmd.viewangle = ((worldModel.getPlayerObjs())[playerId])->angle;
 
 				link.pushMessage(userCmd);
+				
 			}
 
 			// transmit any messages
@@ -260,7 +273,10 @@ namespace Prototype
 	void Client::render()
 	{
 		worldRenderer.setupProjection();
-		worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);
+		if (worldModel.getPlayerObjs().exists(playerId))
+		{
+			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);
+		}
 
 
 
@@ -322,6 +338,50 @@ namespace Prototype
 	KeyHandler* Client::getKeyHandler()
 	{
 		return &kh;
+	}
+
+	void Client::setCurrentMousePos(Vec2<int> mouseScreenPos)
+	{
+		mousePosChanged = true;
+		if (worldModel.getPlayerObjs().exists(playerId))
+		{
+			PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+			
+			viewportHandler.renderArea.size = WorldRenderer::RENDER_SIZE; // set current render area
+			viewportHandler.renderArea.setCenterPos(playerObj->pos); // set current render area
+			mousePos = viewportHandler.screenToGame(mouseScreenPos); // mouse position in game
+		}
+	}
+
+	void Client::updatePlayerObjAngle()
+	{
+		//std::cout << mouseScreenPos.y << std::endl;
+		
+		if (worldModel.getPlayerObjs().exists(playerId))
+		{
+			PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+			
+			//viewportHandler.renderArea.size = WorldRenderer::RENDER_SIZE; // set current render area
+			//viewportHandler.renderArea.setCenterPos(playerObj->pos); // set current render area
+			//Pos mousePos = viewportHandler.screenToGame(mouseScreenPos); // mouse position in game
+			//std::cout << mousePos.y << std::endl;
+
+			float angle;
+			Vec aimVec = mousePos - playerObj->pos;
+			aimVec.normalize();
+			if ((aimVec.x > 0.5) || (aimVec.x < 0.5f))
+			{
+				angle = asin(aimVec.y);
+				if (aimVec.x < 0.0f) angle = PI - angle;
+			}
+			else
+			{
+				angle = acos(aimVec.x);
+				if (aimVec.y < 0.0f) angle = -angle;
+			}
+			playerObj->angle = angle;
+
+		}
 	}
 
 };

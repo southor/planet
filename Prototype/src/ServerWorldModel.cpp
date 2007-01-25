@@ -142,7 +142,7 @@ namespace Prototype
 		// move projectile
 		Projectile *projectile = projectilePair.second;
 		Vec moveVec(projectile->getLine().getDirection() * projectile->getSpeed() * deltaTime);
-		projectile->pos = projectile->pos + moveVec;
+		projectile->setPos(projectile->getPos() + moveVec);
 		Line projectileLine(projectile->getLine());
 
 
@@ -227,7 +227,7 @@ namespace Prototype
 						//++((*playerObjs)[killerId]->frags);
 						
 						// produce an unpredictable respawn place
-						Pos tmpPos = playerObj->pos.x + projectile->pos;
+						Pos tmpPos = playerObj->pos + projectile->getPos();
 						size_t respawnPosId = static_cast<size_t>(abs(playerObj->health + static_cast<int>(tmpPos.x + tmpPos.y))) % respawnPoss->size();
 						
 						Pos &respawnPos = (*respawnPoss)[respawnPosId];						

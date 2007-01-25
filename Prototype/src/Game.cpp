@@ -10,8 +10,10 @@
 
 namespace Prototype
 {
-	unsigned int w;
-	unsigned int h;
+	//unsigned int w;
+	//unsigned int h;
+
+	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(640, 480);
 
 	Game::Game()
 	{
@@ -52,6 +54,8 @@ namespace Prototype
 
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
+		client2.setAimMode(Client::MOUSE);
+
 
 		// Initialize virtual conn3ections
 		MessageSender *sender1 = virtualConnection1.getMessageSender();
@@ -173,7 +177,7 @@ namespace Prototype
 		client2.render();
 
 		// guichan
-		glViewport(0, 0, w, h); 
+		glViewport(0, 0, WINDOW_SIZE.x, WINDOW_SIZE.y); 
 		//gui.gui->draw();
 
 
@@ -243,8 +247,8 @@ namespace Prototype
 		unsigned int flags = SDL_HWSURFACE | SDL_OPENGL; // |SDL_FULLSCREEN;
 		//w = 1024;
 		//h = 768;
-		w = 640;
-		h = 480;
+		unsigned int w = WINDOW_SIZE.x;
+		unsigned int h = WINDOW_SIZE.y;
 
 		unsigned int bpp = 32;	
 
@@ -284,6 +288,8 @@ namespace Prototype
 		// ------- set viewports -----------
 		client1.setViewport(0, h/4, w/2, (h*3)/4);
 		client2.setViewport(w/2, h/4, w/2, (h*3)/4);
+
+		
 
 		//client1.viewportHandler.screenRenderPos = Vec2<int>(0, h/4);
 		//viewportHandler1.screenRenderSize = Vec2<int>(w/2, (h*3)/4);
@@ -330,11 +336,17 @@ namespace Prototype
 				break;
 			
 			case SDL_MOUSEMOTION:
-				//xrel = event.motion.xrel;
-				//yrel = event.motion.yrel;
-				//printf("Mouse moved by %d,%d to (%d,%d)\n", 
-				//event.motion.xrel, event.motion.yrel,
-				//event.motion.x, event.motion.y);
+				{
+					//xrel = event.motion.xrel;
+					//yrel = event.motion.yrel;
+					//printf("Mouse moved by %d,%d to (%d,%d)\n", 
+					//event.motion.xrel, event.motion.yrel,
+					//event.motion.x, event.motion.y);
+					Vec2<int> mouseScreenPos(event.motion.x, event.motion.y);
+					mouseScreenPos.y = WINDOW_SIZE.y - mouseScreenPos.y; // convert from SDL to GL position
+					client2.setCurrentMousePos(mouseScreenPos);
+				}
+			break;
 				break;
 			case SDL_QUIT:
 				running = false;

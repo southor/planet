@@ -12,7 +12,7 @@ namespace Prototype
 		worldModel.addObstacle(obstacleArea);
 
 		Pos respawnPos1(50.0f, 250.0f);
-		Pos respawnPos2(300.0f, 250.0f);
+		Pos respawnPos2(250.0f, 200.0f);
 		worldModel.addRespawnPos(respawnPos1);
 		worldModel.addRespawnPos(respawnPos2);
 	}

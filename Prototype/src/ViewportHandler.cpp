@@ -11,6 +11,7 @@ namespace Prototype
 
 	Pos ViewportHandler::screenToGame(Vec2<int> screenPos)
 	{
+		
 		Vec screenRenderSizef(static_cast<float>(screenRenderSize.x), static_cast<float>(screenRenderSize.y));
 
 		screenPos -= screenRenderPos;
