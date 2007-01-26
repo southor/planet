@@ -6,6 +6,17 @@ namespace Prototype
 
 	Server::Server()
 	{
+		// outer walls
+		static const int WALL_THICKNESS = 500.0f;
+		Rectangle wall1(0.0f, -WALL_THICKNESS, WorldModel::WORLD_SIZE.x, WALL_THICKNESS);
+		Rectangle wall2(0.0f, WorldModel::WORLD_SIZE.y, WorldModel::WORLD_SIZE.x, WALL_THICKNESS);
+		Rectangle wall3(-WALL_THICKNESS, -WALL_THICKNESS, WALL_THICKNESS, WorldModel::WORLD_SIZE.y + WALL_THICKNESS*2.0f);
+		Rectangle wall4(WorldModel::WORLD_SIZE.x, -WALL_THICKNESS, WALL_THICKNESS, WorldModel::WORLD_SIZE.y + WALL_THICKNESS*2.0f);
+		worldModel.addObstacle(wall1);
+		worldModel.addObstacle(wall2);
+		worldModel.addObstacle(wall3);
+		worldModel.addObstacle(wall4);
+
 		Rectangle obstacleArea(50.0f, 70.0f, 150.0f, 80.0f);
 		worldModel.addObstacle(obstacleArea);
 		obstacleArea.pos.x = 300.0f;
