@@ -8,11 +8,8 @@
 
 #include "SDL_endian.h"
 
-namespace Prototype
+	namespace Prototype
 {
-	//unsigned int w;
-	//unsigned int h;
-
 	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(640, 480);
 
 	Game::Game()
@@ -30,25 +27,27 @@ namespace Prototype
 
 	void Game::run()
 	{
-		
-		
-		
+		/*
 		NetworkConnection connection;
 		
-		bool clientConnected = false;
+		size_t clientsConnected = 0;
 		
 		connection.startServer();
 		
-		while (!clientConnected)
+		while (clientsConnected < 2)
 		{
-			connection.openClientConnection();
+			connection.openClientConnection1();
 
-			clientConnected = connection.waitForClient();
+			connection.openClientConnection2();
+
+
+			if (connection.waitForClient())
+				clientsConnected++;
 		}
 		
 		connection.closeClientConnection();
 		connection.closeServer();
-		
+		*/
 	
 		//timeHandler.reset();
 
@@ -245,8 +244,6 @@ namespace Prototype
 
 		
 		unsigned int flags = SDL_HWSURFACE | SDL_OPENGL; // |SDL_FULLSCREEN;
-		//w = 1024;
-		//h = 768;
 		unsigned int w = WINDOW_SIZE.x;
 		unsigned int h = WINDOW_SIZE.y;
 

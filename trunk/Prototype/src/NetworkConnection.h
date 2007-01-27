@@ -2,35 +2,52 @@
 #define __networkconnection_h__
 
 #include <deque>
+#include <vector>
 
 #include "common.h"
 #include "messages.h"
 
 namespace Prototype
 {
+	typedef std::vector<TCPsocket> Clients;
+
 	class NetworkConnection
 	{
 	public:
 		static const int port = 12333;
-	
+
+		NetworkConnection() 
+			: set(0), clientSocket1(0), clientSocket2(0), serverClientSocket(0), serverSocket(0) 
+		{}
+
 		// CLIENT
-		void openClientConnection();
+		void openClientConnection1();
+		void openClientConnection2();
+		void openClientConnection(TCPsocket socket);
 		void closeClientConnection();
 		
 		
 		// SERVER
 		void startServer();
+		void createSocketSet();
+		
 		// returns true if client got connected
 		bool waitForClient();
 		void closeServer();
 
 	private:
 		// CLIENT
-		TCPsocket clientSocket;
+		TCPsocket clientSocket1;
+		TCPsocket clientSocket2;
 		
 		// SERVER
-		TCPsocket serverClientSocket;
+		TCPsocket serverClientSocket; // temp use, client sockets are stored in clients
 		TCPsocket serverSocket;
+
+		SDLNet_SocketSet set;
+
+		Clients clients;
+		size_t numberOfClients;
 	};
 
 	// -------------------
@@ -39,8 +56,8 @@ namespace Prototype
 	class NetworkMessageSender : public MessageSender
 	{
 	public:
-		NetworkMessageSender() : MessageSender() { }
-		~NetworkMessageSender()					{}
+		NetworkMessageSender() : MessageSender()	{}
+		~NetworkMessageSender()						{}
 
 		void pushMessage(const Message &message);
 
@@ -57,20 +74,14 @@ namespace Prototype
 	class NetworkMessageReciever : public MessageReciever
 	{
 	public:
-		NetworkMessageReciever() : MessageReciever(), lag(50) { }
-		~NetworkMessageReciever() {}
+		NetworkMessageReciever() : MessageReciever()	{}
+		~NetworkMessageReciever()						{}
 
-		// Get number of messages recieved.
-		int getNMessages();		
+		bool hasMessageOnQueue();
 		
 		Message popMessage();
 
-		void setConnectionLag(int lag);
-
-	private:
-		std::deque<Message> recieveDeque;
-		
-		int lag;
+		void setSimulatedLag(int lag);
 	};
 }
 
