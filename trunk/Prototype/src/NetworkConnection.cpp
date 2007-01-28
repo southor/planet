@@ -32,7 +32,7 @@ namespace Prototype
 			result = SDLNet_TCP_Send(socket, &(message.type), sizeof(message.type));
 			result = SDLNet_TCP_Send(socket, &(message.time), sizeof(message.time));
 			
-			len = 0; // TODO: get length of data with given type				
+			len = 8; // TODO: get length of data with given type				
 			
 			// Send length of message.data
 			result = SDLNet_TCP_Send(socket, &len, sizeof(len));
