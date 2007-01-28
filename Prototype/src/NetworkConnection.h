@@ -61,46 +61,6 @@ namespace Prototype
 	};
 
 	typedef std::vector<NetworkServerClient*> Clients;
-/*
-	class NetworkConnection
-	{
-	public:
-		static const int port = 12333;
-
-		NetworkConnection() 
-			: set(0), clientSocket1(0), clientSocket2(0), serverSocket(0) 
-		{}
-
-		// CLIENT
-		void openClientConnection1();
-		void openClientConnection2();
-		void openClientConnection(TCPsocket socket);
-		void closeClientConnection();
-		
-		
-		// SERVER
-		void startServer();
-		void createSocketSet();
-		
-		// returns true if client got connected
-		bool waitForClient();
-		void closeServer();
-
-	private:
-		// CLIENT
-		TCPsocket clientSocket1;
-		TCPsocket clientSocket2;
-		
-		// SERVER
-		TCPsocket serverSocket;
-
-		SDLNet_SocketSet set;
-
-		Clients clients;
-		size_t numberOfClients;
-	};
-*/
-
 
 	class NetworkServer
 	{

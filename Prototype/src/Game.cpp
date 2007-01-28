@@ -30,32 +30,57 @@
 		/*
 		NetworkServer networkServer;
 		NetworkClient networkClient1;
-		NetworkClient networkClient2;
+		//NetworkClient networkClient2;
 
 		size_t clientsConnected = 0;
 		
 		networkServer.start();
-
-		while (clientsConnected < 2)
+		
+		NetworkServerClient *serverClient;
+		while (clientsConnected < 1)
 		{
 			if (clientsConnected == 0)
 				networkClient1.openConnection();
 			
-			if (clientsConnected == 1)
-				networkClient2.openConnection();
+			//if (clientsConnected == 1)
+			//	networkClient2.openConnection();
 
-			NetworkServerClient *serverClient = networkServer.checkForNewClient();
+			serverClient = networkServer.checkForNewClient();
 			if (serverClient != 0)
 			{
 				clientsConnected++;
 			}
 		}
 
+		MessageSender *sender = networkClient1.getMessageSender();
+		
+		ShootCmd shootCmd(3, 4);
+		Message message;
+		message.type = 42;
+		message.time = 1234;
+		message.data = &shootCmd;
+		
+		sender->pushMessage(message);
+		sender->transmit();
+		
+		SDL_Delay(100);
+		
+		MessageReciever *reciever = &(serverClient->reciever);
+
+		if (reciever->hasMessageOnQueue())
+		{
+			printf("message recieved");
+			Message message2 = reciever->popMessage();
+		}
+		
+
 		networkServer.close();
 		networkClient1.close();
-		networkClient2.close();
+		//networkClient2.close();
 		*/
 		
+		
+
 		
 		//timeHandler.reset();
 

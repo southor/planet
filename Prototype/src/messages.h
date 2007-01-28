@@ -66,7 +66,7 @@ namespace Prototype
 		//// Get number of messages recieved.
 		//int getNMessages();
 
-		bool hasMessageOnQueue();
+		virtual bool hasMessageOnQueue();
 
 		void setSimulatedLag(int lag)			{ assert(lag >= 0); this->lag = lag; }
 		
