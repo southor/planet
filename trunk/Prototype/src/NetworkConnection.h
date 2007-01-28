@@ -9,15 +9,66 @@
 
 namespace Prototype
 {
-	typedef std::vector<TCPsocket> Clients;
+	class NetworkMessageSender : public MessageSender
+	{
+	public:
+		NetworkMessageSender() : MessageSender()	{}
+		~NetworkMessageSender()						{}
 
+		void pushMessage(const Message &message);
+
+		// Get number of messages queued to be transmitted.
+		int getNMessages();
+		
+		// Transmits queued messages.
+		void transmit() ;
+		
+		void setSocket(TCPsocket socket) { this->socket = socket; }
+		
+	private:
+		std::deque<Message> sendDeque;
+		
+		TCPsocket socket;
+	};
+
+	class NetworkMessageReciever : public MessageReciever
+	{
+	public:
+		NetworkMessageReciever() : MessageReciever()	{}
+		~NetworkMessageReciever()						{}
+
+		bool hasMessageOnQueue();
+		
+		Message popMessage();
+
+		void setSocket(TCPsocket socket) { this->socket = socket; }
+
+	private:
+		void retrieve();
+	
+		TCPsocket socket;
+	};
+
+
+
+
+	struct NetworkServerClient
+	{
+		TCPsocket socket;
+	
+		NetworkMessageSender sender;
+		NetworkMessageReciever reciever;
+	};
+
+	typedef std::vector<NetworkServerClient*> Clients;
+/*
 	class NetworkConnection
 	{
 	public:
 		static const int port = 12333;
 
 		NetworkConnection() 
-			: set(0), clientSocket1(0), clientSocket2(0), serverClientSocket(0), serverSocket(0) 
+			: set(0), clientSocket1(0), clientSocket2(0), serverSocket(0) 
 		{}
 
 		// CLIENT
@@ -41,7 +92,6 @@ namespace Prototype
 		TCPsocket clientSocket2;
 		
 		// SERVER
-		TCPsocket serverClientSocket; // temp use, client sockets are stored in clients
 		TCPsocket serverSocket;
 
 		SDLNet_SocketSet set;
@@ -49,39 +99,43 @@ namespace Prototype
 		Clients clients;
 		size_t numberOfClients;
 	};
+*/
 
-	// -------------------
-	// NOT YET IMPLEMENTED
-	// -------------------
-	class NetworkMessageSender : public MessageSender
+
+	class NetworkServer
 	{
 	public:
-		NetworkMessageSender() : MessageSender()	{}
-		~NetworkMessageSender()						{}
-
-		void pushMessage(const Message &message);
-
-		// Get number of messages queued to be transmitted.
-		int getNMessages();
+		NetworkServer() : socket(0), set(0), numberOfClients(0)	{}
 		
-		// Transmits queued messages.
-		void transmit();
-				
+		void start();
+		NetworkServerClient* checkForNewClient();
+		void close();
+		
 	private:
-		std::deque<Message> sendDeque;
+		void createSocketSet();
+	
+		TCPsocket socket;
+		SDLNet_SocketSet set;
+		Clients clients;
+		size_t numberOfClients;
 	};
 
-	class NetworkMessageReciever : public MessageReciever
+	class NetworkClient
 	{
 	public:
-		NetworkMessageReciever() : MessageReciever()	{}
-		~NetworkMessageReciever()						{}
-
-		bool hasMessageOnQueue();
+		NetworkClient() : socket(0)	{}
 		
-		Message popMessage();
+		bool openConnection();
+		void close();
 
-		void setSimulatedLag(int lag);
+		MessageSender* getMessageSender()		{ return &sender; }
+		MessageReciever* getMessageReciever()	{ return &reciever; }
+
+	private:
+		TCPsocket socket;
+		
+		NetworkMessageSender sender;
+		NetworkMessageReciever reciever;
 	};
 }
 

@@ -28,27 +28,35 @@
 	void Game::run()
 	{
 		/*
-		NetworkConnection connection;
-		
+		NetworkServer networkServer;
+		NetworkClient networkClient1;
+		NetworkClient networkClient2;
+
 		size_t clientsConnected = 0;
 		
-		connection.startServer();
-		
+		networkServer.start();
+
 		while (clientsConnected < 2)
 		{
-			connection.openClientConnection1();
+			if (clientsConnected == 0)
+				networkClient1.openConnection();
+			
+			if (clientsConnected == 1)
+				networkClient2.openConnection();
 
-			connection.openClientConnection2();
-
-
-			if (connection.waitForClient())
+			NetworkServerClient *serverClient = networkServer.checkForNewClient();
+			if (serverClient != 0)
+			{
 				clientsConnected++;
+			}
 		}
-		
-		connection.closeClientConnection();
-		connection.closeServer();
+
+		networkServer.close();
+		networkClient1.close();
+		networkClient2.close();
 		*/
-	
+		
+		
 		//timeHandler.reset();
 
 		client1.getKeyHandler()->setClient1Keys();
@@ -56,27 +64,27 @@
 		client2.setAimMode(Client::MOUSE);
 
 
-		// Initialize virtual conn3ections
+		// Initialize virtual connections
 		MessageSender *sender1 = virtualConnection1.getMessageSender();
-		MessageReciever *reciever1 = virtualConnection1.getMessageReciever();
-		reciever1->setSimulatedLag(50);
-
-		MessageSender *sender2 = virtualConnection2.getMessageSender();
-		MessageReciever *reciever2 = virtualConnection2.getMessageReciever();
+		MessageReciever *reciever2 = virtualConnection1.getMessageReciever();
 		reciever2->setSimulatedLag(50);
 
-		MessageSender *sender3 = virtualConnection3.getMessageSender();
-		MessageReciever *reciever3 = virtualConnection3.getMessageReciever();
-		reciever3->setSimulatedLag(50);
+		MessageSender *sender2 = virtualConnection2.getMessageSender();
+		MessageReciever *reciever1 = virtualConnection2.getMessageReciever();
+		reciever1->setSimulatedLag(50);
 
-		MessageSender *sender4 = virtualConnection4.getMessageSender();
-		MessageReciever *reciever4 = virtualConnection4.getMessageReciever();
+		MessageSender *sender3 = virtualConnection3.getMessageSender();
+		MessageReciever *reciever4 = virtualConnection3.getMessageReciever();
 		reciever4->setSimulatedLag(50);
 
-		client1.setConnection(sender2, reciever1);
+		MessageSender *sender4 = virtualConnection4.getMessageSender();
+		MessageReciever *reciever3 = virtualConnection4.getMessageReciever();
+		reciever3->setSimulatedLag(50);
+
+		client1.setConnection(sender1, reciever1);
 		client1.setColor(Color(0.0f, 1.0f, 0.0f));
 		
-		client2.setConnection(sender4, reciever3);
+		client2.setConnection(sender3, reciever3);
 		client2.setColor(Color(1.0f, 0.0f, 0.0f));
 
 
@@ -91,10 +99,10 @@
 			// Run clientConnected when a new connection is detected. (Here we simulate that two clients is detected)
 			// --------------
 			if (!client1Connected)
-				server.clientConnected(sender1, reciever2);
+				server.clientConnected(sender2, reciever2);
 			
 			if (!client2Connected)
-				server.clientConnected(sender3, reciever4);
+				server.clientConnected(sender4, reciever4);
 
 			// --------------
 			// Loop at client 1

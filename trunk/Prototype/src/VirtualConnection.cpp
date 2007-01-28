@@ -56,7 +56,6 @@ namespace Prototype
 			Message message = sendDeque.back();
 			sendDeque.pop_back();
 		
-			//messageDeque->push_front(message);
 			messageReciever->putMessageToLagQueue(message);
 		}
 	}

@@ -2,72 +2,117 @@
 
 namespace Prototype
 {	
-	void NetworkConnection::openClientConnection1()
+	//-----------------------------------------------------------
+	// NETWORK MESSAGE SENDER
+	//-----------------------------------------------------------
+	void NetworkMessageSender::pushMessage(const Message &message) 
 	{
-		openClientConnection(clientSocket1);
+		sendDeque.push_front(message);
 	}
 
-	void NetworkConnection::openClientConnection2()
+	// Get number of messages queued to be transmitted.
+	int NetworkMessageSender::getNMessages() 
 	{
-		openClientConnection(clientSocket2);
+		return sendDeque.size();
 	}
-
-	void NetworkConnection::openClientConnection(TCPsocket clientSocket)
+	
+	// Transmits queued messages.
+	void NetworkMessageSender::transmit() 
 	{
-		IPaddress ip;
-		char message[1024];
-		int len;
-		Uint16 port = 12333;
-
-		// Resolve the argument into an IPaddress type
-		if (SDLNet_ResolveHost(&ip, "localhost", port) == -1)
-		{
-			printf("SDLNet_ResolveHost: %s\n",SDLNet_GetError());
-			exit(3);
-		}
-
-		// open the server socket
-		clientSocket = SDLNet_TCP_Open(&ip);
-		if(!clientSocket)
-		{
-			printf("SDLNet_TCP_Open: %s\n",SDLNet_GetError());
-			exit(4);
-		}
-		/*
-		// read the buffer from stdin
-		printf("Enter Message, or Q to make the server quit:\n");
-		fgets(message, 1024, stdin);
-		len = strlen(message);
-
-		// strip the newline
-		message[len-1]='\0';
+		size_t result;
+		size_t len;
 		
-		if(len)
+		while (!sendDeque.empty())
 		{
-			int result;
+			// Retrieve message from queue
+			Message message = sendDeque.back();
+			sendDeque.pop_back();
 			
-			// print out the message
-			printf("Sending: %.*s\n",len,message);
+			// Send message on socket
+			result = SDLNet_TCP_Send(socket, &(message.type), sizeof(message.type));
+			result = SDLNet_TCP_Send(socket, &(message.time), sizeof(message.time));
+			
+			len = 0; // TODO: get length of data with given type				
+			
+			// Send length of message.data
+			result = SDLNet_TCP_Send(socket, &len, sizeof(len));
 
-			result=SDLNet_TCP_Send(sock,message,len); // add 1 for the NULL
-			if(result<len)
-				printf("SDLNet_TCP_Send: %s\n",SDLNet_GetError());
+			// Send message.data
+			result = SDLNet_TCP_Send(socket, message.data, len);
+			
+			if (result < len)
+				printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
 		}
-		*/
+	}
 
-	}
-	
-	void NetworkConnection::closeClientConnection()
+	//-----------------------------------------------------------
+	// NETWORK MESSAGE RECIEVER
+	//-----------------------------------------------------------
+	bool NetworkMessageReciever::hasMessageOnQueue()
 	{
-		SDLNet_TCP_Close(clientSocket1);
-		SDLNet_TCP_Close(clientSocket2);
+		retrieve();
+
+		return MessageReciever::hasMessageOnQueue();		
 	}
-	
-	
-	void NetworkConnection::startServer()
+
+	void NetworkMessageReciever::retrieve()
+	{
+		if (SDLNet_SocketReady(socket))
+		{
+			size_t len;
+			size_t result;
+			
+			Message message;
+			size_t *data;
+
+			// Read message.type
+			result = SDLNet_TCP_Recv(socket, &(message.type), sizeof(message.type));
+			if (result < sizeof(message.type))
+			{ 
+				printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
+				return; 
+			}
+			
+			// Read message.time
+			result = SDLNet_TCP_Recv(socket, &(message.time), sizeof(message.time));
+			if (result < sizeof(message.time))
+			{ 
+				printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
+				return; 
+			}
+			
+			// Read length of message.data
+			result = SDLNet_TCP_Recv(socket, &len, sizeof(len));
+			if (result < sizeof(len)) 
+			{ 
+				printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
+				return; 
+			}
+
+			// Allocate memory for message data
+			data = (size_t*)malloc(len);
+
+			// Read message.data
+			result = SDLNet_TCP_Recv(socket, data, len);
+			if (result < len)
+			{ 
+				printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
+				return; 
+			}
+
+			message.data = data;
+
+			putMessageToLagQueue(message);
+		}
+	}
+
+	//-----------------------------------------------------------
+	// SERVER
+	//-----------------------------------------------------------
+	void NetworkServer::start()
 	{
 		IPaddress ip;
-		numberOfClients = 0;
+		size_t port = 12333;
 
 		// Create a server type IPaddress
 		if (SDLNet_ResolveHost(&ip, NULL, port) == -1)
@@ -77,15 +122,97 @@ namespace Prototype
 		}
 
 		// open the server socket
-		serverSocket = SDLNet_TCP_Open(&ip);
-		if(!serverSocket)
+		socket = SDLNet_TCP_Open(&ip);
+		if(!socket)
 		{
 			printf("SDLNet_TCP_Open: %s\n", SDLNet_GetError());
 			exit(4);
 		}
 	}
-	
-	void NetworkConnection::createSocketSet()
+
+	NetworkServerClient* NetworkServer::checkForNewClient()
+	{
+		TCPsocket serverClientSocket = 0;
+		IPaddress *remoteip;
+		createSocketSet();
+		size_t numReady = SDLNet_CheckSockets(set, (size_t)-1);
+
+		if (numReady == -1)
+		{
+			// error
+			return 0;
+		}
+		
+		if (numReady == 0)
+		{
+			return 0;
+		}
+		
+		//char message[1024];
+		//int len;
+		//Uint32 ipaddr;
+
+		// check for new connection from a client
+		if (SDLNet_SocketReady(socket))
+		{
+			// try to accept a connection
+			serverClientSocket = SDLNet_TCP_Accept(socket);
+
+			if(!serverClientSocket)
+			{ // no connection accepted
+				printf("SDLNet_TCP_Accept: %s\n",SDLNet_GetError());
+				SDL_Delay(100); //sleep 1/10th of a second
+				return 0;
+			}
+			
+			// get the clients IP and port number
+			remoteip = SDLNet_TCP_GetPeerAddress(serverClientSocket);
+
+			if(!remoteip)
+			{
+				printf("SDLNet_TCP_GetPeerAddress: %s\n", SDLNet_GetError());
+				return 0;
+			}
+
+			// print out the clients IP and port number
+			Uint32 ipaddr = SDL_SwapBE32(remoteip->host);
+			printf("Accepted a connection from %d.%d.%d.%d port %hu\n",
+				ipaddr>>24,
+				(ipaddr>>16)&0xff,
+				(ipaddr>>8)&0xff,
+				ipaddr&0xff,
+				remoteip->port);
+			
+			NetworkServerClient *serverClient = new NetworkServerClient();
+			serverClient->sender.setSocket(serverClientSocket);
+			serverClient->reciever.setSocket(serverClientSocket);
+			serverClient->socket = serverClientSocket;
+			
+			clients.push_back(serverClient);
+			numberOfClients++;
+			
+			return serverClient;
+		}
+		
+		return 0;
+	}
+
+	void NetworkServer::close()
+	{
+		Clients::iterator it = clients.begin();
+		Clients::iterator end = clients.end();
+		
+		for ( ; it != end; ++it)
+		{
+			NetworkServerClient* serverClient = *it;
+		
+			delete serverClient;
+		}
+		
+		SDLNet_FreeSocketSet(set);
+	}
+		
+	void NetworkServer::createSocketSet()
 	{
 		if (set)
 		{
@@ -100,109 +227,65 @@ namespace Prototype
 			exit(1);
 		}
 		
-		SDLNet_TCP_AddSocket(set, serverSocket);
+		SDLNet_TCP_AddSocket(set, socket);
 		
 		for (size_t i = 0; i < numberOfClients; i++)
 		{
-			SDLNet_TCP_AddSocket(set, clients[i]);
+			SDLNet_TCP_AddSocket(set, clients[i]->socket);
 		}
 	}
-	
-	// returns true if client got connected
-	bool NetworkConnection::waitForClient()
-	{
-		IPaddress *remoteip;
-		createSocketSet();
-		size_t numReady = SDLNet_CheckSockets(set, -1);
 
-		if (numReady == -1)
-		{
-			// error
-			return false;
-		}
-		
-		if (numReady == 0)
-		{
-			return false;
-		}
-		
-		
+
+	//-----------------------------------------------------------
+	// CLIENT
+	//-----------------------------------------------------------
+	bool NetworkClient::openConnection()
+	{
+		IPaddress ip;
 		//char message[1024];
 		//int len;
-		//Uint32 ipaddr;
+		Uint16 port = 12333;
 
-		// check for new connection from a client
-		if (SDLNet_SocketReady(serverSocket))
-//		if (true)
+		// Resolve the argument into an IPaddress type
+		if (SDLNet_ResolveHost(&ip, "localhost", port) == -1)
 		{
-			// try to accept a connection
-			serverClientSocket = SDLNet_TCP_Accept(serverSocket);
-
-			if(!serverClientSocket)
-			{ // no connection accepted
-				printf("SDLNet_TCP_Accept: %s\n",SDLNet_GetError());
-				SDL_Delay(100); //sleep 1/10th of a second
-				return false;
-			}
-			
-			// get the clients IP and port number
-			remoteip = SDLNet_TCP_GetPeerAddress(serverClientSocket);
-
-			if(!remoteip)
-			{
-				printf("SDLNet_TCP_GetPeerAddress: %s\n", SDLNet_GetError());
-				return false;
-			}
-
-			// print out the clients IP and port number
-			Uint32 ipaddr = SDL_SwapBE32(remoteip->host);
-			printf("Accepted a connection from %d.%d.%d.%d port %hu\n",
-				ipaddr>>24,
-				(ipaddr>>16)&0xff,
-				(ipaddr>>8)&0xff,
-				ipaddr&0xff,
-				remoteip->port);
-				
-			clients.push_back(serverClientSocket);
-			numberOfClients++;
-			
-			return true;
-		}
-		
-		/*
-		// read the buffer from client
-		len = SDLNet_TCP_Recv(client,message,1024);
-		SDLNet_TCP_Close(client);
-		if(!len)
-		{
-			printf("SDLNet_TCP_Recv: %s\n",SDLNet_GetError());
-			continue;
+			printf("SDLNet_ResolveHost: %s\n",SDLNet_GetError());
+			return false;
 		}
 
-		// print out the message
-		printf("Received: %.*s\n",len,message);
-
-		if(message[0]=='Q')
+		// open the server socket
+		socket = SDLNet_TCP_Open(&ip);
+		if(!socket)
 		{
-			printf("Quitting on a Q received\n");
-			break;
+			printf("SDLNet_TCP_Open: %s\n",SDLNet_GetError());
+			return false;
 		}
-		*/
-	}
-
-	void NetworkConnection::closeServer()
-	{
-		Clients::iterator it = clients.begin();
-		Clients::iterator end = clients.end();
-		
-		for ( ; it != end; ++it)
-		{
-			TCPsocket socket = *it;
-		
-			SDLNet_TCP_Close(socket);
-		}
-		
-		SDLNet_FreeSocketSet(set);
 	
+		sender.setSocket(socket);
+		reciever.setSocket(socket);
+	
+		// ..........
+		
+		return true;
 	}
+	
+	void NetworkClient::close()
+	{
+		SDLNet_TCP_Close(socket);
+	}
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 };
