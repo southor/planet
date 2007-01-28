@@ -57,7 +57,7 @@ namespace Prototype
 
 	void NetworkMessageReciever::retrieve()
 	{
-		if (SDLNet_SocketReady(socket))
+		//if (SDLNet_SocketReady(socket))
 		{
 			size_t len;
 			size_t result;
