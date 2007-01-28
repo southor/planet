@@ -30,20 +30,20 @@
 		/*
 		NetworkServer networkServer;
 		NetworkClient networkClient1;
-		//NetworkClient networkClient2;
+		NetworkClient networkClient2;
 
 		size_t clientsConnected = 0;
 		
 		networkServer.start();
 		
 		NetworkServerClient *serverClient;
-		while (clientsConnected < 1)
+		while (clientsConnected < 2)
 		{
 			if (clientsConnected == 0)
 				networkClient1.openConnection();
 			
-			//if (clientsConnected == 1)
-			//	networkClient2.openConnection();
+			if (clientsConnected == 1)
+				networkClient2.openConnection();
 
 			serverClient = networkServer.checkForNewClient();
 			if (serverClient != 0)
@@ -52,7 +52,7 @@
 			}
 		}
 
-		MessageSender *sender = networkClient1.getMessageSender();
+		MessageSender *sender = networkClient2.getMessageSender();
 		
 		ShootCmd shootCmd(3, 4);
 		Message message;
@@ -63,20 +63,25 @@
 		sender->pushMessage(message);
 		sender->transmit();
 		
-		SDL_Delay(100);
+		SDL_Delay(10);
 		
 		MessageReciever *reciever = &(serverClient->reciever);
 
 		if (reciever->hasMessageOnQueue())
 		{
-			printf("message recieved");
 			Message message2 = reciever->popMessage();
+			printf("Message recieved, type: %d, ", message2.type);
+
+			ShootCmd *shootCmd2 = (ShootCmd*)message2.data;
+			printf("playerId: %d, weapon: %d\n", shootCmd2->playerId, shootCmd2->weapon);
+
+			delete shootCmd2;
 		}
-		
+ 		
 
 		networkServer.close();
 		networkClient1.close();
-		//networkClient2.close();
+		networkClient2.close();
 		*/
 		
 		
