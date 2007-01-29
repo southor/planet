@@ -8,8 +8,12 @@
 
 #include "SDL_endian.h"
 
-	namespace Prototype
+namespace Prototype
 {
+	bool SHOW_CLIENT_1 = false;
+	bool SHOW_CLIENT_2 = false;
+	bool SHOW_SERVER = false;
+
 	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(640, 480);
 
 	Game::Game()
@@ -27,73 +31,143 @@
 
 	void Game::run()
 	{
-		/*
+		client1.getKeyHandler()->setClient1Keys();
+		client2.getKeyHandler()->setClient2Keys();
+		client2.setAimMode(Client::MOUSE);
+
+		printf("Choose.\n");
+	
+		
+		while (true)
+		{
+			pollEvents();
+		
+			if (client1.getKeyHandler()->isPressed(CMD_UP))
+			{
+				SHOW_SERVER = true;
+				SHOW_CLIENT_1 = true;
+				SHOW_CLIENT_2 = true;
+				break;
+			}
+			
+			if (client1.getKeyHandler()->isPressed(CMD_LEFT))
+			{
+				SHOW_CLIENT_1 = true;
+				break;
+			}
+
+			if (client1.getKeyHandler()->isPressed(CMD_DOWN))
+			{
+				SHOW_SERVER = true;
+				printf("SHOW_SERVER = true\n");
+				break;
+			}
+
+			if (client1.getKeyHandler()->isPressed(CMD_RIGHT))
+			{
+				SHOW_CLIENT_2 = true;
+				break;
+			}
+				
+			SDL_Delay(20);
+		}
+/*		
+		SHOW_SERVER = true;
+		SHOW_CLIENT_1 = true;
+		SHOW_CLIENT_2 = true;
+*/
 		NetworkServer networkServer;
 		NetworkClient networkClient1;
 		NetworkClient networkClient2;
 
 		size_t clientsConnected = 0;
+		bool client1Connected = false;
+		bool client2Connected = false;
 		
-		networkServer.start();
+		if (SHOW_SERVER)
+			networkServer.start();
 		
-		NetworkServerClient *serverClient;
-		while (clientsConnected < 2)
-		{
-			if (clientsConnected == 0)
-				networkClient1.openConnection();
-			
-			if (clientsConnected == 1)
-				networkClient2.openConnection();
+		NetworkServerClient *serverClient1;
+		NetworkServerClient *serverClient2;
 
-			serverClient = networkServer.checkForNewClient();
-			if (serverClient != 0)
+		while (true)
+		{
+			if (SHOW_CLIENT_1)
 			{
-				clientsConnected++;
+				// client 1
+				if (!client1Connected)
+					client1Connected |= networkClient1.openConnection();
 			}
+			
+			if (SHOW_CLIENT_2)
+			{
+				// client 2
+				if (!client2Connected)
+					client2Connected |= networkClient2.openConnection();
+			}
+
+			if (SHOW_SERVER)
+			{
+				// server
+				NetworkServerClient *serverClient = networkServer.checkForNewClient();
+
+				if (clientsConnected == 0)
+					serverClient1 = serverClient;
+					
+				if (clientsConnected == 1)
+					serverClient2 = serverClient;
+
+				if (serverClient != 0)
+					clientsConnected++;
+					
+					
+				printf("waiting for client: %d\n", clientsConnected);
+			}
+			
+			if ((!SHOW_CLIENT_1 || client1Connected) 
+				&& (!SHOW_CLIENT_2 || client2Connected) 
+				&& (!SHOW_SERVER || clientsConnected == 2))
+				break;
+				
+				
+			SDL_Delay(20);
 		}
+		
 
-		MessageSender *sender = networkClient2.getMessageSender();
-		
-		ShootCmd shootCmd(3, 4);
-		Message message;
-		message.type = 42;
-		message.time = 1234;
-		message.data = &shootCmd;
-		
-		sender->pushMessage(message);
-		sender->transmit();
-		
-		SDL_Delay(10);
-		
-		MessageReciever *reciever = &(serverClient->reciever);
+		MessageSender *sender1;
+		MessageReciever *reciever1;
+		MessageSender *sender3;
+		MessageReciever *reciever3;
+		MessageSender *sender2;
+		MessageReciever *reciever2;
+		MessageSender *sender4;
+		MessageReciever *reciever4;
 
-		if (reciever->hasMessageOnQueue())
+
+		if (SHOW_CLIENT_1)
 		{
-			Message message2 = reciever->popMessage();
-			printf("Message recieved, type: %d, ", message2.type);
-
-			ShootCmd *shootCmd2 = (ShootCmd*)message2.data;
-			printf("playerId: %d, weapon: %d\n", shootCmd2->playerId, shootCmd2->weapon);
-
-			delete shootCmd2;
+			sender1 = networkClient1.getMessageSender();
+			reciever1 = networkClient1.getMessageReciever();
 		}
- 		
+		if (SHOW_CLIENT_2)
+		{
+			sender3 = networkClient2.getMessageSender();
+			reciever3 = networkClient2.getMessageReciever();
+		}
+		if (SHOW_SERVER)
+		{
+			sender2 = &(serverClient1->sender);
+			reciever2 = &(serverClient1->reciever);
 
-		networkServer.close();
-		networkClient1.close();
-		networkClient2.close();
-		*/
-		
-		
+			sender4 = &(serverClient2->sender);
+			reciever4 = &(serverClient2->reciever);
+		}
 
 		
 		//timeHandler.reset();
 
-		client1.getKeyHandler()->setClient1Keys();
-		client2.getKeyHandler()->setClient2Keys();
-		client2.setAimMode(Client::MOUSE);
 
-
+		/*
 		// Initialize virtual connections
 		MessageSender *sender1 = virtualConnection1.getMessageSender();
 		MessageReciever *reciever2 = virtualConnection1.getMessageReciever();
@@ -110,69 +184,64 @@
 		MessageSender *sender4 = virtualConnection4.getMessageSender();
 		MessageReciever *reciever3 = virtualConnection4.getMessageReciever();
 		reciever3->setSimulatedLag(50);
+		*/
 
-		client1.setConnection(sender1, reciever1);
-		client1.setColor(Color(0.0f, 1.0f, 0.0f));
+		if (SHOW_CLIENT_1)
+		{
+			client1.setConnection(sender1, reciever1);
+			client1.setColor(Color(0.0f, 1.0f, 0.0f));
+		}
 		
-		client2.setConnection(sender3, reciever3);
-		client2.setColor(Color(1.0f, 0.0f, 0.0f));
+		if (SHOW_CLIENT_2)
+		{
+			client2.setConnection(sender3, reciever3);
+			client2.setColor(Color(1.0f, 0.0f, 0.0f));
+		}
 
-
 		
-		bool client1Connected = false;
-		bool client2Connected = false;
+		client1Connected = false;
+		client2Connected = false;
+		clientsConnected = 0;
 		
-		while (!client1Connected || !client2Connected)
+		while (true)
 		{
 			// --------------
 			// Loop at server 
 			// Run clientConnected when a new connection is detected. (Here we simulate that two clients is detected)
 			// --------------
-			if (!client1Connected)
-				server.clientConnected(sender2, reciever2);
-			
-			if (!client2Connected)
-				server.clientConnected(sender4, reciever4);
+			if (SHOW_SERVER)
+			{
+				if (!client1Connected)
+					if (server.clientConnected(sender2, reciever2))
+						clientsConnected++;
+				
+				if (!client2Connected)
+					if (server.clientConnected(sender4, reciever4))
+						clientsConnected++;
+			}
 
 			// --------------
 			// Loop at client 1
 			// --------------
-			client1Connected |= client1.initConnection();
+			if (SHOW_CLIENT_1)
+				client1Connected |= client1.initConnection();
 
 			// --------------
 			// Loop at client 2
 			// --------------
-			client2Connected |= client2.initConnection();
+			if (SHOW_CLIENT_2)
+				client2Connected |= client2.initConnection();
+			
+			
+			// Break if all is connected that should be
+			if ((!SHOW_CLIENT_1 || client1Connected) 
+				&& (!SHOW_CLIENT_2 || client2Connected) 
+				&& (!SHOW_SERVER || clientsConnected == 2))
+				break;
+
+			SDL_Delay(20);
 		}
 		
-
-/*
-		// ----------------------------------------------------
-		// NOT NEEDED ANY MORE. IS KEPT HERE FOR DEBUG PURPOSE.
-		// ----------------------------------------------------
-
-		Color color1 = Color(0.0f, 1.0f, 0.0f);							// handle by packet
-		Color color2 = Color(1.0f, 0.0f, 0.0f);							// handle by packet
-		Pos startPos(200.0f, 200.0f);									// handle by packet
-		Pos startPos2(200.0f, 250.0f);									// handle by packet
-
-		Link link = Link(sender1, reciever2);
-		size_t playerId = server.addClient(color1, link);
-		server.addPlayerObj(playerId, startPos);						// handle by packet
-		client1.setPlayerId(playerId);									// handle by packet
-
-		Link link2 = Link(sender3, reciever4);
-		size_t playerId2 = server.addClient(color2, link2);
-		server.addPlayerObj(playerId2, startPos2);						// handle by packet
-		client2.setPlayerId(playerId2);									// handle by packet
-
-		// rendering
-		client1.addPlayer(color1, startPos);							// handle by packet
-		client1.addPlayer(color2, startPos2);							// handle by packet
-		client2.addPlayer(color1, startPos);							// handle by packet
-		client2.addPlayer(color2, startPos2);							// handle by packet
-*/
-
 
 		server.startGame();
 
@@ -180,10 +249,14 @@
 		{
 			pollEvents();
 
-			client1.logic();
-			client2.logic();
+			if (SHOW_CLIENT_1)
+				client1.logic();
+				
+			if (SHOW_CLIENT_2)
+				client2.logic();
 
-			server.logic();
+			if (SHOW_SERVER)
+				server.logic();
 			
 			// guichan
 			gui.gui->logic();
@@ -193,6 +266,10 @@
 
 			SDL_Delay(20);
 		}
+		
+		networkServer.close();
+		networkClient1.close();
+		networkClient2.close();
 	}
 
 	void Game::render(Uint32 time)
@@ -201,18 +278,18 @@
 
 		glDisable(GL_LIGHTING);
 
-		//viewportHandler1.setupViewport();
-		//glViewport(0, h/4, w/2, (h*3)/4);
-		client1.useViewport();
-		client1.render();
+		if (SHOW_CLIENT_1)
+		{
+			client1.useViewport();
+			client1.render();
+		}
 
-		//viewportHandler.screenRenderPos = Vec2<int>(w/2, h/4);
-		//viewportHandler.screenRenderSize = Vec2<int>(w/2, (h*3)/4);
-		//glViewport(w/2, h/4, w/2, (h*3)/4);
-		//viewportHandler2.setupViewport();
-		client2.useViewport();
-		client2.render();
-
+		if (SHOW_CLIENT_2)
+		{
+			client2.useViewport();
+			client2.render();
+		}
+		
 		// guichan
 		glViewport(0, 0, WINDOW_SIZE.x, WINDOW_SIZE.y); 
 		//gui.gui->draw();
@@ -398,3 +475,63 @@
 		
 	}
 };
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------------
+// DEBUG CODE
+// -------------------------------------------------------------------
+
+		/*
+		Link clientLink(networkClient2.getMessageSender(), networkClient2.getMessageReciever());
+		
+		ShootCmd shootCmd(3, 4);
+		
+		Color color(1.0f, 0.5f, 0.3f);
+		InitClient initClient(color);
+		
+		UserCmd userCmd;
+		userCmd.cmdUp = true;
+		userCmd.cmdDown = false;
+		userCmd.cmdRight = false;
+		userCmd.cmdLeft = true;
+		userCmd.viewangle = 0.5f;
+
+		clientLink.pushMessage(shootCmd);
+		clientLink.pushMessage(userCmd);
+		clientLink.pushMessage(initClient);
+		clientLink.transmit();
+		
+		SDL_Delay(10);
+		
+
+		Link serverLink(&(serverClient->sender), &(serverClient->reciever));
+
+		if (serverLink.hasMessageOnQueue())
+		{
+			serverLink.popMessage();
+			ShootCmd *shootCmd2 = serverLink.getPoppedData<ShootCmd>();
+			printf("playerId: %d, weapon: %d\n", shootCmd2->playerId, shootCmd2->weapon);
+		}
+
+		if (serverLink.hasMessageOnQueue())
+		{
+			serverLink.popMessage();
+			UserCmd *userCmd2 = serverLink.getPoppedData<UserCmd>();
+			printf("usercmd: up: %d, down: %d\n", userCmd2->cmdUp, userCmd2->cmdDown);
+		}
+		
+		if (serverLink.hasMessageOnQueue())
+		{
+			serverLink.popMessage();
+			InitClient *initClient2 = serverLink.getPoppedData<InitClient>();
+			printf("color: %f, %f, %f\n", initClient2->color.r, initClient2->color.g, initClient2->color.b);
+		}
+ 		*/

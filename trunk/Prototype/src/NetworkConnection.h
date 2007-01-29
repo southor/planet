@@ -41,12 +41,13 @@ namespace Prototype
 		
 		Message popMessage();
 
-		void setSocket(TCPsocket socket) { this->socket = socket; }
+		void setSocket(TCPsocket socket);
 
 	private:
 		void retrieve();
 	
 		TCPsocket socket;
+		SDLNet_SocketSet set;
 	};
 
 

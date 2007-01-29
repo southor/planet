@@ -35,10 +35,11 @@ namespace Prototype
 	{
 		int type;
 		int time;
+		int size;
 		void *data;
-		Message() : type(0),  data(0), time(0)		{}
-		Message(int type, void *data, int time = 0)
-			: type(type), data(data), time(time)	{}
+		Message() : type(0), time(0), size(0), data(0)			{}
+		Message(int type, int size, void *data, int time = 0)
+			: type(type), size(size), data(data), time(time)	{}
 	};
 
 	class MessageReciever

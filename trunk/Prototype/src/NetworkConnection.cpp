@@ -32,16 +32,14 @@ namespace Prototype
 			result = SDLNet_TCP_Send(socket, &(message.type), sizeof(message.type));
 			result = SDLNet_TCP_Send(socket, &(message.time), sizeof(message.time));
 			
-			len = 8; // TODO: get length of data with given type				
-			
 			// Send length of message.data
-			result = SDLNet_TCP_Send(socket, &len, sizeof(len));
+			result = SDLNet_TCP_Send(socket, &message.size, sizeof(message.size));
 
 			// Send message.data
-			result = SDLNet_TCP_Send(socket, message.data, len);
+			result = SDLNet_TCP_Send(socket, message.data, message.size);
 			
-			if (result < len)
-				printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
+			//if (result < len)
+			//	printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
 		}
 	}
 
@@ -57,7 +55,15 @@ namespace Prototype
 
 	void NetworkMessageReciever::retrieve()
 	{
-		//if (SDLNet_SocketReady(socket))
+		size_t numready = SDLNet_CheckSockets(set, 0);
+		if (numready == -1)
+		{
+			printf("SDLNet_CheckSockets: %s\n", SDLNet_GetError());
+			return;
+		}
+
+		// check to see if the server sent us data
+		if (numready && SDLNet_SocketReady(socket))
 		{
 			size_t len;
 			size_t result;
@@ -105,7 +111,29 @@ namespace Prototype
 			putMessageToLagQueue(message);
 		}
 	}
+	
+	void NetworkMessageReciever::setSocket(TCPsocket socket)
+	{
+		this->socket = socket;
 
+		set = SDLNet_AllocSocketSet(1);
+		if (!set)
+		{
+			printf("SDLNet_AllocSocketSet: %s\n", SDLNet_GetError());
+			SDLNet_Quit();
+			SDL_Quit();
+			exit(4); //most of the time this is a major error, but do what you want.
+		}		
+
+		if (SDLNet_TCP_AddSocket(set, socket) == -1)
+		{
+			printf("SDLNet_TCP_AddSocket: %s\n", SDLNet_GetError());
+			SDLNet_Quit();
+			SDL_Quit();
+			exit(7);
+		}
+	}
+	
 	//-----------------------------------------------------------
 	// SERVER
 	//-----------------------------------------------------------
@@ -125,7 +153,7 @@ namespace Prototype
 		socket = SDLNet_TCP_Open(&ip);
 		if(!socket)
 		{
-			printf("SDLNet_TCP_Open: %s\n", SDLNet_GetError());
+			printf("SDLNet_TCP_Open (server): %s\n", SDLNet_GetError());
 			exit(4);
 		}
 	}
@@ -135,7 +163,7 @@ namespace Prototype
 		TCPsocket serverClientSocket = 0;
 		IPaddress *remoteip;
 		createSocketSet();
-		size_t numReady = SDLNet_CheckSockets(set, (size_t)-1);
+		size_t numReady = SDLNet_CheckSockets(set, (size_t)1);
 
 		if (numReady == -1)
 		{
@@ -247,7 +275,7 @@ namespace Prototype
 		Uint16 port = 12333;
 
 		// Resolve the argument into an IPaddress type
-		if (SDLNet_ResolveHost(&ip, "localhost", port) == -1)
+		if (SDLNet_ResolveHost(&ip, "keso.net", port) == -1)
 		{
 			printf("SDLNet_ResolveHost: %s\n",SDLNet_GetError());
 			return false;
@@ -257,7 +285,7 @@ namespace Prototype
 		socket = SDLNet_TCP_Open(&ip);
 		if(!socket)
 		{
-			printf("SDLNet_TCP_Open: %s\n",SDLNet_GetError());
+			printf("SDLNet_TCP_Open (client): %s\n",SDLNet_GetError());
 			return false;
 		}
 	
@@ -273,19 +301,5 @@ namespace Prototype
 	{
 		SDLNet_TCP_Close(socket);
 	}
-
-
-
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 };
