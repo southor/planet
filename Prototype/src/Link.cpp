@@ -18,7 +18,7 @@ namespace Prototype
 	void Link::pushMessage(int type, void *data) const
 	{
 		assert(messageSender);
-		Message message(type, data);
+		Message message(type, sizeOfMessageTypes[type], data);
 		messageSender->pushMessage(message);
 	}
 
@@ -97,17 +97,4 @@ namespace Prototype
 		assert(hasPoppedMessage);
 		return poppedMessage.type;
 	}
-
-	//// returns the data member as a UserCmd
-	//UserCmd* Link::getPoppedUserCmd()
-	//{
-	//	return reinterpret_cast<UserCmd*>(getPoppedData());
-	//}
-
-	//// returns the data member as an UpdatePlayerObj
-	//UpdatePlayerObj* Link::getPoppedUpdatePlayerObj()
-	//{
-	//	return reinterpret_cast<UpdatePlayerObj*>(getPoppedData());
-	//}
-
 };
