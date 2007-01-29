@@ -34,9 +34,9 @@ namespace Prototype
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
 		client2.setAimMode(Client::MOUSE);
-
+		
+		/*
 		printf("Choose.\n");
-	
 		
 		while (true)
 		{
@@ -71,11 +71,11 @@ namespace Prototype
 				
 			SDL_Delay(20);
 		}
-/*		
+		*/
 		SHOW_SERVER = true;
 		SHOW_CLIENT_1 = true;
 		SHOW_CLIENT_2 = true;
-*/
+
 		NetworkServer networkServer;
 		NetworkClient networkClient1;
 		NetworkClient networkClient2;

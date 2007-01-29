@@ -27,6 +27,7 @@ namespace Prototype
 	{
 		assert(messageReciever);
 		assert(hasPoppedMessage);
+		assert(poppedMessage.data);
 		return poppedMessage.data;
 	}
 

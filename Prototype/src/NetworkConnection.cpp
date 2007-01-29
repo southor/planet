@@ -275,7 +275,7 @@ namespace Prototype
 		Uint16 port = 12333;
 
 		// Resolve the argument into an IPaddress type
-		if (SDLNet_ResolveHost(&ip, "keso.net", port) == -1)
+		if (SDLNet_ResolveHost(&ip, "localhost", port) == -1)
 		{
 			printf("SDLNet_ResolveHost: %s\n",SDLNet_GetError());
 			return false;
