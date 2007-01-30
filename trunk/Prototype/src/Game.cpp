@@ -72,10 +72,11 @@ namespace Prototype
 			SDL_Delay(20);
 		}
 		*/
+		
 		SHOW_SERVER = true;
 		SHOW_CLIENT_1 = true;
 		SHOW_CLIENT_2 = true;
-
+		
 		NetworkServer networkServer;
 		NetworkClient networkClient1;
 		NetworkClient networkClient2;
@@ -148,19 +149,23 @@ namespace Prototype
 		{
 			sender1 = networkClient1.getMessageSender();
 			reciever1 = networkClient1.getMessageReciever();
+			reciever1->setSimulatedLag(50);
 		}
 		if (SHOW_CLIENT_2)
 		{
 			sender3 = networkClient2.getMessageSender();
 			reciever3 = networkClient2.getMessageReciever();
+			reciever3->setSimulatedLag(100);
 		}
 		if (SHOW_SERVER)
 		{
 			sender2 = &(serverClient1->sender);
 			reciever2 = &(serverClient1->reciever);
+			reciever2->setSimulatedLag(60);
 
 			sender4 = &(serverClient2->sender);
 			reciever4 = &(serverClient2->reciever);
+			reciever4->setSimulatedLag(90);
 		}
 
 		
@@ -175,7 +180,6 @@ namespace Prototype
 
 		MessageSender *sender2 = virtualConnection2.getMessageSender();
 		MessageReciever *reciever1 = virtualConnection2.getMessageReciever();
-		reciever1->setSimulatedLag(50);
 
 		MessageSender *sender3 = virtualConnection3.getMessageSender();
 		MessageReciever *reciever4 = virtualConnection3.getMessageReciever();
