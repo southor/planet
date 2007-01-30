@@ -19,8 +19,7 @@ namespace Prototype
 	// Transmits queued messages.
 	void NetworkMessageSender::transmit() 
 	{
-		size_t result;
-		size_t len;
+		int result;
 		
 		while (!sendDeque.empty())
 		{
@@ -28,16 +27,41 @@ namespace Prototype
 			Message message = sendDeque.back();
 			sendDeque.pop_back();
 			
+			//printf("sending message: type: %d, time: %d, size: %d\n", message.type, message.time, message.size);
+			
 			// Send message on socket
 			result = SDLNet_TCP_Send(socket, &(message.type), sizeof(message.type));
+			if (result < sizeof(message.type))
+			{ 
+				printf("SDLNet_TCP_Recv: %s (recieving message.typec)\n", SDLNet_GetError());
+				return; 
+			}
+			
+			message.time = 0;
 			result = SDLNet_TCP_Send(socket, &(message.time), sizeof(message.time));
+			if (result < sizeof(message.time))
+			{ 
+				printf("SDLNet_TCP_Recv: %s (recieving message.time)\n", SDLNet_GetError());
+				return; 
+			}
 			
 			// Send length of message.data
-			result = SDLNet_TCP_Send(socket, &message.size, sizeof(message.size));
+			result = SDLNet_TCP_Send(socket, &(message.size), sizeof(message.size));
+			if (result < sizeof(message.size))
+			{ 
+				printf("SDLNet_TCP_Recv: %s (recieving message.size)\n", SDLNet_GetError());
+				return; 
+			}
+
 
 			// Send message.data
 			result = SDLNet_TCP_Send(socket, message.data, message.size);
-			
+			if (result < message.size)
+			{ 
+				printf("SDLNet_TCP_Recv: %s (recieving message.data)\n", SDLNet_GetError());
+				return; 
+			}
+
 			//if (result < len)
 			//	printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
 		}
@@ -65,8 +89,8 @@ namespace Prototype
 		// check to see if the server sent us data
 		if (numready && SDLNet_SocketReady(socket))
 		{
-			size_t len;
-			size_t result;
+			int len;
+			int result;
 			
 			Message message;
 			size_t *data;
@@ -75,25 +99,29 @@ namespace Prototype
 			result = SDLNet_TCP_Recv(socket, &(message.type), sizeof(message.type));
 			if (result < sizeof(message.type))
 			{ 
-				printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
+				printf("SDLNet_TCP_Recv: %s (recieving message.type)\n", SDLNet_GetError());
 				return; 
 			}
 			
 			// Read message.time
+			
 			result = SDLNet_TCP_Recv(socket, &(message.time), sizeof(message.time));
 			if (result < sizeof(message.time))
 			{ 
-				printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
+				printf("SDLNet_TCP_Recv: %s (recieving message.time)\n", SDLNet_GetError());
 				return; 
 			}
 			
+			
 			// Read length of message.data
 			result = SDLNet_TCP_Recv(socket, &len, sizeof(len));
-			if (result < sizeof(len)) 
+			if (result <= 0) 
 			{ 
-				printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
-				return; 
+				printf("SDLNet_TCP_Recv: %s, result: %d (recieving len)\n", SDLNet_GetError(), result);
+				return;
 			}
+
+			//printf("retrieving message: type: %d, time: %d, size: %d, result: %d\n", message.type, message.time, len, result);
 
 			// Allocate memory for message data
 			data = (size_t*)malloc(len);
@@ -102,11 +130,17 @@ namespace Prototype
 			result = SDLNet_TCP_Recv(socket, data, len);
 			if (result < len)
 			{ 
-				printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
+				printf("SDLNet_TCP_Recv: %s (recieving data, %d < %d)\n", SDLNet_GetError(), result, len);
 				return; 
+			}
+			if (data == 0)
+			{
+				printf("retrieve(), data is null. type: %d, time: %d, len: %d\n", message.type, message.time, len);
+				exit(1);
 			}
 
 			message.data = data;
+			
 
 			putMessageToLagQueue(message);
 		}

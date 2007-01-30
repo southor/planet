@@ -186,7 +186,7 @@ namespace Prototype
 
 
 
-
+	/*
 	static const size_t N_MESSAGE_TYPES = 13;
 	static const size_t sizeOfMessageTypes[N_MESSAGE_TYPES] = { 
 		// server
@@ -206,7 +206,7 @@ namespace Prototype
 		sizeof(UserCmd),
 		sizeof(ShootCmd)
 	};
-
+	*/
 
 	class Link
 	{
@@ -222,7 +222,7 @@ namespace Prototype
 		void destroyPoppedMessage();
 
 		// pushes a Message to the send queue, also sets time of message
-		void pushMessage(int type, void *data) const;
+		void pushMessage(int type, int size, void *data) const;
 
 		// returns the data member of the popped message
 		void* getPoppedData() const;
@@ -265,7 +265,7 @@ namespace Prototype
 		template <class Cmd>
 		void pushMessage(const Cmd &cmd) const
 		{
-			pushMessage(Cmd::messageType, new Cmd(cmd));
+			pushMessage(Cmd::messageType, sizeof(Cmd), new Cmd(cmd));
 		}
 		
 		/*
