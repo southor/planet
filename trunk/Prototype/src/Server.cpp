@@ -166,7 +166,7 @@ namespace Prototype
 					ShootCmd *shootCmd = player.link.getPoppedShootCmd();					
 					size_t projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
 					Projectile *projectile = (worldModel.getProjectiles())[projectileId];
-
+					
 					// send projectile to all clients
 					AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(), projectile->getAngle(), projectile->getShooterId());
 					pushMessageToAll(players, addProjectile);

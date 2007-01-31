@@ -41,7 +41,7 @@ namespace Prototype
 	
 	void VirtualConnection::VirtualMessageSender::pushMessage(const Message &message)
 	{
-		sendDeque.push_front(message);
+		sendDeque.push_back(message);
 	}
 
 	int VirtualConnection::VirtualMessageSender::getNMessages()
@@ -53,8 +53,8 @@ namespace Prototype
 	{
 		while (!sendDeque.empty())
 		{
-			Message message = sendDeque.back();
-			sendDeque.pop_back();
+			Message message = sendDeque.front();
+			sendDeque.pop_front();
 		
 			messageReciever->putMessageToLagQueue(message);
 		}

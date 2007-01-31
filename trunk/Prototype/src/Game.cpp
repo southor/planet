@@ -243,7 +243,7 @@ namespace Prototype
 				&& (!SHOW_SERVER || clientsConnected == 2))
 				break;
 
-			SDL_Delay(20);
+			SDL_Delay(100);
 		}
 		
 
