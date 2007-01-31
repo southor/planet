@@ -7,7 +7,7 @@ namespace Prototype
 	//-----------------------------------------------------------
 	void NetworkMessageSender::pushMessage(const Message &message) 
 	{
-		sendDeque.push_front(message);
+		sendDeque.push_back(message);
 	}
 
 	// Get number of messages queued to be transmitted.
@@ -24,10 +24,10 @@ namespace Prototype
 		while (!sendDeque.empty())
 		{
 			// Retrieve message from queue
-			Message message = sendDeque.back();
-			sendDeque.pop_back();
+			Message message = sendDeque.front();
+			sendDeque.pop_front();
 			
-			//printf("sending message: type: %d, time: %d, size: %d\n", message.type, message.time, message.size);
+			printf("sending message: type: %d, time: %d, size: %d\n", message.type, message.time, message.size);
 			
 			// Send message on socket
 			result = SDLNet_TCP_Send(socket, &(message.type), sizeof(message.type));
@@ -121,7 +121,7 @@ namespace Prototype
 				return;
 			}
 
-			//printf("retrieving message: type: %d, time: %d, size: %d, result: %d\n", message.type, message.time, len, result);
+			printf("retrieving message: type: %d, time: %d, size: %d, result: %d\n", message.type, message.time, len, result);
 
 			// Allocate memory for message data
 			data = (size_t*)malloc(len);
