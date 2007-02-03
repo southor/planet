@@ -47,6 +47,9 @@
 namespace Prototype
 {
 	//static TimeHandler timeHandler;
+
+	//debug
+	//static std::ostream debugOutput;
 };
 
 

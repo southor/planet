@@ -88,6 +88,13 @@ namespace Prototype
 				return true;
 			}
 
+			void goToUsed()
+			{
+				for(;!atEnd(); ++i)
+				{
+					if ((*iterOver)[i].used) break;
+				}
+			}
 			
 
 		public:
@@ -108,7 +115,10 @@ namespace Prototype
 
 			Iterator() 			{}
 		
-			Iterator(std::vector<Entry> *iterOver, size_t i) : i(i), iterOver(iterOver)		{}
+			Iterator(std::vector<Entry> *iterOver, size_t i) : i(i), iterOver(iterOver)
+			{
+				goToUsed();
+			}
 
 			// End iterator
 			Iterator(std::vector<Entry> *iterOver)
@@ -175,10 +185,7 @@ namespace Prototype
 					return *this;
 				}				
 				++i;
-				for(;!atEnd(); ++i)
-				{
-					if ((*iterOver)[i].used) break;
-				}
+				goToUsed();
 				return *this;
 			}
 
@@ -252,11 +259,13 @@ namespace Prototype
 			{
 				assert(id >= map.size());
 				
+				
 				Entry unusedEntry;
 				while(id > map.size())
 				{
 					freeIds.push_back(map.size());
-					map.push_back(unusedEntry);					
+					map.push_back(unusedEntry);
+					//assert(false);
 				}
 				assert(id == map.size());
 				map.push_back(entryAdd);
@@ -290,13 +299,14 @@ namespace Prototype
 						{
 							if (map.back().used) break;
 							map.pop_back();
+							//assert(false);
 						}
 					}
 					else
 					{
 						entry.used = false;
 						freeIds.push_back(id);
-					}					
+					}
 					--size;
 
 					return true;
