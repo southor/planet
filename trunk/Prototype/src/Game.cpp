@@ -21,6 +21,8 @@ namespace Prototype
 		init();
 		gui.init();
 		running = true;
+
+		//debugOutput = std::cout;
 	}
 
 	Game::~Game()
@@ -35,7 +37,7 @@ namespace Prototype
 		client2.getKeyHandler()->setClient2Keys();
 		client2.setAimMode(Client::MOUSE);
 		
-		/*
+		
 		printf("Choose.\n");
 		
 		while (true)
@@ -71,11 +73,11 @@ namespace Prototype
 				
 			SDL_Delay(20);
 		}
-		*/
 		
-		SHOW_SERVER = true;
-		SHOW_CLIENT_1 = true;
-		SHOW_CLIENT_2 = true;
+		
+		//SHOW_SERVER = true;
+		//SHOW_CLIENT_1 = true;
+		//SHOW_CLIENT_2 = true;
 		
 		NetworkServer networkServer;
 		NetworkClient networkClient1;

@@ -37,14 +37,27 @@ namespace Prototype
 		Move move(&obstacles, &players, &(getPlayerObjs()), &respawnPoss, deltaTime);
 		ForEach(projectiles.begin(), projectiles.end(), move);
 		
-		std::vector<RemoveProjectile>::iterator it = move.getProjectilesHit().begin();
-		std::vector<RemoveProjectile>::iterator end = move.getProjectilesHit().end();
-		for(; it != end ; ++it)
+		if (move.getProjectilesHit().size() > 0)
 		{
-			projectiles.remove(it->projectileId);
-			
-			// send message			
-			pushMessageToAll(players, *it);
+			//std::cout << "---- number of projectiles to remove: " << move.getProjectilesHit().size() << std::endl;
+			std::vector<RemoveProjectile>::iterator it = move.getProjectilesHit().begin();
+			std::vector<RemoveProjectile>::iterator end = move.getProjectilesHit().end();
+			for(; it != end ; ++it)
+			{
+				projectiles.remove(it->projectileId);
+				//std::cout << "\tremoving projectile: " << it->projectileId << std::endl;
+				
+				// send message			
+				pushMessageToAll(players, *it);
+			}
+
+			//std::cout << "\tprojectiles left: " << projectiles.getSize() << std::endl;
+			//ProjectileContainer::Iterator it2 = projectiles.begin();
+			//ProjectileContainer::Iterator it2End = projectiles.end();
+			//for(; it2 != it2End; ++it2)
+			//{
+			//	std::cout << "\tprojectile left: " << it2->first << std::endl;
+			//}
 		}
 	}
 
