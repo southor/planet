@@ -34,8 +34,9 @@ namespace Prototype
 	class NetworkMessageReciever : public MessageReciever
 	{
 	public:
-		NetworkMessageReciever() : MessageReciever()	{}
-		~NetworkMessageReciever()						{}
+		NetworkMessageReciever() 
+			: MessageReciever(), retrieveMessagePhase(0), retrieveSize(0), retrieveTime(0), retrieveType(0)	{}
+		~NetworkMessageReciever()																			{}
 
 		bool hasMessageOnQueue();
 		
@@ -44,10 +45,16 @@ namespace Prototype
 		void setSocket(TCPsocket socket);
 
 	private:
+		int readData(void *data, int len);
 		void retrieve();
 	
 		TCPsocket socket;
 		SDLNet_SocketSet set;
+		
+		unsigned char retrieveMessagePhase;
+		unsigned int retrieveType;
+		unsigned int retrieveTime;
+		unsigned int retrieveSize;
 	};
 
 
@@ -86,7 +93,7 @@ namespace Prototype
 	public:
 		NetworkClient() : socket(0)	{}
 		
-		bool openConnection();
+		bool openConnection(std::string &host);
 		void close();
 
 		MessageSender* getMessageSender()		{ return &sender; }
