@@ -225,7 +225,6 @@ namespace Prototype
 				userCmd.viewangle = ((worldModel.getPlayerObjs())[playerId])->angle;
 
 				link.pushMessage(userCmd);
-				
 			}
 
 			// transmit any messages

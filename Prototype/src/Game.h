@@ -17,7 +17,7 @@ namespace Prototype
 	public:
 		Game();
 		~Game();
-		void run();
+		void run(std::string &host);
 
 	private:
 		void init();

@@ -29,38 +29,46 @@ namespace Prototype
 			
 			//printf("sending message: type: %d, time: %d, size: %d\n", message.type, message.time, message.size);
 			
+			//type = SDL_SwapBE32(type);
+			
 			// Send message on socket
 			result = SDLNet_TCP_Send(socket, &(message.type), sizeof(message.type));
 			if (result < sizeof(message.type))
 			{ 
-				printf("SDLNet_TCP_Recv: %s (recieving message.typec)\n", SDLNet_GetError());
+				printf("SDLNet_TCP_Send: %s (sending message.typec)\n", SDLNet_GetError());
 				return; 
 			}
 			
-			message.time = 0;
+			// Send time on socket
 			result = SDLNet_TCP_Send(socket, &(message.time), sizeof(message.time));
 			if (result < sizeof(message.time))
 			{ 
-				printf("SDLNet_TCP_Recv: %s (recieving message.time)\n", SDLNet_GetError());
+				printf("SDLNet_TCP_Send: %s (sending message.time)\n", SDLNet_GetError());
 				return; 
 			}
+			
+			
+			//len = SDL_SwapBE32(len);
 			
 			// Send length of message.data
 			result = SDLNet_TCP_Send(socket, &(message.size), sizeof(message.size));
 			if (result < sizeof(message.size))
 			{ 
-				printf("SDLNet_TCP_Recv: %s (recieving message.size)\n", SDLNet_GetError());
+				printf("SDLNet_TCP_Send: %s (sending message.size)\n", SDLNet_GetError());
 				return; 
 			}
 
+			//len = SDL_SwapBE32(len);
 
 			// Send message.data
 			result = SDLNet_TCP_Send(socket, message.data, message.size);
 			if (result < message.size)
 			{ 
-				printf("SDLNet_TCP_Recv: %s (recieving message.data)\n", SDLNet_GetError());
+				printf("SDLNet_TCP_Send: %s (sending message.data)\n", SDLNet_GetError());
 				return; 
 			}
+			
+			delete message.data;
 
 			//if (result < len)
 			//	printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
@@ -77,72 +85,94 @@ namespace Prototype
 		return MessageReciever::hasMessageOnQueue();		
 	}
 
-	void NetworkMessageReciever::retrieve()
+
+	int NetworkMessageReciever::readData(void *data, int len)
 	{
-		size_t numready = SDLNet_CheckSockets(set, 0);
+		int numready = SDLNet_CheckSockets(set, 0);
 		if (numready == -1)
 		{
 			printf("SDLNet_CheckSockets: %s\n", SDLNet_GetError());
-			return;
+			return 0;
 		}
 
-		// check to see if the server sent us data
 		if (numready && SDLNet_SocketReady(socket))
 		{
-			int len;
-			int result;
-			
-			Message message;
-			size_t *data;
+			int result = SDLNet_TCP_Recv(socket, data, len);
 
-			// Read message.type
-			result = SDLNet_TCP_Recv(socket, &(message.type), sizeof(message.type));
-			if (result < sizeof(message.type))
+			if (result < len)
 			{ 
-				printf("SDLNet_TCP_Recv: %s (recieving message.type)\n", SDLNet_GetError());
-				return; 
+				printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
+				return 0;
 			}
 			
-			// Read message.time
-			
-			result = SDLNet_TCP_Recv(socket, &(message.time), sizeof(message.time));
-			if (result < sizeof(message.time))
-			{ 
-				printf("SDLNet_TCP_Recv: %s (recieving message.time)\n", SDLNet_GetError());
-				return; 
+			return result;
+		}		
+		
+		return 0;	
+	}
+
+	void NetworkMessageReciever::retrieve()
+	{
+		while (true)
+		{
+			switch (retrieveMessagePhase)
+			{
+			// Read type
+			case 0:
+			{
+				if (readData(&retrieveType, sizeof(retrieveType)) == 0)
+					return;
+					
+				retrieveMessagePhase++;
+				break;
 			}
-			
-			
-			// Read length of message.data
-			result = SDLNet_TCP_Recv(socket, &len, sizeof(len));
-			if (result <= 0) 
-			{ 
-				printf("SDLNet_TCP_Recv: %s, result: %d (recieving len)\n", SDLNet_GetError(), result);
+	
+			// Read time
+			case 1:
+			{
+				if (readData(&retrieveTime, sizeof(retrieveTime)) == 0)
+					return;
+					
+				retrieveMessagePhase++;
+				break;		
+			}
+				
+			// Read length of data
+			case 2:
+			{
+				if (readData(&retrieveSize, sizeof(retrieveSize)) == 0)
+					return;
+					
+				retrieveMessagePhase++;
+				break;
+			}
+							
+			// Read data
+			case 3:
+			{
+				// Allocate memory for message data
+				char *data = new char[retrieveSize];
+
+				if (readData(data, retrieveSize) == 0)
+				{
+					delete data;
+					return;
+				}
+
+				Message message(retrieveType, retrieveSize, data);
+				
+				//printf("retrieving message: type: %d, size: %d @ %d\n", retrieveType, retrieveSize, SDL_GetTicks());
+				
+				putMessageToLagQueue(message);
+				
+				// reset messagePhase
+				retrieveMessagePhase = 0;
 				return;
 			}
 
-			//printf("retrieving message: type: %d, time: %d, size: %d, result: %d\n", message.type, message.time, len, result);
-
-			// Allocate memory for message data
-			data = (size_t*)malloc(len);
-
-			// Read message.data
-			result = SDLNet_TCP_Recv(socket, data, len);
-			if (result < len)
-			{ 
-				printf("SDLNet_TCP_Recv: %s (recieving data, %d < %d)\n", SDLNet_GetError(), result, len);
-				return; 
+			default:
+				assert(false);
 			}
-			if (data == 0)
-			{
-				printf("retrieve(), data is null. type: %d, time: %d, len: %d\n", message.type, message.time, len);
-				exit(1);
-			}
-
-			message.data = data;
-			
-
-			putMessageToLagQueue(message);
 		}
 	}
 	
@@ -166,6 +196,7 @@ namespace Prototype
 			SDL_Quit();
 			exit(7);
 		}
+
 	}
 	
 	//-----------------------------------------------------------
@@ -301,7 +332,7 @@ namespace Prototype
 	//-----------------------------------------------------------
 	// CLIENT
 	//-----------------------------------------------------------
-	bool NetworkClient::openConnection()
+	bool NetworkClient::openConnection(std::string &host)
 	{
 		IPaddress ip;
 		//char message[1024];
@@ -309,7 +340,7 @@ namespace Prototype
 		Uint16 port = 12333;
 
 		// Resolve the argument into an IPaddress type
-		if (SDLNet_ResolveHost(&ip, "localhost", port) == -1)
+		if (SDLNet_ResolveHost(&ip, host.c_str(), port) == -1)
 		{
 			printf("SDLNet_ResolveHost: %s\n",SDLNet_GetError());
 			return false;
@@ -325,8 +356,6 @@ namespace Prototype
 	
 		sender.setSocket(socket);
 		reciever.setSocket(socket);
-	
-		// ..........
 		
 		return true;
 	}

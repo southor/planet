@@ -31,7 +31,7 @@ namespace Prototype
 		SDLNet_Quit();
 	}
 
-	void Game::run()
+	void Game::run(std::string &host)
 	{
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
@@ -99,14 +99,14 @@ namespace Prototype
 			{
 				// client 1
 				if (!client1Connected)
-					client1Connected |= networkClient1.openConnection();
+					client1Connected |= networkClient1.openConnection(host);
 			}
 			
 			if (SHOW_CLIENT_2)
 			{
 				// client 2
 				if (!client2Connected)
-					client2Connected |= networkClient2.openConnection();
+					client2Connected |= networkClient2.openConnection(host);
 			}
 
 			if (SHOW_SERVER)
@@ -151,23 +151,23 @@ namespace Prototype
 		{
 			sender1 = networkClient1.getMessageSender();
 			reciever1 = networkClient1.getMessageReciever();
-			reciever1->setSimulatedLag(50);
+			//reciever1->setSimulatedLag(50);
 		}
 		if (SHOW_CLIENT_2)
 		{
 			sender3 = networkClient2.getMessageSender();
 			reciever3 = networkClient2.getMessageReciever();
-			reciever3->setSimulatedLag(100);
+			//reciever3->setSimulatedLag(100);
 		}
 		if (SHOW_SERVER)
 		{
 			sender2 = &(serverClient1->sender);
 			reciever2 = &(serverClient1->reciever);
-			reciever2->setSimulatedLag(60);
+			//reciever2->setSimulatedLag(60);
 
 			sender4 = &(serverClient2->sender);
 			reciever4 = &(serverClient2->reciever);
-			reciever4->setSimulatedLag(90);
+			//reciever4->setSimulatedLag(90);
 		}
 
 		
