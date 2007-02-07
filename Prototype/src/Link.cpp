@@ -8,7 +8,7 @@ namespace Prototype
 	{
 		if (hasPoppedMessage)
 		{
-			delete poppedMessage.data;
+			delete [] poppedMessage.data;
 			//resetPoppedMessage();
 			hasPoppedMessage = false;
 		}

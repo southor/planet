@@ -155,7 +155,7 @@ namespace Prototype
 
 				if (readData(data, retrieveSize) == 0)
 				{
-					delete data;
+					delete [] data;
 					return;
 				}
 
