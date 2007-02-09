@@ -7,3 +7,5 @@ namespace Prototype
 	const Color Color::YELLOW = Color(1.0f, 1.0f, 0.0f);
 };
 
+
+

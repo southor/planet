@@ -79,3 +79,4 @@ namespace Prototype
 		if (ammo[currentWeapon] == 0) switchWeapon();		
 	}
 }
+

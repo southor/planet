@@ -19,3 +19,4 @@ namespace Prototype
 		if (deltaTime == 0) deltaTime = 1; // avoiding division with zero problems
 	}
 };
+
