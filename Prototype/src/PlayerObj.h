@@ -1,8 +1,8 @@
 #ifndef __playerobj_h__
 #define __playerobj_h__
 
-#include "movableobj.h"
-#include "rectangle.h"
+#include "MovableObj.h"
+#include "Rectangle.h"
 #include "Projectile.h"
 
 namespace Prototype

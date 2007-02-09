@@ -1,4 +1,4 @@
-#include "worldmodel.h"
+#include "WorldModel.h"
 
 namespace Prototype
 {

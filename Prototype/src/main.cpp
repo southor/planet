@@ -1,4 +1,4 @@
-#include "game.h"
+#include "Game.h"
 #include "KeyHandler.h"
 
 bool running;

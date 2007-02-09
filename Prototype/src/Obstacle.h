@@ -1,8 +1,8 @@
 #ifndef __obstacle_h__
 #define __obstacle_h__
 
-#include "rectangle.h"
-#include "gameobj.h"
+#include "Rectangle.h"
+#include "GameObj.h"
 
 namespace Prototype
 {

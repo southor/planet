@@ -1,7 +1,7 @@
 #ifndef __rectangle_cpp__
 #define __rectangle_cpp__
 
-#include "rectangle.h"
+#include "Rectangle.h"
 
 namespace Prototype
 {

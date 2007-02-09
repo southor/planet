@@ -1,4 +1,4 @@
-#include "virtualconnection.h"
+#include "VirtualConnection.h"
 #include "assert.h"
 
 namespace Prototype

@@ -5,7 +5,7 @@
 
 #include "messages.h"
 #include "ServerPlayers.h"
-#include "serverworldmodel.h"
+#include "ServerWorldModel.h"
 
 namespace Prototype
 {

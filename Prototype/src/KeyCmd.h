@@ -1,5 +1,5 @@
-#ifndef __keycmd_h__
-#define __keycmd_h__
+#ifndef __KeyCmd_h__
+#define __KeyCmd_h__
 
 #define NUMBER_OF_COMMANDS 8
 

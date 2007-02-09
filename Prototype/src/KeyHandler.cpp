@@ -1,4 +1,4 @@
-#include "keyhandler.h"
+#include "KeyHandler.h"
 
 namespace Prototype
 {
