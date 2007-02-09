@@ -1,4 +1,4 @@
-#include "serverworldmodel.h"
+#include "ServerWorldModel.h"
 #include "basic.h"
 #include "common.h"
 #include <cmath>

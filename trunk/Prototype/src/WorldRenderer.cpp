@@ -2,7 +2,7 @@
 #define __worldrenderer_cpp__
 
 
-#include "worldrenderer.h"
+#include "WorldRenderer.h"
 #include "common.h"
 #include <algorithm>
 

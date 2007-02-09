@@ -1,9 +1,9 @@
 #ifndef __worldmodel_h__
 #define __worldmodel_h__
 
-#include "obstacle.h"
-#include "playerobj.h"
-#include "projectile.h"
+#include "Obstacle.h"
+#include "PlayerObj.h"
+#include "Projectile.h"
 
 #include "IdMap.h"
 #include <vector>

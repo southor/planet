@@ -2,7 +2,7 @@
 #define __keyhandler_h__
 
 #include "common.h"
-#include "keycmd.h"
+#include "KeyCmd.h"
 
 #include <vector>
 

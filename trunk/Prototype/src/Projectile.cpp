@@ -1,4 +1,4 @@
-#include "projectile.h"
+#include "Projectile.h"
 #include "TimeHandler.h"
 #include <cmath>
 

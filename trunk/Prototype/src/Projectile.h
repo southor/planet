@@ -1,8 +1,8 @@
 #ifndef __projectile_h__
 #define __projectile_h__
 
-#include "movableobj.h"
-#include "line.h"
+#include "MovableObj.h"
+#include "Line.h"
 #include "basic.h"
 
 namespace Prototype

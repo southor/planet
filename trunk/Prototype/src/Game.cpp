@@ -19,7 +19,7 @@ namespace Prototype
 	Game::Game()
 	{
 		init();
-		gui.init();
+		//gui.init();
 		running = true;
 
 		//debugOutput = std::cout;
@@ -265,7 +265,7 @@ namespace Prototype
 				server.logic();
 			
 			// guichan
-			gui.gui->logic();
+			//gui.gui->logic();
 
 			// RENDER
 			render(0.0f);
@@ -476,7 +476,7 @@ namespace Prototype
 			} // end switch
 
 			// Pass event to guichan
-			gui.input->pushInput(event);
+			//gui.input->pushInput(event);
 		} // end while
 		
 	}

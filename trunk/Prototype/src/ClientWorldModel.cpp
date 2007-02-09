@@ -1,4 +1,4 @@
-#include "clientworldmodel.h"
+#include "ClientWorldModel.h"
 #include <algorithm>
 
 namespace Prototype

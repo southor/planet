@@ -1,5 +1,5 @@
-#include "line.h"
-#include "rectangle.h"
+#include "Line.h"
+#include "Rectangle.h"
 
 namespace Prototype
 {

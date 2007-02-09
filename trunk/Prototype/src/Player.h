@@ -1,7 +1,7 @@
 #ifndef __player_h__
 #define __player_h__
 
-#include "color.h"
+#include "Color.h"
 #include "IdMap.h"
 
 namespace Prototype

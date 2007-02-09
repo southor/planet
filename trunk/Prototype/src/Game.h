@@ -4,11 +4,11 @@
 //#include <vector>
 
 #include "common.h"
-#include "keyhandler.h"
-#include "virtualconnection.h"
-#include "client.h"
-#include "server.h"
-#include "Gui.h"
+#include "KeyHandler.h"
+#include "VirtualConnection.h"
+#include "Client.h"
+#include "Server.h"
+//#include "Gui.h"
 
 namespace Prototype
 {
@@ -46,7 +46,7 @@ namespace Prototype
 		//ViewportHandler viewportHandler1;
 		//ViewportHandler viewportHandler1;
 
-		Gui gui;
+		//Gui gui;
 
 		Uint32 mStartTime;
 

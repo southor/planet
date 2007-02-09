@@ -1,7 +1,7 @@
 #ifndef __worldrenderer_h__
 #define __worldrenderer_h__
 
-#include "worldmodel.h"
+#include "WorldModel.h"
 #include "Player.h"
 #include "common.h"
 
