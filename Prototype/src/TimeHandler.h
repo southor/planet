@@ -12,6 +12,8 @@ namespace Prototype
 		static const int DELTA_TIME_MAX = 1000/30;
 
 		static const float DELTA_TIME_MAX_F;
+		
+		static const int TICKS_PER_SECOND = 50;
 
 		TimeHandler() : startTime(0), stepTime(0), deltaTime(1)
 		{}
@@ -23,6 +25,8 @@ namespace Prototype
 		int getDeltaTime()					{ return deltaTime; }
 
 		float getDeltaTimef()				{ return static_cast<float>(deltaTime); }
+		
+		int getTick();
 		
 		void reset();
 
