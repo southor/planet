@@ -85,7 +85,6 @@ namespace Prototype
 		return MessageReciever::hasMessageOnQueue();		
 	}
 
-
 	int NetworkMessageReciever::readData(void *data, int len)
 	{
 		int numready = SDLNet_CheckSockets(set, 0);

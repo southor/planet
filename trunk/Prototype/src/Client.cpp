@@ -48,7 +48,7 @@ namespace Prototype
 			{
 			case UPDATE_PLAYER_OBJ:
 				{
-					UpdatePlayerObj *updatePlayerObj = link.getPoppedUpdatePlayerObj();
+					UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
 					
 					//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
 					PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
@@ -62,7 +62,7 @@ namespace Prototype
 				break;
 			case ADD_PLAYER_OBJ:
 				{
-					AddPlayerObj *addPlayerObj = link.getPoppedAddPlayerObj();
+					AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
 					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos);				
 
 					if (connectionPhase == 2) connectionPhase++; 
@@ -70,7 +70,7 @@ namespace Prototype
 				break;
 			case ADD_OBSTACLE:
 				{
-					AddObstacle *addObstacle = link.getPoppedAddObstacle();
+					AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
 					worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
 					
 					if (connectionPhase == 3) connectionPhase++; 
@@ -78,27 +78,27 @@ namespace Prototype
 				break;
 			case ADD_PROJECTILE:
 				{
-					AddProjectile *addProjectile = link.getPoppedAddProjectile();
+					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
 					worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
 				}
 				break;
 			case UPDATE_PROJECTILE:
 				{
-					UpdateProjectile *updateProjectile = link.getPoppedUpdateProjectile();
+					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
 					Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
 					projectile->setPos(updateProjectile->pos);
 				}
 				break;
 			case REMOVE_PROJECTILE:
 				{
-					RemoveProjectile *removeProjectile = link.getPoppedRemoveProjectile();
+					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
 					worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
 					worldModel.getProjectiles().remove(removeProjectile->projectileId);					
 				}
 				break;
 			case KILL:
 				{
-					Kill *kill = link.getPoppedKill();
+					Kill *kill = link.getPoppedData<Kill>();
 					PlayerObj *killer = (worldModel.getPlayerObjs())[kill->killerId];
 					PlayerObj *killed = (worldModel.getPlayerObjs())[kill->killedId];
 					killed->pos = kill->respawnPos;
@@ -251,7 +251,7 @@ namespace Prototype
 				int messageType = link.popMessage();
 				if (messageType == WELCOME_CLIENT)
 				{
-					WelcomeClient *welcomeClient = link.getPoppedWelcomeClient();
+					WelcomeClient *welcomeClient = link.getPoppedData<WelcomeClient>();
 				
 					setPlayerId(welcomeClient->playerId);
 					

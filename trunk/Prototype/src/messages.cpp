@@ -3,7 +3,6 @@
 
 namespace Prototype
 {
-
 	bool MessageReciever::hasMessageOnQueue()
 	{
 		if (lagQueue.size() > 0)
@@ -11,6 +10,21 @@ namespace Prototype
 			return timeHandler.getTime() >= (lagQueue.front().time + lag);
 		}
 		return false;
+	}
+
+	bool MessageReciever::hasMessageOnQueueWithCurrentTick()
+	{
+		hasMessageOnQueueWithTick(timeHandler.getTick());
+	}
+
+	bool MessageReciever::hasMessageOnQueueWithTick(int tick)
+	{
+		if (hasMessageOnQueue())
+		{
+			return lagQueue.front().message.tick == tick;
+		}
+		
+		return false;		
 	}
 	
 	void MessageReciever::putMessageToLagQueue(const Message &message)
@@ -26,6 +40,5 @@ namespace Prototype
 		lagQueue.pop_front();
 		return message;
 	}
-
 };
 

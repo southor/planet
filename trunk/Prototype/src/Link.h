@@ -185,29 +185,6 @@ namespace Prototype
 	};
 
 
-
-	/*
-	static const size_t N_MESSAGE_TYPES = 13;
-	static const size_t sizeOfMessageTypes[N_MESSAGE_TYPES] = { 
-		// server
-		sizeof(UpdatePlayerObj),
-		sizeof(AddPlayerObj),		
-		sizeof(AddObstacle),
-		sizeof(WelcomeClient),
-		sizeof(AddPlayer),
-		sizeof(AddProjectile),
-		sizeof(UpdateProjectile),
-		sizeof(RemoveProjectile),
-		sizeof(Kill),
-		sizeof(StartGame),
-		
-		// client
-		sizeof(InitClient),
-		sizeof(UserCmd),
-		sizeof(ShootCmd)
-	};
-	*/
-
 	class Link
 	{
 	private:
@@ -268,23 +245,6 @@ namespace Prototype
 			pushMessage(Cmd::messageType, sizeof(Cmd), new Cmd(cmd));
 		}
 		
-		/*
-		void pushMessage(const UserCmd &userCmd) const						{ pushMessage(USER_CMD, new UserCmd(userCmd)); }
-		void pushMessage(const ShootCmd &shootCmd) const					{ pushMessage(SHOOT_CMD, new ShootCmd(shootCmd)); }
-		
-		void pushMessage(const UpdatePlayerObj &updatePlayerObj) const		{ pushMessage(UPDATE_PLAYER_OBJ,  new UpdatePlayerObj(updatePlayerObj)); }
-		void pushMessage(const AddPlayerObj &addPlayerObj) const			{ pushMessage(ADD_PLAYER_OBJ,  new AddPlayerObj(addPlayerObj)); }
-		void pushMessage(const AddObstacle &addObstacle) const				{ pushMessage(ADD_OBSTACLE,  new AddObstacle(addObstacle)); }
-		void pushMessage(const AddProjectile &addProjectile) const			{ pushMessage(ADD_PROJECTILE, new AddProjectile(addProjectile)); }
-		void pushMessage(const UpdateProjectile &updateProjectile) const	{ pushMessage(UPDATE_PROJECTILE, new UpdateProjectile(updateProjectile)); }
-		void pushMessage(const RemoveProjectile &removeProjectile) const	{ pushMessage(REMOVE_PROJECTILE, new RemoveProjectile(removeProjectile)); }
-		void pushMessage(const Kill &kill) const							{ pushMessage(KILL, new Kill(kill)); }
-		void pushMessage(MessageType messageType) const						{ pushMessage(messageType, 0); }
-		
-		void pushMessage(const InitClient &initClient) const				{ pushMessage(INIT_CLIENT, new InitClient(initClient)); }
-		void pushMessage(const WelcomeClient &welcomeClient) const			{ pushMessage(WELCOME_CLIENT, new WelcomeClient(welcomeClient)); }
-		*/
-
 
 		// --------------------------------- recieving messages ------------------------------
 
@@ -298,32 +258,6 @@ namespace Prototype
 		{
 			return reinterpret_cast<Cmd*>(getPoppedData());
 		}
-		
-		UserCmd* getPoppedUserCmd()	const						{ return getPoppedData<UserCmd>(); }
-		ShootCmd* getPoppedShootCmd()	const					{ return getPoppedData<ShootCmd>(); }
-		UpdatePlayerObj* getPoppedUpdatePlayerObj() const		{ return getPoppedData<UpdatePlayerObj>(); }
-		AddPlayerObj* getPoppedAddPlayerObj() const				{ return getPoppedData<AddPlayerObj>(); }
-		AddObstacle* getPoppedAddObstacle() const				{ return getPoppedData<AddObstacle>(); }
-		AddProjectile* getPoppedAddProjectile() const			{ return getPoppedData<AddProjectile>(); }
-		UpdateProjectile* getPoppedUpdateProjectile() const		{ return getPoppedData<UpdateProjectile>(); }
-		RemoveProjectile* getPoppedRemoveProjectile() const		{ return getPoppedData<RemoveProjectile>(); }
-		Kill* getPoppedKill() const								{ return getPoppedData<Kill>(); }
-		InitClient* getPoppedInitClient() const					{ return getPoppedData<InitClient>(); }
-		WelcomeClient* getPoppedWelcomeClient() const			{ return getPoppedData<WelcomeClient>(); }
-
-		/*
-		UserCmd* getPoppedUserCmd()	const						{ return reinterpret_cast<UserCmd*>(getPoppedData()); }
-		ShootCmd* getPoppedShootCmd()	const					{ return reinterpret_cast<ShootCmd*>(getPoppedData()); }
-		UpdatePlayerObj* getPoppedUpdatePlayerObj() const		{ return reinterpret_cast<UpdatePlayerObj*>(getPoppedData()); }
-		AddPlayerObj* getPoppedAddPlayerObj() const				{ return reinterpret_cast<AddPlayerObj*>(getPoppedData()); }
-		AddObstacle* getPoppedAddObstacle() const				{ return reinterpret_cast<AddObstacle*>(getPoppedData()); }
-		AddProjectile* getPoppedAddProjectile() const			{ return reinterpret_cast<AddProjectile*>(getPoppedData()); }
-		UpdateProjectile* getPoppedUpdateProjectile() const		{ return reinterpret_cast<UpdateProjectile*>(getPoppedData()); }
-		RemoveProjectile* getPoppedRemoveProjectile() const		{ return reinterpret_cast<RemoveProjectile*>(getPoppedData()); }
-		Kill* getPoppedKill() const								{ return reinterpret_cast<Kill*>(getPoppedData()); }
-		InitClient* getPoppedInitClient() const					{ return reinterpret_cast<InitClient*>(getPoppedData()); }
-		WelcomeClient* getPoppedWelcomeClient() const			{ return reinterpret_cast<WelcomeClient*>(getPoppedData()); }
-		*/
 	};
 };
 

@@ -11,35 +11,16 @@
 
 namespace Prototype
 {
-	//class Message
-	//{
-	//private:
-	//	int type;
-	//	void *data;
-
-	//	Message& operator =(const Message &message);
-	//public:
-	//	Message() : type(0), data(NULL)			{}
-	//	~Message()								{ if (data != NULL) delete data; }
-
-	//	// @param data This Message will take over the ownership of the data.
-	//	void set(int type, void *data)			{ this->type = type;
-	//											  if (this->data != NULL) delete data;
-	//											  this->data = data; }
-
-	//	int getType() const						{ return type; }
-	//	void* getData()	const					{ return data; }		
-	//};
-
 	struct Message
 	{
 		int type;
 		int time;
+		int tick;
 		int size;
 		void *data;
-		Message() : type(0), time(0), size(0), data(0)			{}
-		Message(int type, int size, void *data, int time = 0)
-			: type(type), size(size), data(data), time(time)	{}
+		Message() : type(0), time(0), tick(0), size(0), data(0)			{}
+		Message(int type, int size, void *data, int time = 0, int tick = 0)
+			: type(type), size(size), data(data), time(time), tick(tick)	{}
 	};
 
 	class MessageReciever
@@ -60,20 +41,18 @@ namespace Prototype
 		TimeHandler timeHandler;
 
 	public:
-
 		MessageReciever() : lag(0)		{}
 		virtual ~MessageReciever()		{}
 		
-		//// Get number of messages recieved.
-		//int getNMessages();
-
 		virtual bool hasMessageOnQueue();
+		virtual bool hasMessageOnQueueWithCurrentTick();
+		virtual bool hasMessageOnQueueWithTick(int tick);
+		
 
 		void setSimulatedLag(int lag)			{ assert(lag >= 0); this->lag = lag; }
 		
 		void putMessageToLagQueue(const Message &message);
 		Message popMessage();
-		
 	};
 
 	class MessageSender
@@ -90,9 +69,6 @@ namespace Prototype
 		// Transmits queued messages.
 		virtual void transmit() = 0;
 	};
-
-
-
 };
 
 #endif
