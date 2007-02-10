@@ -3,7 +3,6 @@
 
 namespace Prototype
 {
-
 	void Link::destroyPoppedMessage()
 	{
 		if (hasPoppedMessage)
@@ -18,6 +17,7 @@ namespace Prototype
 	void Link::pushMessage(int type, int size, void *data) const
 	{
 		assert(messageSender);
+		
 		Message message(type, size, data);
 		messageSender->pushMessage(message);
 	}
@@ -28,6 +28,7 @@ namespace Prototype
 		assert(messageReciever);
 		assert(hasPoppedMessage);
 		assert(poppedMessage.data);
+		
 		return poppedMessage.data;
 	}
 
@@ -35,27 +36,11 @@ namespace Prototype
 	// ------------------------------------- sending messages -----------------------------
 	// ------------------------------------------------------------------------------------
 
-	//// pushes a UserCmd to the send queue
-	//void Link::pushMessage(const UserCmd &userCmd)
-	//{
-	//	pushMessage(USER_CMD, new UserCmd(userCmd));
-	//}
-
-	//// pushes a UpdatePlayerObj to the send queue	
-	//void Link::pushMessage(const UpdatePlayerObj &updatePlayerObj)
-	//{
-	//	pushMessage(UPDATE_PLAYER_OBJ,  new UpdatePlayerObj(updatePlayerObj));
-	//}
-
-	//// pushes an AddObstacle to the send queue
-	//void pushMessage(const AddObstacle &addObstacle)
-	//{
-	//}
-
 	// transmits all messages to the send queue
 	void Link::transmit() const
 	{
 		assert(messageSender);
+		
 		messageSender->transmit();
 	}
 
@@ -63,18 +48,9 @@ namespace Prototype
 	// ------------------------------------- recieving messages ---------------------------
 	// ------------------------------------------------------------------------------------
 
-	//// returns number of recieve messages on the queue
-	//int Link::getNMessages() const
-	//{
-	//	assert(messageReciever);
-	//	int nmess = messageReciever->getNMessages();
-	//	return nmess;
-	//}
-
-	// returns if at least 1 message on recieve queue
+	// returns true if at least 1 message on recieve queue
 	bool Link::hasMessageOnQueue() const
 	{
-		//return getNMessages() >= 1;
 		return messageReciever->hasMessageOnQueue();
 	}
 

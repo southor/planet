@@ -39,7 +39,7 @@ namespace Prototype
 			if (messageType == INIT_CLIENT)
 			{
 				// retrieve InitClient message from client
-				InitClient *initClient = link.getPoppedInitClient();
+				InitClient *initClient = link.getPoppedData<InitClient>();
 				Color color = initClient->color;
 
 				// add player to server
@@ -150,7 +150,7 @@ namespace Prototype
 				int messageType = player.link.popMessage();
 				if (messageType == USER_CMD)
 				{
-					UserCmd *userCmd = player.link.getPoppedUserCmd();
+					UserCmd *userCmd = player.link.getPoppedData<UserCmd>();
 
 					//PlayerObj *playerObj = (worldModel.getPlayerObjs())[player.playerObjId];
 					PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
@@ -163,7 +163,7 @@ namespace Prototype
 				else if (messageType == SHOOT_CMD)
 				{
 					// player shoots
-					ShootCmd *shootCmd = player.link.getPoppedShootCmd();					
+					ShootCmd *shootCmd = player.link.getPoppedData<ShootCmd>();					
 					size_t projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
 					Projectile *projectile = (worldModel.getProjectiles())[projectileId];
 					
