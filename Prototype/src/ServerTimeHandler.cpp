@@ -1,22 +1,22 @@
-#include "TimeHandler.h"
+#include "ServerTimeHandler.h"
 
 namespace Prototype
 {
-	const float TimeHandler::DELTA_TIME_MAX_F = static_cast<float>(DELTA_TIME_MAX);
+	const float ServerTimeHandler::DELTA_TIME_MAX_F = static_cast<float>(DELTA_TIME_MAX);
 
-	int TimeHandler::getTick()
+	int ServerTimeHandler::getTick()
 	{
 		return getStepTime() / TICKS_PER_SECOND;
 	}
 		
-	void TimeHandler::reset() 
+	void ServerTimeHandler::reset() 
 	{ 
 		startTime = SDL_GetTicks();
 		stepTime = 0;
 		deltaTime = 1;
 	}
 
-	void TimeHandler::nextStep()
+	void ServerTimeHandler::nextStep()
 	{
 		int preStepTime = stepTime;
 		stepTime = getTime();
