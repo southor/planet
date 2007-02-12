@@ -7,6 +7,7 @@
 #include "ClientPlayer.h"
 #include "WorldRenderer.h"
 #include "KeyHandler.h"
+#include "ClientTimeHandler.h"
 #include "ViewportHandler.h"
 
 namespace Prototype
@@ -58,7 +59,7 @@ namespace Prototype
 
 		Link link;
 		size_t connectionPhase;
-		TimeHandler timeHandler;
+		ClientTimeHandler timeHandler;
 
 
 		KeyHandler kh;
