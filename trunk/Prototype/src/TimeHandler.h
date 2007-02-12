@@ -12,30 +12,28 @@ namespace Prototype
 		static const int DELTA_TIME_MAX = 1000/30;
 
 		static const float DELTA_TIME_MAX_F;
-		
-		static const int TICKS_PER_SECOND = 50;
 
-		TimeHandler() : startTime(0), stepTime(0), deltaTime(1)
+		TimeHandler() : startTime(0)//, deltaTime(1), stepTime(0)
 		{}
 
 		inline int getTime()				{ return SDL_GetTicks() - startTime; }
 
-		int getStepTime()					{ return stepTime; }
+		//int getStepTime()					{ return stepTime; }
 
-		int getDeltaTime()					{ return deltaTime; }
+		//int getDeltaTime()				{ return deltaTime; }
 
-		float getDeltaTimef()				{ return static_cast<float>(deltaTime); }
+		//float getDeltaTimef()				{ return static_cast<float>(deltaTime); }
 		
-		int getTick();
+		//int getTick();
 		
 		void reset();
 
-		void nextStep();
+		//void nextStep();
 		
 	private:
 		int startTime;
-		int stepTime;
-		int deltaTime;
+		//int stepTime;
+		//int deltaTime;
 	};
 };
 #endif
