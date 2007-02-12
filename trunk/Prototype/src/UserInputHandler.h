@@ -9,11 +9,11 @@ namespace Prototype
 	{
 	public:
 
-		// ------- set keys and buttons -------
-
+		// ------- set State cmd keys and mouse buttons -------
 		void setStateCmdKey(int stateCmd, int key); // keyboard key
 		void setStateCmdButton(int stateCmd, int button); // mouse button
 
+		// ------- set Action cmd keys and mouse buttons -------
 		void setActionCmdKey(int actionCmd, int key); // keyboard key
 		void setActionCmdButton(int actionCmd, int button); // mouse button
 
