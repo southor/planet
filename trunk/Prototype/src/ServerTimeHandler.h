@@ -3,39 +3,27 @@
 
 #include "SDL.h"
 
+#include "TimeHandler.h"
+
 namespace Prototype
 {
-	class ServerTimeHandler
+	class ServerTimeHandler : public TimeHandler
 	{
 	public:
-
-		static const int DELTA_TIME_MAX = 1000/30;
-
-		static const float DELTA_TIME_MAX_F;
-		
+		static const int WAIT_FOR_TICK_TIMEOUT = 20;
 		static const int TICKS_PER_SECOND = 50;
+		static const float TICK_DELTA_TIME;
 
-		ServerTimeHandler() : startTime(0), stepTime(0), deltaTime(1)
-		{}
+		ServerTimeHandler() : tick(0) {}
 
-		inline int getTime()				{ return SDL_GetTicks() - startTime; }
+		int getTick()		{ return tick; }
 
-		int getStepTime()					{ return stepTime; }
+		void nextTick();
 
-		int getDeltaTime()					{ return deltaTime; }
-
-		float getDeltaTimef()				{ return static_cast<float>(deltaTime); }
-		
-		int getTick();
-		
 		void reset();
 
-		void nextStep();
-		
 	private:
-		int startTime;
-		int stepTime;
-		int deltaTime;
+		int tick;
 	};
 };
 #endif

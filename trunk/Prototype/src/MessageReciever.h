@@ -34,8 +34,8 @@ namespace Prototype
 		virtual ~MessageReciever()		{}
 		
 		virtual bool hasMessageOnQueue();
-		//virtual bool hasMessageOnQueueWithCurrentTick();
 		virtual bool hasMessageOnQueueWithTick(int tick);
+		virtual int getTickOfMessageOnQueue();
 		
 
 		void setSimulatedLag(int lag)			{ assert(lag >= 0); this->lag = lag; }

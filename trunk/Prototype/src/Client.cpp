@@ -207,7 +207,8 @@ namespace Prototype
 			}
 
 			// If some key was pressed or released send message
-			if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
+			//if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
+			if (true)
 			{
 				if (this->mousePosChanged && (this->aimMode == MOUSE))
 				{

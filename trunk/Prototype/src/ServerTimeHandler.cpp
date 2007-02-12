@@ -2,26 +2,17 @@
 
 namespace Prototype
 {
-	const float ServerTimeHandler::DELTA_TIME_MAX_F = static_cast<float>(DELTA_TIME_MAX);
+	const float ServerTimeHandler::TICK_DELTA_TIME = static_cast<float>(1000.0f / TICKS_PER_SECOND);
 
-	int ServerTimeHandler::getTick()
-	{
-		return getStepTime() / TICKS_PER_SECOND;
-	}
-		
 	void ServerTimeHandler::reset() 
 	{ 
-		startTime = SDL_GetTicks();
-		stepTime = 0;
-		deltaTime = 1;
+		TimeHandler::reset();
+		tick = 0;
 	}
 
-	void ServerTimeHandler::nextStep()
+	void ServerTimeHandler::nextTick()
 	{
-		int preStepTime = stepTime;
-		stepTime = getTime();
-		deltaTime = stepTime - preStepTime;
-		if (deltaTime == 0) deltaTime = 1; // avoiding division with zero problems
+		tick++;
 	}
 };
 
