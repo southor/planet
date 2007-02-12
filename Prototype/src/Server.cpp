@@ -132,20 +132,61 @@ namespace Prototype
 	
 	void Server::logic()
 	{
-		timeHandler.nextStep();
-		float deltaTime = timeHandler.getDeltaTimef();
+		int tick = timeHandler.getTick();
+		int time = timeHandler.getTime();
+		bool waitingForClients = true;
+
+		// wait until current tick is recieved from all clients
+		while (waitingForClients)
+		{
+			waitingForClients = false;
+
+			ServerPlayers::Iterator playersIt;
+			for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
+			{
+				size_t playerId = playersIt->first;
+				ServerPlayer player(playersIt->second);
+				
+				if (player.link.hasMessageOnQueueWithTick(tick))
+				{	
+					// if message with old tick then discard
+					if (player.link.getTickOfMessageOnQueue() < tick)
+					{
+						//player.link.popMessage();
+					}
+					else
+					{
+						player.latestTick = tick;
+					}
+				}
+				
+				// set waitingForClients to true if player doesn't have current tick
+				waitingForClients = waitingForClients || (player.latestTick != tick);
+
+				// Check tick timeout
+				if (timeHandler.getTime() > time + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
+				{
+					waitingForClients = false;
+					break; // exit for loop
+				}
+			}
+
+			SDL_Delay(1);
+		}
+
+		float deltaTime = ServerTimeHandler::TICK_DELTA_TIME;
 
 		worldModel.isConsistent();
+
 
 		// Read messages from clients
 		ServerPlayers::Iterator playersIt;
 		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 		{			
-
 			size_t playerId = playersIt->first;
 			ServerPlayer player(playersIt->second);
 
-			while (player.link.hasMessageOnQueue())
+			while (player.link.hasMessageOnQueueWithTick(tick))
 			{
 				int messageType = player.link.popMessage();
 				if (messageType == USER_CMD)
@@ -203,7 +244,8 @@ namespace Prototype
 		}
 
 		transmitAll(players);
-
+		
+		timeHandler.nextTick();
 	}
 	
 };

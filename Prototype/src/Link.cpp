@@ -54,6 +54,17 @@ namespace Prototype
 		return messageReciever->hasMessageOnQueue();
 	}
 
+	// returns true if at least 1 message on recieve queue
+	bool Link::hasMessageOnQueueWithTick(int tick) const
+	{
+		return messageReciever->hasMessageOnQueueWithTick(tick);
+	}
+
+	int Link::getTickOfMessageOnQueue() const
+	{
+		return messageReciever->getTickOfMessageOnQueue();
+	}
+
 	// returns the type member of the popped message, (will destroy the last message)		
 	int Link::popMessage()
 	{
