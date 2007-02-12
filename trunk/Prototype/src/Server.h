@@ -6,6 +6,7 @@
 #include "messages.h"
 #include "ServerPlayers.h"
 #include "ServerWorldModel.h"
+#include "ServerTimeHandler.h"
 
 namespace Prototype
 {
@@ -44,7 +45,7 @@ namespace Prototype
 		ServerWorldModel worldModel;
 		ServerPlayers players;
 
-		TimeHandler timeHandler;
+		ServerTimeHandler timeHandler;
 
 		//std::vector<ServerClient> clients;
 

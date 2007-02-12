@@ -5,25 +5,24 @@ namespace Prototype
 {
 	namespace Cmds
 	{
-
 		// State Commands
 		enum
 		{
 			// Used by server and client
-			LEFT,
+			LEFT = 0,
 			RIGHT,
 			FORWARD,
 			BACKWARD,
 			
 			// Only used by client
 			ROTATE_LEFT,
-			ROTATE_RIGHT,	
+			ROTATE_RIGHT,
 		};
 
 		//Action commands
 		enum
 		{
-			SHOOT,
+			SHOOT = 0,
 			SWITCH_WEAPON
 		};
 
