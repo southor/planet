@@ -4,7 +4,8 @@
 #include <deque>
 
 #include "common.h"
-#include "messages.h"
+#include "MessageSender.h"
+#include "MessageReciever.h"
 
 namespace Prototype
 {

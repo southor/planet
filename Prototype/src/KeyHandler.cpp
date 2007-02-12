@@ -31,7 +31,7 @@ namespace Prototype
 		cmds[CMD_DOWN] = KeyCmd(CMD_DOWN, SDLK_k);
 		cmds[CMD_ROTATE_LEFT] = KeyCmd(CMD_ROTATE_LEFT, SDLK_LEFT);
 		cmds[CMD_ROTATE_RIGHT] = KeyCmd(CMD_ROTATE_RIGHT, SDLK_RIGHT);
-		cmds[CMD_SHOOT] = KeyCmd(CMD_SHOOT, SDLK_UP);
+		cmds[CMD_SHOOT] = KeyCmd(CMD_SHOOT, SDLK_h);
 		cmds[CMD_SWITCH_WEAPON] = KeyCmd(CMD_SWITCH_WEAPON, SDLK_DOWN);
 	}
 

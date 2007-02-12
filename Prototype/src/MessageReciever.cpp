@@ -1,4 +1,4 @@
-#include "messages.h"
+#include "MessageReciever.h"
 #include "common.h"
 
 
@@ -14,10 +14,10 @@ namespace Prototype
 		return false;
 	}
 
-	bool MessageReciever::hasMessageOnQueueWithCurrentTick()
-	{
-		return hasMessageOnQueueWithTick(timeHandler.getTick());
-	}
+	//bool MessageReciever::hasMessageOnQueueWithCurrentTick()
+	//{
+	//	return hasMessageOnQueueWithTick(timeHandler.getTick());
+	//}
 
 	bool MessageReciever::hasMessageOnQueueWithTick(int tick)
 	{
