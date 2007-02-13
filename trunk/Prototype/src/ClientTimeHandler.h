@@ -1,11 +1,11 @@
 #ifndef __clienttimehandler_h__
 #define __clienttimehandler_h__
 
-#include "SDL.h"
+#include "TimeHandler.h"
 
 namespace Prototype
 {
-	class ClientTimeHandler
+	class ClientTimeHandler : public TimeHandler
 	{
 	public:
 
@@ -15,10 +15,10 @@ namespace Prototype
 		
 		static const int TICKS_PER_SECOND = 50;
 
-		ClientTimeHandler() : startTime(0), stepTime(0), deltaTime(1)
+		ClientTimeHandler() : TimeHandler()
 		{}
 
-		inline int getTime()				{ return SDL_GetTicks() - startTime; }
+		//inline int getTime()				{ return SDL_GetTicks() - startTime; }
 
 		int getStepTime()					{ return stepTime; }
 
@@ -33,7 +33,7 @@ namespace Prototype
 		void nextStep();
 		
 	private:
-		int startTime;
+		//int startTime;
 		int stepTime;
 		int deltaTime;
 	};

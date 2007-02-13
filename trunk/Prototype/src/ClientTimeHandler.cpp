@@ -11,8 +11,7 @@ namespace Prototype
 		
 	void ClientTimeHandler::reset() 
 	{ 
-		startTime = SDL_GetTicks();
-		stepTime = 0;
+		TimeHandler::reset();
 		deltaTime = 1;
 	}
 
