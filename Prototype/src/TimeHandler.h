@@ -26,7 +26,7 @@ namespace Prototype
 		
 		//int getTick();
 		
-		void reset();
+		virtual void reset();
 
 		//void nextStep();
 		
