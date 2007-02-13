@@ -46,6 +46,7 @@ namespace Prototype
 		ServerPlayers players;
 
 		ServerTimeHandler timeHandler;
+		float lastUpdateTime;
 
 		//std::vector<ServerClient> clients;
 
