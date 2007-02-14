@@ -42,7 +42,7 @@ namespace Prototype
 			Message message = sendDeque.front();
 			sendDeque.pop_front();
 		
-			messageReciever->putMessageToLagQueue(message);
+			messageReciever->putMessageToLagQueue(message, message.time);
 		}
 	}
 };

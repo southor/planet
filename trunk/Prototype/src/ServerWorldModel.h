@@ -4,12 +4,13 @@
 #include "WorldModel.h"
 #include "IdMap.h"
 #include "ServerPlayers.h"
+#include "ServerGlobalAccess.h"
 
 #include <vector>
 
 namespace Prototype
 {
-	class ServerWorldModel : public WorldModel
+	class ServerWorldModel : public WorldModel, public ServerGlobalAccess
 	{
 	private:
 
@@ -27,7 +28,7 @@ namespace Prototype
 		typedef std::vector<Pos> RespawnPoss;
 		RespawnPoss respawnPoss;
 
-		class Move
+		class Move : public ServerGlobalAccess
 		{
 		private:
 			ServerObstacleContainer *obstacles;
@@ -37,17 +38,18 @@ namespace Prototype
 			std::vector<RemoveProjectile> projectilesHit;
 			RespawnPoss *respawnPoss;
 			bool moveAlignedToAngle;
+			
 
 			Obstacle* findAnyOverlap(const Rectangle &rectangle);
 		public:
 			// @param deltaTime Time in milliseconds since last move.
-			Move(ServerObstacleContainer *obstacles, ServerPlayers *players, ServerPlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
-				: obstacles(obstacles), players(players), playerObjs(playerObjs), respawnPoss(respawnPoss), deltaTime(deltaTime), moveAlignedToAngle(false)
+			Move(ServerObstacleContainer *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, ServerPlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
+				: obstacles(obstacles), players(players), ServerGlobalAccess(serverGlobalAccess), playerObjs(playerObjs), respawnPoss(respawnPoss), deltaTime(deltaTime), moveAlignedToAngle(false)
 			{}
 
 			// @param deltaTime Time in milliseconds since last move.
-			Move(ServerObstacleContainer *obstacles, float deltaTime, bool moveAlignedToAngle)
-				: obstacles(obstacles), players(0), playerObjs(0), respawnPoss(0), deltaTime(deltaTime), moveAlignedToAngle(moveAlignedToAngle)
+			Move(ServerObstacleContainer *obstacles, const ServerGlobalAccess &serverGlobalAccess, float deltaTime, bool moveAlignedToAngle)
+				: obstacles(obstacles), players(0), ServerGlobalAccess(serverGlobalAccess), playerObjs(0), respawnPoss(0), deltaTime(deltaTime), moveAlignedToAngle(moveAlignedToAngle)
 			{}
 
 			inline std::vector<RemoveProjectile>& getProjectilesHit()	
@@ -63,7 +65,8 @@ namespace Prototype
 
 		bool moveAlignedToAngle;
 
-		ServerWorldModel() : moveAlignedToAngle(false)
+		ServerWorldModel(ServerGlobalObj *serverGlobalObj)
+			: ServerGlobalAccess(serverGlobalObj), moveAlignedToAngle(false)
 		{}
 
 		~ServerWorldModel();

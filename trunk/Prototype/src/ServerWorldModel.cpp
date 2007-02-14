@@ -28,13 +28,13 @@ namespace Prototype
 
 	void ServerWorldModel::updatePlayerObjMovements(float deltaTime)
 	{
-		Move move(&obstacles, deltaTime, moveAlignedToAngle);
+		Move move(&obstacles, *this, deltaTime, moveAlignedToAngle);
 		ForEach(playerObjs.begin(), playerObjs.end(), move);
 	}
 
 	void ServerWorldModel::updateProjectileMovements(float deltaTime, ServerPlayers &players)
 	{
-		Move move(&obstacles, &players, &(getPlayerObjs()), &respawnPoss, deltaTime);
+		Move move(&obstacles, &players, *this, &(getPlayerObjs()), &respawnPoss, deltaTime);
 		ForEach(projectiles.begin(), projectiles.end(), move);
 		
 		if (move.getProjectilesHit().size() > 0)
@@ -48,7 +48,7 @@ namespace Prototype
 				//std::cout << "\tremoving projectile: " << it->projectileId << std::endl;
 				
 				// send message			
-				pushMessageToAll(players, *it);
+				pushMessageToAll(players, *it, getTimeHandler()->getTime());
 			}
 
 			//std::cout << "\tprojectiles left: " << projectiles.getSize() << std::endl;
@@ -248,7 +248,7 @@ namespace Prototype
 
 						// send kill message to all players
 						Kill kill(killerId, targetPlayerId, respawnPos);
-						pushMessageToAll(*players, kill);
+						pushMessageToAll(*players, kill, getTimeHandler()->getTime());
 					}
 				}
 			}

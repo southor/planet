@@ -202,7 +202,7 @@ namespace Prototype
 					Projectile::Type weapon = playerObj->getCurrentWeapon();
 					playerObj->shoot(time);
 					ShootCmd shootCmd(playerId, weapon);
-					link.pushMessage(shootCmd);
+					link.pushMessage(shootCmd, timeHandler.getTime());
 				}
 			}
 
@@ -225,7 +225,7 @@ namespace Prototype
 				//userCmd.cmdShoot = kh.isDown(CMD_SHOOT);
 				userCmd.viewangle = ((worldModel.getPlayerObjs())[playerId])->angle;
 
-				link.pushMessage(userCmd);
+				link.pushMessage(userCmd, timeHandler.getTime());
 			}
 
 			// transmit any messages
@@ -239,7 +239,7 @@ namespace Prototype
 		{
 			// send init package to server
 			InitClient initClient = InitClient(color);
-			link.pushMessage(initClient);
+			link.pushMessage(initClient, timeHandler.getTime());
 			link.transmit();
 
 			connectionPhase++;

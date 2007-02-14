@@ -14,11 +14,11 @@ namespace Prototype
 	}
 
 	// pushes a Message to the send queue, also sets time of message
-	void Link::pushMessage(int type, int size, void *data) const
+	void Link::pushMessage(int type, int size, void *data, int currentTime) const
 	{
 		assert(messageSender);
 		
-		Message message(type, size, data);
+		Message message(type, size, data, currentTime);
 		messageSender->pushMessage(message);
 	}
 

@@ -11,7 +11,7 @@
 namespace Prototype
 {
 
-	class Server
+	class Server : public ServerGlobalAccess
 	{
 	public:
 		Server();
@@ -45,7 +45,8 @@ namespace Prototype
 		ServerWorldModel worldModel;
 		ServerPlayers players;
 
-		ServerTimeHandler timeHandler;
+		//ServerTimeHandler timeHandler;
+		ServerGlobalObj serverGlobalObj;
 		float lastUpdateTime;
 
 		//std::vector<ServerClient> clients;
