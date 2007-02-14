@@ -15,32 +15,26 @@ namespace Prototype
 	class MessageReciever
 	{
 	private:
-		struct LagMessage
-		{
-			Message message;
-			int time;
-			
-			LagMessage(const Message &message, int time)
-				: message(message), time(time)
-			{}
-		};
 
-		int lag;
-		std::deque<LagMessage> lagQueue;
-		TimeHandler timeHandler;
+		int ping;
+		int simulatedLag;
+		std::deque<Message> lagQueue;
+		TimeHandler lagTimeHandler;
 
 	public:
-		MessageReciever() : lag(0)		{}
-		virtual ~MessageReciever()		{}
+		MessageReciever() : simulatedLag(0), ping(0)	{}
+		virtual ~MessageReciever()						{}
 		
 		virtual bool hasMessageOnQueue();
 		virtual bool hasMessageOnQueueWithTick(int tick);
 		virtual int getTickOfMessageOnQueue();
+		inline int getCurrentPing()					{ return ping; }
 		
 
-		void setSimulatedLag(int lag)			{ assert(lag >= 0); this->lag = lag; }
-		
-		void putMessageToLagQueue(const Message &message);
+		void setSimulatedLag(int simulatedLag)		{ assert(simulatedLag >= 0); this->simulatedLag = simulatedLag; }
+				
+		virtual void retrieve(int currentTime)		{}
+		void putMessageToLagQueue(Message message, int currentTime);
 		Message popMessage();
 	};
 };

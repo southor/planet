@@ -9,7 +9,7 @@ namespace Prototype
 	{
 		if (lagQueue.size() > 0)
 		{
-			return timeHandler.getTime() >= (lagQueue.front().time + lag);
+			return lagTimeHandler.getTime() >= (lagQueue.front().time + simulatedLag);
 		}
 		return false;
 	}
@@ -18,7 +18,7 @@ namespace Prototype
 	{
 		if (hasMessageOnQueue())
 		{
-			return lagQueue.front().message.tick <= tick;
+			return lagQueue.front().tick <= tick;
 		}
 		
 		return false;		
@@ -28,7 +28,7 @@ namespace Prototype
 	{
 		if (hasMessageOnQueue())
 		{
-			return lagQueue.front().message.tick;
+			return lagQueue.front().tick;
 		}
 		else
 		{
@@ -36,16 +36,18 @@ namespace Prototype
 		}
 	}
 
-	void MessageReciever::putMessageToLagQueue(const Message &message)
-	{
-		LagMessage lagMessage(message, timeHandler.getTime());
-		lagQueue.push_back(lagMessage);
+	void MessageReciever::putMessageToLagQueue(Message message, int currentTime)
+	{		
+		ping = (currentTime - message.time) + simulatedLag;
+		//LagMessage lagMessage(message, lagTimeHandler.getTime());
+		message.time = lagTimeHandler.getTime();
+		lagQueue.push_back(message);
 	}
 	
 	Message MessageReciever::popMessage()
 	{
 		assert(hasMessageOnQueue());
-		Message message(lagQueue.front().message);
+		Message message(lagQueue.front());
 		lagQueue.pop_front();
 		return message;
 	}

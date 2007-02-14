@@ -4,7 +4,7 @@
 namespace Prototype
 {
 
-	Server::Server() : lastUpdateTime(0.0f)
+	Server::Server() : lastUpdateTime(0.0f), ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj)
 	{
 		// outer walls
 		static const int WALL_THICKNESS = 500.0f;
@@ -50,7 +50,7 @@ namespace Prototype
 
 				// send WelcomeClient with playerId to client
 				WelcomeClient welcomeClient = WelcomeClient(playerId);
-				link.pushMessage(welcomeClient);
+				link.pushMessage(welcomeClient, getTimeHandler()->getTime());
 				link.transmit();
 				
 				return true;
@@ -88,7 +88,7 @@ namespace Prototype
 
 	void Server::startGame()
 	{
-		timeHandler.reset();
+		getTimeHandler()->reset();
 		
 		WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
 		WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
@@ -101,7 +101,7 @@ namespace Prototype
 
 			AddPlayerObj addPlayerObj(playerId, color, playerObj->pos);
 
-			pushMessageToAll(players, addPlayerObj);
+			pushMessageToAll(players, addPlayerObj, getTimeHandler()->getTime());
 		}
 	
 		// TODO Send the hole worldmodel to clients, all players and everything
@@ -118,7 +118,7 @@ namespace Prototype
 				Obstacle *obstacle = obstaclesIt->second;
 				
 				AddObstacle addObstacle(obstacleId, *obstacle);
-				player.link.pushMessage(addObstacle);
+				player.link.pushMessage(addObstacle, getTimeHandler()->getTime());
 			}
 
 			player.link.transmit();
@@ -132,8 +132,8 @@ namespace Prototype
 	
 	void Server::logic()
 	{
-		int tick = timeHandler.getTick();
-		int time = timeHandler.getTime();
+		int tick = getTimeHandler()->getTick();
+		int time = getTimeHandler()->getTime();
 		bool waitingForClients = false;
 
 		// check if current tick is recieved from all clients, otherwise set waitingForClients to true
@@ -208,7 +208,7 @@ namespace Prototype
 						
 						// send projectile to all clients
 						AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(), projectile->getAngle(), projectile->getShooterId());
-						pushMessageToAll(players, addProjectile);
+						pushMessageToAll(players, addProjectile, getTimeHandler()->getTime());
 					}
 				}
 			}		
@@ -228,7 +228,7 @@ namespace Prototype
 				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle);
 
-				pushMessageToAll(players, updatePlayerObj);
+				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime());
 			}
 
 			// Send projectile updates
@@ -238,12 +238,12 @@ namespace Prototype
 			{			
 				UpdateProjectile updateProjectile(projectilesIt->first, projectilesIt->second->getPos());
 				
-				pushMessageToAll(players, updateProjectile);
+				pushMessageToAll(players, updateProjectile, getTimeHandler()->getTime());
 			}
 
 			transmitAll(players);
 			
-			timeHandler.nextTick();
+			getTimeHandler()->nextTick();
 		}
 	}
 	
