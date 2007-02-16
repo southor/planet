@@ -39,15 +39,13 @@ namespace Prototype
 			: MessageReciever(), retrieveMessagePhase(0), retrieveSize(0), retrieveTime(0), retrieveType(0)	{}
 		~NetworkMessageReciever()																			{}
 
-		bool hasMessageOnQueue();
-		
 		Message popMessage();
 
 		void setSocket(TCPsocket socket);
 
 	private:
 		int readData(void *data, int len);
-		void retrieve();
+		void retrieve(int currentTime);
 	
 		TCPsocket socket;
 		SDLNet_SocketSet set;

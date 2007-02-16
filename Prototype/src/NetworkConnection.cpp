@@ -13,7 +13,7 @@ namespace Prototype
 	// Get number of messages queued to be transmitted.
 	int NetworkMessageSender::getNMessages() 
 	{
-		return sendDeque.size();
+		return static_cast<int>(sendDeque.size());
 	}
 	
 	// Transmits queued messages.
@@ -78,13 +78,6 @@ namespace Prototype
 	//-----------------------------------------------------------
 	// NETWORK MESSAGE RECIEVER
 	//-----------------------------------------------------------
-	bool NetworkMessageReciever::hasMessageOnQueue()
-	{
-		retrieve();
-
-		return MessageReciever::hasMessageOnQueue();		
-	}
-
 	int NetworkMessageReciever::readData(void *data, int len)
 	{
 		int numready = SDLNet_CheckSockets(set, 0);
@@ -110,7 +103,7 @@ namespace Prototype
 		return 0;	
 	}
 
-	void NetworkMessageReciever::retrieve()
+	void NetworkMessageReciever::retrieve(int currentTime)
 	{
 		while (true)
 		{
@@ -158,11 +151,11 @@ namespace Prototype
 					return;
 				}
 
-				Message message(retrieveType, retrieveSize, data);
+				Message message(retrieveType, retrieveSize, data, retrieveTime);
 				
 				//printf("retrieving message: type: %d, size: %d @ %d\n", retrieveType, retrieveSize, SDL_GetTicks());
 				
-				putMessageToLagQueue(message);
+				putMessageToLagQueue(message, currentTime);
 				
 				// reset messagePhase
 				retrieveMessagePhase = 0;
@@ -204,7 +197,7 @@ namespace Prototype
 	void NetworkServer::start()
 	{
 		IPaddress ip;
-		size_t port = 12333;
+		Uint16 port = 12333;
 
 		// Create a server type IPaddress
 		if (SDLNet_ResolveHost(&ip, NULL, port) == -1)
@@ -311,7 +304,7 @@ namespace Prototype
 			SDLNet_FreeSocketSet(set);
 		}
 
-		set = SDLNet_AllocSocketSet(numberOfClients + 1);
+		set = SDLNet_AllocSocketSet(static_cast<int>(numberOfClients) + 1);
 		
 		if (!set)
 		{

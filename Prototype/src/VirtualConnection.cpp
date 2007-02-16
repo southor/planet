@@ -32,7 +32,7 @@ namespace Prototype
 
 	int VirtualConnection::VirtualMessageSender::getNMessages()
 	{
-		return sendDeque.size();
+		return static_cast<int>(sendDeque.size());
 	}
 
 	void VirtualConnection::VirtualMessageSender::transmit()

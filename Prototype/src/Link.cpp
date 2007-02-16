@@ -65,6 +65,11 @@ namespace Prototype
 		return messageReciever->getTickOfMessageOnQueue();
 	}
 
+	void Link::retrieve(int currentTime)
+	{
+		messageReciever->retrieve(currentTime);
+	}
+
 	// returns the type member of the popped message, (will destroy the last message)		
 	int Link::popMessage()
 	{

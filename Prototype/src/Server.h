@@ -47,7 +47,7 @@ namespace Prototype
 
 		//ServerTimeHandler timeHandler;
 		ServerGlobalObj serverGlobalObj;
-		float lastUpdateTime;
+		int lastUpdateTime;
 
 		//std::vector<ServerClient> clients;
 

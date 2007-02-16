@@ -4,10 +4,10 @@
 namespace Prototype
 {
 
-	Server::Server() : lastUpdateTime(0.0f), ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj)
+	Server::Server() : lastUpdateTime(0), ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj)
 	{
 		// outer walls
-		static const int WALL_THICKNESS = 500.0f;
+		static const float WALL_THICKNESS = 500.0f;
 		Rectangle wall1(0.0f, -WALL_THICKNESS, WorldModel::WORLD_SIZE.x, WALL_THICKNESS);
 		Rectangle wall2(0.0f, WorldModel::WORLD_SIZE.y, WorldModel::WORLD_SIZE.x, WALL_THICKNESS);
 		Rectangle wall3(-WALL_THICKNESS, -WALL_THICKNESS, WALL_THICKNESS, WorldModel::WORLD_SIZE.y + WALL_THICKNESS*2.0f);
@@ -33,6 +33,7 @@ namespace Prototype
 		// Temp Link used to simplify sending and retrieving messages during this connection phase.
 		Link link(messageSender, messageReciever);
 
+		link.retrieve(getTimeHandler()->getTime());
 		if (link.hasMessageOnQueue())
 		{
 			int messageType = link.popMessage();
@@ -144,6 +145,8 @@ namespace Prototype
 				size_t playerId = playersIt->first;
 				ServerPlayer player(playersIt->second);
 				
+				player.link.retrieve(getTimeHandler()->getTime());
+
 				if (player.link.hasMessageOnQueueWithTick(tick))
 				{	
 					// if message with old tick then discard
@@ -171,7 +174,8 @@ namespace Prototype
 
 		if (!waitingForClients)
 		{
-			float deltaTime = ServerTimeHandler::TICK_DELTA_TIME;
+			int deltaTime = ServerTimeHandler::TICK_DELTA_TIME;
+			float deltaTimef = static_cast<float>(deltaTime);
 			lastUpdateTime = time;
 
 			worldModel.isConsistent();
@@ -183,6 +187,8 @@ namespace Prototype
 			{			
 				size_t playerId = playersIt->first;
 				ServerPlayer player(playersIt->second);
+
+				player.link.retrieve(getTimeHandler()->getTime());
 
 				while (player.link.hasMessageOnQueueWithTick(tick))
 				{
@@ -214,8 +220,8 @@ namespace Prototype
 			}		
 
 			// update movements of objects
-			worldModel.updatePlayerObjMovements(deltaTime);
-			worldModel.updateProjectileMovements(deltaTime, players);
+			worldModel.updatePlayerObjMovements(deltaTimef);
+			worldModel.updateProjectileMovements(deltaTimef, players);
 
 			// Send playerObj updates
 			WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
