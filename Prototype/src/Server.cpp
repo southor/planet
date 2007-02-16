@@ -126,16 +126,18 @@ namespace Prototype
 		}
 	}
 
-	//size_t Server::addObstacle(const Rectangle &obstacleArea)
-	//{
-	//	return worldModel.addObstacle(obstacleArea);
-	//}
-	
 	void Server::logic()
 	{
 		int tick = getTimeHandler()->getTick();
 		int time = getTimeHandler()->getTime();
+		
+		if (tick == 0)
+			getTimeHandler()->setTickStartTime(time);
+
 		bool waitingForClients = false;
+
+		//printf("tick: %d, tickWithTimeout: %d\n", tick, getTimeHandler()->getTickWithTimeout());
+
 
 		// check if current tick is recieved from all clients, otherwise set waitingForClients to true
 		{
@@ -164,7 +166,9 @@ namespace Prototype
 				waitingForClients = waitingForClients || (player.latestTick != tick);
 
 				// Check tick timeout
-				if (time > lastUpdateTime + ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
+				//if (time > lastUpdateTime + ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
+
+				//if (getTimeHandler()->getTickWithTimeout() > tick)
 				{
 					waitingForClients = false;
 					break; // exit for loop
