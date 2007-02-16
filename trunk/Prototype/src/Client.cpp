@@ -40,6 +40,8 @@ namespace Prototype
 
 		worldModel.isConsistent();
 		
+		link.retrieve(timeHandler.getTime());
+
 		// Read messages from server
 		while(link.hasMessageOnQueue())
 		{
@@ -247,6 +249,7 @@ namespace Prototype
 
 		if (connectionPhase == 1)
 		{
+			link.retrieve(timeHandler.getTime());
 			if (link.hasMessageOnQueue())
 			{
 				int messageType = link.popMessage();
@@ -323,7 +326,7 @@ namespace Prototype
 		if (playerId == this->playerId)
 		{
 			// set ammo supply
-			(worldModel.getPlayerObjs())[playerId]->setAmmoSupply(playerPos.x + playerPos.y);
+			(worldModel.getPlayerObjs())[playerId]->setAmmoSupply(static_cast<int>(playerPos.x + playerPos.y));
 		}
 	}
 

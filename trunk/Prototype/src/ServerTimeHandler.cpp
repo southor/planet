@@ -2,7 +2,7 @@
 
 namespace Prototype
 {
-	const float ServerTimeHandler::TICK_DELTA_TIME = static_cast<float>(1000.0f / TICKS_PER_SECOND);
+	const int ServerTimeHandler::TICK_DELTA_TIME = static_cast<int>(1000 / TICKS_PER_SECOND);
 
 	void ServerTimeHandler::reset() 
 	{ 

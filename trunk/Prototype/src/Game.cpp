@@ -268,7 +268,7 @@ namespace Prototype
 			//gui.gui->logic();
 
 			// RENDER
-			render(0.0f);
+			render(0);
 
 			SDL_Delay(20);
 		}
@@ -446,13 +446,14 @@ namespace Prototype
 				client1.getKeyHandler()->setKeyReleased(event.key.keysym.sym);
 				client2.getKeyHandler()->setKeyReleased(event.key.keysym.sym);
 			
+				/*
 				switch(event.key.keysym.sym)
 				{
 				default:
 					break;
 				}
 				break;
-			
+				*/
 			case SDL_MOUSEMOTION:
 				{
 					//xrel = event.motion.xrel;

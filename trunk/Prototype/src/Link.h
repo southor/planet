@@ -7,10 +7,6 @@
 
 namespace Prototype
 {
-
-
-
-
 	class Link
 	{
 	private:
@@ -79,6 +75,9 @@ namespace Prototype
 		bool hasMessageOnQueue() const; // returns true if at least 1 message is on recieve queue
 		bool hasMessageOnQueueWithTick(int tick) const; // returns true if at least 1 message is on recieve queue		
 		int getTickOfMessageOnQueue() const; // returns the tick of the top message on queue
+		
+		void retrieve(int currentTime);
+		
 		int popMessage(); // returns the type member of the popped message, (will destroy the last message)	
 		int getPoppedType() const; // returns the type member of the popped message		
 		
