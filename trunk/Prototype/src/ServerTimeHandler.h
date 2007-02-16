@@ -16,7 +16,11 @@ namespace Prototype
 
 		ServerTimeHandler() : tick(0) {}
 
-		int getTick()		{ return tick; }
+		void setTickStartTime(int time)		{ tickStartTime = time; }
+
+		int getTickWithTimeout();
+
+		int getTick()						{ return tick; }
 
 		void nextTick();
 
@@ -24,6 +28,7 @@ namespace Prototype
 
 	private:
 		int tick;
+		int tickStartTime;
 	};
 };
 #endif
