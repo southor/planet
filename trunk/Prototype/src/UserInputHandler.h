@@ -7,7 +7,18 @@ namespace Prototype
 {
 	class UserInputHandler
 	{
+	private:
+
+		// current state of the state commands
+		int currentStates;
+
+
+
 	public:
+
+		UserInputHandler() : currentStates(0)
+		{}
+
 
 		// ------- set State cmd keys and mouse buttons -------
 		void setStateCmdKey(int stateCmd, int key); // keyboard key
@@ -20,7 +31,8 @@ namespace Prototype
 
 
 		// ------- get state cmd input -------
-		bool getCurrentState(int stateCmd);
+		inline int getCurrentStates()				{ return states; }
+		inline bool getCurrentState(int stateCmd)	{ return static_cast<bool>((1 >> stateCmd) & getCurrentStates()); }
 
 		// ------- get action cmd input -------
 		int getNActionCmdsOnQueue();
