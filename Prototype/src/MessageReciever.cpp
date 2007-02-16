@@ -33,7 +33,6 @@ namespace Prototype
 		else
 		{
 			assert(true);
-			return 0;
 		}
 	}
 

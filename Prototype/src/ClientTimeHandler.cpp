@@ -4,9 +4,15 @@ namespace Prototype
 {
 	const float ClientTimeHandler::DELTA_TIME_MAX_F = static_cast<float>(DELTA_TIME_MAX);
 
-	int ClientTimeHandler::getTick()
+	//int ClientTimeHandler::getTick()
+	//{
+	//	return getStepTime() / TICKS_PER_SECOND;
+	//}
+
+	double ClientTimeHandler::getStepTick()
 	{
-		return getStepTime() / TICKS_PER_SECOND;
+		return static_cast<double>(getStepTime() - tick0Time)
+				/ static_cast<double>(TICK_DELTA_TIME);
 	}
 		
 	void ClientTimeHandler::reset() 

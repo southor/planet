@@ -166,12 +166,18 @@ namespace Prototype
 	{
 		static const size_t messageType = USER_CMD;
 
-		bool cmdLeft;
-		bool cmdRight;
-		bool cmdUp;
-		bool cmdDown;
-		//bool cmdShoot;
-		float viewangle;
+		//bool cmdLeft;
+		//bool cmdRight;
+		//bool cmdUp;
+		//bool cmdDown;
+		//float viewangle;
+
+		int stateCmds; // bitpattern
+		float aimangle;
+
+		UserCmd(int stateCmds, float aimangle) : stateCmds(stateCmds), aimangle(aimangle)
+		{}
+
 	};
 
 	struct ShootCmd
