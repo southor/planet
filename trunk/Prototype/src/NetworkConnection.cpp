@@ -152,8 +152,8 @@ namespace Prototype
 				}
 
 				Message message(retrieveType, retrieveSize, data, retrieveTime);
-				
-				//printf("retrieving message: type: %d, size: %d @ %d\n", retrieveType, retrieveSize, SDL_GetTicks());
+				if (retrieveType == 11)
+					printf("retrieving message: type: %d, size: %d, time: %d @ %d\n", retrieveType, retrieveSize, retrieveTime, currentTime);
 				
 				putMessageToLagQueue(message, currentTime);
 				

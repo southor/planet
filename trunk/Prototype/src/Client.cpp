@@ -80,6 +80,8 @@ namespace Prototype
 				break;
 			case ADD_PROJECTILE:
 				{
+					printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
+
 					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
 					worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
 				}
@@ -209,8 +211,8 @@ namespace Prototype
 			}
 
 			// If some key was pressed or released send message
-			//if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
-			if (true)
+			if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
+			//if (true)
 			{
 				if (this->mousePosChanged && (this->aimMode == MOUSE))
 				{
