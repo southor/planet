@@ -164,11 +164,11 @@ namespace Prototype
 				
 				// set waitingForClients to true if player doesn't have current tick
 				waitingForClients = waitingForClients || (player.latestTick != tick);
-
+				waitingForClients = true;
 				// Check tick timeout
-				//if (time > lastUpdateTime + ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
 
 				//if (getTimeHandler()->getTickWithTimeout() > tick)
+				if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
 				{
 					waitingForClients = false;
 					break; // exit for loop
@@ -199,6 +199,7 @@ namespace Prototype
 					int messageType = player.link.popMessage();
 					if (messageType == USER_CMD)
 					{
+						printf("SERVER: handling user_cmd @ %d\n", getTimeHandler()->getTime());
 						UserCmd *userCmd = player.link.getPoppedData<UserCmd>();
 
 						//PlayerObj *playerObj = (worldModel.getPlayerObjs())[player.playerObjId];
@@ -211,6 +212,8 @@ namespace Prototype
 					}
 					else if (messageType == SHOOT_CMD)
 					{
+						printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
+
 						// player shoots
 						ShootCmd *shootCmd = player.link.getPoppedData<ShootCmd>();					
 						size_t projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
@@ -254,6 +257,7 @@ namespace Prototype
 			transmitAll(players);
 			
 			getTimeHandler()->nextTick();
+			lastUpdateTime = time;
 		}
 	}
 	
