@@ -2,6 +2,7 @@
 #define __clienttimehandler_h__
 
 #include "TimeHandler.h"
+#include "basic.h"
 
 namespace Prototype
 {
@@ -21,7 +22,7 @@ namespace Prototype
 		//inline int getTime()				{ return SDL_GetTicks() - startTime; }
 
 		int getStepTime()					{ return stepTime; }		
-		double getStepTick();		
+		Tickf getStepTick();		
 
 		//int getDeltaTime()				{ return deltaTime; }
 

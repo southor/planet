@@ -9,7 +9,7 @@ namespace Prototype
 	//	return getStepTime() / TICKS_PER_SECOND;
 	//}
 
-	double ClientTimeHandler::getStepTick()
+	Tickf ClientTimeHandler::getStepTick()
 	{
 		return static_cast<double>(getStepTime() - tick0Time)
 				/ static_cast<double>(TICK_DELTA_TIME);
