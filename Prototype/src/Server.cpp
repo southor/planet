@@ -200,6 +200,7 @@ namespace Prototype
 					if (messageType == USER_CMD)
 					{
 						printf("SERVER: handling user_cmd @ %d\n", getTimeHandler()->getTime());
+						/*
 						UserCmd *userCmd = player.link.getPoppedData<UserCmd>();
 
 						//PlayerObj *playerObj = (worldModel.getPlayerObjs())[player.playerObjId];
@@ -209,6 +210,7 @@ namespace Prototype
 						playerObj->strafingLeft = userCmd->cmdLeft;
 						playerObj->strafingRight = userCmd->cmdRight;
 						playerObj->angle = userCmd->viewangle;
+						*/
 					}
 					else if (messageType == SHOOT_CMD)
 					{
