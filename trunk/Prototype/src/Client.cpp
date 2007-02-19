@@ -223,7 +223,7 @@ namespace Prototype
 					updatePlayerObjAngle();
 					this->mousePosChanged = false;
 				}
-				
+				/*
 				// handle rest of the commands
 				UserCmd userCmd;				
 				userCmd.cmdLeft = kh.isDown(CMD_LEFT);
@@ -232,8 +232,9 @@ namespace Prototype
 				userCmd.cmdDown = kh.isDown(CMD_DOWN);
 				//userCmd.cmdShoot = kh.isDown(CMD_SHOOT);
 				userCmd.viewangle = ((worldModel.getPlayerObjs())[playerId])->angle;
-
+				
 				link.pushMessage(userCmd, timeHandler.getTime());
+				*/
 			}
 
 			// transmit any messages

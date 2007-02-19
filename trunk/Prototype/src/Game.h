@@ -9,6 +9,7 @@
 #include "Client.h"
 #include "Server.h"
 //#include "Gui.h"
+#include "UserInputHandler.h"
 
 namespace Prototype
 {
