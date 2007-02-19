@@ -56,7 +56,11 @@ namespace Prototype
 					PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
 					playerObj->pos = updatePlayerObj->pos;
 					
-					if (playerId != updatePlayerObj->playerId)
+					if (playerId == updatePlayerObj->playerId)
+					{
+
+					}
+					else
 					{
 						playerObj->angle = updatePlayerObj->angle;
 					}

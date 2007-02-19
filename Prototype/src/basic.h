@@ -15,6 +15,8 @@ namespace Prototype
 	typedef Vec2f Vec;
 	typedef Vec Pos;
 
+	typedef double Tickf; // used by Client
+
 	template <typename T>
 	inline float radianToDegree(T angle)
 	{
