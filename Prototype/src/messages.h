@@ -64,9 +64,9 @@ namespace Prototype
 	{
 		static const size_t messageType = ADD_OBSTACLE;
 
-		size_t obstacleId;
+		GameObjId obstacleId;
 		Rectangle obstacleArea;
-		AddObstacle(size_t obstacleId, const Rectangle &obstacleArea)
+		AddObstacle(GameObjId obstacleId, const Rectangle &obstacleArea)
 			: obstacleId(obstacleId), obstacleArea(obstacleArea)
 		{}
 	};
@@ -97,13 +97,13 @@ namespace Prototype
 	{
 		static const size_t messageType = ADD_PROJECTILE;
 
-		size_t projectileId;
+		GameObjId projectileId;
 		int type;
 		Pos pos;
 		float angle;
 		size_t shooterId;
 
-		AddProjectile(size_t projectileId, int type, Pos pos, float angle, size_t shooterId)
+		AddProjectile(GameObjId projectileId, int type, Pos pos, float angle, size_t shooterId)
 			: projectileId(projectileId), type(type), pos(pos), angle(angle), shooterId(shooterId)
 		{}
 	};
@@ -112,10 +112,10 @@ namespace Prototype
 	{
 		static const size_t messageType = UPDATE_PROJECTILE;
 
-		size_t projectileId;
+		GameObjId projectileId;
 		Pos pos;
 
-		UpdateProjectile(size_t projectileId, Pos pos)
+		UpdateProjectile(GameObjId projectileId, Pos pos)
 			: projectileId(projectileId), pos(pos)
 		{}
 	};
@@ -124,10 +124,10 @@ namespace Prototype
 	{
 		static const size_t messageType = REMOVE_PROJECTILE;
 
-		size_t projectileId;
+		GameObjId projectileId;
 		Pos hitPosition;
 
-		RemoveProjectile(size_t projectileId, Pos hitPosition)
+		RemoveProjectile(GameObjId projectileId, Pos hitPosition)
 			: projectileId(projectileId), hitPosition(hitPosition)
 		{}
 	};

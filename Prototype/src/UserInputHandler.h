@@ -55,7 +55,7 @@ namespace Prototype
 		inline void setCurrentState(int stateCmd, bool state) { /* TODO */ }
 
 		// ------- get action cmd input -------
-		int getNActionCmdsOnQueue()					{ return actionCmdQueue.size(); }
+		size_t getNActionCmdsOnQueue()					{ return actionCmdQueue.size(); }
 		inline bool hasActionCmdOnQueue()			{ return getNActionCmdsOnQueue() > 0; }
 		int popActionCmd()
 		{

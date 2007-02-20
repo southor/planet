@@ -36,8 +36,8 @@ namespace Prototype
 
 		//void addPlayerObj(size_t playerId, size_t playerObjId, const Pos &playerPos);
 		void addPlayerObj(size_t playerId, const Pos &playerPos);
-		void addObstacle(size_t obstacleId, const Rectangle &obstacleArea);
-		void addProjectile(size_t projectileId, Projectile::Type type, const Pos &pos, float angle, size_t shooterId);
+		void addObstacle(GameObjId obstacleId, const Rectangle &obstacleArea);
+		void addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, size_t shooterId);
 
 	};
 };

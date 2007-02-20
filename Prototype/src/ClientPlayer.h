@@ -8,7 +8,7 @@ namespace Prototype
 {
 	typedef Player ClientPlayer;
 
-	typedef IdMap<size_t, ClientPlayer> ClientPlayers;
+	typedef IdMap<GameObjId, ClientPlayer> ClientPlayers;
 };
 
 #endif

@@ -81,7 +81,7 @@ namespace Prototype
 
 
 		void addPlayerObj(size_t playerId, const Pos &playerPos);
-		size_t addObstacle(const Rectangle &obstacleArea);
+		GameObjId addObstacle(const Rectangle &obstacleArea);
 
 		void addRespawnPos(Pos pos)						{ respawnPoss.push_back(pos); }
 		
@@ -89,7 +89,7 @@ namespace Prototype
 		void updateProjectileMovements(float deltaTime, ServerPlayers &players);
 
 		// @retunr projectileId
-		size_t playerShoot(size_t playerId, Projectile::Type weapon);
+		GameObjId playerShoot(GameObjId playerId, Projectile::Type weapon);
 	};
 };
 
