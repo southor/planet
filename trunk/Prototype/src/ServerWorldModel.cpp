@@ -19,9 +19,9 @@ namespace Prototype
 		playerObjs.add(playerId, new PlayerObj(playerPos));
 	}
 
-	size_t ServerWorldModel::addObstacle(const Rectangle &obstacleArea)
+	GameObjId ServerWorldModel::addObstacle(const Rectangle &obstacleArea)
 	{
-		size_t obstacleId = obstacles.findFreeId();
+		GameObjId obstacleId = obstacles.findFreeId();
 		obstacles.add(obstacleId, new Obstacle(obstacleArea));
 		return obstacleId;
 	}
@@ -162,7 +162,7 @@ namespace Prototype
 		// Hit collision, find hit point
 
 		float minHitDist = 2.0f;			
-		size_t obstacleIdHit;
+		GameObjId obstacleIdHit;
 
 		ServerObstacleContainer::Iterator obstacleIt = obstacles->begin();
 		ServerObstacleContainer::Iterator obstacleEnd = obstacles->end();		
@@ -177,7 +177,7 @@ namespace Prototype
 		}
 
 		bool hitPlayerObj = false;
-		size_t playerIdHit;
+		GameObjId playerIdHit;
 
 		ServerPlayerObjContainer::Iterator playerObjIt = playerObjs->begin();
 		ServerPlayerObjContainer::Iterator playerObjEnd = playerObjs->end();		
@@ -213,7 +213,7 @@ namespace Prototype
 			playerObjEnd = playerObjs->end();		
 			for(; playerObjIt != playerObjEnd; ++playerObjIt)
 			{
-				size_t targetPlayerId = playerObjIt->first;
+				GameObjId targetPlayerId = playerObjIt->first;
 				PlayerObj *playerObj = playerObjIt->second;
 
 				// calculate damage
@@ -261,13 +261,13 @@ namespace Prototype
 		
 	}
 
-	size_t ServerWorldModel::playerShoot(size_t playerId, Projectile::Type weapon)
+	GameObjId ServerWorldModel::playerShoot(size_t playerId, Projectile::Type weapon)
 	{
 		PlayerObj *playerObj = getPlayerObjs()[playerId];
 		Pos pos(playerObj->getPos());
 		float angle = playerObj->angle;
 
-		size_t projectileId = getProjectiles().findFreeId();
+		GameObjId projectileId = getProjectiles().findFreeId();
 		getProjectiles().add(projectileId, new Projectile(weapon, pos, angle, playerId));
 
 		return projectileId;

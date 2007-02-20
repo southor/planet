@@ -115,7 +115,7 @@ namespace Prototype
 			WorldModel::ObstacleContainer::Iterator obstaclesEnd = worldModel.getObstacles().end();
 			for(; obstaclesIt != obstaclesEnd; ++obstaclesIt)
 			{
-				size_t obstacleId = obstaclesIt->first;
+				GameObjId obstacleId = obstaclesIt->first;
 				Obstacle *obstacle = obstaclesIt->second;
 				
 				AddObstacle addObstacle(obstacleId, *obstacle);
@@ -218,7 +218,7 @@ namespace Prototype
 
 						// player shoots
 						ShootCmd *shootCmd = player.link.getPoppedData<ShootCmd>();					
-						size_t projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
+						GameObjId projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
 						Projectile *projectile = (worldModel.getProjectiles())[projectileId];
 						
 						// send projectile to all clients
@@ -237,7 +237,7 @@ namespace Prototype
 			WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{
-				//size_t playerObjId = playerObjsIt->first;
+				//GameObjId playerObjId = playerObjsIt->first;
 				size_t playerId = playerObjsIt->first;
 				PlayerObj *playerObj = playerObjsIt->second;
 				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);

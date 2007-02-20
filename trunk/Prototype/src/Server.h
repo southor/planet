@@ -24,7 +24,7 @@ namespace Prototype
 		size_t addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever);
 
 		//// @return The PlayerObjId that the new player object got
-		//size_t addPlayerObj(size_t playerId, const Pos &playerPos);
+		//GameObjId addPlayerObj(size_t playerId, const Pos &playerPos);
 
 		void addPlayerObj(size_t playerId, const Pos &playerPos);
 

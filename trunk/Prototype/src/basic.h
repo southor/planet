@@ -60,6 +60,10 @@ namespace Prototype
 	}
 
 
+	typedef size_t GameObjId;
+
+
+
 	
 };
 

@@ -32,7 +32,7 @@ namespace Prototype
 		}
 		else
 		{
-			assert(true);
+			assert(true); //assert(false)?
 		}
 	}
 

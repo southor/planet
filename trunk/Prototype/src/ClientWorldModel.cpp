@@ -18,12 +18,12 @@ namespace Prototype
 		playerObjs.add(playerId, new PlayerObj(playerPos));
 	}
 
-	void ClientWorldModel::addObstacle(size_t obstacleId, const Rectangle &obstacleArea)
+	void ClientWorldModel::addObstacle(GameObjId obstacleId, const Rectangle &obstacleArea)
 	{
 		obstacles.add(obstacleId, new Obstacle(obstacleArea));
 	}
 
-	void ClientWorldModel::addProjectile(size_t projectileId, Projectile::Type type, const Pos &pos, float angle, size_t shooterId)
+	void ClientWorldModel::addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, size_t shooterId)
 	{
 		projectiles.add(projectileId, new Projectile(type, pos, angle, shooterId));
 	}
