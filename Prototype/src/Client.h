@@ -7,6 +7,7 @@
 #include "ClientPlayer.h"
 #include "WorldRenderer.h"
 #include "KeyHandler.h"
+#include "UserInputHandler.h"
 #include "ClientTimeHandler.h"
 #include "ViewportHandler.h"
 
@@ -35,6 +36,7 @@ namespace Prototype
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		KeyHandler* getKeyHandler();
+		UserInputHandler* getUserInput()	{ return &userInput; }
 		
 		void setPlayerId(size_t playerId) { this->playerId = playerId; }
 		void setColor(Color color) { this->color = color; }
@@ -63,6 +65,8 @@ namespace Prototype
 
 
 		KeyHandler kh;
+		UserInputHandler userInput;
+
 
 		ClientWorldModel worldModel;
 		WorldRenderer worldRenderer;

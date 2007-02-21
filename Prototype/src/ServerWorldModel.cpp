@@ -48,7 +48,7 @@ namespace Prototype
 				//std::cout << "\tremoving projectile: " << it->projectileId << std::endl;
 				
 				// send message			
-				pushMessageToAll(players, *it, getTimeHandler()->getTime());
+				pushMessageToAll(players, *it, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 			}
 
 			//std::cout << "\tprojectiles left: " << projectiles.getSize() << std::endl;
@@ -248,7 +248,7 @@ namespace Prototype
 
 						// send kill message to all players
 						Kill kill(killerId, targetPlayerId, respawnPos);
-						pushMessageToAll(*players, kill, getTimeHandler()->getTime());
+						pushMessageToAll(*players, kill, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 					}
 				}
 			}

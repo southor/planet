@@ -210,7 +210,7 @@ namespace Prototype
 					Projectile::Type weapon = playerObj->getCurrentWeapon();
 					playerObj->shoot(time);
 					ShootCmd shootCmd(playerId, weapon);
-					link.pushMessage(shootCmd, timeHandler.getTime());
+					link.pushMessage(shootCmd, timeHandler.getTime(), timeHandler.getStepTick());
 				}
 			}
 
@@ -223,18 +223,14 @@ namespace Prototype
 					updatePlayerObjAngle();
 					this->mousePosChanged = false;
 				}
-				/*
-				// handle rest of the commands
-				UserCmd userCmd;				
-				userCmd.cmdLeft = kh.isDown(CMD_LEFT);
-				userCmd.cmdRight = kh.isDown(CMD_RIGHT);
-				userCmd.cmdUp = kh.isDown(CMD_UP);
-				userCmd.cmdDown = kh.isDown(CMD_DOWN);
-				//userCmd.cmdShoot = kh.isDown(CMD_SHOOT);
-				userCmd.viewangle = ((worldModel.getPlayerObjs())[playerId])->angle;
+
+				int stateCmds = getUserInput()->getCurrentStates().getStates();
+				int aimangle = ((worldModel.getPlayerObjs())[playerId])->angle;
 				
-				link.pushMessage(userCmd, timeHandler.getTime());
-				*/
+				UserCmd userCmd(stateCmds, aimangle);
+				
+				link.pushMessage(userCmd, timeHandler.getTime(), timeHandler.getStepTick());
+				
 			}
 
 			// transmit any messages
@@ -248,7 +244,7 @@ namespace Prototype
 		{
 			// send init package to server
 			InitClient initClient = InitClient(color);
-			link.pushMessage(initClient, timeHandler.getTime());
+			link.pushMessage(initClient, timeHandler.getTime(), timeHandler.getStepTick());
 			link.transmit();
 
 			connectionPhase++;

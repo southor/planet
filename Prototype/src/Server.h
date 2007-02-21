@@ -7,6 +7,8 @@
 #include "ServerPlayers.h"
 #include "ServerWorldModel.h"
 #include "ServerTimeHandler.h"
+#include "StateCmds.h"
+#include "Cmds.h"
 
 namespace Prototype
 {

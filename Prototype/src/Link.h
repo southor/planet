@@ -21,7 +21,7 @@ namespace Prototype
 		void destroyPoppedMessage();
 
 		// pushes a Message to the send queue, also sets time of message
-		void pushMessage(int type, int size, void *data, int currentTime) const;
+		void pushMessage(int type, int size, void *data, int currentTime, int currentTick) const;
 
 		// returns the data member of the popped message
 		void* getPoppedData() const;
@@ -63,9 +63,9 @@ namespace Prototype
 		void transmit() const; // transmits all messages to the send queue
 
 		template <class Cmd>
-		void pushMessage(const Cmd &cmd, int currentTime) const
+		void pushMessage(const Cmd &cmd, int currentTime, int currentTick) const
 		{
-			pushMessage(Cmd::messageType, sizeof(Cmd), new Cmd(cmd), currentTime);
+			pushMessage(Cmd::messageType, sizeof(Cmd), new Cmd(cmd), currentTime, currentTick);
 		}
 		
 
