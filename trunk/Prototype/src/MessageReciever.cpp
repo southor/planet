@@ -18,7 +18,8 @@ namespace Prototype
 	{
 		if (hasMessageOnQueue())
 		{
-			return lagQueue.front().tick <= tick;
+			return true;
+			//return lagQueue.front().tick <= tick;
 		}
 		
 		return false;		
@@ -32,7 +33,7 @@ namespace Prototype
 		}
 		else
 		{
-			assert(true); //assert(false)?
+			assert(false);
 		}
 	}
 

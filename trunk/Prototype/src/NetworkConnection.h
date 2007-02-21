@@ -36,13 +36,9 @@ namespace Prototype
 	{
 	public:
 		NetworkMessageReciever() 
-			: MessageReciever(), retrieveMessagePhase(0), retrieveSize(0), retrieveTime(0), retrieveType(0)	{}
+			: MessageReciever(), retrieveMessagePhase(0), retrieveSize(0), retrieveTime(0), retrieveTick(0), retrieveType(0)	{}
 		~NetworkMessageReciever()																			{}
 
-		bool hasMessageOnQueue() {}
-		bool hasMessageOnQueueWithTick(int tick) {}
-		int getTickOfMessageOnQueue() {}
-		
 		Message popMessage();
 
 		void setSocket(TCPsocket socket);
@@ -56,9 +52,10 @@ namespace Prototype
 		SDLNet_SocketSet set;
 		
 		unsigned char retrieveMessagePhase;
-		unsigned int retrieveType;
-		unsigned int retrieveTime;
-		unsigned int retrieveSize;
+		int retrieveType;
+		int retrieveTime;
+		int retrieveTick;
+		int retrieveSize;
 	};
 
 

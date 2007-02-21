@@ -46,6 +46,14 @@ namespace Prototype
 				printf("SDLNet_TCP_Send: %s (sending message.time)\n", SDLNet_GetError());
 				return; 
 			}
+
+			// Send tick on socket
+			result = SDLNet_TCP_Send(socket, &(message.tick), sizeof(message.tick));
+			if (result < sizeof(message.tick))
+			{ 
+				printf("SDLNet_TCP_Send: %s (sending message.tick)\n", SDLNet_GetError());
+				return; 
+			}
 			
 			
 			//len = SDL_SwapBE32(len);
@@ -128,9 +136,19 @@ namespace Prototype
 				retrieveMessagePhase++;
 				break;		
 			}
+
+			// Read tick
+			case 2:
+			{
+				if (readData(&retrieveTick, sizeof(retrieveTick)) == 0)
+					return;
+					
+				retrieveMessagePhase++;
+				break;		
+			}
 				
 			// Read length of data
-			case 2:
+			case 3:
 			{
 				if (readData(&retrieveSize, sizeof(retrieveSize)) == 0)
 					return;
@@ -140,7 +158,7 @@ namespace Prototype
 			}
 							
 			// Read data
-			case 3:
+			case 4:
 			{
 				// Allocate memory for message data
 				char *data = new char[retrieveSize];
@@ -151,9 +169,9 @@ namespace Prototype
 					return;
 				}
 
-				Message message(retrieveType, retrieveSize, data, retrieveTime);
+				Message message(retrieveType, retrieveSize, data, retrieveTime, retrieveTick);
 				if (retrieveType == 11)
-					printf("retrieving message: type: %d, size: %d, time: %d @ %d\n", retrieveType, retrieveSize, retrieveTime, currentTime);
+					printf("retrieving message: type: %d, size: %d, time: %d, tick: %d @ %d\n", retrieveType, retrieveSize, retrieveTime, retrieveTick, currentTime);
 				
 				putMessageToLagQueue(message, currentTime);
 				

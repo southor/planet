@@ -33,6 +33,21 @@ namespace Prototype
 
 	void Game::run(std::string &host)
 	{
+		client1.getUserInput()->setStateCmdKey(Cmds::LEFT, SDLK_a);
+		client1.getUserInput()->setStateCmdKey(Cmds::RIGHT, SDLK_d);
+		client1.getUserInput()->setStateCmdKey(Cmds::FORWARD, SDLK_w);
+		client1.getUserInput()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
+		client1.getUserInput()->setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
+		client1.getUserInput()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
+
+		client2.getUserInput()->setStateCmdKey(Cmds::LEFT, SDLK_j);
+		client2.getUserInput()->setStateCmdKey(Cmds::RIGHT, SDLK_l);
+		client2.getUserInput()->setStateCmdKey(Cmds::FORWARD, SDLK_i);
+		client2.getUserInput()->setStateCmdKey(Cmds::BACKWARD, SDLK_k);
+		client2.getUserInput()->setActionCmdKey(Cmds::SHOOT, SDLK_h);
+		client2.getUserInput()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_u);
+	
+	
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
 		client2.setAimMode(Client::MOUSE);
@@ -434,24 +449,18 @@ namespace Prototype
 					running = false;
 					break;				   
 				case SDLK_f:					
-						if (event.key.keysym.mod & KMOD_CTRL)
-							SDL_WM_ToggleFullScreen(screen);
-						break;
+					if (event.key.keysym.mod & KMOD_CTRL)
+						SDL_WM_ToggleFullScreen(screen);
+					break;
 				default:
 					break;
 				} // end switch
 				break;
 			}
+			
 			case SDL_KEYUP:
 				client1.getKeyHandler()->setKeyReleased(event.key.keysym.sym);
 				client2.getKeyHandler()->setKeyReleased(event.key.keysym.sym);
-			
-				switch(event.key.keysym.sym)
-				{
-				default:
-					break;
-				}
-				break;
 			
 			case SDL_MOUSEMOTION:
 				{
@@ -474,6 +483,10 @@ namespace Prototype
 				break;
 	     
 			} // end switch
+			
+
+			client1.getUserInput()->pushInput(event);
+			client2.getUserInput()->pushInput(event);
 
 			// Pass event to guichan
 			//gui.input->pushInput(event);

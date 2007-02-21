@@ -51,7 +51,7 @@ namespace Prototype
 
 				// send WelcomeClient with playerId to client
 				WelcomeClient welcomeClient = WelcomeClient(playerId);
-				link.pushMessage(welcomeClient, getTimeHandler()->getTime());
+				link.pushMessage(welcomeClient, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				link.transmit();
 				
 				return true;
@@ -102,7 +102,7 @@ namespace Prototype
 
 			AddPlayerObj addPlayerObj(playerId, color, playerObj->pos);
 
-			pushMessageToAll(players, addPlayerObj, getTimeHandler()->getTime());
+			pushMessageToAll(players, addPlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 		}
 	
 		// TODO Send the hole worldmodel to clients, all players and everything
@@ -119,7 +119,7 @@ namespace Prototype
 				Obstacle *obstacle = obstaclesIt->second;
 				
 				AddObstacle addObstacle(obstacleId, *obstacle);
-				player.link.pushMessage(addObstacle, getTimeHandler()->getTime());
+				player.link.pushMessage(addObstacle, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 			}
 
 			player.link.transmit();
@@ -200,17 +200,16 @@ namespace Prototype
 					if (messageType == USER_CMD)
 					{
 						printf("SERVER: handling user_cmd @ %d\n", getTimeHandler()->getTime());
-						/*
+						
 						UserCmd *userCmd = player.link.getPoppedData<UserCmd>();
-
-						//PlayerObj *playerObj = (worldModel.getPlayerObjs())[player.playerObjId];
+						StateCmds stateCmds(userCmd->stateCmds);
+						
 						PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-						playerObj->movingForward = userCmd->cmdUp;
-						playerObj->movingBackward = userCmd->cmdDown;
-						playerObj->strafingLeft = userCmd->cmdLeft;
-						playerObj->strafingRight = userCmd->cmdRight;
-						playerObj->angle = userCmd->viewangle;
-						*/
+						playerObj->movingForward = stateCmds.getCurrentState(Cmds::FORWARD);
+						playerObj->movingBackward = stateCmds.getCurrentState(Cmds::BACKWARD);
+						playerObj->strafingLeft = stateCmds.getCurrentState(Cmds::LEFT);
+						playerObj->strafingRight = stateCmds.getCurrentState(Cmds::RIGHT);
+						playerObj->angle = userCmd->aimangle;
 					}
 					else if (messageType == SHOOT_CMD)
 					{
@@ -223,7 +222,7 @@ namespace Prototype
 						
 						// send projectile to all clients
 						AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(), projectile->getAngle(), projectile->getShooterId());
-						pushMessageToAll(players, addProjectile, getTimeHandler()->getTime());
+						pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 					}
 				}
 			}		
@@ -243,7 +242,7 @@ namespace Prototype
 				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle);
 
-				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime());
+				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 			}
 
 			// Send projectile updates
@@ -253,7 +252,7 @@ namespace Prototype
 			{			
 				UpdateProjectile updateProjectile(projectilesIt->first, projectilesIt->second->getPos());
 				
-				pushMessageToAll(players, updateProjectile, getTimeHandler()->getTime());
+				pushMessageToAll(players, updateProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 			}
 
 			transmitAll(players);
