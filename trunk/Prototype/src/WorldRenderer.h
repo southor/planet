@@ -65,21 +65,52 @@ namespace Prototype
 		std::vector<Explosion> explosions;
 		
 
-		// Functor for rendering a game object
-		class RenderGameObj
+		//// Functor for rendering a game object
+		//class RenderGameObj
+		//{
+		//private:
+		//	Players *players;
+		//public:
+		//	
+		//	RenderGameObj(Players *players) : players(players)
+		//	{}
+
+		//	// game objects
+		//	void operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair);
+		//	void operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair);
+		//	void operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair);
+		//	
+		//	// visual effects
+		//	void operator ()(const Explosion &explosion);
+		//};
+
+		class RenderObstacle
+		{
+		public:
+			void operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair);
+		};
+
+		class RenderPlayerObj
 		{
 		private:
 			Players *players;
 		public:
 			
-			RenderGameObj(Players *players) : players(players)
+			RenderPlayerObj(Players *players) : players(players)
 			{}
 
-			// game objects
-			void operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair);
 			void operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair);
-			void operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair);
-			
+		};
+
+		class RenderProjectile
+		{
+		public:
+			void operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair);			
+		};
+
+		class RenderExplosion
+		{
+		public:
 			// visual effects
 			void operator ()(const Explosion &explosion);
 		};

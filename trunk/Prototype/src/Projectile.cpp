@@ -8,7 +8,7 @@ namespace Prototype
 	const Projectile::Properties Projectile::properties[2] = {{1000.0f/1000.0f, 20, 0, 0, 75},
 															   {200.0f/1000.0f, 100, 50, 100.0f, 500}};
 
-	Projectile::Projectile(Type type, const Pos &pos, float angle, size_t shooterId)
+	Projectile::Projectile(Type type, const Pos &pos, float angle, PlayerId shooterId)
 		: type(type), pos(pos), angle(angle), shooterId(shooterId)
 	{}
 

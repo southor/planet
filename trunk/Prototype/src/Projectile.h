@@ -34,7 +34,7 @@ namespace Prototype
 
 		Pos pos;
 
-		Projectile(Type type, const Pos &pos, float angle, size_t shooterId);
+		Projectile(Type type, const Pos &pos, float angle, PlayerId shooterId);
 
 		inline Pos getPos() const						{ return pos; }
 		inline void setPos(const Pos &pos)				{ this->pos = pos; }
@@ -52,14 +52,14 @@ namespace Prototype
 		int getBlastDamage(float blastPos, const Pos &targetPos) const;
 		
 		
-		size_t getShooterId() const						{ return shooterId; }
+		PlayerId getShooterId() const						{ return shooterId; }
 
 	private:
 		static const Properties properties[N_TYPES];
 
 		Type type;
 		float angle;
-		size_t shooterId;
+		PlayerId shooterId;
 	};
 };
 

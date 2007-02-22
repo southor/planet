@@ -1,50 +1,64 @@
 #ifndef __gameobjid_h__
 #define __gameobjid_h__
 
+#include "basic.h"
+
 namespace Prototype
 {
 
 	class GameObjId
 	{
 	private:
-		uint playerId;
+		PlayerId playerId;
 		uint generatedId;
 	public:
+
+		static const PlayerId INVALID_PLAYER_ID = static_cast<uint>(-1);
+
+		// Creates an invalid PlayerObjId
+		inline GameObjId() : playerId(INVALID_PLAYER_ID)
+		{}
 		
 		// Creates a general GameoObjId
-		inline GameObjId(uint playerId, uint generatedId) : playerId(playerId), generatedId(generatedId)
+		inline GameObjId(PlayerId playerId, uint generatedId) : playerId(playerId), generatedId(generatedId)
 		{}
 
 		// Creates a playerObjId from a playerId
-		inline GameObjId(uint playerId) : playerId(playerId), generatedId(0)
+		inline GameObjId(PlayerId playerId) : playerId(playerId), generatedId(0)
 		{}
 
 		// debugging
-		bool isPlayerObjId()
+		bool isPlayerObjId() const
 		{
 			return generatedId == 0;
 		}
 
+		// debugging
+		bool isValid() const
+		{
+			return (playerId != INVALID_PLAYER_ID);
+		}
+
 		// From PlayerObjId To PlayerId
-		size_t operator (size_t) () const
+		operator PlayerId () const
 		{
 			assert(isPlayerObjId()); // should be a playerObjId
 			return playerId;
 		}
 
-		bool operator ==(const GameObjId &gameObjId)
+		bool operator ==(const GameObjId &gameObjId) const
 		{
 			return this->playerId == gameObjId.playerId &&
 					this->generatedId == gameObjId.generatedId;
 		}
 
-		bool operator !=(const GameObjId &gameObjId)
+		bool operator !=(const GameObjId &gameObjId) const
 		{
 			return this->playerId != gameObjId.playerId ||
 					this->generatedId != gameObjId.generatedId;
 		}
 
-		bool operator >(const GameObjId &gameObjId)
+		bool operator >(const GameObjId &gameObjId) const
 		{
 			if (this->playerId > gameObjId.playerId)
 			{
@@ -60,7 +74,7 @@ namespace Prototype
 			}
 		}
 
-		bool operator <(const GameObjId &gameObjId)
+		bool operator <(const GameObjId &gameObjId) const
 		{
 			if (this->playerId < gameObjId.playerId)
 			{
@@ -76,12 +90,12 @@ namespace Prototype
 			}
 		}
 
-		inline bool operator >=(const GameObjId &gameObjId)
+		inline bool operator >=(const GameObjId &gameObjId) const
 		{
 			return !(*this < gameObjId);
 		}
 
-		inline bool operator <=(const GameObjId &gameObjId)
+		inline bool operator <=(const GameObjId &gameObjId) const
 		{
 			return !(*this > gameObjId);
 		}

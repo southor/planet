@@ -2,6 +2,7 @@
 #define __serverglobalaccess_h__
 
 #include "ServerTimeHandler.h"
+#include "IdGenerator.h"
 
 namespace Prototype
 {
@@ -9,6 +10,7 @@ namespace Prototype
 	{
 	public:
 		ServerTimeHandler timeHandler;
+		ServerIdGenerator idGenerator;
 	};
 	
 	
@@ -28,6 +30,12 @@ namespace Prototype
 		{
 			assert(serverGlobalObj);
 			return &(serverGlobalObj->timeHandler);
+		}
+
+		inline ServerIdGenerator* getIdGenerator()
+		{
+			assert(serverGlobalObj);
+			return &(serverGlobalObj->idGenerator);
 		}
 
 	};

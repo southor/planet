@@ -6,10 +6,13 @@ namespace Prototype
 
 	void WorldModel::deleteAllObjs()
 	{
-		Delete del;
-		ForEach(getObstacles().begin(), getObstacles().end(), del);
-		ForEach(getPlayerObjs().begin(), getPlayerObjs().end(), del);
-		ForEach(getProjectiles().begin(), getProjectiles().end(), del);
+		//Delete del;
+		DeleteObstacle deleteObstacle;
+		DeletePlayerObj deletePlayerObj;
+		DeleteProjectile deleteProjectile;
+		ForEach(getObstacles().begin(), getObstacles().end(), deleteObstacle);
+		ForEach(getPlayerObjs().begin(), getPlayerObjs().end(), deletePlayerObj);
+		ForEach(getProjectiles().begin(), getProjectiles().end(), deleteProjectile);
 	}
 
 	bool WorldModel::isConsistent()

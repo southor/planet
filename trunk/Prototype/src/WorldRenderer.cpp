@@ -63,14 +63,17 @@ namespace Prototype
 			//	break;
 			//}
 
-			// render all objects
-			RenderGameObj renderGameObj(&players);
-			ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderGameObj);
-			ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderGameObj);
-			ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderGameObj);
-			
+			// render all objects			
+			//RenderGameObj renderGameObj(&players);
+			RenderObstacle renderObstacle;
+			RenderPlayerObj renderPlayerObj(&players);
+			RenderProjectile renderProjectile;
+			ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderObstacle);
+			ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderPlayerObj);
+			ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderProjectile);			
 			//render explosion
-			ForEach(explosions.begin(), explosions.end(), renderGameObj);
+			RenderExplosion renderExplosion;
+			ForEach(explosions.begin(), explosions.end(), renderExplosion);
 			explosions.clear();
 		glPopMatrix();
 	}
@@ -130,18 +133,18 @@ namespace Prototype
 	// -------------------------------   RenderGameObject  ----------------------------------
 	// --------------------------------------------------------------------------------------
 
-	void WorldRenderer::RenderGameObj::operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair)
+	void WorldRenderer::RenderObstacle::operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair)
 	{
 		glColor3f(0.0f,0.0f,0.0f);
 		WorldRenderer::renderRectangle(*(obstaclePair.second), GL_QUADS);
 	}
 
-	void WorldRenderer::RenderGameObj::operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair)
+	void WorldRenderer::RenderPlayerObj::operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair)
 	{
 		static const Color PLAYER_RECTANGLE_COLOR = Color(0.7f,0.7f,0.7f);
 		static const float PLAYER_RECTANGLE_ALPHA = 0.5f;
 		
-		size_t playerId = playerObjPair.first;
+		PlayerId playerId = playerObjPair.first;
 		PlayerObj *playerObj = playerObjPair.second;
 		
 		
@@ -180,7 +183,7 @@ namespace Prototype
 		glPopMatrix();
 	}
 
-	void WorldRenderer::RenderGameObj::operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair)
+	void WorldRenderer::RenderProjectile::operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair)
 	{
 		static const Color projectileColors[Projectile::N_TYPES] = {Color(0.0f,0.0f,0.0f), Color(0.0f, 0.0f, 0.0f)};
 		static const float projectileWidths[Projectile::N_TYPES] = {1.2f, 4.0f};
@@ -194,7 +197,7 @@ namespace Prototype
 		WorldRenderer::renderLine(line, projectileWidths[type], projectileAlphas[type]);
 	}
 
-	void WorldRenderer::RenderGameObj::operator ()(const Explosion &explosion)
+	void WorldRenderer::RenderExplosion::operator ()(const Explosion &explosion)
 	{
 		const Color &color = explosion.color;
 		glColor4f(color.r, color.g, color.b, 0.3f);

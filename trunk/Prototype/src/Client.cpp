@@ -315,7 +315,7 @@ namespace Prototype
 		//WorldRenderer::renderLine(bottomTest, 1.0f, 1.0f);
 	}
 
-	void Client::addPlayer(size_t playerId, const Color &playerColor, const Pos &playerPos)
+	void Client::addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos)
 	{
 		
 		//size_t playerId = players.getSize();

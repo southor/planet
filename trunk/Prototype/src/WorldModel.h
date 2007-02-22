@@ -6,6 +6,8 @@
 #include "Projectile.h"
 
 #include "IdMap.h"
+#include "GameObjId.h"
+
 #include <vector>
 #include <list>
 
@@ -20,9 +22,9 @@ namespace Prototype
 		//typedef std::vector<Obstacle*> ObstacleContainer;
 		//typedef std::list<PlayerObj*> PlayerObjContainer;
 		//typedef std::list<Projectile*> ProjectileContainer;
-		typedef IdMap<size_t, Obstacle*> ObstacleContainer;
-		typedef IdMap<size_t, PlayerObj*> PlayerObjContainer;
-		typedef IdMap<size_t, Projectile*> ProjectileContainer;
+		typedef IdMap<GameObjId, Obstacle*> ObstacleContainer;
+		typedef IdMap<GameObjId, PlayerObj*> PlayerObjContainer;
+		typedef IdMap<GameObjId, Projectile*> ProjectileContainer;
 
 
 
@@ -42,11 +44,29 @@ namespace Prototype
 
 	protected:
 
-		class Delete
+		//class Delete
+		//{
+		//public:
+		//	void operator ()(const ObstacleContainer::Pair &obstaclePair)		{ delete obstaclePair.second; }
+		//	void operator ()(const PlayerObjContainer::Pair &playerObjPair)		{ delete playerObjPair.second; }
+		//	void operator ()(const ProjectileContainer::Pair &projectilePair)	{ delete projectilePair.second; }
+		//};
+
+		class DeleteObstacle
 		{
 		public:
 			void operator ()(const ObstacleContainer::Pair &obstaclePair)		{ delete obstaclePair.second; }
+		};
+
+		class DeletePlayerObj
+		{
+		public:
 			void operator ()(const PlayerObjContainer::Pair &playerObjPair)		{ delete playerObjPair.second; }
+		};
+
+		class DeleteProjectile
+		{
+		public:
 			void operator ()(const ProjectileContainer::Pair &projectilePair)	{ delete projectilePair.second; }
 		};
 	};
