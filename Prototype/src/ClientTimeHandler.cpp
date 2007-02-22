@@ -9,10 +9,18 @@ namespace Prototype
 	//	return getStepTime() / TICKS_PER_SECOND;
 	//}
 
-	Tickf ClientTimeHandler::getStepTick()
+	//Tickf ClientTimeHandler::getStepTick()
+	//{
+	//	return static_cast<Tickf>(getStepTime() - tick0Time)
+	//			/ static_cast<Tickf>(TICK_DELTA_TIME);
+	//}
+
+	// returns true only once for every new Tick
+	bool ClientTimeHandler::isNewTick()
 	{
-		return static_cast<double>(getStepTime() - tick0Time)
-				/ static_cast<double>(TICK_DELTA_TIME);
+		bool tmp = newTick;
+		newTick = false;
+		return tmp;
 	}
 		
 	void ClientTimeHandler::reset() 
@@ -27,6 +35,9 @@ namespace Prototype
 		stepTime = getTime();
 		deltaTime = stepTime - preStepTime;
 		if (deltaTime == 0) deltaTime = 1; // avoiding division with zero problems
+		stepTick = static_cast<Tickf>(stepTime - tick0Time)
+					/ static_cast<Tickf>(TICK_DELTA_TIME);
+		newTick = true;
 	}
 };
 
