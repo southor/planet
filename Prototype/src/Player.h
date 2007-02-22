@@ -3,6 +3,7 @@
 
 #include "Color.h"
 #include "IdMap.h"
+#include "basic.h"
 
 namespace Prototype
 {
@@ -16,7 +17,7 @@ namespace Prototype
 		Player(const Color &color) : color(color)			{}
 	};
 
-	typedef IdMap<size_t, Player> Players;
+	typedef IdMap<PlayerId, Player> Players;
 };
 
 #endif

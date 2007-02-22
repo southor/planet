@@ -5,6 +5,7 @@
 
 #include "Rectangle.h"
 #include "Color.h"
+#include "GameObjId.h"
 
 
 namespace Prototype
@@ -38,12 +39,12 @@ namespace Prototype
 		static const size_t messageType = UPDATE_PLAYER_OBJ;
 
 		//size_t playerObjId;
-		size_t playerId;
+		PlayerId playerId;
 		Pos pos;
 		float angle;
 
 		UpdatePlayerObj()		{}
-		UpdatePlayerObj(size_t playerId, const Pos &pos, float angle)
+		UpdatePlayerObj(PlayerId playerId, const Pos &pos, float angle)
 			: playerId(playerId), pos(pos), angle(angle)
 		{}
 	};
@@ -54,9 +55,9 @@ namespace Prototype
 
 		Color color;
 		Pos pos;
-		size_t playerId;
+		PlayerId playerId;
 	
-		AddPlayerObj(size_t playerId, const Color &color, const Pos &pos)
+		AddPlayerObj(PlayerId playerId, const Color &color, const Pos &pos)
 			: playerId(playerId), color(color), pos(pos) {}
 	};
 
@@ -75,9 +76,9 @@ namespace Prototype
 	{
 		static const size_t messageType = WELCOME_CLIENT;
 
-		size_t playerId;
+		PlayerId playerId;
 
-		WelcomeClient(size_t playerId) 
+		WelcomeClient(PlayerId playerId) 
 			: playerId(playerId) {}
 	};
 
@@ -85,11 +86,11 @@ namespace Prototype
 	{
 		static const size_t messageType = ADD_PLAYER;
 
-		size_t playerId;
+		PlayerId playerId;
 		Color color;
 		Pos startPos;
 		
-		AddPlayer(size_t playerId, Color color, Pos startPos) 
+		AddPlayer(PlayerId playerId, Color color, Pos startPos) 
 			: playerId(playerId), color(color), startPos(startPos) {}
 	};
 
@@ -101,9 +102,9 @@ namespace Prototype
 		int type;
 		Pos pos;
 		float angle;
-		size_t shooterId;
+		PlayerId shooterId;
 
-		AddProjectile(GameObjId projectileId, int type, Pos pos, float angle, size_t shooterId)
+		AddProjectile(GameObjId projectileId, int type, Pos pos, float angle, PlayerId shooterId)
 			: projectileId(projectileId), type(type), pos(pos), angle(angle), shooterId(shooterId)
 		{}
 	};
@@ -136,11 +137,11 @@ namespace Prototype
 	{
 		static const size_t messageType = KILL;
 
-		size_t killerId;
-		size_t killedId;
+		PlayerId killerId;
+		PlayerId killedId;
 		Pos respawnPos;
 
-		Kill(size_t killerId, size_t killedId, Pos respawnPos)
+		Kill(PlayerId killerId, PlayerId killedId, Pos respawnPos)
 			: killerId(killerId), killedId(killedId), respawnPos(respawnPos)
 		{}
 	};
@@ -184,10 +185,10 @@ namespace Prototype
 	{
 		static const size_t messageType = SHOOT_CMD;
 
-		size_t playerId;
+		PlayerId playerId;
 		int weapon;
 		
-		ShootCmd(size_t playerId, int weapon)
+		ShootCmd(PlayerId playerId, int weapon)
 			: playerId(playerId), weapon(weapon)
 		{}
 	};

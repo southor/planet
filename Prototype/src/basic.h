@@ -10,6 +10,10 @@
 
 namespace Prototype
 {
+	typedef unsigned char uchar;
+	typedef unsigned char ushort;
+	typedef unsigned int uint;	
+	
 	typedef Vec2<float> Vec2f;
 	
 	typedef Vec2f Vec;
@@ -60,7 +64,9 @@ namespace Prototype
 	}
 
 
-	typedef size_t GameObjId;
+	//typedef size_t GameObjId;
+
+	typedef uint PlayerId;
 
 
 

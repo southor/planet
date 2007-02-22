@@ -32,13 +32,13 @@ namespace Prototype
 		bool initConnection();
 		void render();
 		
-		void addPlayer(size_t playerId, const Color &playerColor, const Pos &playerPos);
+		void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos);
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		KeyHandler* getKeyHandler();
 		UserInputHandler* getUserInput()	{ return &userInput; }
 		
-		void setPlayerId(size_t playerId) { this->playerId = playerId; }
+		void setPlayerId(PlayerId playerId) { this->playerId = playerId; }
 		void setColor(Color color) { this->color = color; }
 		inline void setViewport(int x, int y, int w, int h)
 		{
@@ -72,7 +72,7 @@ namespace Prototype
 		WorldRenderer worldRenderer;
 		ClientPlayers players;
 
-		size_t playerId;
+		PlayerId playerId;
 		Color color;	// should this exist or should the client have an Player object before we connect to server?
 
 		// stores viewport parameters

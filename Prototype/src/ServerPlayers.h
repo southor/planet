@@ -6,7 +6,7 @@
 namespace Prototype
 {
 
-	typedef IdMap<size_t, ServerPlayer> ServerPlayers;
+	typedef IdMap<PlayerId, ServerPlayer> ServerPlayers;
 
 	template <typename MessageData>
 	void pushMessageToAll(ServerPlayers &serverPlayers, const MessageData &messageData, int currentTime, int currentTick)

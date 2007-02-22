@@ -17,9 +17,9 @@ namespace Prototype
 		//typedef std::vector<Obstacle*> ServerObstacleContainer;
 		//typedef std::list<PlayerObj*> ServerPlayerObjContainer;
 		//typedef std::list<Projectile*> ServerProjectileContainer;
-		typedef IdMap<size_t, Obstacle*> ServerObstacleContainer;
-		typedef IdMap<size_t, PlayerObj*> ServerPlayerObjContainer;
-		typedef IdMap<size_t, Projectile*> ServerProjectileContainer;		
+		typedef IdMap<GameObjId, Obstacle*> ServerObstacleContainer;
+		typedef IdMap<GameObjId, PlayerObj*> ServerPlayerObjContainer;
+		typedef IdMap<GameObjId, Projectile*> ServerProjectileContainer;		
 
 		ServerObstacleContainer obstacles;
 		ServerPlayerObjContainer playerObjs;
@@ -30,7 +30,7 @@ namespace Prototype
 
 		class Move : public ServerGlobalAccess
 		{
-		private:
+		protected:
 			ServerObstacleContainer *obstacles;
 			float deltaTime; // Time in milliseconds since last move.
 			ServerPlayers *players;
@@ -43,21 +43,40 @@ namespace Prototype
 			Obstacle* findAnyOverlap(const Rectangle &rectangle);
 		public:
 			// @param deltaTime Time in milliseconds since last move.
-			Move(ServerObstacleContainer *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, ServerPlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
-				: obstacles(obstacles), players(players), ServerGlobalAccess(serverGlobalAccess), playerObjs(playerObjs), respawnPoss(respawnPoss), deltaTime(deltaTime), moveAlignedToAngle(false)
+			Move(ServerObstacleContainer *obstacles, const ServerGlobalAccess &serverGlobalAccess, float deltaTime, bool moveAlignedToAngle)
+				: obstacles(obstacles), players(0), ServerGlobalAccess(serverGlobalAccess), playerObjs(0), respawnPoss(0), deltaTime(deltaTime), moveAlignedToAngle(moveAlignedToAngle)
 			{}
 
 			// @param deltaTime Time in milliseconds since last move.
-			Move(ServerObstacleContainer *obstacles, const ServerGlobalAccess &serverGlobalAccess, float deltaTime, bool moveAlignedToAngle)
-				: obstacles(obstacles), players(0), ServerGlobalAccess(serverGlobalAccess), playerObjs(0), respawnPoss(0), deltaTime(deltaTime), moveAlignedToAngle(moveAlignedToAngle)
+			Move(ServerObstacleContainer *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, ServerPlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
+				: obstacles(obstacles), players(players), ServerGlobalAccess(serverGlobalAccess), playerObjs(playerObjs), respawnPoss(respawnPoss), deltaTime(deltaTime), moveAlignedToAngle(false)
 			{}
 
 			inline std::vector<RemoveProjectile>& getProjectilesHit()	
 			{
 				return projectilesHit;
 			}
+		};
+
+		class MovePlayerObj : public Move
+		{
+		public:
+			// @param deltaTime Time in milliseconds since last move.
+			MovePlayerObj(ServerObstacleContainer *obstacles, const ServerGlobalAccess &serverGlobalAccess, float deltaTime, bool moveAlignedToAngle)
+				: Move(obstacles, serverGlobalAccess, deltaTime, moveAlignedToAngle)
+			{}
 
 			void operator ()(const PlayerObjContainer::Pair &playerObjPair);
+		};
+
+		class MoveProjectile : public Move
+		{
+		public:
+			// @param deltaTime Time in milliseconds since last move.
+			MoveProjectile(ServerObstacleContainer *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, ServerPlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
+				: Move(obstacles, players, serverGlobalAccess, playerObjs, respawnPoss, deltaTime)
+			{}
+
 			void operator ()(const ProjectileContainer::Pair &projectilePair);
 		};
 
@@ -80,7 +99,7 @@ namespace Prototype
 		const ProjectileContainer& getProjectiles() const		{ return projectiles; }
 
 
-		void addPlayerObj(size_t playerId, const Pos &playerPos);
+		void addPlayerObj(PlayerId playerId, const Pos &playerPos);
 		GameObjId addObstacle(const Rectangle &obstacleArea);
 
 		void addRespawnPos(Pos pos)						{ respawnPoss.push_back(pos); }
@@ -89,7 +108,7 @@ namespace Prototype
 		void updateProjectileMovements(float deltaTime, ServerPlayers &players);
 
 		// @retunr projectileId
-		GameObjId playerShoot(GameObjId playerId, Projectile::Type weapon);
+		GameObjId playerShoot(PlayerId playerId, Projectile::Type weapon);
 	};
 };
 

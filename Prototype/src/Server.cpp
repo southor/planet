@@ -44,7 +44,7 @@ namespace Prototype
 				Color color = initClient->color;
 
 				// add player to server
-				size_t playerId = addClient(color, messageSender, messageReciever);
+				PlayerId playerId = addClient(color, messageSender, messageReciever);
 
 				Pos startPos(200.0f + playerId * 50.0f, 200.0f);
 				addPlayerObj(playerId, startPos);
@@ -66,10 +66,11 @@ namespace Prototype
 	}
 
 	// TODO: MAKE PRIVATE
-	size_t Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
+	PlayerId Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 	{
 
-		size_t playerId = players.findFreeId();
+		//PlayerId playerId = players.findFreeId();
+		PlayerId playerId = getIdGenerator()->generatePlayerId();
 		players.add(playerId, ServerPlayer(color, messageSender, messageReciever));
 		return playerId;
 		
@@ -79,7 +80,7 @@ namespace Prototype
 	}
 
 	// TODO: MAKE PRIVATE
-	void Server::addPlayerObj(size_t playerId, const Pos &playerPos)
+	void Server::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
 		worldModel.addPlayerObj(playerId, playerPos);
 		//size_t playerObjId = worldModel.addPlayerObj(playerId, playerPos);
@@ -95,10 +96,10 @@ namespace Prototype
 		WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 		for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 		{
-			size_t playerId = playerObjsIt->first;
+			PlayerId playerId = playerObjsIt->first;
 			PlayerObj *playerObj = playerObjsIt->second;
 
-			Color color(static_cast<float>(playerId), 1.0f-static_cast<float>(playerId), 0.0f); // the correct color should be retrieved from Player
+			Color color(static_cast<float>(playerId % 2), 1.0f-static_cast<float>(playerId % 2), 0.0f); // the correct color should be retrieved from Player
 
 			AddPlayerObj addPlayerObj(playerId, color, playerObj->pos);
 
@@ -144,7 +145,7 @@ namespace Prototype
 			ServerPlayers::Iterator playersIt;
 			for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 			{
-				size_t playerId = playersIt->first;
+				PlayerId playerId = playersIt->first;
 				ServerPlayer player(playersIt->second);
 				
 				player.link.retrieve(getTimeHandler()->getTime());
@@ -189,7 +190,7 @@ namespace Prototype
 			ServerPlayers::Iterator playersIt;
 			for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 			{			
-				size_t playerId = playersIt->first;
+				PlayerId playerId = playersIt->first;
 				ServerPlayer player(playersIt->second);
 
 				player.link.retrieve(getTimeHandler()->getTime());
@@ -237,7 +238,7 @@ namespace Prototype
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{
 				//GameObjId playerObjId = playerObjsIt->first;
-				size_t playerId = playerObjsIt->first;
+				PlayerId playerId = playerObjsIt->first;
 				PlayerObj *playerObj = playerObjsIt->second;
 				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle);

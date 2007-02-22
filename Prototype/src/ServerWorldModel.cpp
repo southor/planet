@@ -14,27 +14,28 @@ namespace Prototype
 		deleteAllObjs();
 	}
 
-	void ServerWorldModel::addPlayerObj(size_t playerId, const Pos &playerPos)
+	void ServerWorldModel::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
 		playerObjs.add(playerId, new PlayerObj(playerPos));
 	}
 
 	GameObjId ServerWorldModel::addObstacle(const Rectangle &obstacleArea)
 	{
-		GameObjId obstacleId = obstacles.findFreeId();
+		//GameObjId obstacleId = obstacles.findFreeId();
+		GameObjId obstacleId = getIdGenerator()->generateGameObjId();
 		obstacles.add(obstacleId, new Obstacle(obstacleArea));
 		return obstacleId;
 	}
 
 	void ServerWorldModel::updatePlayerObjMovements(float deltaTime)
 	{
-		Move move(&obstacles, *this, deltaTime, moveAlignedToAngle);
+		MovePlayerObj move(&obstacles, *this, deltaTime, moveAlignedToAngle);
 		ForEach(playerObjs.begin(), playerObjs.end(), move);
 	}
 
 	void ServerWorldModel::updateProjectileMovements(float deltaTime, ServerPlayers &players)
 	{
-		Move move(&obstacles, &players, *this, &(getPlayerObjs()), &respawnPoss, deltaTime);
+		MoveProjectile move(&obstacles, &players, *this, &(getPlayerObjs()), &respawnPoss, deltaTime);
 		ForEach(projectiles.begin(), projectiles.end(), move);
 		
 		if (move.getProjectilesHit().size() > 0)
@@ -74,7 +75,7 @@ namespace Prototype
 		return NULL;
 	}
 
-	void ServerWorldModel::Move::operator ()(const PlayerObjContainer::Pair &playerObjPair)
+	void ServerWorldModel::MovePlayerObj::operator ()(const PlayerObjContainer::Pair &playerObjPair)
 	{
 		float fbMoveDistance = deltaTime * PlayerObj::FORWARD_BACKWARD_SPEED;
 		float strafeMoveDistance = deltaTime * PlayerObj::STRAFE_SPEED;
@@ -146,7 +147,7 @@ namespace Prototype
 		}
 	}
 
-	void ServerWorldModel::Move::operator ()(const ProjectileContainer::Pair &projectilePair)
+	void ServerWorldModel::MoveProjectile::operator ()(const ProjectileContainer::Pair &projectilePair)
 	{
 		assert(players); // must be able to send updates
 		assert(obstacles);
@@ -183,7 +184,7 @@ namespace Prototype
 		ServerPlayerObjContainer::Iterator playerObjEnd = playerObjs->end();		
 		for(; playerObjIt != playerObjEnd; ++playerObjIt)
 		{
-			if (playerObjIt->first != projectile->getShooterId()) // cannot hit the shooter itself
+			if (playerObjIt->first != static_cast<GameObjId>(projectile->getShooterId())) // cannot hit the shooter itself
 			{
 				Rectangle rectangle;
 				playerObjIt->second->getRectangle(rectangle);
@@ -236,7 +237,7 @@ namespace Prototype
 					if (playerObj->isDead())
 					{
 						// player was kiled
-						size_t killerId = projectile->getShooterId();
+						PlayerId killerId = projectile->getShooterId();
 						//++((*playerObjs)[killerId]->frags);
 						
 						// produce an unpredictable respawn place
@@ -261,13 +262,14 @@ namespace Prototype
 		
 	}
 
-	GameObjId ServerWorldModel::playerShoot(size_t playerId, Projectile::Type weapon)
+	GameObjId ServerWorldModel::playerShoot(PlayerId playerId, Projectile::Type weapon)
 	{
 		PlayerObj *playerObj = getPlayerObjs()[playerId];
 		Pos pos(playerObj->getPos());
 		float angle = playerObj->angle;
 
-		GameObjId projectileId = getProjectiles().findFreeId();
+		//GameObjId projectileId = getProjectiles().findFreeId();
+		GameObjId projectileId = getIdGenerator()->generateGameObjId();
 		getProjectiles().add(projectileId, new Projectile(weapon, pos, angle, playerId));
 
 		return projectileId;
