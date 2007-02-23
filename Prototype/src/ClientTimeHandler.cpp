@@ -35,9 +35,15 @@ namespace Prototype
 		stepTime = getTime();
 		deltaTime = stepTime - preStepTime;
 		if (deltaTime == 0) deltaTime = 1; // avoiding division with zero problems
-		stepTick = static_cast<Tickf>(stepTime - tick0Time)
+
+		int nextStepTick = static_cast<Tickf>(stepTime - tick0Time)
 					/ static_cast<Tickf>(TICK_DELTA_TIME);
-		newTick = true;
+
+		if (stepTick != nextStepTick)
+		{
+			newTick = true;
+			stepTick = nextStepTick;
+		}
 	}
 };
 
