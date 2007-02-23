@@ -37,204 +37,154 @@ namespace Prototype
 	void Client::logic()
 	{
 		timeHandler.nextStep();
-
-		worldModel.isConsistent();
 		
-		link.retrieve(timeHandler.getTime());
-
-		// Read messages from server
-		while(link.hasMessageOnQueue())
+		assert(worldModel.isConsistent());
+		if (timeHandler.isNewTick())
 		{
-			int messageType = link.popMessage();
-			switch(messageType)
+			link.retrieve(timeHandler.getTime());
+
+			// Read messages from server
+			while(link.hasMessageOnQueue())
 			{
-			case UPDATE_PLAYER_OBJ:
+				int messageType = link.popMessage();
+				switch(messageType)
 				{
-					UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
-					
-					//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
-					PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
-					playerObj->pos = updatePlayerObj->pos;
-					
-					if (playerId == updatePlayerObj->playerId)
+				case UPDATE_PLAYER_OBJ:
 					{
+						UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
+						
+						//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
+						PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
+						playerObj->pos = updatePlayerObj->pos;
+						
+						if (playerId == updatePlayerObj->playerId)
+						{
 
+						}
+						else
+						{
+							playerObj->angle = updatePlayerObj->angle;
+						}
 					}
-					else
+					break;
+				case ADD_PLAYER_OBJ:
 					{
-						playerObj->angle = updatePlayerObj->angle;
+						AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
+						addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos);				
+
+						if (connectionPhase == 2) connectionPhase++; 
+					}
+					break;
+				case ADD_OBSTACLE:
+					{
+						AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
+						worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
+						
+						if (connectionPhase == 3) connectionPhase++; 
+					}
+					break;
+				case ADD_PROJECTILE:
+					{
+						printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
+
+						AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
+						worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
+					}
+					break;
+				case UPDATE_PROJECTILE:
+					{
+						UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
+						Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
+						projectile->setPos(updateProjectile->pos);
+					}
+					break;
+				case REMOVE_PROJECTILE:
+					{
+						RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
+						worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
+						worldModel.getProjectiles().remove(removeProjectile->projectileId);					
+					}
+					break;
+				case KILL:
+					{
+						Kill *kill = link.getPoppedData<Kill>();
+						PlayerObj *killer = (worldModel.getPlayerObjs())[kill->killerId];
+						PlayerObj *killed = (worldModel.getPlayerObjs())[kill->killedId];
+						killed->pos = kill->respawnPos;
+						killed->setAmmoSupply(static_cast<int>(killed->pos.x + killed->pos.y + killer->pos.x + killer->pos.y));
+						if (killed->getAmmoCurrentWeapon() <= 0) killed->switchWeapon();
+					}
+					break;
+				case START_GAME:
+					timeHandler.reset();
+					break;
+				default:
+					break;
+				};
+
+
+			}
+
+			if (connectionPhase == 4)
+			{			
+
+
+				handleEvents();
+				int time = timeHandler.getStepTime();
+
+				
+
+				//if (kh.isPressed(CMD_SHOOT))
+				//{
+				//	ShootCmd shootCmd = {playerId};
+				//	
+				//	link.pushMessage(shootCmd);
+				//	link.transmit();
+				//}
+
+				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+
+				if (kh.isPressed(CMD_SWITCH_WEAPON))
+				{
+					playerObj->switchWeapon();
+				}
+				
+				bool wasKeyEvent = kh.changePressedToDownState() || kh.changeReleasedToUpState();
+
+				// handle shooting
+				if (kh.isDown(CMD_SHOOT))
+				{					
+					if (playerObj->canShoot(time))
+					{
+						Projectile::Type weapon = playerObj->getCurrentWeapon();
+						playerObj->shoot(time);
+						ShootCmd shootCmd(playerId, weapon);
+						link.pushMessage(shootCmd, timeHandler.getTime(), timeHandler.getStepTick());
 					}
 				}
-				break;
-			case ADD_PLAYER_OBJ:
-				{
-					AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
-					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos);				
 
-					if (connectionPhase == 2) connectionPhase++; 
-				}
-				break;
-			case ADD_OBSTACLE:
+				// If some key was pressed or released send message
+				//if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
+				if (true)
 				{
-					AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
-					worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
+					if (this->mousePosChanged && (this->aimMode == MOUSE))
+					{
+						updatePlayerObjAngle();
+						this->mousePosChanged = false;
+					}
+
+					int stateCmds = getUserInput()->getCurrentStates().getStates();
+					int aimangle = ((worldModel.getPlayerObjs())[playerId])->angle;
 					
-					if (connectionPhase == 3) connectionPhase++; 
+					UserCmd userCmd(stateCmds, aimangle);
+					
+					link.pushMessage(userCmd, timeHandler.getTime(), timeHandler.getStepTick());
+					
 				}
-				break;
-			case ADD_PROJECTILE:
-				{
-					printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
 
-					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
-					worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
-				}
-				break;
-			case UPDATE_PROJECTILE:
-				{
-					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
-					Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
-					projectile->setPos(updateProjectile->pos);
-				}
-				break;
-			case REMOVE_PROJECTILE:
-				{
-					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
-					worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
-					worldModel.getProjectiles().remove(removeProjectile->projectileId);					
-				}
-				break;
-			case KILL:
-				{
-					Kill *kill = link.getPoppedData<Kill>();
-					PlayerObj *killer = (worldModel.getPlayerObjs())[kill->killerId];
-					PlayerObj *killed = (worldModel.getPlayerObjs())[kill->killedId];
-					killed->pos = kill->respawnPos;
-					killed->setAmmoSupply(static_cast<int>(killed->pos.x + killed->pos.y + killer->pos.x + killer->pos.y));
-					if (killed->getAmmoCurrentWeapon() <= 0) killed->switchWeapon();
-				}
-				break;
-			case START_GAME:
-				timeHandler.reset();
-				break;
-			default:
-				break;
-			};
-
-			//if (messageType == UPDATE_PLAYER_OBJ)
-			//{
-			//	UpdatePlayerObj *updatePlayerObj = link.getPoppedUpdatePlayerObj();
-			//	
-			//	//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
-			//	PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
-			//	playerObj->pos = updatePlayerObj->pos;
-			//	
-			//	if (playerId != updatePlayerObj->playerId)
-			//	{
-			//		playerObj->angle = updatePlayerObj->angle;
-			//	}
-			//}
-			//else if (messageType == ADD_PLAYER_OBJ)
-			//{
-			//	AddPlayerObj *addPlayerObj = link.getPoppedAddPlayerObj();
-			//	addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos);				
-
-			//	if (connectionPhase == 2) connectionPhase++; 
-			//}
-			//else if (messageType == ADD_OBSTACLE)
-			//{
-			//	AddObstacle *addObstacle = link.getPoppedAddObstacle();
-			//	worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
-			//	
-			//	if (connectionPhase == 3) connectionPhase++; 
-			//}
-			//else if (messageType == ADD_PROJECTILE)
-			//{
-			//	AddProjectile *addProjectile = link.getPoppedAddProjectile();
-			//	worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
-			//}
-			//else if (messageType == UPDATE_PROJECTILE)
-			//{
-			//	UpdateProjectile *updateProjectile = link.getPoppedUpdateProjectile();
-			//	Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
-			//	projectile->pos = updateProjectile->pos;
-			//}
-			//else if (messageType == REMOVE_PROJECTILE)
-			//{
-			//	RemoveProjectile *removeProjectile = link.getPoppedRemoveProjectile();
-			//	worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
-			//	worldModel.getProjectiles().remove(removeProjectile->projectileId);
-			//	
-			//}
-			//else if (messageType == KILL)
-			//{
-			//	Kill *kill = link.getPoppedKill();
-			//	PlayerObj *killer = (worldModel.getPlayerObjs())[kill->killerId];
-			//	PlayerObj *killed = (worldModel.getPlayerObjs())[kill->killedId];
-			//	killed->pos = kill->respawnPos;
-			//	killed->setAmmoSupply(static_cast<int>(killed->pos.x + killed->pos.y + killer->pos.x + killer->pos.y));
-			//}
-		}
-
-		if (connectionPhase == 4)
-		{			
-
-
-			handleEvents();
-			int time = timeHandler.getStepTime();
-
-			
-
-			//if (kh.isPressed(CMD_SHOOT))
-			//{
-			//	ShootCmd shootCmd = {playerId};
-			//	
-			//	link.pushMessage(shootCmd);
-			//	link.transmit();
-			//}
-
-			PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-
-			if (kh.isPressed(CMD_SWITCH_WEAPON))
-			{
-				playerObj->switchWeapon();
+				// transmit any messages
+				link.transmit();
 			}
-			
-			bool wasKeyEvent = kh.changePressedToDownState() || kh.changeReleasedToUpState();
-
-			// handle shooting
-			if (kh.isDown(CMD_SHOOT))
-			{					
-				if (playerObj->canShoot(time))
-				{
-					Projectile::Type weapon = playerObj->getCurrentWeapon();
-					playerObj->shoot(time);
-					ShootCmd shootCmd(playerId, weapon);
-					link.pushMessage(shootCmd, timeHandler.getTime(), timeHandler.getStepTick());
-				}
-			}
-
-			// If some key was pressed or released send message
-			if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
-			//if (true)
-			{
-				if (this->mousePosChanged && (this->aimMode == MOUSE))
-				{
-					updatePlayerObjAngle();
-					this->mousePosChanged = false;
-				}
-
-				int stateCmds = getUserInput()->getCurrentStates().getStates();
-				int aimangle = ((worldModel.getPlayerObjs())[playerId])->angle;
-				
-				UserCmd userCmd(stateCmds, aimangle);
-				
-				link.pushMessage(userCmd, timeHandler.getTime(), timeHandler.getStepTick());
-				
-			}
-
-			// transmit any messages
-			link.transmit();
 		}
 	}
 
@@ -391,4 +341,3 @@ namespace Prototype
 	}
 
 };
-

@@ -17,13 +17,13 @@ namespace Prototype
 		//static const int TICKS_PER_SECOND = 50;
 
 		ClientTimeHandler() : TimeHandler(), deltaTime(1),
-			stepTime(0), stepTick(0), tick0Time(0), newTick(true)
+			stepTime(0), stepTick(0), stepTickf(0.0f), tick0Time(0), newTick(true)
 		{}
 
 		//inline int getTime()				{ return SDL_GetTicks() - startTime; }
 
 		inline int getStepTime()			{ return stepTime; }		
-		inline Tickf getStepTick()			{ return stepTick; }
+		inline Tickf getStepTick()			{ return stepTickf; }
 		inline int getTickTime()			{ return tick0Time + stepTick * TICK_DELTA_TIME; }
 
 		// returns true only once for every new Tick
@@ -44,7 +44,8 @@ namespace Prototype
 	private:
 		//int startTime;
 		int stepTime;
-		Tickf stepTick;
+		Tickf stepTickf;
+		int stepTick;
 		int deltaTime;
 		int tick0Time;
 		bool newTick;

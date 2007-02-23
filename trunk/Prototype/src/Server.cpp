@@ -133,7 +133,11 @@ namespace Prototype
 		int time = getTimeHandler()->getTime();
 		
 		if (tick == 0)
-			getTimeHandler()->setTickStartTime(time);
+		{
+			int tickFromTime = 100; //getTimeHandler()->getTickFromTime();
+			getTimeHandler()->setTick(tickFromTime);
+			printf("start tick: %d, time: %d\n", tickFromTime, getTimeHandler()->getTime());
+		}
 
 		bool waitingForClients = false;
 
@@ -150,12 +154,15 @@ namespace Prototype
 				
 				player.link.retrieve(getTimeHandler()->getTime());
 
+				//if (player.link.hasMessageOnQueue())
+				//	printf("tickOfMessageOnQueue: %d\n", player.link.getTickOfMessageOnQueue());
+
 				if (player.link.hasMessageOnQueueWithTick(tick))
 				{	
 					// if message with old tick then discard
 					if (player.link.getTickOfMessageOnQueue() < tick)
 					{
-						//player.link.popMessage();
+						player.link.popMessage();
 					}
 					else
 					{
@@ -165,20 +172,31 @@ namespace Prototype
 				
 				// set waitingForClients to true if player doesn't have current tick
 				waitingForClients = waitingForClients || (player.latestTick != tick);
-				waitingForClients = true;
+
 				// Check tick timeout
 
 				//if (getTimeHandler()->getTickWithTimeout() > tick)
 				if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
 				{
-					waitingForClients = false;
-					break; // exit for loop
+					//waitingForClients = false;
+					//break; // exit for loop
 				}
 			}
 		}
 
-		if (!waitingForClients)
+//		waitingForClients = false;
+//		int tickFromTime = getTimeHandler()->getTickFromTime();
+//		getTimeHandler()->setTick(tickFromTime);
+
+
+		if (waitingForClients)
 		{
+			printf("waiting for tick: %d\n", tick);
+		}
+		else
+		{
+			printf("server got tick: %d\n", tick);
+
 			int deltaTime = ServerTimeHandler::TICK_DELTA_TIME;
 			float deltaTimef = static_cast<float>(deltaTime);
 			lastUpdateTime = time;

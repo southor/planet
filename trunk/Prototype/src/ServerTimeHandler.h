@@ -14,19 +14,22 @@ namespace Prototype
 
 		ServerTimeHandler() : tick(0) {}
 
-		void setTickStartTime(int time)		{ tickStartTime = time; }
+		int getTickFromTimeWithTimeout();
 
-		int getTickWithTimeout();
+		int getTickFromTime();
 
 		int getTick()						{ return tick; }
+	
+		void setTick(int tick)				{ this->tick = tick; }
 
 		void nextTick();
 
 		void reset();
 
 	private:
+		int calculateTickFromTime(int time);
+
 		int tick;
-		int tickStartTime;
 	};
 };
 #endif
