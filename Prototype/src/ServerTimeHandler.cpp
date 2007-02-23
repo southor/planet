@@ -3,9 +3,14 @@
 namespace Prototype
 {
 
-	int ServerTimeHandler::getTickWithTimeout()
+	int ServerTimeHandler::getTickFromTimeWithTimeout()
 	{
-		return (getTime() - tickStartTime - WAIT_FOR_TICK_TIMEOUT) / TICKS_PER_SECOND;
+		return calculateTickFromTime(getTime() - WAIT_FOR_TICK_TIMEOUT);
+	}
+
+	int ServerTimeHandler::getTickFromTime()
+	{
+		return calculateTickFromTime(getTime());
 	}
 
 	void ServerTimeHandler::reset() 
@@ -18,5 +23,11 @@ namespace Prototype
 	{
 		tick++;
 	}
+
+	int ServerTimeHandler::calculateTickFromTime(int time)
+	{
+		return time / TICK_DELTA_TIME;
+	}
+
 };
 

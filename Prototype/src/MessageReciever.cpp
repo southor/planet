@@ -18,8 +18,7 @@ namespace Prototype
 	{
 		if (hasMessageOnQueue())
 		{
-			return true;
-			//return lagQueue.front().tick <= tick;
+			return lagQueue.front().tick <= tick;
 		}
 		
 		return false;		

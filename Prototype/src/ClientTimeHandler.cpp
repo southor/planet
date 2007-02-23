@@ -36,14 +36,14 @@ namespace Prototype
 		deltaTime = stepTime - preStepTime;
 		if (deltaTime == 0) deltaTime = 1; // avoiding division with zero problems
 
-		int nextStepTick = static_cast<Tickf>(stepTime - tick0Time)
+		stepTickf = static_cast<Tickf>(stepTime - tick0Time)
 					/ static_cast<Tickf>(TICK_DELTA_TIME);
 
-		if (stepTick != nextStepTick)
-		{
+		int preStepTick = stepTick;
+		stepTick = static_cast<int>(stepTickf);
+
+		if (stepTick != preStepTick)
 			newTick = true;
-			stepTick = nextStepTick;
-		}
 	}
 };
 
