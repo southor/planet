@@ -154,8 +154,8 @@ namespace Prototype
 				
 				player.link.retrieve(getTimeHandler()->getTime());
 
-				if (player.link.hasMessageOnQueue())
-					printf("tickOfMessageOnQueue: %d\n", player.link.getTickOfMessageOnQueue());
+				//if (player.link.hasMessageOnQueue())
+				//	printf("tickOfMessageOnQueue: %d\n", player.link.getTickOfMessageOnQueue());
 
 				if (player.link.hasMessageOnQueueWithTick(tick))
 				{	
@@ -197,7 +197,7 @@ namespace Prototype
 		}
 		else
 		{
-			printf("server got tick: %d, tickWithTimeout: %d\n", tick, getTimeHandler()->getTickFromTimeWithTimeout());
+			printf("server got tick: %d, tickWithTimeout: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), time);
 
 			int deltaTime = ServerTimeHandler::TICK_DELTA_TIME;
 			float deltaTimef = static_cast<float>(deltaTime);
@@ -215,7 +215,7 @@ namespace Prototype
 
 				player.link.retrieve(getTimeHandler()->getTime());
 
-				while (player.link.hasMessageOnQueue()) //WithTick(tick))
+				while (player.link.hasMessageOnQueueWithTick(tick))
 				{
 					int messageType = player.link.popMessage();
 					if (messageType == USER_CMD)
@@ -223,7 +223,7 @@ namespace Prototype
 						UserCmd *userCmd = player.link.getPoppedData<UserCmd>();
 						StateCmds stateCmds(userCmd->stateCmds);
 						
-						printf("SERVER: handling user_cmd @ %d, left: %d\n", getTimeHandler()->getTime(), stateCmds.getCurrentState(Cmds::LEFT));
+						//printf("SERVER: handling user_cmd @ %d, left: %d\n", getTimeHandler()->getTime(), stateCmds.getCurrentState(Cmds::LEFT));
 
 						
 						PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];

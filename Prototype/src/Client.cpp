@@ -59,7 +59,7 @@ namespace Prototype
 						//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
 						PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
 						playerObj->pos = updatePlayerObj->pos;
-						printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
+						//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
 						if (playerId == updatePlayerObj->playerId)
 						{
 
@@ -180,7 +180,7 @@ namespace Prototype
 					int aimangle = ((worldModel.getPlayerObjs())[playerId])->angle;
 					
 					UserCmd userCmd(stateCmds, aimangle);
-					
+					//printf("CLIENT: sending usercmd with tick: %f @ time %d\n", timeHandler.getStepTick(), timeHandler.getStepTime());
 					link.pushMessage(userCmd, timeHandler.getTime(), timeHandler.getStepTick());
 					
 				}
