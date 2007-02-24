@@ -37,6 +37,7 @@ namespace Prototype
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		KeyHandler* getKeyHandler();
 		UserInputHandler* getUserInput()	{ return &userInput; }
+		ClientTimeHandler* getTimeHandler() { return &timeHandler; }
 		
 		void setPlayerId(PlayerId playerId) { this->playerId = playerId; }
 		void setColor(Color color) { this->color = color; }

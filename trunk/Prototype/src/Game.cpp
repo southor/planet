@@ -263,6 +263,9 @@ namespace Prototype
 			SDL_Delay(100);
 		}
 		
+		client1.getTimeHandler()->reset();
+		client2.getTimeHandler()->reset();
+		server.getTimeHandler()->reset();
 
 		server.startGame();
 
