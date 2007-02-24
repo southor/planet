@@ -93,21 +93,21 @@ namespace Prototype
 		//SHOW_SERVER = true;
 		//SHOW_CLIENT_1 = true;
 		//SHOW_CLIENT_2 = true;
-		
+		/*
 		NetworkServer networkServer;
 		NetworkClient networkClient1;
 		NetworkClient networkClient2;
-
+		*/
 		size_t clientsConnected = 0;
 		bool client1Connected = false;
 		bool client2Connected = false;
-		
+		/*
 		if (SHOW_SERVER)
 			networkServer.start();
 		
 		NetworkServerClient *serverClient1;
 		NetworkServerClient *serverClient2;
-
+		
 		while (true)
 		{
 			if (SHOW_CLIENT_1)
@@ -150,7 +150,7 @@ namespace Prototype
 				
 			SDL_Delay(20);
 		}
-		
+		*/
 
 		MessageSender *sender1;
 		MessageReciever *reciever1;
@@ -161,7 +161,7 @@ namespace Prototype
 		MessageSender *sender4;
 		MessageReciever *reciever4;
 
-
+		/*
 		if (SHOW_CLIENT_1)
 		{
 			sender1 = networkClient1.getMessageSender();
@@ -184,28 +184,28 @@ namespace Prototype
 			reciever4 = &(serverClient2->reciever);
 			//reciever4->setSimulatedLag(90);
 		}
-
+		*/
 		
 		//timeHandler.reset();
 
 
-		/*
+		
 		// Initialize virtual connections
-		MessageSender *sender1 = virtualConnection1.getMessageSender();
-		MessageReciever *reciever2 = virtualConnection1.getMessageReciever();
-		reciever2->setSimulatedLag(50);
+		sender1 = virtualConnection1.getMessageSender();
+		reciever2 = virtualConnection1.getMessageReciever();
+		//reciever2->setSimulatedLag(50);
 
-		MessageSender *sender2 = virtualConnection2.getMessageSender();
-		MessageReciever *reciever1 = virtualConnection2.getMessageReciever();
+		sender2 = virtualConnection2.getMessageSender();
+		reciever1 = virtualConnection2.getMessageReciever();
 
-		MessageSender *sender3 = virtualConnection3.getMessageSender();
-		MessageReciever *reciever4 = virtualConnection3.getMessageReciever();
-		reciever4->setSimulatedLag(50);
+		sender3 = virtualConnection3.getMessageSender();
+		reciever4 = virtualConnection3.getMessageReciever();
+		//reciever4->setSimulatedLag(50);
 
-		MessageSender *sender4 = virtualConnection4.getMessageSender();
-		MessageReciever *reciever3 = virtualConnection4.getMessageReciever();
-		reciever3->setSimulatedLag(50);
-		*/
+		sender4 = virtualConnection4.getMessageSender();
+		reciever3 = virtualConnection4.getMessageReciever();
+		//reciever3->setSimulatedLag(50);
+		
 
 		if (SHOW_CLIENT_1)
 		{
@@ -287,10 +287,11 @@ namespace Prototype
 
 			SDL_Delay(20);
 		}
-		
+		/*
 		networkServer.close();
 		networkClient1.close();
 		networkClient2.close();
+		*/
 	}
 
 	void Game::render(Uint32 time)

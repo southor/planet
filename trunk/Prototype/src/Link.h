@@ -76,6 +76,8 @@ namespace Prototype
 		bool hasMessageOnQueueWithTick(int tick) const; // returns true if at least 1 message is on recieve queue		
 		int getTickOfMessageOnQueue() const; // returns the tick of the top message on queue
 		
+		int getNMessagesOnQueue() { return messageReciever->getNMessagesOnQueue(); }
+		
 		void retrieve(int currentTime);
 		
 		int popMessage(); // returns the type member of the popped message, (will destroy the last message)	

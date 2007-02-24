@@ -5,7 +5,7 @@ namespace Prototype
 
 	int ServerTimeHandler::getTickFromTimeWithTimeout()
 	{
-		return calculateTickFromTime(getTime() - WAIT_FOR_TICK_TIMEOUT);
+		return calculateTickFromTime(getTime()); // - WAIT_FOR_TICK_TIMEOUT);
 	}
 
 	int ServerTimeHandler::getTickFromTime()

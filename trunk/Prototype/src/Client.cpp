@@ -42,6 +42,9 @@ namespace Prototype
 		if (timeHandler.isNewTick())
 		{
 			link.retrieve(timeHandler.getTime());
+			
+			//printf("CLIENT getNMessagesOnQueue: %d\n", link.getNMessagesOnQueue());
+			
 
 			// Read messages from server
 			while(link.hasMessageOnQueue())
@@ -56,7 +59,7 @@ namespace Prototype
 						//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
 						PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
 						playerObj->pos = updatePlayerObj->pos;
-						
+						printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
 						if (playerId == updatePlayerObj->playerId)
 						{
 
@@ -165,7 +168,7 @@ namespace Prototype
 
 				// If some key was pressed or released send message
 				//if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
-				if (true)
+				if (!kh.isDown(CMD_SWITCH_WEAPON))
 				{
 					if (this->mousePosChanged && (this->aimMode == MOUSE))
 					{
