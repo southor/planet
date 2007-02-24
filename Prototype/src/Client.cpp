@@ -177,7 +177,7 @@ namespace Prototype
 					}
 
 					int stateCmds = getUserInput()->getCurrentStates().getStates();
-					int aimangle = ((worldModel.getPlayerObjs())[playerId])->angle;
+					float aimangle = ((worldModel.getPlayerObjs())[playerId])->angle.getFloat();
 					
 					UserCmd userCmd(stateCmds, aimangle);
 					//printf("CLIENT: sending usercmd with tick: %f @ time %d\n", timeHandler.getStepTick(), timeHandler.getStepTime());
@@ -276,11 +276,16 @@ namespace Prototype
 		players.add(playerId, Player(playerColor));
 		//players[playerId].playerObjId = playerObjId;
 		//worldModel.addPlayerObj(playerId, playerObjId, playerPos);
-		worldModel.addPlayerObj(playerId, playerPos);
 		
 		// if this is me
-		if (playerId == this->playerId)
+		bool isMe = (playerId == this->playerId);
+
+		worldModel.addPlayerObj(playerId, playerPos, isMe);
+		
+		
+		if (isMe)
 		{
+			
 			// set ammo supply
 			(worldModel.getPlayerObjs())[playerId]->setAmmoSupply(static_cast<int>(playerPos.x + playerPos.y));
 		}
@@ -331,7 +336,7 @@ namespace Prototype
 			if ((aimVec.x > 0.5) || (aimVec.x < 0.5f))
 			{
 				angle = asin(aimVec.y);
-				if (aimVec.x < 0.0f) angle = PI - angle;
+				if (aimVec.x < 0.0f) angle = PI_F - angle;
 			}
 			else
 			{

@@ -243,7 +243,7 @@ namespace Prototype
 						Projectile *projectile = (worldModel.getProjectiles())[projectileId];
 						
 						// send projectile to all clients
-						AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(), projectile->getAngle(), projectile->getShooterId());
+						AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(), projectile->getAngle().getFloat(), projectile->getShooterId());
 						pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 					}
 				}
@@ -262,7 +262,7 @@ namespace Prototype
 				PlayerId playerId = playerObjsIt->first;
 				PlayerObj *playerObj = playerObjsIt->second;
 				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
-				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle);
+				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle.getFloat());
 
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 			}

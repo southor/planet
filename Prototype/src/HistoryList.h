@@ -16,7 +16,7 @@ namespace Prototype
 		
 		int nextTick;
 
-		inline int firstTick()				{ return tmax(0, nextTick - size); }
+		inline int firstTick()				{ return tmax(0, nextTick - static_cast<int>(size)); }
 		//inline int lastTick()				{ return nextTick-1; }
 
 		inline T& tickToDataRef(int tick)	{ return data[tick % size]; }
@@ -31,8 +31,8 @@ namespace Prototype
 		~HistoryList();
 
 		
-		const T& getDataRef(int tick);
-		inline void getData(int tick, T &data)		{ data = getDataRef(tick); }
+		const T& getData(int tick);
+		//inline void getData(int tick, T &data)		{ data = getDataRef(tick); }
 		void getData(Tickf tick, T &data);
 
 		void setData(int tick, T &data);

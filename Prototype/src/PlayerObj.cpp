@@ -14,8 +14,8 @@ namespace Prototype
 	//	 strafingLeft(false), strafingRight(false)
 	//{}
 
-	PlayerObj::PlayerObj(const Pos &pos)
-		: pos(pos), angle(PI/2.0f), health(100),
+	PlayerObj::PlayerObj(const Pos &pos, size_t nHistoryTicks)
+		: historyList(nHistoryTicks), pos(pos), angle(Angle::PI/2.0f), health(100),
 		 movingForward(false), movingBackward(false),
 		 strafingLeft(false), strafingRight(false),
 		 currentWeapon(0), nextShootTime(0)
@@ -77,6 +77,21 @@ namespace Prototype
 		ammo[currentWeapon]--;
 		nextShootTime = time + Projectile::getShootInterval(currentWeapon);
 		if (ammo[currentWeapon] == 0) switchWeapon();		
+	}
+
+	void PlayerObj::updateToTick(int tick)
+	{
+		UpdateData data(historyList.getData(tick));
+		pos = data.pos;
+		angle = data.angle;
+	}
+
+	void PlayerObj::updateToTick(Tickf tick)
+	{
+		UpdateData data;
+		historyList.getData(tick, data);
+		pos = data.pos;
+		angle = data.angle;
 	}
 }
 

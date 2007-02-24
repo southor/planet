@@ -5,6 +5,8 @@ namespace Prototype
 {
 	class GameObj
 	{
+	public:
+		virtual ~GameObj()		{}
 	};
 };
 

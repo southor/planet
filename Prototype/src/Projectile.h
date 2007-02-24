@@ -4,11 +4,17 @@
 #include "MovableObj.h"
 #include "Line.h"
 #include "basic.h"
+#include "HistoryList.inl"
+#include "Angle.h"
 
 namespace Prototype
 {
 	class Projectile : public MovableObj
 	{
+	private:
+
+		HistoryList<Pos> historyList;
+
 	public:
 
 		struct Properties
@@ -34,12 +40,14 @@ namespace Prototype
 
 		Pos pos;
 
-		Projectile(Type type, const Pos &pos, float angle, PlayerId shooterId);
+		Projectile(Type type, const Pos &pos, Angle angle, PlayerId shooterId, size_t nHistoryTicks);
+
+		~Projectile()										{}
 
 		inline Pos getPos() const						{ return pos; }
 		inline void setPos(const Pos &pos)				{ this->pos = pos; }
 		inline Type getType() const						{ return type; }
-		inline float getAngle() const					{ return angle; }
+		inline Angle getAngle() const					{ return angle; }
 
 		Line getLine() const;
 
@@ -52,13 +60,17 @@ namespace Prototype
 		int getBlastDamage(float blastPos, const Pos &targetPos) const;
 		
 		
-		PlayerId getShooterId() const						{ return shooterId; }
+		PlayerId getShooterId() const					{ return shooterId; }
+
+		inline void setUpdateData(int tick, Pos pos)	{ historyList.setData(tick, pos); }
+		inline void updateToTick(int tick)				{ pos = historyList.getData(tick); }
+		void updateToTick(Tickf tick)					{ historyList.getData(tick, pos); }
 
 	private:
 		static const Properties properties[N_TYPES];
 
 		Type type;
-		float angle;
+		Angle angle;
 		PlayerId shooterId;
 	};
 };

@@ -6,7 +6,8 @@
 #include "vec2.h"
 #include "assert.h"
 
-#define PI 3.141592654f
+#define PI_F 3.141592654f
+#define TWO_PI_F 6.283185308f
 
 namespace Prototype
 {
@@ -21,10 +22,10 @@ namespace Prototype
 
 	typedef double Tickf; // used by Client
 
-	template <typename T>
-	inline float radianToDegree(T angle)
+	//template <typename T>
+	inline float radianToDegree(float angle)
 	{
-		return angle * 360.0f / (2.0f * PI);
+		return angle * 360.0f / (2.0f * PI_F);
 	}
 
 	//// Functor
@@ -67,6 +68,8 @@ namespace Prototype
 	//typedef size_t GameObjId;
 
 	typedef uint PlayerId;
+
+
 
 
 

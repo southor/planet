@@ -16,19 +16,19 @@ namespace Prototype
 	{
 	private:
 
-		int ping;
+		int lag;
 		int simulatedLag;
 		std::deque<Message> lagQueue;
 		TimeHandler lagTimeHandler;
 
 	public:
-		MessageReciever() : simulatedLag(0), ping(0)	{}
+		MessageReciever() : simulatedLag(0), lag(0)	{}
 		virtual ~MessageReciever()						{}
 		
 		virtual bool hasMessageOnQueue();
 		virtual bool hasMessageOnQueueWithTick(int tick);
 		virtual int getTickOfMessageOnQueue();
-		inline int getCurrentPing()					{ return ping; }
+		inline int getCurrentLag()					{ return lag; }
 		
 		int getNMessagesOnQueue()							{ return lagQueue.size(); }
 		

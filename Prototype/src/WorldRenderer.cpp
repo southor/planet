@@ -171,7 +171,7 @@ namespace Prototype
 		// render triangle
 		glPushMatrix();
 			glTranslatef(playerObj->pos.x, playerObj->pos.y, 0.0f);
-			glRotatef(radianToDegree(playerObj->angle) - 90.0f, 0.0f, 0.0f, 1.0f); 
+			glRotatef(radianToDegree(playerObj->angle.getFloat()) - 90.0f, 0.0f, 0.0f, 1.0f); 
 			glTranslatef(-playerObj->pos.x, -playerObj->pos.y, 0.0f);
 			glBegin(GL_TRIANGLES);
 				glColor3fv(reinterpret_cast<float*>(&playerColor));
