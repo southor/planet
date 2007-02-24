@@ -8,14 +8,14 @@ namespace Prototype
 	const Projectile::Properties Projectile::properties[2] = {{1000.0f/1000.0f, 20, 0, 0, 75},
 															   {200.0f/1000.0f, 100, 50, 100.0f, 500}};
 
-	Projectile::Projectile(Type type, const Pos &pos, float angle, PlayerId shooterId)
-		: type(type), pos(pos), angle(angle), shooterId(shooterId)
+	Projectile::Projectile(Type type, const Pos &pos, Angle angle, PlayerId shooterId, size_t nHistoryTicks)
+		: historyList(nHistoryTicks), type(type), pos(pos), angle(angle), shooterId(shooterId)
 	{}
 
 	Line Projectile::getLine() const
 	{
-		float length = TimeHandler::DELTA_TIME_MAX_F * getSpeed() * 1.2f;
-		Vec direction(cos(angle), sin(angle));		
+		float length = TimeHandler::TICK_DELTA_TIME * getSpeed() * 1.2f;
+		Vec direction(cos(angle.getFloat()), sin(angle.getFloat()));		
 		Line line(pos, direction * length);
 		return line;
 	}

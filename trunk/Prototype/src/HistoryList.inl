@@ -23,7 +23,7 @@ namespace Prototype
 	{
 		assert(tick1 != tick2); // would cause a division by zero
 		
-		Tickf totalDiff = static_cast<Tickf>(tick1) - static_cast<Tickf>(Tick2);
+		Tickf totalDiff = static_cast<Tickf>(tick1) - static_cast<Tickf>(tick2);
 		Tickf resultDiff = resultTick - static_cast<Tickf>(tick1);
 		float tValue = static_cast<float>(resultDiff) / static_cast<float>(totalDiff);
 
@@ -31,7 +31,7 @@ namespace Prototype
 	}
 
 	template <typename T>
-	const T& HistoryList<T>::getDataRef(int tick)
+	const T& HistoryList<T>::getData(int tick)
 	{
 		int firstTickTmp = firstTick();
 		
@@ -77,7 +77,7 @@ namespace Prototype
 		int tick1 = static_cast<int>(tick);
 		int tick2 = tick1 + 1;
 
-		interExtraPolate(tick1, getDataRef(tick1), tick2, getDataRef(tick2), tick, data);
+		interExtraPolate(tick1, getData(tick1), tick2, getData(tick2), tick, data);
 	}
 
 	template <typename T>

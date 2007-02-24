@@ -16,7 +16,7 @@ namespace Prototype
 
 	void ServerWorldModel::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
-		playerObjs.add(playerId, new PlayerObj(playerPos));
+		playerObjs.add(playerId, new PlayerObj(playerPos, 1));
 	}
 
 	GameObjId ServerWorldModel::addObstacle(const Rectangle &obstacleArea)
@@ -83,25 +83,25 @@ namespace Prototype
 		// ----- produce a movevector from current actions and angle of playerObj ------
 
 		PlayerObj *playerObj = playerObjPair.second;
-		float moveAngle;
+		Angle moveAngle;
 		if (moveAlignedToAngle) moveAngle = playerObj->angle;
-		else moveAngle = PI/2.0f;
+		else moveAngle = PI_F/2.0f;
 		Vec moveVec(0.0f, 0.0f);
 		if (playerObj->movingForward == true)
 		{
-			moveVec += Vec(cos(moveAngle) * fbMoveDistance, sin(moveAngle) * fbMoveDistance);
+			moveVec += Vec(cos(moveAngle.getFloat()) * fbMoveDistance, sin(moveAngle.getFloat()) * fbMoveDistance);
 		}
 		if (playerObj->movingBackward == true)
 		{
-			moveVec += Vec(cos(moveAngle + PI) * fbMoveDistance, sin(moveAngle + PI) * fbMoveDistance);
+			moveVec += Vec(cos((moveAngle + Angle::PI).getFloat()) * fbMoveDistance, sin((moveAngle + Angle::PI).getFloat()) * fbMoveDistance);
 		}
 		if (playerObj->strafingLeft == true)
 		{
-			moveVec += Vec(cos(moveAngle + PI/2.0f) * strafeMoveDistance, sin(moveAngle + PI/2.0f) * strafeMoveDistance);
+			moveVec += Vec(cos((moveAngle + Angle::PI/2.0f).getFloat()) * strafeMoveDistance, sin((moveAngle + Angle::PI/2.0f).getFloat()) * strafeMoveDistance);
 		}
 		if (playerObj->strafingRight == true)
 		{
-			moveVec += Vec(cos(moveAngle - PI/2.0f) * strafeMoveDistance, sin(moveAngle - PI/2.0f) * strafeMoveDistance);
+			moveVec += Vec(cos((moveAngle - Angle::PI/2.0f).getFloat()) * strafeMoveDistance, sin((moveAngle - Angle::PI/2.0f).getFloat()) * strafeMoveDistance);
 		}
 
 		Vec zeroVec(0.0f, 0.0f);		
@@ -266,11 +266,11 @@ namespace Prototype
 	{
 		PlayerObj *playerObj = getPlayerObjs()[playerId];
 		Pos pos(playerObj->getPos());
-		float angle = playerObj->angle;
+		Angle angle = playerObj->angle;
 
 		//GameObjId projectileId = getProjectiles().findFreeId();
 		GameObjId projectileId = getIdGenerator()->generateGameObjId();
-		getProjectiles().add(projectileId, new Projectile(weapon, pos, angle, playerId));
+		getProjectiles().add(projectileId, new Projectile(weapon, pos, angle, playerId, SERVER_N_HISTORY_TICKS));
 
 		return projectileId;
 	}

@@ -38,7 +38,7 @@ namespace Prototype
 
 	void MessageReciever::putMessageToLagQueue(Message message, int currentTime)
 	{		
-		ping = (currentTime - message.time) + simulatedLag;
+		lag = (currentTime - message.time) + simulatedLag;
 		//LagMessage lagMessage(message, lagTimeHandler.getTime());
 		message.time = lagTimeHandler.getTime();
 		lagQueue.push_back(message);

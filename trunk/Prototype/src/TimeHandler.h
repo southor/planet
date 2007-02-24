@@ -9,12 +9,12 @@ namespace Prototype
 	{
 	public:
 
-		static const int DELTA_TIME_MAX = 1000/30;
+		//static const int DELTA_TIME_MAX = 1000/30;
 
-		static const float DELTA_TIME_MAX_F;
+		//static const float DELTA_TIME_MAX_F;
 
 		static const int TICKS_PER_SECOND = 10;
-		static const int TICK_DELTA_TIME;
+		static const int TICK_DELTA_TIME = 1000 / TICKS_PER_SECOND;
 
 		TimeHandler() : startTime(0)//, deltaTime(1), stepTime(0)
 		{}
@@ -38,5 +38,9 @@ namespace Prototype
 		//int stepTime;
 		//int deltaTime;
 	};
+	
+	static const int MAX_SERVER_TO_CLIENT_SEND_TIME = 500;
+	static const int MAX_CLIENT_TO_SERVER_SEND_TIME = 500;	
+
 };
 #endif

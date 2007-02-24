@@ -2,9 +2,9 @@
 
 namespace Prototype
 {
-	const float TimeHandler::DELTA_TIME_MAX_F = static_cast<float>(DELTA_TIME_MAX);
+	//const float TimeHandler::DELTA_TIME_MAX_F = static_cast<float>(DELTA_TIME_MAX);
 
-	const int TimeHandler::TICK_DELTA_TIME = 1000 / TICKS_PER_SECOND;
+	//const int TimeHandler::TICK_DELTA_TIME = 1000 / TICKS_PER_SECOND;
 
 	//int TimeHandler::getTick()
 	//{
