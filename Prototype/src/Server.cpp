@@ -134,7 +134,7 @@ namespace Prototype
 		
 		if (tick == 0)
 		{
-			int tickFromTime = 100; //getTimeHandler()->getTickFromTime();
+			int tickFromTime = 20; //getTimeHandler()->getTickFromTime();
 			getTimeHandler()->setTick(tickFromTime);
 			printf("start tick: %d, time: %d\n", tickFromTime, getTimeHandler()->getTime());
 		}
@@ -154,8 +154,8 @@ namespace Prototype
 				
 				player.link.retrieve(getTimeHandler()->getTime());
 
-				//if (player.link.hasMessageOnQueue())
-				//	printf("tickOfMessageOnQueue: %d\n", player.link.getTickOfMessageOnQueue());
+				if (player.link.hasMessageOnQueue())
+					printf("tickOfMessageOnQueue: %d\n", player.link.getTickOfMessageOnQueue());
 
 				if (player.link.hasMessageOnQueueWithTick(tick))
 				{	
@@ -166,6 +166,7 @@ namespace Prototype
 					}
 					else
 					{
+						//printf("latestTick now: %d\n", tick);
 						player.latestTick = tick;
 					}
 				}
@@ -175,11 +176,12 @@ namespace Prototype
 
 				// Check tick timeout
 
-				//if (getTimeHandler()->getTickWithTimeout() > tick)
-				if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
+				if (getTimeHandler()->getTickFromTimeWithTimeout() > tick)
+				//if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
 				{
-					//waitingForClients = false;
-					//break; // exit for loop
+					printf("#################### TIMEOUT ######################\n");
+					waitingForClients = false;
+					break; // exit for loop
 				}
 			}
 		}
@@ -191,11 +193,11 @@ namespace Prototype
 
 		if (waitingForClients)
 		{
-			printf("waiting for tick: %d\n", tick);
+			//printf("waiting for tick: %d, tickWithTimeout(): %d\n", tick, getTimeHandler()->getTickFromTimeWithTimeout());
 		}
 		else
 		{
-			printf("server got tick: %d\n", tick);
+			printf("server got tick: %d, tickWithTimeout: %d\n", tick, getTimeHandler()->getTickFromTimeWithTimeout());
 
 			int deltaTime = ServerTimeHandler::TICK_DELTA_TIME;
 			float deltaTimef = static_cast<float>(deltaTime);
@@ -213,15 +215,16 @@ namespace Prototype
 
 				player.link.retrieve(getTimeHandler()->getTime());
 
-				while (player.link.hasMessageOnQueueWithTick(tick))
+				while (player.link.hasMessageOnQueue()) //WithTick(tick))
 				{
 					int messageType = player.link.popMessage();
 					if (messageType == USER_CMD)
 					{
-						printf("SERVER: handling user_cmd @ %d\n", getTimeHandler()->getTime());
-						
 						UserCmd *userCmd = player.link.getPoppedData<UserCmd>();
 						StateCmds stateCmds(userCmd->stateCmds);
+						
+						printf("SERVER: handling user_cmd @ %d, left: %d\n", getTimeHandler()->getTime(), stateCmds.getCurrentState(Cmds::LEFT));
+
 						
 						PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 						playerObj->movingForward = stateCmds.getCurrentState(Cmds::FORWARD);
@@ -232,7 +235,7 @@ namespace Prototype
 					}
 					else if (messageType == SHOOT_CMD)
 					{
-						printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
+						//printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
 
 						// player shoots
 						ShootCmd *shootCmd = player.link.getPoppedData<ShootCmd>();					

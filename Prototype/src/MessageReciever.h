@@ -30,6 +30,8 @@ namespace Prototype
 		virtual int getTickOfMessageOnQueue();
 		inline int getCurrentPing()					{ return ping; }
 		
+		int getNMessagesOnQueue()							{ return lagQueue.size(); }
+		
 
 		void setSimulatedLag(int simulatedLag)		{ assert(simulatedLag >= 0); this->simulatedLag = simulatedLag; }
 				

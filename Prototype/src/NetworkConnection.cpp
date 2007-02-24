@@ -170,7 +170,7 @@ namespace Prototype
 				}
 
 				Message message(retrieveType, retrieveSize, data, retrieveTime, retrieveTick);
-				if (retrieveType == 11)
+				if (retrieveType == 11 || retrieveType == 12)
 					printf("retrieving message: type: %d, size: %d, time: %d, tick: %d @ %d\n", retrieveType, retrieveSize, retrieveTime, retrieveTick, currentTime);
 				
 				putMessageToLagQueue(message, currentTime);
