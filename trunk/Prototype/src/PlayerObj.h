@@ -88,15 +88,17 @@ namespace Prototype
 		inline bool canShoot(int time) const				{ return (ammo[currentWeapon] > 0) && (nextShootTime <= time); }
 		void shoot(int time);
 
-		inline void setUpdateData(int tick, const Pos &pos, float angle)
+		inline void setTickData(int tick, const Pos &pos, Angle angle)
 		{
 			UpdateData data(pos, angle);
 			historyList.setData(tick, data);
 		}
 
-		void updateToTick(int tick);
+		inline void storeToTickData(int tick)				{ setTickData(tick, pos, angle); }
 
-		void updateToTick(Tickf tick);
+		void updateToTickData(int tick);
+
+		void updateToTickData(Tickf tick);
 
 	};
 };
