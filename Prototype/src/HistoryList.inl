@@ -81,7 +81,7 @@ namespace Prototype
 	}
 
 	template <typename T>
-	void HistoryList<T>::setData(int tick, T &data)
+	void HistoryList<T>::setData(int tick, const T &data)
 	{		
 		if (tick <= nextTick)
 		{

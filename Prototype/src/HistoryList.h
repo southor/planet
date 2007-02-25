@@ -35,7 +35,7 @@ namespace Prototype
 		//inline void getData(int tick, T &data)		{ data = getDataRef(tick); }
 		void getData(Tickf tick, T &data);
 
-		void setData(int tick, T &data);
+		void setData(int tick, const T &data);
 
 	};
 };

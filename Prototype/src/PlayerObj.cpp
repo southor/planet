@@ -22,6 +22,7 @@ namespace Prototype
 	{
 		setAmmoSupply(0);
 		if (N_WEAPONS >= 2) ammo[1] = 10;
+		
 	}
 
 	void PlayerObj::setAmmoSupply(int seed)
@@ -79,19 +80,20 @@ namespace Prototype
 		if (ammo[currentWeapon] == 0) switchWeapon();		
 	}
 
-	void PlayerObj::updateToTick(int tick)
+	void PlayerObj::updateToTickData(int tick)
 	{
 		UpdateData data(historyList.getData(tick));
 		pos = data.pos;
 		angle = data.angle;
 	}
 
-	void PlayerObj::updateToTick(Tickf tick)
+	void PlayerObj::updateToTickData(Tickf tick)
 	{
 		UpdateData data;
 		historyList.getData(tick, data);
 		pos = data.pos;
 		angle = data.angle;
 	}
+
 }
 

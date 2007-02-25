@@ -44,27 +44,28 @@ namespace Prototype
 
 		~Projectile()										{}
 
-		inline Pos getPos() const						{ return pos; }
-		inline void setPos(const Pos &pos)				{ this->pos = pos; }
-		inline Type getType() const						{ return type; }
-		inline Angle getAngle() const					{ return angle; }
+		inline Pos getPos() const							{ return pos; }
+		inline void setPos(const Pos &pos)					{ this->pos = pos; }
+		inline Type getType() const							{ return type; }
+		inline Angle getAngle() const						{ return angle; }
 
 		Line getLine() const;
 
-		inline float getSpeed() const					{ return properties[type].speed; }
-		inline int getDirectDamage() const				{ return properties[type].directDamage; }
-		static inline int getDirectDamage(Type type)	{ return properties[type].directDamage; }
-		static inline int getShootInterval(Type type)	{ return properties[type].shootInterval; }
+		inline float getSpeed() const						{ return properties[type].speed; }
+		inline int getDirectDamage() const					{ return properties[type].directDamage; }
+		static inline int getDirectDamage(Type type)		{ return properties[type].directDamage; }
+		static inline int getShootInterval(Type type)		{ return properties[type].shootInterval; }
 		
 		// @param blastPos The d-position along the line, 0.0 is beginning of line, 1.0 is end of line
 		int getBlastDamage(float blastPos, const Pos &targetPos) const;
 		
 		
-		PlayerId getShooterId() const					{ return shooterId; }
+		PlayerId getShooterId() const						{ return shooterId; }
 
-		inline void setUpdateData(int tick, Pos pos)	{ historyList.setData(tick, pos); }
-		inline void updateToTick(int tick)				{ pos = historyList.getData(tick); }
-		void updateToTick(Tickf tick)					{ historyList.getData(tick, pos); }
+		inline void setUpdateData(int tick, const Pos &pos)	{ historyList.setData(tick, pos); }
+		inline void storeToTickData(int tick)				{ historyList.setData(tick, pos); }
+		inline void updateToTickData(int tick)				{ pos = historyList.getData(tick); }
+		void updateToTickData(Tickf tick)					{ historyList.getData(tick, pos); }
 
 	private:
 		static const Properties properties[N_TYPES];
