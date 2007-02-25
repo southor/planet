@@ -11,12 +11,11 @@ namespace Prototype
 	{
 	public:
 		Link link;
-		int latestTick;
 
-		ServerPlayer() : latestTick(0)	{}
+		ServerPlayer() {}
 		
 		ServerPlayer(const Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
-			: Player(color), link(messageSender, messageReciever), latestTick(0)
+			: Player(color), link(messageSender, messageReciever)
 		{}
 	};
 };

@@ -44,6 +44,9 @@ namespace Prototype
 		void setSocket(TCPsocket socket);
 
 		void retrieve(int currentTime);
+		
+		//bool hasMessageOnQueue() { retrieve(0); return MessageReciever::hasMessageOnQueue(); }
+
 
 	private:
 		int readData(void *data, int len);

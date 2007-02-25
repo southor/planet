@@ -18,18 +18,19 @@ namespace Prototype
 
 		int lag;
 		int simulatedLag;
+		int latestTick;
 		std::deque<Message> lagQueue;
 		TimeHandler lagTimeHandler;
 
 	public:
-		MessageReciever() : simulatedLag(0), lag(0)	{}
+		MessageReciever() : simulatedLag(0), lag(0), latestTick(0)	{}
 		virtual ~MessageReciever()						{}
 		
 		virtual bool hasMessageOnQueue();
 		virtual bool hasMessageOnQueueWithTick(int tick);
 		virtual int getTickOfMessageOnQueue();
 		inline int getCurrentLag()					{ return lag; }
-		
+		int getLatestTick() const					{ return latestTick; }
 		int getNMessagesOnQueue()							{ return lagQueue.size(); }
 		
 

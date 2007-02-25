@@ -134,70 +134,39 @@ namespace Prototype
 		
 		if (tick == 0)
 		{
-			int tickFromTime = 20; //getTimeHandler()->getTickFromTime();
+			int tickFromTime = 10 + getTimeHandler()->getTickFromTime();
 			getTimeHandler()->setTick(tickFromTime);
 			printf("start tick: %d, time: %d\n", tickFromTime, getTimeHandler()->getTime());
 		}
 
 		bool waitingForClients = false;
 
-		//printf("tick: %d, tickWithTimeout: %d\n", tick, getTimeHandler()->getTickWithTimeout());
-
-
 		// check if current tick is recieved from all clients, otherwise set waitingForClients to true
+		ServerPlayers::Iterator playersIt;
+		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 		{
-			ServerPlayers::Iterator playersIt;
-			for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
+			PlayerId playerId = playersIt->first;
+			ServerPlayer player(playersIt->second);
+			
+			player.link.retrieve(getTimeHandler()->getTime());
+
+			// set waitingForClients to true if player doesn't have current tick
+			waitingForClients = waitingForClients || (player.link.getLatestTick() < tick);
+
+			// Check tick timeout
+			if (getTimeHandler()->getTickFromTimeWithTimeout() > tick)      //if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
 			{
-				PlayerId playerId = playersIt->first;
-				ServerPlayer player(playersIt->second);
-				
-				player.link.retrieve(getTimeHandler()->getTime());
-
-				//if (player.link.hasMessageOnQueue())
-				//	printf("tickOfMessageOnQueue: %d\n", player.link.getTickOfMessageOnQueue());
-
-				if (player.link.hasMessageOnQueueWithTick(tick))
-				{	
-					// if message with old tick then discard
-					if (player.link.getTickOfMessageOnQueue() < tick)
-					{
-						player.link.popMessage();
-					}
-					else
-					{
-						//printf("latestTick now: %d\n", tick);
-						player.latestTick = tick;
-					}
-				}
-				
-				// set waitingForClients to true if player doesn't have current tick
-				waitingForClients = waitingForClients || (player.latestTick != tick);
-
-				// Check tick timeout
-
-				if (getTimeHandler()->getTickFromTimeWithTimeout() > tick)
-				//if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
-				{
-					printf("#################### TIMEOUT ######################\n");
-					waitingForClients = false;
-					break; // exit for loop
-				}
+				printf("#################### TIMEOUT ######################\n");
+				waitingForClients = false;
+				tick = getTimeHandler()->getTickFromTimeWithTimeout();
+				break; // exit for loop
 			}
 		}
 
-//		waitingForClients = false;
-//		int tickFromTime = getTimeHandler()->getTickFromTime();
-//		getTimeHandler()->setTick(tickFromTime);
 
-
-		if (waitingForClients)
+		if (!waitingForClients)
 		{
-			//printf("waiting for tick: %d, tickWithTimeout(): %d\n", tick, getTimeHandler()->getTickFromTimeWithTimeout());
-		}
-		else
-		{
-			printf("server got tick: %d, tickWithTimeout: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), time);
+			printf("server got tick: %d, tickFromTime: %d, tickFromTimeWithTimeout: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), time);
 
 			int deltaTime = ServerTimeHandler::TICK_DELTA_TIME;
 			float deltaTimef = static_cast<float>(deltaTime);
@@ -224,7 +193,6 @@ namespace Prototype
 						StateCmds stateCmds(userCmd->stateCmds);
 						
 						//printf("SERVER: handling user_cmd @ %d, left: %d\n", getTimeHandler()->getTime(), stateCmds.getCurrentState(Cmds::LEFT));
-
 						
 						PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 						playerObj->movingForward = stateCmds.getCurrentState(Cmds::FORWARD);
@@ -235,7 +203,7 @@ namespace Prototype
 					}
 					else if (messageType == SHOOT_CMD)
 					{
-						//printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
+						printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
 
 						// player shoots
 						ShootCmd *shootCmd = player.link.getPoppedData<ShootCmd>();					
