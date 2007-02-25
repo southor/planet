@@ -32,11 +32,11 @@ namespace Prototype
 
 		// ------- set State cmd keys and mouse buttons -------
 		void setStateCmdKey(int stateCmd, int key); // keyboard key
-		void setStateCmdButton(int stateCmd, int button); // mouse button
+		//void setStateCmdButton(int stateCmd, int button); // mouse button
 
 		// ------- set Action cmd keys and mouse buttons -------
 		void setActionCmdKey(int actionCmd, int key); // keyboard key
-		void setActionCmdButton(int actionCmd, int button); // mouse button
+		//void setActionCmdButton(int actionCmd, int button); // mouse button
 
 
 		// ------- get state cmd input -------
@@ -48,7 +48,7 @@ namespace Prototype
 
 		// ------- get action cmd input -------
 		size_t getNActionCmdsOnQueue();
-		inline bool hasActionCmdOnQueue();
+		bool hasActionCmdOnQueue();
 		int popActionCmd();
 		void pushActionCmd(int actionCmd);
 		

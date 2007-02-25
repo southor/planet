@@ -48,7 +48,7 @@ namespace Prototype
 			viewportHandler.screenRenderSize.x = w;
 			viewportHandler.screenRenderSize.y = h;
 		}
-		inline void useViewport()			{ viewportHandler.useViewport(); }
+		inline void useViewport()			 { viewportHandler.useViewport(); }
 		void setCurrentMousePos(Vec2<int> mouseScreenPos);
 		inline void setAimMode(AimMode aimMode)				{ this->aimMode = aimMode; }
 		

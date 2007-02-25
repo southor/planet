@@ -42,6 +42,9 @@ namespace Prototype
 		//LagMessage lagMessage(message, lagTimeHandler.getTime());
 		message.time = lagTimeHandler.getTime();
 		lagQueue.push_back(message);
+		
+		if (message.tick > latestTick)
+			latestTick = message.tick;
 	}
 	
 	Message MessageReciever::popMessage()

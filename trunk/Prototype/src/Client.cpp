@@ -42,9 +42,6 @@ namespace Prototype
 		if (timeHandler.isNewTick())
 		{
 			link.retrieve(timeHandler.getTime());
-			
-			//printf("CLIENT getNMessagesOnQueue: %d\n", link.getNMessagesOnQueue());
-			
 
 			// Read messages from server
 			while(link.hasMessageOnQueue())
@@ -155,17 +152,22 @@ namespace Prototype
 				bool wasKeyEvent = kh.changePressedToDownState() || kh.changeReleasedToUpState();
 
 				// handle shooting
-				if (kh.isDown(CMD_SHOOT))
-				{					
-					if (playerObj->canShoot(time))
-					{
-						Projectile::Type weapon = playerObj->getCurrentWeapon();
-						playerObj->shoot(time);
-						ShootCmd shootCmd(playerId, weapon);
-						link.pushMessage(shootCmd, timeHandler.getTime(), timeHandler.getStepTick());
+				while (userInput.hasActionCmdOnQueue())
+				{
+					int actionCmd = userInput.popActionCmd();
+				
+					if (actionCmd == Cmds::SHOOT)
+					{					
+						if (playerObj->canShoot(time))
+						{
+							Projectile::Type weapon = playerObj->getCurrentWeapon();
+							playerObj->shoot(time);
+							ShootCmd shootCmd(playerId, weapon);
+							link.pushMessage(shootCmd, timeHandler.getTime(), timeHandler.getStepTick());
+						}
 					}
 				}
-
+				
 				// If some key was pressed or released send message
 				//if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
 				if (!kh.isDown(CMD_SWITCH_WEAPON))

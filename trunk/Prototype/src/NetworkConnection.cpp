@@ -27,7 +27,8 @@ namespace Prototype
 			Message message = sendDeque.front();
 			sendDeque.pop_front();
 			
-			//printf("sending message: type: %d, time: %d, size: %d\n", message.type, message.time, message.size);
+			if (message.type == 5 || message.type == 12)
+				printf("sending message: type: %d, time: %d, size: %d\n", message.type, message.time, message.size);
 			
 			//type = SDL_SwapBE32(type);
 			
@@ -113,7 +114,13 @@ namespace Prototype
 
 	void NetworkMessageReciever::retrieve(int currentTime)
 	{
-		while (true)
+		const int maxIterations = 50;
+		int iteration = 0;
+		
+		if (retrieveMessagePhase != 0) { printf("retrieve at phase %d\n", retrieveMessagePhase); }
+	
+		// Loop until maxIterations or until there is no data to be read
+		while (iteration++ < maxIterations)
 		{
 			switch (retrieveMessagePhase)
 			{
@@ -122,7 +129,7 @@ namespace Prototype
 			{
 				if (readData(&retrieveType, sizeof(retrieveType)) == 0)
 					return;
-					
+				
 				retrieveMessagePhase++;
 				break;
 			}
@@ -170,14 +177,15 @@ namespace Prototype
 				}
 
 				Message message(retrieveType, retrieveSize, data, retrieveTime, retrieveTick);
-				if (retrieveType == 11 || retrieveType == 12)
-					printf("retrieving message: type: %d, size: %d, time: %d, tick: %d @ %d\n", retrieveType, retrieveSize, retrieveTime, retrieveTick, currentTime);
+				
+				//if (retrieveType == 5 || retrieveType == 12)
+				//	printf("retrieving message: type: %d, size: %d, time: %d, tick: %d @ %d\n", retrieveType, retrieveSize, retrieveTime, retrieveTick, currentTime);
 				
 				putMessageToLagQueue(message, currentTime);
 				
 				// reset messagePhase
 				retrieveMessagePhase = 0;
-				return;
+				break;
 			}
 
 			default:
