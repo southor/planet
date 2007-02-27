@@ -52,6 +52,12 @@ namespace Prototype
 		client2.getKeyHandler()->setClient2Keys();
 		client2.setAimMode(Client::MOUSE);
 		
+		client1.getTimeHandler()->reset();
+		client2.getTimeHandler()->reset();
+		server.getTimeHandler()->reset();
+
+		//server.getTimeHandler()->incrementTime(1000);
+
 		
 		printf("Choose.\n");
 		
@@ -108,6 +114,9 @@ namespace Prototype
 		NetworkServerClient *serverClient1;
 		NetworkServerClient *serverClient2;
 		
+		// -------------------------------------------------------
+		// INITIALIZE NETWORK
+		// -------------------------------------------------------
 		while (true)
 		{
 			if (SHOW_CLIENT_1)
@@ -232,11 +241,11 @@ namespace Prototype
 			// --------------
 			if (SHOW_SERVER)
 			{
-				if (!client1Connected)
+				//if (!client1Connected)
 					if (server.clientConnected(sender2, reciever2))
 						clientsConnected++;
 				
-				if (!client2Connected)
+				//if (!client2Connected)
 					if (server.clientConnected(sender4, reciever4))
 						clientsConnected++;
 			}
@@ -260,13 +269,9 @@ namespace Prototype
 				&& (!SHOW_SERVER || clientsConnected == 2))
 				break;
 
-			SDL_Delay(100);
+			SDL_Delay(1);
 		}
 		
-		client1.getTimeHandler()->reset();
-		client2.getTimeHandler()->reset();
-		server.getTimeHandler()->reset();
-
 		server.startGame();
 
 		while (running) 
@@ -280,8 +285,10 @@ namespace Prototype
 				client2.logic();
 
 			if (SHOW_SERVER)
-				server.logic();
-			
+			{
+				for (int i = 0; i < 3; i++)
+					server.logic();
+			}
 			// guichan
 			//gui.gui->logic();
 

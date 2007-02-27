@@ -72,7 +72,8 @@ namespace Prototype
 						AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
 						addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos);				
 
-						if (connectionPhase == 2) connectionPhase++; 
+						if (connectionPhase == ClientPhase::GET_ADDPLAYEROBJ)
+							connectionPhase++; 
 					}
 					break;
 				case ADD_OBSTACLE:
@@ -80,7 +81,8 @@ namespace Prototype
 						AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
 						worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
 						
-						if (connectionPhase == 3) connectionPhase++; 
+						if (connectionPhase == ClientPhase::GET_ADDOBSTACLE)
+							connectionPhase++; 
 					}
 					break;
 				case ADD_PROJECTILE:
@@ -125,14 +127,11 @@ namespace Prototype
 
 			}
 
-			if (connectionPhase == 4)
-			{			
-
-
+			if (connectionPhase == ClientPhase::RUNNING)
+			{
 				handleEvents();
 				int time = timeHandler.getStepTime();
 
-				
 
 				//if (kh.isPressed(CMD_SHOOT))
 				//{
@@ -144,10 +143,10 @@ namespace Prototype
 
 				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 
-				if (kh.isPressed(CMD_SWITCH_WEAPON))
-				{
-					playerObj->switchWeapon();
-				}
+				//if (kh.isPressed(CMD_SWITCH_WEAPON))
+				//{
+				//	playerObj->switchWeapon();
+				//}
 				
 				bool wasKeyEvent = kh.changePressedToDownState() || kh.changeReleasedToUpState();
 
@@ -165,6 +164,10 @@ namespace Prototype
 							ShootCmd shootCmd(playerId, weapon);
 							link.pushMessage(shootCmd, timeHandler.getTime(), timeHandler.getStepTick());
 						}
+					}
+					if (actionCmd == Cmds::SWITCH_WEAPON)
+					{
+						playerObj->switchWeapon();
 					}
 				}
 				
@@ -195,7 +198,7 @@ namespace Prototype
 
 	bool Client::initConnection()
 	{
-		if (connectionPhase == 0)
+		if (connectionPhase == ClientPhase::SEND_INITCLIENT)
 		{
 			// send init package to server
 			InitClient initClient = InitClient(color);
@@ -205,7 +208,7 @@ namespace Prototype
 			connectionPhase++;
 		}
 
-		if (connectionPhase == 1)
+		if (connectionPhase == ClientPhase::WAIT_WELCOME_CLIENT)
 		{
 			link.retrieve(timeHandler.getTime());
 			if (link.hasMessageOnQueue())
@@ -216,9 +219,8 @@ namespace Prototype
 					WelcomeClient *welcomeClient = link.getPoppedData<WelcomeClient>();
 				
 					setPlayerId(welcomeClient->playerId);
-					
+
 					connectionPhase++;
-					
 					return true;
 				}
 				else
@@ -227,7 +229,48 @@ namespace Prototype
 				}
 			}
 		}
-		
+
+		if (connectionPhase == ClientPhase::SYNC_SEND_PING)
+		{
+			// send ping to server with current client time
+			SyncPing syncPing(playerId, timeHandler.getTime());
+			link.pushMessage(syncPing, timeHandler.getTime(), timeHandler.getStepTick());
+			link.transmit();
+
+			connectionPhase++;
+		}
+
+		if (connectionPhase == ClientPhase::SYNC_GET_PONG)
+		{
+			// get pong pack from server with server time and time when ping was sent
+			link.retrieve(timeHandler.getTime());
+			if (link.hasMessageOnQueue())
+			{
+				int messageType = link.popMessage();
+				if (messageType == SYNC_PONG)
+				{
+					SyncPong *syncPong = link.getPoppedData<SyncPong>();
+					
+					int clientTime = timeHandler.getTime();
+					int serverTime = syncPong->time;
+
+					int pingTime = clientTime - syncPong->pingSendTime;
+					int serverClientDiff = (serverTime + pingTime/2) - clientTime;
+
+					// Modify client time to match server time
+					timeHandler.incrementTime(serverClientDiff);
+
+					connectionPhase++;
+				}
+				else
+				{
+					assert(false);
+				}
+			}
+
+			return true;
+		}
+
 		return false;
 	}
 

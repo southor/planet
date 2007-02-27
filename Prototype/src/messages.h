@@ -23,9 +23,11 @@ namespace Prototype
 		REMOVE_PROJECTILE,
 		KILL,
 		START_GAME,
+		SYNC_PONG,
 
 		// client
 		INIT_CLIENT,
+		SYNC_PING,
 		USER_CMD,
 		SHOOT_CMD,
 	};
@@ -148,6 +150,17 @@ namespace Prototype
 	
 	struct StartGame
 	{
+		static const size_t messageType = START_GAME;
+	};
+
+	struct SyncPong
+	{
+		static const size_t messageType = SYNC_PONG;
+
+		int time;
+		int pingSendTime;
+
+		SyncPong(int time, int pingSendTime) : time(time), pingSendTime(pingSendTime) {}
 	};
 
 	// --------------------------------------------------------------------------------
@@ -161,6 +174,16 @@ namespace Prototype
 		Color color;
 		
 		InitClient(Color color) : color(color) {}
+	};
+
+	struct SyncPing
+	{
+		static const size_t messageType = SYNC_PING;
+
+		PlayerId playerId;
+		int pingSendTime;
+
+		SyncPing(PlayerId playerId, int pingSendTime) : playerId(playerId), pingSendTime(pingSendTime) {}
 	};
 
 	struct UserCmd
