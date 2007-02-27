@@ -13,6 +13,20 @@
 
 namespace Prototype
 {
+	namespace ClientPhase
+	{
+		enum
+		{
+			SEND_INITCLIENT = 0,
+			WAIT_WELCOME_CLIENT,
+			SYNC_SEND_PING,
+			SYNC_GET_PONG,
+			GET_ADDPLAYEROBJ,
+			GET_ADDOBSTACLE,
+			RUNNING
+		};
+	};
+
 	class Client
 	{
 	public:

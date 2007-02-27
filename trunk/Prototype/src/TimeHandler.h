@@ -13,13 +13,15 @@ namespace Prototype
 
 		//static const float DELTA_TIME_MAX_F;
 
-		static const int TICKS_PER_SECOND = 30;
+		static const int TICKS_PER_SECOND = 50;
 		static const int TICK_DELTA_TIME = 1000 / TICKS_PER_SECOND;
 
 		TimeHandler() : startTime(0)//, deltaTime(1), stepTime(0)
 		{}
 
 		inline int getTime()				{ return SDL_GetTicks() - startTime; }
+		
+		inline void incrementTime(int inc)	{ startTime -= inc; }
 
 		//int getStepTime()					{ return stepTime; }
 

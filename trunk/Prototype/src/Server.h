@@ -12,6 +12,15 @@
 
 namespace Prototype
 {
+	namespace ServerPhase
+	{
+		enum
+		{
+			WAIT_INITCLIENT,
+			WAIT_PING
+		};
+	};
+
 
 	class Server : public ServerGlobalAccess
 	{

@@ -2,10 +2,15 @@
 
 namespace Prototype
 {
-
 	int ServerTimeHandler::getTickFromTimeWithTimeout()
 	{
-		return calculateTickFromTime(getTime() - WAIT_FOR_TICK_TIMEOUT);
+		int tick = calculateTickFromTime(getTime());
+		int tickWithTimeout = calculateTickFromTime(getTime() - WAIT_FOR_TICK_TIMEOUT);
+
+		if (tick == tickWithTimeout)
+			tickWithTimeout--;
+
+		return tickWithTimeout;
 	}
 
 	int ServerTimeHandler::getTickFromTime()
@@ -26,8 +31,7 @@ namespace Prototype
 
 	int ServerTimeHandler::calculateTickFromTime(int time)
 	{
-		return time / TICK_DELTA_TIME;
+		return static_cast<int>(static_cast<float>(time) / static_cast<float>(TICK_DELTA_TIME));
 	}
-
 };
 

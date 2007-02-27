@@ -53,7 +53,19 @@ namespace Prototype
 				WelcomeClient welcomeClient = WelcomeClient(playerId);
 				link.pushMessage(welcomeClient, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				link.transmit();
-				
+			}
+			else if (messageType == SYNC_PING)
+			{
+				// retrieve SyncPing from client
+				SyncPing *syncPing = link.getPoppedData<SyncPing>();
+				PlayerId playerId = syncPing->playerId;
+				int pingSendTime = syncPing->pingSendTime;
+
+				// send SyncPong to client
+				SyncPong syncPong(getTimeHandler()->getTime(), pingSendTime);
+				link.pushMessage(syncPong, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				link.transmit();
+
 				return true;
 			}
 			else
@@ -61,21 +73,18 @@ namespace Prototype
 				assert(false);
 			}
 		}
-		
 		return false; // no client did try to connect
 	}
 
 	// TODO: MAKE PRIVATE
 	PlayerId Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 	{
-
 		//PlayerId playerId = players.findFreeId();
 		PlayerId playerId = getIdGenerator()->generatePlayerId();
 		players.add(playerId, ServerPlayer(color, messageSender, messageReciever));
 		return playerId;
 		
 		//ServerClient client(messageSender, messageReciever);
-
 		//addClient(client);
 	}
 
@@ -83,9 +92,6 @@ namespace Prototype
 	void Server::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
 		worldModel.addPlayerObj(playerId, playerPos);
-		//size_t playerObjId = worldModel.addPlayerObj(playerId, playerPos);
-		//players[playerId].playerObjId = playerObjId;
-		//return playerObjId;
 	}
 
 	void Server::startGame()
@@ -129,9 +135,9 @@ namespace Prototype
 
 	void Server::logic()
 	{
-		int tick = getTimeHandler()->getTick();
-		int time = getTimeHandler()->getTime();
-		
+		const int tick = getTimeHandler()->getTick();
+		const int time = getTimeHandler()->getTime();
+			
 		if (tick == 0)
 		{
 			int tickFromTime = 10 + getTimeHandler()->getTickFromTime();
@@ -140,6 +146,7 @@ namespace Prototype
 		}
 
 		bool waitingForClients = false;
+		int latestTick = 100000000000000; // used for debugging
 
 		// check if current tick is recieved from all clients, otherwise set waitingForClients to true
 		ServerPlayers::Iterator playersIt;
@@ -153,27 +160,27 @@ namespace Prototype
 			// set waitingForClients to true if player doesn't have current tick
 			waitingForClients = waitingForClients || (player.link.getLatestTick() < tick);
 
+			if (player.link.getLatestTick() < latestTick) // used for debugging
+				latestTick = player.link.getLatestTick(); // used for debugging
+
 			// Check tick timeout
-			if (getTimeHandler()->getTickFromTimeWithTimeout() > tick)      //if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
+			if (getTimeHandler()->getTickFromTimeWithTimeout() >= tick)      //if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
 			{
 				printf("#################### TIMEOUT ######################\n");
 				waitingForClients = false;
-				tick = getTimeHandler()->getTickFromTimeWithTimeout();
 				break; // exit for loop
 			}
 		}
 
-
 		if (!waitingForClients)
 		{
-			printf("server got tick: %d, tickFromTime: %d, tickFromTimeWithTimeout: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), time);
+			printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
 
 			int deltaTime = ServerTimeHandler::TICK_DELTA_TIME;
 			float deltaTimef = static_cast<float>(deltaTime);
 			lastUpdateTime = time;
 
 			worldModel.isConsistent();
-
 
 			// Read messages from clients
 			ServerPlayers::Iterator playersIt;
@@ -253,4 +260,3 @@ namespace Prototype
 	}
 	
 };
-
