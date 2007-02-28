@@ -118,7 +118,7 @@ namespace Prototype
 					}
 					break;
 				case START_GAME:
-					timeHandler.reset();
+					//timeHandler.reset();
 					break;
 				default:
 					break;
@@ -258,8 +258,8 @@ namespace Prototype
 					int serverClientDiff = (serverTime + pingTime/2) - clientTime;
 
 					// Modify client time to match server time
-					timeHandler.incrementTime(serverClientDiff);
-
+					//timeHandler.incrementTime(serverClientDiff);
+ 
 					connectionPhase++;
 				}
 				else
