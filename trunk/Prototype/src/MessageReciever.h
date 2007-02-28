@@ -8,7 +8,7 @@
 #include "basic.h"
 
 #include <deque>
-
+#include <string>
 
 namespace Prototype
 {
@@ -18,27 +18,33 @@ namespace Prototype
 
 		int lag;
 		int simulatedLag;
-		int latestTick;
+		int lt;
 		std::deque<Message> lagQueue;
+		std::deque<Message> recieveQueue;
 		TimeHandler lagTimeHandler;
 
+
 	public:
-		MessageReciever() : simulatedLag(0), lag(0), latestTick(0)	{}
+		MessageReciever() : simulatedLag(0), lag(0), lt(0)	{}
 		virtual ~MessageReciever()						{}
 		
 		virtual bool hasMessageOnQueue();
 		virtual bool hasMessageOnQueueWithTick(int tick);
 		virtual int getTickOfMessageOnQueue();
 		inline int getCurrentLag()					{ return lag; }
-		int getLatestTick() const					{ return latestTick; }
-		int getNMessagesOnQueue()							{ return lagQueue.size(); }
+		int getLatestTick() const					{ return lt; }
+		void setLatestTick(int tick)				{ lt = tick; }
+		int getNMessagesOnQueue()							{ return recieveQueue.size(); }
 		
 
 		void setSimulatedLag(int simulatedLag)		{ assert(simulatedLag >= 0); this->simulatedLag = simulatedLag; }
 				
-		virtual void retrieve(int currentTime)		{}
+		virtual void retrieve(int currentTime);
 		void putMessageToLagQueue(Message message, int currentTime);
 		Message popMessage();
+
+		int v;
+
 	};
 };
 

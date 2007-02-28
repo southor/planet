@@ -146,7 +146,7 @@ namespace Prototype
 		}
 
 		bool waitingForClients = false;
-		int latestTick = 100000000000000; // used for debugging
+		int latestTick = 10000000; // used for debugging
 
 		// check if current tick is recieved from all clients, otherwise set waitingForClients to true
 		ServerPlayers::Iterator playersIt;
@@ -159,6 +159,8 @@ namespace Prototype
 
 			// set waitingForClients to true if player doesn't have current tick
 			waitingForClients = waitingForClients || (player.link.getLatestTick() < tick);
+
+			//printf("playerId: %d, latestTick: %d\n", playerId, player.link.getLatestTick());
 
 			if (player.link.getLatestTick() < latestTick) // used for debugging
 				latestTick = player.link.getLatestTick(); // used for debugging
