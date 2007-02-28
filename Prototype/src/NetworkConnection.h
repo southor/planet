@@ -39,7 +39,7 @@ namespace Prototype
 			: MessageReciever(), retrieveMessagePhase(0), retrieveSize(0), retrieveTime(0), retrieveTick(0), retrieveType(0)	{}
 		~NetworkMessageReciever()																			{}
 
-		Message popMessage();
+		//Message popMessage();
 
 		void setSocket(TCPsocket socket);
 

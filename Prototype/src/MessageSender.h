@@ -21,6 +21,8 @@ namespace Prototype
 
 		// Transmits queued messages.
 		virtual void transmit() = 0;
+		
+		int v;
 	};
 };
 

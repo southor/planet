@@ -27,8 +27,7 @@ namespace Prototype
 			Message message = sendDeque.front();
 			sendDeque.pop_front();
 			
-			if (message.type == 5 || message.type == 12)
-				printf("sending message: type: %d, time: %d, size: %d\n", message.type, message.time, message.size);
+			//printf("%d sending message: type: %d, time: %d, size: %d\n", v, message.type, message.time, message.size);
 			
 			//type = SDL_SwapBE32(type);
 			
@@ -114,6 +113,8 @@ namespace Prototype
 
 	void NetworkMessageReciever::retrieve(int currentTime)
 	{
+		MessageReciever::retrieve(currentTime);
+	
 		const int maxIterations = 50;
 		int iteration = 0;
 		
@@ -179,6 +180,7 @@ namespace Prototype
 				Message message(retrieveType, retrieveSize, data, retrieveTime, retrieveTick);
 				
 				//if (retrieveType == 5 || retrieveType == 12)
+				//if (v == 2)
 				//	printf("retrieving message: type: %d, size: %d, time: %d, tick: %d @ %d\n", retrieveType, retrieveSize, retrieveTime, retrieveTick, currentTime);
 				
 				putMessageToLagQueue(message, currentTime);

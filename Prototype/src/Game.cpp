@@ -56,10 +56,7 @@ namespace Prototype
 		client2.getTimeHandler()->reset();
 		server.getTimeHandler()->reset();
 
-		printf("### serverT: %d, clientT: %d\n", server.getTimeHandler()->getTime(), client1.getTimeHandler()->getTime());
-
-
-		//server.getTimeHandler()->incrementTime(1000);
+		server.getTimeHandler()->incrementTime(1234);
 
 		
 		printf("Choose.\n");
@@ -178,23 +175,31 @@ namespace Prototype
 		{
 			sender1 = networkClient1.getMessageSender();
 			reciever1 = networkClient1.getMessageReciever();
-			reciever1->setSimulatedLag(1);
+			reciever1->setSimulatedLag(30);
+			sender1->v = 1;
+			reciever1->v = 1;
 		}
 		if (SHOW_CLIENT_2)
 		{
 			sender3 = networkClient2.getMessageSender();
 			reciever3 = networkClient2.getMessageReciever();
-			//reciever3->setSimulatedLag(50);
+			reciever3->setSimulatedLag(10);
+			sender3->v = 3;
+			reciever3->v = 3;
 		}
 		if (SHOW_SERVER)
 		{
 			sender2 = &(serverClient1->sender);
 			reciever2 = &(serverClient1->reciever);
-			//reciever2->setSimulatedLag(50);
+			reciever2->setSimulatedLag(28);
+			sender2->v = 2;
+			reciever2->v = 2;
 
 			sender4 = &(serverClient2->sender);
 			reciever4 = &(serverClient2->reciever);
-			//reciever4->setSimulatedLag(50);
+			reciever4->setSimulatedLag(12);
+			sender4->v = 4;
+			reciever4->v = 4;
 		}
 		
 		
@@ -236,6 +241,8 @@ namespace Prototype
 		client2Connected = false;
 		clientsConnected = 0;
 		
+		printf("TIME BEFORE SYNC serverT: %d, client1T: %d\n", server.getTimeHandler()->getTime(), client1.getTimeHandler()->getTime());
+	
 		while (true)
 		{
 			// --------------
@@ -274,12 +281,13 @@ namespace Prototype
 
 			SDL_Delay(1);
 		}
+		printf("TIME AFTER SYNC serverT: %d, client1T: %d\n", server.getTimeHandler()->getTime(), client1.getTimeHandler()->getTime());
 		
 		server.startGame();
 
 		while (running) 
 		{
-			printf("serverT: %d, clientT: %d\n", server.getTimeHandler()->getTime(), client1.getTimeHandler()->getTime());
+			//printf("serverT: %d, clientT: %d\n", server.getTimeHandler()->getTime(), client1.getTimeHandler()->getTime());
 
 			pollEvents();
 
@@ -300,7 +308,7 @@ namespace Prototype
 			// RENDER
 			render(0.0f);
 
-			SDL_Delay(20);
+			SDL_Delay(1);
 		}
 		
 		networkServer.close();

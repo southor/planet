@@ -73,7 +73,7 @@ namespace Prototype
 						addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos);				
 
 						if (connectionPhase == ClientPhase::GET_ADDPLAYEROBJ)
-							connectionPhase++; 
+							connectionPhase++;
 					}
 					break;
 				case ADD_OBSTACLE:
@@ -127,11 +127,12 @@ namespace Prototype
 
 			}
 
+			//printf("CONNECTION PHASE: %d\n", connectionPhase);
+
 			if (connectionPhase == ClientPhase::RUNNING)
 			{
 				handleEvents();
 				int time = timeHandler.getStepTime();
-
 
 				//if (kh.isPressed(CMD_SHOOT))
 				//{
@@ -221,7 +222,6 @@ namespace Prototype
 					setPlayerId(welcomeClient->playerId);
 
 					connectionPhase++;
-					return true;
 				}
 				else
 				{
@@ -257,18 +257,20 @@ namespace Prototype
 					int pingTime = clientTime - syncPong->pingSendTime;
 					int serverClientDiff = (serverTime + pingTime/2) - clientTime;
 
+					printf("Adjusting client time with diff: %d\n", serverClientDiff);
+
 					// Modify client time to match server time
-					//timeHandler.incrementTime(serverClientDiff);
+					timeHandler.incrementTime(serverClientDiff);
  
 					connectionPhase++;
+
+					return true;
 				}
 				else
 				{
 					assert(false);
 				}
 			}
-
-			return true;
 		}
 
 		return false;

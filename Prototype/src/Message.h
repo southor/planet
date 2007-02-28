@@ -11,7 +11,7 @@ namespace Prototype
 		int size;
 		void *data;
 		Message() : type(0), time(0), tick(0), size(0), data(0)			{}
-		Message(int type, int size, void *data, int time, int tick = 0)
+		Message(int type, int size, void *data, int time, int tick)
 			: type(type), size(size), data(data), time(time), tick(tick)	{}
 	};
 
