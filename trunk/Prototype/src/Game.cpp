@@ -56,6 +56,9 @@ namespace Prototype
 		client2.getTimeHandler()->reset();
 		server.getTimeHandler()->reset();
 
+		printf("### serverT: %d, clientT: %d\n", server.getTimeHandler()->getTime(), client1.getTimeHandler()->getTime());
+
+
 		//server.getTimeHandler()->incrementTime(1000);
 
 		
@@ -175,23 +178,23 @@ namespace Prototype
 		{
 			sender1 = networkClient1.getMessageSender();
 			reciever1 = networkClient1.getMessageReciever();
-			//reciever1->setSimulatedLag(50);
+			reciever1->setSimulatedLag(1);
 		}
 		if (SHOW_CLIENT_2)
 		{
 			sender3 = networkClient2.getMessageSender();
 			reciever3 = networkClient2.getMessageReciever();
-			//reciever3->setSimulatedLag(100);
+			//reciever3->setSimulatedLag(50);
 		}
 		if (SHOW_SERVER)
 		{
 			sender2 = &(serverClient1->sender);
 			reciever2 = &(serverClient1->reciever);
-			//reciever2->setSimulatedLag(60);
+			//reciever2->setSimulatedLag(50);
 
 			sender4 = &(serverClient2->sender);
 			reciever4 = &(serverClient2->reciever);
-			//reciever4->setSimulatedLag(90);
+			//reciever4->setSimulatedLag(50);
 		}
 		
 		
@@ -276,6 +279,8 @@ namespace Prototype
 
 		while (running) 
 		{
+			printf("serverT: %d, clientT: %d\n", server.getTimeHandler()->getTime(), client1.getTimeHandler()->getTime());
+
 			pollEvents();
 
 			if (SHOW_CLIENT_1)

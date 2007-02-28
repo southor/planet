@@ -96,7 +96,7 @@ namespace Prototype
 
 	void Server::startGame()
 	{
-		getTimeHandler()->reset();
+		//getTimeHandler()->reset();
 		
 		WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
 		WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();

@@ -10,6 +10,16 @@ namespace Prototype
 		if (lagQueue.size() > 0)
 		{
 			return lagTimeHandler.getTime() >= (lagQueue.front().time + simulatedLag);
+			
+			/*
+			// USED FOR DEBUGGING, DOES THE SAME AS THE CODE ABOVE
+			int t1 = lagTimeHandler.getTime();
+			int t2 = lagQueue.front().time;
+
+			bool state =  t1 >= t2 + simulatedLag;
+
+			return state;
+			*/
 		}
 		return false;
 	}
