@@ -31,11 +31,15 @@ namespace Prototype
 		~HistoryList();
 
 		
-		const T& getData(int tick);
+		//const T& getData(int tick);
+		void getData(int tick, T &data);
 		//inline void getData(int tick, T &data)		{ data = getDataRef(tick); }
 		void getData(Tickf tick, T &data);
+		
 
 		void setData(int tick, const T &data);
+
+		int getLastTick()								{ return nextTick - 1; }
 
 	};
 };

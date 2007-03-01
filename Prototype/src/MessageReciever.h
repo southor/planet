@@ -34,7 +34,7 @@ namespace Prototype
 		inline int getCurrentLag()					{ return lag; }
 		int getLatestTick() const					{ return lt; }
 		void setLatestTick(int tick)				{ lt = tick; }
-		int getNMessagesOnQueue()							{ return recieveQueue.size(); }
+		int getNMessagesOnQueue()					{ return static_cast<int>(recieveQueue.size()); }
 		
 
 		void setSimulatedLag(int simulatedLag)		{ assert(simulatedLag >= 0); this->simulatedLag = simulatedLag; }

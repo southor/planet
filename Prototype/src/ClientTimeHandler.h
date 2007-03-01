@@ -53,7 +53,7 @@ namespace Prototype
 	};
 
 	static const size_t CLIENT_INTERPOOLATION_N_HISTORY_TICKS = 10;
-	static const size_t CLIENT_PREDICTION_N_HISTORY_TICKS = static_cast<size_t>(MAX_SERVER_TO_CLIENT_SEND_TIME / TimeHandler::TICK_DELTA_TIME);
+	static const size_t CLIENT_PREDICTION_N_HISTORY_TICKS = static_cast<size_t>(MAX_SERVER_TO_CLIENT_LAG / TimeHandler::TICK_DELTA_TIME);
 
 };
 #endif

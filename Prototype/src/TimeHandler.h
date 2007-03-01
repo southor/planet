@@ -41,8 +41,8 @@ namespace Prototype
 		//int deltaTime;
 	};
 	
-	static const int MAX_SERVER_TO_CLIENT_SEND_TIME = 500;
-	static const int MAX_CLIENT_TO_SERVER_SEND_TIME = 500;	
+	static const int MAX_SERVER_TO_CLIENT_LAG = 2000;
+	static const int MAX_CLIENT_TO_SERVER_LAG = 2000;
 
 };
 #endif

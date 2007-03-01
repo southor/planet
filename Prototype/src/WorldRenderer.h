@@ -19,7 +19,7 @@ namespace Prototype
 
 		static const Vec RENDER_SIZE;
 
-		inline Rectangle getRenderArea(PlayerObj *localPlayerObj)
+		inline Rectangle getRenderArea(PlayerObj *centeredPlayerObj)
 		{
 			if (renderMode == HOLE_WORLD)
 			{
@@ -30,7 +30,7 @@ namespace Prototype
 				// setting center pos
 				Pos tmpPos;
 				Rectangle rectangle(tmpPos, RENDER_SIZE);
-				rectangle.setCenterPos(localPlayerObj->pos);
+				rectangle.setCenterPos(centeredPlayerObj->pos);
 				return rectangle;
 			}
 			else
@@ -43,7 +43,59 @@ namespace Prototype
 		WorldRenderer(RenderMode renderMode);
 
 		void setupProjection();
-		void render(WorldModel &worldModel, Players &players, PlayerObj *localPlayerObj);
+		
+		template <class Players>
+		void render(WorldModel &worldModel, Players &players, PlayerObj *centeredPlayerObj)//, Tickf tick)
+		{
+			glLoadIdentity();
+
+			// render box around render area
+			renderViewBox();
+
+			// camera
+			glPushMatrix();
+				{
+					//centeredPlayerObj->updateToTickData(tick);
+					Rectangle renderArea(getRenderArea(centeredPlayerObj));
+					Vec scaleAmount = WorldModel::WORLD_SIZE / renderArea.size;
+					glScalef(scaleAmount.x, scaleAmount.y, 1.0f);
+					glTranslatef(-renderArea.pos.x, -renderArea.pos.y, 0.0f);			
+				}		
+				
+				//// execute camera properties
+				//switch(renderMode)
+				//{
+				//case HOLE_WORLD:
+				//	// nothing to do, we are rendering the hole world
+				//	break;
+				//case FOLLOW_PLAYER:
+				//	{
+				//		
+				//	}
+				//	break;
+				//default:
+				//	assert(false);
+				//	break;
+				//}
+
+				// render all objects			
+				//RenderGameObj renderGameObj(&players);
+				RenderObstacle renderObstacle;
+				//RenderPlayerObj<Players> renderPlayerObj(&players, tick);
+				RenderPlayerObj<Players> renderPlayerObj(&players);
+				//RenderProjectile renderProjectile(tick);
+				RenderProjectile renderProjectile;
+				ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderObstacle);
+				ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderPlayerObj);
+				ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderProjectile);			
+				//render explosion
+				RenderExplosion renderExplosion;
+				ForEach(explosions.begin(), explosions.end(), renderExplosion);
+				explosions.clear();
+			glPopMatrix();
+		}
+		
+		
 		void projectileHit(Projectile *projectile, const Pos &hitPos);
 
 		static void renderRectangle(const Rectangle &rect, GLenum mode);
@@ -90,21 +142,71 @@ namespace Prototype
 			void operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair);
 		};
 
+		template <class Players>
 		class RenderPlayerObj
 		{
 		private:
 			Players *players;
+			//Tickf tick;
 		public:
 			
-			RenderPlayerObj(Players *players) : players(players)
+			//inline RenderPlayerObj(Players *players, Tickf tick) : players(players), tick(tick)
+			inline RenderPlayerObj(Players *players) : players(players)
 			{}
 
-			void operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair);
+			void operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair)
+			{
+				static const Color PLAYER_RECTANGLE_COLOR = Color(0.7f,0.7f,0.7f);
+				static const float PLAYER_RECTANGLE_ALPHA = 0.5f;
+				
+				PlayerId playerId = playerObjPair.first;
+				PlayerObj *playerObj = playerObjPair.second;
+				//playerObj->updateToTickData(tick);
+				
+				
+				Rectangle rect;
+				playerObj->getRectangle(rect);
+
+				// render rectangle
+				glColor4f(PLAYER_RECTANGLE_COLOR.r, PLAYER_RECTANGLE_COLOR.g, PLAYER_RECTANGLE_COLOR.b, PLAYER_RECTANGLE_ALPHA);
+				WorldRenderer::renderRectangle(rect, GL_QUADS);
+				
+				// setup some vertexes
+				Vec2f v0((rect.getTopLeft() + rect.getTopRight()) / 2.0f);
+				Vec2f v1(rect.getBottomLeft());
+				Vec2f v2(rect.getBottomRight());
+
+				// get a player color
+				//size_t playerId = playerObj->getPlayerId();
+				//Color playerColor(0.7f, 0.7f, 0.7f);
+				//if (players->isValid(playerId))
+				//{
+				Color playerColor = (*players)[playerId].color;
+				//}
+
+				// render triangle
+				glPushMatrix();
+					glTranslatef(playerObj->pos.x, playerObj->pos.y, 0.0f);
+					glRotatef(radianToDegree(playerObj->angle.getFloat()) - 90.0f, 0.0f, 0.0f, 1.0f); 
+					glTranslatef(-playerObj->pos.x, -playerObj->pos.y, 0.0f);
+					glBegin(GL_TRIANGLES);
+						glColor3fv(reinterpret_cast<float*>(&playerColor));
+						glVertex2fv(reinterpret_cast<float*>(&v0));
+						glColor4f(PLAYER_RECTANGLE_COLOR.r, PLAYER_RECTANGLE_COLOR.g, PLAYER_RECTANGLE_COLOR.b, PLAYER_RECTANGLE_ALPHA);
+						glVertex2fv(reinterpret_cast<float*>(&v1));
+						glVertex2fv(reinterpret_cast<float*>(&v2));
+					glEnd();
+				glPopMatrix();
+			}
 		};
 
 		class RenderProjectile
 		{
+		private:
+			//Tickf tick;
 		public:
+			//inline RenderProjectile(Tickf tick) : tick(tick)
+			//{}
 			void operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair);			
 		};
 

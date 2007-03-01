@@ -33,6 +33,6 @@ namespace Prototype
 	};
 
 	// used to set size of history list
-	static const size_t SERVER_N_HISTORY_TICKS = static_cast<size_t>((MAX_CLIENT_TO_SERVER_SEND_TIME + MAX_SERVER_TO_CLIENT_SEND_TIME) / TimeHandler::TICK_DELTA_TIME);
+	static const size_t SERVER_N_HISTORY_TICKS = static_cast<size_t>((MAX_CLIENT_TO_SERVER_LAG + MAX_SERVER_TO_CLIENT_LAG) / TimeHandler::TICK_DELTA_TIME);
 };
 #endif

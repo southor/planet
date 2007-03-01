@@ -10,16 +10,14 @@ namespace Prototype
 	{
 	private:
 		
-		//typedef std::vector<Obstacle*> ClientObstacleContainer;
-		//typedef std::list<PlayerObj*> ClientPlayerObjContainer;
-		//typedef std::list<Projectile*> ClientProjectileContainer;
-		typedef IdMap<GameObjId, Obstacle*> ClientObstacleContainer;
-		typedef IdMap<GameObjId, PlayerObj*> ClientPlayerObjContainer;
-		typedef IdMap<GameObjId, Projectile*> ClientProjectileContainer;
 
-		ClientObstacleContainer obstacles;
-		ClientPlayerObjContainer playerObjs;
-		ClientProjectileContainer projectiles;
+		//typedef IdMap<GameObjId, Obstacle*> ClientObstacleContainer;
+		//typedef IdMap<GameObjId, PlayerObj*> ClientPlayerObjContainer;
+		//typedef IdMap<GameObjId, Projectile*> ClientProjectileContainer;
+
+		ObstacleContainer obstacles;
+		PlayerObjContainer playerObjs;
+		ProjectileContainer projectiles;
 
 	public:
 
@@ -35,9 +33,11 @@ namespace Prototype
 
 
 		//void addPlayerObj(size_t playerId, size_t playerObjId, const Pos &playerPos);
-		void addPlayerObj(PlayerId playerId, const Pos &playerPos, bool isMe);
+		void addPlayerObj(PlayerId playerId, const Pos &playerPos, bool isMe, int tick);
 		void addObstacle(GameObjId obstacleId, const Rectangle &obstacleArea);
-		void addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId);
+		void addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId, int tick);
+
+		void updatePlayerObjMovement(PlayerId playerId, float deltaTime);
 
 	};
 };

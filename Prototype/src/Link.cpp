@@ -90,5 +90,12 @@ namespace Prototype
 		assert(hasPoppedMessage);
 		return poppedMessage.type;
 	}
+
+	// returns the tick member of the popped message
+	int Link::getPoppedTick() const
+	{
+		assert(hasPoppedMessage);
+		return poppedMessage.tick;
+	}
 };
 

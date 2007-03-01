@@ -4,12 +4,16 @@
 #include <string>
 #include <algorithm>
 
+//// solving LNK error
+//#include "WorldRenderer.cpp"
+
 namespace Prototype
 {
 
 	Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), connectionPhase(0),
 		mousePos(0.0f, 0.0f), aimMode(KEYBOARD)
 	{
+		predictionHandler.setWorldModel(&worldModel);
 	}
 
 	void Client::handleEvents()
@@ -42,6 +46,10 @@ namespace Prototype
 		if (timeHandler.isNewTick())
 		{
 			link.retrieve(timeHandler.getTime());
+			//printf("ServerToClientLag = ");
+			//printf(link.getCurrentLag());
+			//printf("\n");
+			std::cout << "ServerToClientLag = " << link.getCurrentLag() << "\n";
 
 			// Read messages from server
 			while(link.hasMessageOnQueue())
@@ -55,22 +63,34 @@ namespace Prototype
 						
 						//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
 						PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
-						playerObj->pos = updatePlayerObj->pos;
+						//playerObj->pos = updatePlayerObj->pos;
 						//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
+						
+
+						//Angle tmpAngle = playerObj->angle;
+						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle);
 						if (playerId == updatePlayerObj->playerId)
 						{
+							//playerObj->angle = tmpAngle;
 
+							// Use this PlayerObj Update message for Prediction.
+							// Do not predict to this tick yet, we havn't collected the user input for this input yet.
+							int predictToTick = static_cast<int>(timeHandler.getStepTick()) - 1;
+							predictionHandler.predict(playerId, link.getPoppedTick(), predictToTick);
 						}
-						else
-						{
-							playerObj->angle = updatePlayerObj->angle;
-						}
+							
+						//playerObj->pos = updatePlayerObj->pos;
+						//if (playerId != updatePlayerObj->playerId)
+						//{
+						//	playerObj->angle = updatePlayerObj->angle;
+						//}
+						//playerObj->storeToTickData(
 					}
 					break;
 				case ADD_PLAYER_OBJ:
 					{
 						AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
-						addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos);				
+						addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, link.getPoppedTick());				
 
 						if (connectionPhase == ClientPhase::GET_ADDPLAYEROBJ)
 							connectionPhase++;
@@ -90,14 +110,16 @@ namespace Prototype
 						printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
 
 						AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
-						worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId);
+						worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId, link.getPoppedTick());
 					}
 					break;
 				case UPDATE_PROJECTILE:
 					{
 						UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
 						Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
-						projectile->setPos(updateProjectile->pos);
+						//projectile->setPos(updateProjectile->pos);
+						projectile->setUpdateData(link.getPoppedTick(), projectile->getPos());
+						
 					}
 					break;
 				case REMOVE_PROJECTILE:
@@ -163,7 +185,7 @@ namespace Prototype
 							Projectile::Type weapon = playerObj->getCurrentWeapon();
 							playerObj->shoot(time);
 							ShootCmd shootCmd(playerId, weapon);
-							link.pushMessage(shootCmd, timeHandler.getTime(), timeHandler.getStepTick());
+							link.pushMessage(shootCmd, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
 						}
 					}
 					if (actionCmd == Cmds::SWITCH_WEAPON)
@@ -187,9 +209,13 @@ namespace Prototype
 					
 					UserCmd userCmd(stateCmds, aimangle);
 					//printf("CLIENT: sending usercmd with tick: %f @ time %d\n", timeHandler.getStepTick(), timeHandler.getStepTime());
-					link.pushMessage(userCmd, timeHandler.getTime(), timeHandler.getStepTick());
+					link.pushMessage(userCmd, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
+					predictionHandler.setUserCmd(userCmd, static_cast<int>(timeHandler.getStepTick()));
 					
 				}
+
+				// perform final prediction
+				predictionHandler.predict(playerId, static_cast<int>(timeHandler.getStepTick()) + 1);
 
 				// transmit any messages
 				link.transmit();
@@ -203,7 +229,7 @@ namespace Prototype
 		{
 			// send init package to server
 			InitClient initClient = InitClient(color);
-			link.pushMessage(initClient, timeHandler.getTime(), timeHandler.getStepTick());
+			link.pushMessage(initClient, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
 			link.transmit();
 
 			connectionPhase++;
@@ -234,7 +260,7 @@ namespace Prototype
 		{
 			// send ping to server with current client time
 			SyncPing syncPing(playerId, timeHandler.getTime());
-			link.pushMessage(syncPing, timeHandler.getTime(), timeHandler.getStepTick());
+			link.pushMessage(syncPing, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
 			link.transmit();
 
 			connectionPhase++;
@@ -281,7 +307,8 @@ namespace Prototype
 		worldRenderer.setupProjection();
 		if (worldModel.getPlayerObjs().exists(playerId))
 		{
-			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);
+			worldModel.updateToTickData(timeHandler.getStepTick());
+			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);//, timeHandler.getStepTick());
 		}
 
 
@@ -315,7 +342,7 @@ namespace Prototype
 		//WorldRenderer::renderLine(bottomTest, 1.0f, 1.0f);
 	}
 
-	void Client::addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos)
+	void Client::addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, int tick)
 	{
 		
 		//size_t playerId = players.getSize();
@@ -327,7 +354,7 @@ namespace Prototype
 		// if this is me
 		bool isMe = (playerId == this->playerId);
 
-		worldModel.addPlayerObj(playerId, playerPos, isMe);
+		worldModel.addPlayerObj(playerId, playerPos, isMe, tick);
 		
 		
 		if (isMe)
@@ -344,6 +371,8 @@ namespace Prototype
 		//this->messageReciever = messageReciever;
 		link.setMessageSender(messageSender);
 		link.setMessageReciever(messageReciever);
+
+		//link.setSimulatedRecieveLag(2);
 	}
 
 	KeyHandler* Client::getKeyHandler()

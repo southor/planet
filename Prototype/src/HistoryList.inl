@@ -23,7 +23,7 @@ namespace Prototype
 	{
 		assert(tick1 != tick2); // would cause a division by zero
 		
-		Tickf totalDiff = static_cast<Tickf>(tick1) - static_cast<Tickf>(tick2);
+		Tickf totalDiff = static_cast<Tickf>(tick2) - static_cast<Tickf>(tick1);
 		Tickf resultDiff = resultTick - static_cast<Tickf>(tick1);
 		float tValue = static_cast<float>(resultDiff) / static_cast<float>(totalDiff);
 
@@ -31,7 +31,8 @@ namespace Prototype
 	}
 
 	template <typename T>
-	const T& HistoryList<T>::getData(int tick)
+	//const T& HistoryList<T>::getData(int tick)
+	void HistoryList<T>::getData(int tick, T &data)
 	{
 		int firstTickTmp = firstTick();
 		
@@ -48,26 +49,31 @@ namespace Prototype
 			if (tick1 == tick2) 
 			{
 				// avoiding division by zero
-				return tickToDataRef(tick1); 
+				data = tickToDataRef(tick1);
+				//return tickToDataRef(tick1); 
 			}
 			else
 			{
-				//T& data = tickToDataRef(tick);
-				T data;
-				interExtraPolate(tick1, tickToDataRef(tick1), tick2, tickToDataRef(tick2), static_cast<Tickf>(tick), data);
-				setData(tick, data);
-				return tickToDataRef(tick);
+				
+
+				//T data;
+				interExtraPolate(tick1, tickToDataRef(tick1), tick2, tickToDataRef(tick2), static_cast<Tickf>(tick), data);				
+				//setData(tick, data);
+				//return tickToDataRef(tick);
+				
 			}
 		}
 		else if (tick < firstTickTmp)
 		{
 			// use first stored value
-			return tickToDataRef(firstTickTmp);
+			data = tickToDataRef(firstTickTmp);
+			//return tickToDataRef(firstTickTmp);
 		}
 		else
 		{
 			// just get data
-			return tickToDataRef(tick);
+			data = tickToDataRef(tick);
+			//return tickToDataRef(tick);
 		}
 	}
 
@@ -77,7 +83,16 @@ namespace Prototype
 		int tick1 = static_cast<int>(tick);
 		int tick2 = tick1 + 1;
 
-		interExtraPolate(tick1, getData(tick1), tick2, getData(tick2), tick, data);
+		// This code Will be unessary ineffective at extrapolation
+		// but will work fine with interpolation.
+		
+		T tick1Data;
+		getData(tick1, tick1Data);
+		T tick2Data;
+		getData(tick2, tick2Data);
+
+		interExtraPolate(tick1, tick1Data, tick2, tick2Data, tick, data);
+		//interExtraPolate(tick1, getData(tick1), tick2, getData(tick2), tick, data);
 	}
 
 	template <typename T>

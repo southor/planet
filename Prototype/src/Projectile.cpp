@@ -8,9 +8,12 @@ namespace Prototype
 	const Projectile::Properties Projectile::properties[2] = {{1000.0f/1000.0f, 20, 0, 0, 75},
 															   {200.0f/1000.0f, 100, 50, 100.0f, 500}};
 
-	Projectile::Projectile(Type type, const Pos &pos, Angle angle, PlayerId shooterId, size_t nHistoryTicks)
+	Projectile::Projectile(Type type, const Pos &pos, Angle angle, PlayerId shooterId, size_t nHistoryTicks, int tick)
 		: historyList(nHistoryTicks), type(type), pos(pos), angle(angle), shooterId(shooterId)
-	{}
+	{
+		// insert data into history list
+		historyList.setData(tick, pos);
+	}
 
 	Line Projectile::getLine() const
 	{
