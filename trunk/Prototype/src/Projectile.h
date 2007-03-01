@@ -40,7 +40,7 @@ namespace Prototype
 
 		Pos pos;
 
-		Projectile(Type type, const Pos &pos, Angle angle, PlayerId shooterId, size_t nHistoryTicks);
+		Projectile(Type type, const Pos &pos, Angle angle, PlayerId shooterId, size_t nHistoryTicks, int tick);
 
 		~Projectile()										{}
 
@@ -64,7 +64,7 @@ namespace Prototype
 
 		inline void setUpdateData(int tick, const Pos &pos)	{ historyList.setData(tick, pos); }
 		inline void storeToTickData(int tick)				{ historyList.setData(tick, pos); }
-		inline void updateToTickData(int tick)				{ pos = historyList.getData(tick); }
+		inline void updateToTickData(int tick)				{ historyList.getData(tick, pos); }
 		void updateToTickData(Tickf tick)					{ historyList.getData(tick, pos); }
 
 	private:

@@ -10,6 +10,7 @@
 #include "UserInputHandler.h"
 #include "ClientTimeHandler.h"
 #include "ViewportHandler.h"
+#include "PredictionHandler.h"
 
 namespace Prototype
 {
@@ -46,7 +47,7 @@ namespace Prototype
 		bool initConnection();
 		void render();
 		
-		void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos);
+		void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, int tick);
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		KeyHandler* getKeyHandler();
@@ -86,6 +87,7 @@ namespace Prototype
 		ClientWorldModel worldModel;
 		WorldRenderer worldRenderer;
 		ClientPlayers players;
+		PredictionHandler predictionHandler;
 
 		PlayerId playerId;
 		Color color;	// should this exist or should the client have an Player object before we connect to server?

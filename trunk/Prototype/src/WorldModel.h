@@ -17,6 +17,10 @@ namespace Prototype
 	{
 	public:
 
+		static const bool MOVE_ALIGNED_TO_ANGLE_DEFAULT = false;
+		bool moveAlignedToAngle;
+		
+
 		static const Vec WORLD_SIZE;		
 
 		//typedef std::vector<Obstacle*> ObstacleContainer;
@@ -27,6 +31,8 @@ namespace Prototype
 		typedef IdMap<GameObjId, Projectile*> ProjectileContainer;
 
 
+		WorldModel() : moveAlignedToAngle(MOVE_ALIGNED_TO_ANGLE_DEFAULT)
+		{}
 
 		virtual ~WorldModel()		{}
 
@@ -39,6 +45,13 @@ namespace Prototype
 		virtual const ObstacleContainer& getObstacles() const = 0;
 		virtual const PlayerObjContainer& getPlayerObjs() const = 0;
 		virtual const ProjectileContainer& getProjectiles() const = 0;
+
+		// history functions
+		void storeToTickData(int tick);
+		void updateToTickData(int tick);
+		void updateToTickData(Tickf tick);
+
+		
 
 		bool isConsistent();
 
@@ -68,6 +81,39 @@ namespace Prototype
 		{
 		public:
 			void operator ()(const ProjectileContainer::Pair &projectilePair)	{ delete projectilePair.second; }
+		};
+
+
+		class Move
+		{
+		protected:
+			ObstacleContainer *obstacles;
+			float deltaTime; // Time in milliseconds since last move.
+			
+			Obstacle* findAnyOverlap(const Rectangle &rectangle);
+		public:
+			// @param deltaTime Time in milliseconds since last move.
+			Move(ObstacleContainer *obstacles, float deltaTime)
+				: obstacles(obstacles), deltaTime(deltaTime)
+			{}
+
+			//// @param deltaTime Time in milliseconds since last move.
+			//Move(ObstacleContainer *obstacles, PlayerObjContainer *playerObjs, float deltaTime)
+			//	: obstacles(obstacles), playerObjs(playerObjs), deltaTime(deltaTime), moveAlignedToAngle(false)
+			//{}
+		};
+
+		class MovePlayerObj : public Move
+		{
+		protected:
+			bool moveAlignedToAngle;
+		public:
+			// @param deltaTime Time in milliseconds since last move.
+			MovePlayerObj(ObstacleContainer *obstacles, float deltaTime, bool moveAlignedToAngle)
+				: Move(obstacles, deltaTime), moveAlignedToAngle(moveAlignedToAngle)
+			{}
+
+			void operator ()(const PlayerObjContainer::Pair &playerObjPair);
 		};
 	};
 };

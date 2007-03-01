@@ -1,5 +1,7 @@
 
 #include "PlayerObj.h"
+#include "StateCmds.h"
+#include "Cmds.h"
 
 namespace Prototype
 {
@@ -14,7 +16,7 @@ namespace Prototype
 	//	 strafingLeft(false), strafingRight(false)
 	//{}
 
-	PlayerObj::PlayerObj(const Pos &pos, size_t nHistoryTicks)
+	PlayerObj::PlayerObj(const Pos &pos, size_t nHistoryTicks, int tick)
 		: historyList(nHistoryTicks), pos(pos), angle(Angle::PI/2.0f), health(100),
 		 movingForward(false), movingBackward(false),
 		 strafingLeft(false), strafingRight(false),
@@ -22,7 +24,10 @@ namespace Prototype
 	{
 		setAmmoSupply(0);
 		if (N_WEAPONS >= 2) ammo[1] = 10;
-		
+
+		// insert data into history list
+		UpdateData firstTickData(pos, angle);
+		historyList.setData(tick, firstTickData);
 	}
 
 	void PlayerObj::setAmmoSupply(int seed)
@@ -82,7 +87,8 @@ namespace Prototype
 
 	void PlayerObj::updateToTickData(int tick)
 	{
-		UpdateData data(historyList.getData(tick));
+		UpdateData data;
+		historyList.getData(tick, data);
 		pos = data.pos;
 		angle = data.angle;
 	}
@@ -93,6 +99,17 @@ namespace Prototype
 		historyList.getData(tick, data);
 		pos = data.pos;
 		angle = data.angle;
+	}
+
+	void PlayerObj::setUserCmd(const UserCmd *userCmd)
+	{
+		StateCmds stateCmds(userCmd->stateCmds);
+
+		movingForward = stateCmds.getCurrentState(Cmds::FORWARD);
+		movingBackward = stateCmds.getCurrentState(Cmds::BACKWARD);
+		strafingLeft = stateCmds.getCurrentState(Cmds::LEFT);
+		strafingRight = stateCmds.getCurrentState(Cmds::RIGHT);
+		angle = userCmd->aimAngle;
 	}
 
 }

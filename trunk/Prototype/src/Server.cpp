@@ -1,10 +1,14 @@
 #include "Server.h"
 #include "common.h"
 
+//// resolving LNK error
+//#include "WorldRenderer.cpp"
+
 namespace Prototype
 {
 
-	Server::Server() : lastUpdateTime(0), ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj)
+	Server::Server() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), lastUpdateTime(0),
+						ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj)
 	{
 		// outer walls
 		static const float WALL_THICKNESS = 500.0f;
@@ -199,16 +203,18 @@ namespace Prototype
 					if (messageType == USER_CMD)
 					{
 						UserCmd *userCmd = player.link.getPoppedData<UserCmd>();
-						StateCmds stateCmds(userCmd->stateCmds);
+						//StateCmds stateCmds(userCmd->stateCmds);
 						
 						//printf("SERVER: handling user_cmd @ %d, left: %d\n", getTimeHandler()->getTime(), stateCmds.getCurrentState(Cmds::LEFT));
 						
 						PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-						playerObj->movingForward = stateCmds.getCurrentState(Cmds::FORWARD);
-						playerObj->movingBackward = stateCmds.getCurrentState(Cmds::BACKWARD);
-						playerObj->strafingLeft = stateCmds.getCurrentState(Cmds::LEFT);
-						playerObj->strafingRight = stateCmds.getCurrentState(Cmds::RIGHT);
-						playerObj->angle = userCmd->aimangle;
+						playerObj->setUserCmd(userCmd);
+
+						//playerObj->movingForward = stateCmds.getCurrentState(Cmds::FORWARD);
+						//playerObj->movingBackward = stateCmds.getCurrentState(Cmds::BACKWARD);
+						//playerObj->strafingLeft = stateCmds.getCurrentState(Cmds::LEFT);
+						//playerObj->strafingRight = stateCmds.getCurrentState(Cmds::RIGHT);
+						//playerObj->angle = userCmd->aimangle;
 					}
 					else if (messageType == SHOOT_CMD)
 					{
@@ -220,7 +226,8 @@ namespace Prototype
 						Projectile *projectile = (worldModel.getProjectiles())[projectileId];
 						
 						// send projectile to all clients
-						AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(), projectile->getAngle().getFloat(), projectile->getShooterId());
+						AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
+													projectile->getAngle().getFloat(), projectile->getShooterId());
 						pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 					}
 				}
@@ -230,7 +237,7 @@ namespace Prototype
 			worldModel.updatePlayerObjMovements(deltaTimef);
 			worldModel.updateProjectileMovements(deltaTimef, players);
 
-			// Send playerObj updates
+			// Send playerObj updates and store state to history
 			WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
 			WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
@@ -242,16 +249,22 @@ namespace Prototype
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle.getFloat());
 
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+
+				playerObj->storeToTickData(getTimeHandler()->getTick());
 			}
 
-			// Send projectile updates
+			// Send projectile updates and store state to history
 			WorldModel::ProjectileContainer::Iterator projectilesIt = worldModel.getProjectiles().begin();
 			WorldModel::ProjectileContainer::Iterator projectilesEnd = worldModel.getProjectiles().end();
 			for(; projectilesIt != projectilesEnd; ++projectilesIt)
 			{			
-				UpdateProjectile updateProjectile(projectilesIt->first, projectilesIt->second->getPos());
+				Projectile *projectile = projectilesIt->second;
+				
+				UpdateProjectile updateProjectile(projectilesIt->first, projectile->getPos());
 				
 				pushMessageToAll(players, updateProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+
+				projectile->storeToTickData(getTimeHandler()->getTick());
 			}
 
 			transmitAll(players);

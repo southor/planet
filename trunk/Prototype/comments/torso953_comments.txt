@@ -15,3 +15,4 @@ in real game: use a macro to be able to switch between call by reference and cal
 Could need log messages that is sent, for debugging.
 Not put special includes in common.h? Only those who needs it?
 Maybe use a template for keeping an object with it's history list and add necessary functions.
+In Client.cpp, maybe timeHandler.reset() should not be called at START_GAME.

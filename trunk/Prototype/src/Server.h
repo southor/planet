@@ -10,6 +10,9 @@
 #include "StateCmds.h"
 #include "Cmds.h"
 
+#include "ViewportHandler.h"
+#include "WorldRenderer.h"
+
 namespace Prototype
 {
 	namespace ServerPhase
@@ -46,12 +49,32 @@ namespace Prototype
 		// start game, no more clients can join
 		void startGame();
 
+
+		// (server debug rendering)
+		inline void setViewport(int x, int y, int w, int h)
+		{
+			viewportHandler.screenRenderPos.x = x;
+			viewportHandler.screenRenderPos.y = y;
+			viewportHandler.screenRenderSize.x = w;
+			viewportHandler.screenRenderSize.y = h;
+		}
+		inline void useViewport()			 { viewportHandler.useViewport(); }
+		void render()
+		{
+			worldRenderer.setupProjection();			
+			PlayerId playerIdFollow(1);
+			if (worldModel.getPlayerObjs().exists(playerIdFollow))
+			{
+				worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerIdFollow]);//, static_cast<Tickf>(getTimeHandler()->getTick()));
+			}
+		}
+
 	private:
 		
 		
 		//size_t addPlayer(const ServerPlayer &player);
 
-
+		
 
 		ServerWorldModel worldModel;
 		ServerPlayers players;
@@ -61,6 +84,12 @@ namespace Prototype
 		int lastUpdateTime;
 
 		//std::vector<ServerClient> clients;
+
+
+		// stores viewport parameters (server debug rendering)
+		ViewportHandler viewportHandler;
+		// worldrenderer (server debug rendering)
+		WorldRenderer worldRenderer;
 
 	};
 };

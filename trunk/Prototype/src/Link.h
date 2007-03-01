@@ -58,6 +58,8 @@ namespace Prototype
 			destroyPoppedMessage();
 		}
 
+		int getCurrentLag() const					{ return messageReciever->getCurrentLag(); }
+
 		// --------------------------------- sending messages ------------------------------
 
 		void transmit() const; // transmits all messages to the send queue
@@ -82,13 +84,16 @@ namespace Prototype
 		void retrieve(int currentTime);
 		
 		int popMessage(); // returns the type member of the popped message, (will destroy the last message)	
-		int getPoppedType() const; // returns the type member of the popped message		
+		int getPoppedType() const; // returns the type member of the popped message	
+		int getPoppedTick() const; // returns the tick member of the popped message
 		
 		template <class Cmd>
 		Cmd* getPoppedData() const
 		{
 			return reinterpret_cast<Cmd*>(getPoppedData());
 		}
+
+		void setSimulatedRecieveLag(int simulatedRecieveLag)			{ messageReciever->setSimulatedLag(simulatedRecieveLag); }
 	};
 };
 

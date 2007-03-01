@@ -16,7 +16,7 @@ namespace Prototype
 
 	void ServerWorldModel::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
-		playerObjs.add(playerId, new PlayerObj(playerPos, 1));
+		playerObjs.add(playerId, new PlayerObj(playerPos, 1, getTimeHandler()->getTick()));
 	}
 
 	GameObjId ServerWorldModel::addObstacle(const Rectangle &obstacleArea)
@@ -29,8 +29,8 @@ namespace Prototype
 
 	void ServerWorldModel::updatePlayerObjMovements(float deltaTime)
 	{
-		MovePlayerObj move(&obstacles, *this, deltaTime, moveAlignedToAngle);
-		ForEach(playerObjs.begin(), playerObjs.end(), move);
+		MovePlayerObj move(&getObstacles(), deltaTime, moveAlignedToAngle);
+		ForEach(getPlayerObjs().begin(), getPlayerObjs().end(), move);
 	}
 
 	void ServerWorldModel::updateProjectileMovements(float deltaTime, ServerPlayers &players)
@@ -62,90 +62,7 @@ namespace Prototype
 		}
 	}
 
-	Obstacle* ServerWorldModel::Move::findAnyOverlap(const Rectangle &rectangle)
-	{
-		assert(obstacles);
-		ServerObstacleContainer::Iterator it = obstacles->begin();
-		ServerObstacleContainer::Iterator end = obstacles->end();		
-		for(; it != end; ++it)
-		{
-			Obstacle *obstacle = it->second;
-			if (obstacle->overlapping(rectangle)) return obstacle;
-		}
-		return NULL;
-	}
 
-	void ServerWorldModel::MovePlayerObj::operator ()(const PlayerObjContainer::Pair &playerObjPair)
-	{
-		float fbMoveDistance = deltaTime * PlayerObj::FORWARD_BACKWARD_SPEED;
-		float strafeMoveDistance = deltaTime * PlayerObj::STRAFE_SPEED;
-
-		// ----- produce a movevector from current actions and angle of playerObj ------
-
-		PlayerObj *playerObj = playerObjPair.second;
-		Angle moveAngle;
-		if (moveAlignedToAngle) moveAngle = playerObj->angle;
-		else moveAngle = PI_F/2.0f;
-		Vec moveVec(0.0f, 0.0f);
-		if (playerObj->movingForward == true)
-		{
-			moveVec += Vec(cos(moveAngle.getFloat()) * fbMoveDistance, sin(moveAngle.getFloat()) * fbMoveDistance);
-		}
-		if (playerObj->movingBackward == true)
-		{
-			moveVec += Vec(cos((moveAngle + Angle::PI).getFloat()) * fbMoveDistance, sin((moveAngle + Angle::PI).getFloat()) * fbMoveDistance);
-		}
-		if (playerObj->strafingLeft == true)
-		{
-			moveVec += Vec(cos((moveAngle + Angle::PI/2.0f).getFloat()) * strafeMoveDistance, sin((moveAngle + Angle::PI/2.0f).getFloat()) * strafeMoveDistance);
-		}
-		if (playerObj->strafingRight == true)
-		{
-			moveVec += Vec(cos((moveAngle - Angle::PI/2.0f).getFloat()) * strafeMoveDistance, sin((moveAngle - Angle::PI/2.0f).getFloat()) * strafeMoveDistance);
-		}
-
-		Vec zeroVec(0.0f, 0.0f);		
-		if (moveVec != zeroVec)
-		{
-			// ----- fix any collisions with obstacles ------
-			Vec usedMoveVec(moveVec);
-			
-			Rectangle playerRectangle;
-			playerObj->getRectangle(playerRectangle);
-			assert(findAnyOverlap(playerRectangle) == 0);
-
-			Rectangle tmpRectangle(playerRectangle);			
-			Obstacle *obstacle;
-		
-			tmpRectangle.pos = playerRectangle.pos + usedMoveVec;
-			obstacle = findAnyOverlap(tmpRectangle);
-
-			if (obstacle)
-			{
-				usedMoveVec.x = 0.0f;
-				tmpRectangle.pos = playerRectangle.pos + usedMoveVec;
-				
-				if (obstacle->overlapping(tmpRectangle))
-				{
-					usedMoveVec.x = moveVec.x;
-					usedMoveVec.y = 0.0f;
-					tmpRectangle.pos = playerRectangle.pos + usedMoveVec;
-					
-					if (findAnyOverlap(tmpRectangle))
-					{
-						usedMoveVec = zeroVec;
-					}
-				}
-				else if (findAnyOverlap(tmpRectangle))
-				{
-					usedMoveVec = zeroVec;
-				}
-			}
-
-			// finally move player
-			playerObj->pos += usedMoveVec;
-		}
-	}
 
 	void ServerWorldModel::MoveProjectile::operator ()(const ProjectileContainer::Pair &projectilePair)
 	{
@@ -165,8 +82,8 @@ namespace Prototype
 		float minHitDist = 2.0f;			
 		GameObjId obstacleIdHit;
 
-		ServerObstacleContainer::Iterator obstacleIt = obstacles->begin();
-		ServerObstacleContainer::Iterator obstacleEnd = obstacles->end();		
+		ObstacleContainer::Iterator obstacleIt = obstacles->begin();
+		ObstacleContainer::Iterator obstacleEnd = obstacles->end();		
 		for(; obstacleIt != obstacleEnd; ++obstacleIt)
 		{
 			float localMinHitDist =  projectileLine.minCrossPoint(*(obstacleIt->second));
@@ -180,8 +97,8 @@ namespace Prototype
 		bool hitPlayerObj = false;
 		GameObjId playerIdHit;
 
-		ServerPlayerObjContainer::Iterator playerObjIt = playerObjs->begin();
-		ServerPlayerObjContainer::Iterator playerObjEnd = playerObjs->end();		
+		PlayerObjContainer::Iterator playerObjIt = playerObjs->begin();
+		PlayerObjContainer::Iterator playerObjEnd = playerObjs->end();		
 		for(; playerObjIt != playerObjEnd; ++playerObjIt)
 		{
 			if (playerObjIt->first != static_cast<GameObjId>(projectile->getShooterId())) // cannot hit the shooter itself
@@ -270,7 +187,7 @@ namespace Prototype
 
 		//GameObjId projectileId = getProjectiles().findFreeId();
 		GameObjId projectileId = getIdGenerator()->generateGameObjId();
-		getProjectiles().add(projectileId, new Projectile(weapon, pos, angle, playerId, SERVER_N_HISTORY_TICKS));
+		getProjectiles().add(projectileId, new Projectile(weapon, pos, angle, playerId, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick()));
 
 		return projectileId;
 	}

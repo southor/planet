@@ -14,7 +14,7 @@ namespace Prototype
 	bool SHOW_CLIENT_2 = false;
 	bool SHOW_SERVER = false;
 
-	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(640, 480);
+	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(960, 480);
 
 	Game::Game()
 	{
@@ -306,7 +306,7 @@ namespace Prototype
 			//gui.gui->logic();
 
 			// RENDER
-			render(0.0f);
+			render(0);
 
 			SDL_Delay(1);
 		}
@@ -333,6 +333,12 @@ namespace Prototype
 		{
 			client2.useViewport();
 			client2.render();
+		}
+
+		if (SHOW_SERVER)
+		{
+			server.useViewport();
+			server.render();
 		}
 		
 		// guichan
@@ -403,11 +409,11 @@ namespace Prototype
 		SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
 
 		
-		unsigned int flags = SDL_HWSURFACE | SDL_OPENGL; // |SDL_FULLSCREEN;
-		unsigned int w = WINDOW_SIZE.x;
-		unsigned int h = WINDOW_SIZE.y;
+		uint flags = SDL_HWSURFACE | SDL_OPENGL; // |SDL_FULLSCREEN;
+		uint w = WINDOW_SIZE.x;
+		uint h = WINDOW_SIZE.y;
 
-		unsigned int bpp = 32;	
+		uint bpp = 32;	
 
 		screen = SDL_SetVideoMode(w, h, bpp, flags);
 		if (screen == 0)
@@ -442,9 +448,15 @@ namespace Prototype
 		//glDepthFunc(GL_LEQUAL);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-		// ------- set viewports -----------
-		client1.setViewport(0, h/4, w/2, (h*3)/4);
-		client2.setViewport(w/2, h/4, w/2, (h*3)/4);
+		// ------- set viewports -----------		
+		{
+			static const uint BORDER_WIDTH = 1;
+			uint w2 = w - BORDER_WIDTH*2;
+			
+			client1.setViewport(0, h/4, w2/3, (h*3)/4);
+			client2.setViewport(w2/3 + BORDER_WIDTH, h/4, w2/3, (h*3)/4);
+			server.setViewport(((w2*2)/3) + BORDER_WIDTH*2, h/4, w2/3, (h*3)/4);
+		}
 
 		
 

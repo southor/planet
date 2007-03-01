@@ -6,6 +6,7 @@
 #include "Projectile.h"
 #include "HistoryList.inl"
 #include "Angle.h"
+#include "messages.h"
 
 namespace Prototype
 {
@@ -66,7 +67,7 @@ namespace Prototype
 		bool strafingRight;
 
 		//PlayerObj(size_t playerId, const Pos &pos);
-		PlayerObj(const Pos &pos, size_t nHistoryTicks);
+		PlayerObj(const Pos &pos, size_t nHistoryTicks, int tick);
 
 		~PlayerObj()										{}
 
@@ -99,6 +100,10 @@ namespace Prototype
 		void updateToTickData(int tick);
 
 		void updateToTickData(Tickf tick);
+
+		inline int getLastStoredTick()						{ return historyList.getLastTick(); }
+
+		void setUserCmd(const UserCmd *userCmd);
 
 	};
 };

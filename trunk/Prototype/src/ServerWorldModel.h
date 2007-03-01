@@ -14,43 +14,37 @@ namespace Prototype
 	{
 	private:
 
-		//typedef std::vector<Obstacle*> ServerObstacleContainer;
-		//typedef std::list<PlayerObj*> ServerPlayerObjContainer;
-		//typedef std::list<Projectile*> ServerProjectileContainer;
-		typedef IdMap<GameObjId, Obstacle*> ServerObstacleContainer;
-		typedef IdMap<GameObjId, PlayerObj*> ServerPlayerObjContainer;
-		typedef IdMap<GameObjId, Projectile*> ServerProjectileContainer;		
 
-		ServerObstacleContainer obstacles;
-		ServerPlayerObjContainer playerObjs;
-		ServerProjectileContainer projectiles;
+/*		typedef IdMap<GameObjId, Obstacle*> ServerObstacleContainer;
+		typedef IdMap<GameObjId, PlayerObj*> ServerPlayerObjContainer;
+		typedef IdMap<GameObjId, Projectile*> ServerProjectileContainer;	*/	
+
+		ObstacleContainer obstacles;
+		PlayerObjContainer playerObjs;
+		ProjectileContainer projectiles;
 
 		typedef std::vector<Pos> RespawnPoss;
 		RespawnPoss respawnPoss;
 
-		class Move : public ServerGlobalAccess
-		{
-		protected:
-			ServerObstacleContainer *obstacles;
-			float deltaTime; // Time in milliseconds since last move.
-			ServerPlayers *players;
-			ServerPlayerObjContainer *playerObjs;
-			std::vector<RemoveProjectile> projectilesHit;
-			RespawnPoss *respawnPoss;
-			bool moveAlignedToAngle;
-			
 
-			Obstacle* findAnyOverlap(const Rectangle &rectangle);
+
+		class MoveProjectile : public Move, public ServerGlobalAccess
+		{
+		private:
+
+			RespawnPoss *respawnPoss;
+			ServerPlayers *players;
+			PlayerObjContainer *playerObjs;
+
+			std::vector<RemoveProjectile> projectilesHit;
+
 		public:
 			// @param deltaTime Time in milliseconds since last move.
-			Move(ServerObstacleContainer *obstacles, const ServerGlobalAccess &serverGlobalAccess, float deltaTime, bool moveAlignedToAngle)
-				: obstacles(obstacles), players(0), ServerGlobalAccess(serverGlobalAccess), playerObjs(0), respawnPoss(0), deltaTime(deltaTime), moveAlignedToAngle(moveAlignedToAngle)
+			MoveProjectile(ObstacleContainer *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, PlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
+				: Move(obstacles, deltaTime), ServerGlobalAccess(serverGlobalAccess), respawnPoss(respawnPoss), players(players), playerObjs(playerObjs)
 			{}
 
-			// @param deltaTime Time in milliseconds since last move.
-			Move(ServerObstacleContainer *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, ServerPlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
-				: obstacles(obstacles), players(players), ServerGlobalAccess(serverGlobalAccess), playerObjs(playerObjs), respawnPoss(respawnPoss), deltaTime(deltaTime), moveAlignedToAngle(false)
-			{}
+			void operator ()(const ProjectileContainer::Pair &projectilePair);
 
 			inline std::vector<RemoveProjectile>& getProjectilesHit()	
 			{
@@ -58,34 +52,12 @@ namespace Prototype
 			}
 		};
 
-		class MovePlayerObj : public Move
-		{
-		public:
-			// @param deltaTime Time in milliseconds since last move.
-			MovePlayerObj(ServerObstacleContainer *obstacles, const ServerGlobalAccess &serverGlobalAccess, float deltaTime, bool moveAlignedToAngle)
-				: Move(obstacles, serverGlobalAccess, deltaTime, moveAlignedToAngle)
-			{}
-
-			void operator ()(const PlayerObjContainer::Pair &playerObjPair);
-		};
-
-		class MoveProjectile : public Move
-		{
-		public:
-			// @param deltaTime Time in milliseconds since last move.
-			MoveProjectile(ServerObstacleContainer *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, ServerPlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
-				: Move(obstacles, players, serverGlobalAccess, playerObjs, respawnPoss, deltaTime)
-			{}
-
-			void operator ()(const ProjectileContainer::Pair &projectilePair);
-		};
-
 	public:
 
-		bool moveAlignedToAngle;
+		
 
 		ServerWorldModel(ServerGlobalObj *serverGlobalObj)
-			: ServerGlobalAccess(serverGlobalObj), moveAlignedToAngle(false)
+			: ServerGlobalAccess(serverGlobalObj)
 		{}
 
 		~ServerWorldModel();

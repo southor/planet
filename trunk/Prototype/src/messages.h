@@ -197,10 +197,35 @@ namespace Prototype
 		//float viewangle;
 
 		int stateCmds; // bitpattern
-		float aimangle;
+		float aimAngle;
 
-		UserCmd(int stateCmds, float aimangle) : stateCmds(stateCmds), aimangle(aimangle)
+
+
+		UserCmd()
 		{}
+
+		UserCmd(int stateCmds, float aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
+		{}
+
+		
+		
+		UserCmd operator +(const UserCmd &rh) const
+		{			
+			
+			UserCmd result(stateCmds | rh.stateCmds, aimAngle + rh.aimAngle);
+			return result;
+		}
+
+		UserCmd operator -(const UserCmd &rh) const
+		{
+			UserCmd result(stateCmds & rh.stateCmds, aimAngle - rh.aimAngle);
+			return result;
+		}
+
+		UserCmd operator *(float rh) const
+		{			
+			return *this;
+		}
 
 	};
 
