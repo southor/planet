@@ -34,25 +34,28 @@ namespace Prototype
 
 		static const int MAX_N_PLAYERS = 2;
 
-		enum AimMode
-		{
-			KEYBOARD,
-			MOUSE			
-		};
+
 
 		Client();
 
-		void handleEvents();
-		void logic();
+		
+		//void handleEvents();
+		//void logic();		
+		void handleUserInput();
+		void handleServerMessages();
+		void runStep();
+
 		bool initConnection();
 		void render();
+		
 		
 		void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, int tick);
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		KeyHandler* getKeyHandler();
-		UserInputHandler* getUserInput()	{ return &userInput; }
-		ClientTimeHandler* getTimeHandler() { return &timeHandler; }
+		inline UserInputHandler* getUserInput()			{ return &userInput; }
+		inline ClientTimeHandler* getTimeHandler()		{ return &timeHandler; }
+		inline bool getRequestRender()					{ return requestRender; }
 		
 		void setPlayerId(PlayerId playerId) { this->playerId = playerId; }
 		void setColor(Color color) { this->color = color; }
@@ -65,15 +68,13 @@ namespace Prototype
 		}
 		inline void useViewport()			 { viewportHandler.useViewport(); }
 		void setCurrentMousePos(Vec2<int> mouseScreenPos);
-		inline void setAimMode(AimMode aimMode)				{ this->aimMode = aimMode; }
+		//inline void setAimMode(UserInputHandler::AimMode aimMode)				{ userInputHandler. }
 		
 
 	private:
 
 		
-		Pos mousePos; // mouse position in game coordinates
-		bool mousePosChanged;
-		AimMode aimMode; // aiming for shooting, mouse or keyboard
+		
 
 		Link link;
 		size_t connectionPhase;
@@ -94,9 +95,22 @@ namespace Prototype
 
 		// stores viewport parameters
 		ViewportHandler viewportHandler;
+		bool requestRender;
 
-		// will set player object angle if player aiming is mouse controlled
-		void updatePlayerObjAngle();
+		///**
+		// * will set player object angle if player aiming is mouse controlled
+		// * @param mouseScreenPos The mouse position in screen coordinates
+		// */
+		//void updatePlayerObjAngle(Vec2<int> mouseScreenPos);
+
+		/**
+		 * Will calculate the player obj aiming angle from the mouse position.		
+		 * @param mouseScreenPos The mouse position in screen coordinates
+		 */
+		Angle calcPlayerObjAngle(Vec2<int> mouseScreenPos);
+
+		Angle calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds, int deltaTime);
+
 	};
 };
 

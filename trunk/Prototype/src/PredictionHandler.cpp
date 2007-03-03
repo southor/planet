@@ -1,4 +1,5 @@
 #include "PredictionHandler.h"
+#include <iostream>
 
 namespace Prototype
 {
@@ -13,17 +14,22 @@ namespace Prototype
 		PlayerObj *playerObj = getPlayerObj(playerId);
 		
 		assert(playerObj);
-		//assert(getlastTick(playerId) >= fromTick);
 		assert(worldModel);
+		//assert(getlastTick(playerId) >= fromTick);
 		
+		if (fromTick != 0) std::cout << "a prediction from " << fromTick << " to " << toTick << std::endl;
+			
 		playerObj->updateToTickData(fromTick);
-		for(int tick = fromTick + 1; tick <= toTick; ++tick)
+		for(int tick = fromTick; tick < toTick; ++tick)
 		{
 			UserCmd userCmd;
-			userCmdHistoryList.getData(tick, userCmd);
+			userCmdHistoryList.getData(tick, userCmd);			
 			playerObj->setUserCmd(&userCmd);
+			
+			
 			worldModel->updatePlayerObjMovement(playerId, static_cast<float>(TimeHandler::TICK_DELTA_TIME));
-			playerObj->storeToTickData(tick);
+			
+			playerObj->storeToTickData(tick + 1);
 		}
 	}
 		

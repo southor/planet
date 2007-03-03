@@ -7,6 +7,7 @@
 #include "HistoryList.inl"
 #include "Angle.h"
 #include "messages.h"
+#include "UpdateData2.h"
 
 namespace Prototype
 {
@@ -21,10 +22,21 @@ namespace Prototype
 		int ammo[N_WEAPONS]; // used by client
 		int nextShootTime; // used by client
 
+		//struct UpdateData : public UpdateData2<Pos, Angle>
+		//{
+		//	inline UpdateData()					{}
+		//	inline UpdateData(const Pos &pos, Angle angle) : UpdateData2<Pos, Angle>(pos, angle)
+		//	{}
+
+		//	const Pos& getPos()		{ return v1; }
+		//	Angle getAngle()		{ return v2; }
+		//};
 		struct UpdateData
 		{
+
 			Pos pos;
 			Angle angle;
+
 			inline UpdateData()			{}
 			inline UpdateData(const Pos &pos, Angle angle)
 				: pos(pos), angle(angle)
@@ -47,6 +59,11 @@ namespace Prototype
 				UpdateData result(pos * rh, angle * rh);
 				return result;
 			}
+
+			bool operator !=(const UpdateData &rh) const
+			{				
+				return (pos != rh.pos) || (angle != rh.angle);				
+			}
 		};
 		
 		HistoryList<UpdateData> historyList;
@@ -54,6 +71,7 @@ namespace Prototype
 	public:
 
 		static const float FORWARD_BACKWARD_SPEED;
+		static const float ROTATE_SPEED;
 		static const float STRAFE_SPEED;
 		static const float RECTANGLE_SIZE;
 		Pos pos;
@@ -94,6 +112,9 @@ namespace Prototype
 			UpdateData data(pos, angle);
 			historyList.setData(tick, data);
 		}
+
+		// @return true if there was a differ
+		bool setTickDataAndCompare(int tick, const Pos &pos, Angle angle);
 
 		inline void storeToTickData(int tick)				{ setTickData(tick, pos, angle); }
 

@@ -8,7 +8,8 @@ namespace Prototype
 {
 
 	Server::Server() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), lastUpdateTime(0),
-						ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj)
+						ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj),
+						requestRender(false)
 	{
 		// outer walls
 		static const float WALL_THICKNESS = 500.0f;
@@ -109,9 +110,9 @@ namespace Prototype
 			PlayerId playerId = playerObjsIt->first;
 			PlayerObj *playerObj = playerObjsIt->second;
 
-			Color color(static_cast<float>(playerId % 2), 1.0f-static_cast<float>(playerId % 2), 0.0f); // the correct color should be retrieved from Player
+			//Color color(static_cast<float>(playerId % 2), 1.0f-static_cast<float>(playerId % 2), 0.0f); // the correct color should be retrieved from Player
 
-			AddPlayerObj addPlayerObj(playerId, color, playerObj->pos);
+			AddPlayerObj addPlayerObj(playerId, players[playerId].color, playerObj->pos);
 
 			pushMessageToAll(players, addPlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 		}
@@ -237,6 +238,9 @@ namespace Prototype
 			worldModel.updatePlayerObjMovements(deltaTimef);
 			worldModel.updateProjectileMovements(deltaTimef, players);
 
+			getTimeHandler()->nextTick();
+			lastUpdateTime = time;
+
 			// Send playerObj updates and store state to history
 			WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
 			WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
@@ -264,13 +268,12 @@ namespace Prototype
 				
 				pushMessageToAll(players, updateProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 
-				projectile->storeToTickData(getTimeHandler()->getTick());
+				//projectile->storeToTickData(getTimeHandler()->getTick());
 			}
 
 			transmitAll(players);
 			
-			getTimeHandler()->nextTick();
-			lastUpdateTime = time;
+			requestRender = true;			
 		}
 	}
 	

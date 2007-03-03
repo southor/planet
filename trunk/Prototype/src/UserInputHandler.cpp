@@ -1,4 +1,5 @@
 #include "UserInputHandler.h"
+#include "Game.h"
 
 namespace Prototype
 {
@@ -86,9 +87,28 @@ namespace Prototype
 			break;
 
 		case SDL_MOUSEMOTION:
+			{
+				Vec2<int> tmpMouseScreenPos(event.motion.x, event.motion.y);
+				tmpMouseScreenPos.y = Game::WINDOW_SIZE.y - tmpMouseScreenPos.y; // convert from SDL to GL position
+				//setCurrentMousePos(mouseScreenPos);
+				//mousePosChanged = true;
+				this->mouseScreenPos = tmpMouseScreenPos;			
+			}
 			break;
 
 		}
 	}
+
+	//void UserInputHandler::setCurrentMousePos(Vec2<int> mouseScreenPos)
+	//{
+	//	mousePosChanged = true;
+		//if (playerObj)
+		//{			
+			//viewportHandler.renderArea.size = WorldRenderer::RENDER_SIZE; // set current render area
+			//viewportHandler.renderArea.setCenterPos(playerObj->pos); // set current render area
+			//mousePos = viewportHandler.screenToGame(mouseScreenPos); // mouse position in game
+		//}
+		
+	//}
 	
 };

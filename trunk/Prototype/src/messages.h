@@ -6,6 +6,8 @@
 #include "Rectangle.h"
 #include "Color.h"
 #include "GameObjId.h"
+#include "Angle.h"
+#include "StateCmds.h"
 
 
 namespace Prototype
@@ -43,7 +45,7 @@ namespace Prototype
 		//size_t playerObjId;
 		PlayerId playerId;
 		Pos pos;
-		float angle;
+		Angle angle;
 
 		UpdatePlayerObj()		{}
 		UpdatePlayerObj(PlayerId playerId, const Pos &pos, float angle)
@@ -196,15 +198,17 @@ namespace Prototype
 		//bool cmdDown;
 		//float viewangle;
 
-		int stateCmds; // bitpattern
-		float aimAngle;
+		//int stateCmds; // bitpattern
+		StateCmds stateCmds;
+		Angle aimAngle;
 
 
 
 		UserCmd()
 		{}
 
-		UserCmd(int stateCmds, float aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
+		//UserCmd(int stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
+		UserCmd(StateCmds stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
 		{}
 
 		

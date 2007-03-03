@@ -14,7 +14,7 @@ namespace Prototype
 	public:
 
 		// Render area in game coordinates
-		Rectangle renderArea;
+		//Rectangle renderArea;
 		
 		// Render area in GL screen coordinates
 		Vec2<int> screenRenderPos;
@@ -29,7 +29,7 @@ namespace Prototype
 		 * @param screenPos position in GL screen coordinates
 		 * @return position in game coordinates
 		 */
-		virtual Pos screenToGame(Vec2<int> screenPos);
+		virtual Pos screenToGame(const Rectangle &renderArea, Vec2<int> screenPos);
 
 	};
 };

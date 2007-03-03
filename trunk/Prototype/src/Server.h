@@ -67,6 +67,7 @@ namespace Prototype
 			{
 				worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerIdFollow]);//, static_cast<Tickf>(getTimeHandler()->getTick()));
 			}
+			requestRender = false;
 		}
 
 	private:
@@ -90,6 +91,7 @@ namespace Prototype
 		ViewportHandler viewportHandler;
 		// worldrenderer (server debug rendering)
 		WorldRenderer worldRenderer;
+		bool requestRender;
 
 	};
 };

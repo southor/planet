@@ -10,216 +10,369 @@
 namespace Prototype
 {
 
-	Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), connectionPhase(0),
-		mousePos(0.0f, 0.0f), aimMode(KEYBOARD)
+	Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER),
+						connectionPhase(0), requestRender(false)
 	{
 		predictionHandler.setWorldModel(&worldModel);
 	}
 
-	void Client::handleEvents()
+	//void Client::handleEvents()
+	//{
+		//if (aimMode == KEYBOARD)
+		//{
+		//	PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+
+		//	kh.isPressed(CMD_ROTATE_LEFT);
+		//	kh.isReleased(CMD_ROTATE_LEFT);
+		//	if (kh.isDown(CMD_ROTATE_LEFT))
+		//	{
+		//		playerObj->angle += 0.1f;	
+		//	}
+
+		//	kh.isPressed(CMD_ROTATE_RIGHT);
+		//	kh.isReleased(CMD_ROTATE_RIGHT);
+		//	if (kh.isDown(CMD_ROTATE_RIGHT))
+		//	{
+		//		playerObj->angle -= 0.1f;	
+		//	}
+		//}
+	//}
+
+	//void Client::logic()
+	//{
+	//	timeHandler.nextStep();
+	//	
+	//	assert(worldModel.isConsistent());
+	//	if (timeHandler.isNewTick())
+	//	{
+	//		link.retrieve(timeHandler.getTime());
+	//		//printf("ServerToClientLag = ");
+	//		//printf(link.getCurrentLag());
+	//		//printf("\n");
+	//		std::cout << "ServerToClientLag = " << link.getCurrentLag() << "\n";
+
+	//		// Read messages from server
+	//		while(link.hasMessageOnQueue())
+	//		{
+	//			int messageType = link.popMessage();
+	//			switch(messageType)
+	//			{
+	//			case UPDATE_PLAYER_OBJ:
+	//				{
+	//					UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
+	//					
+	//					//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
+	//					PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
+	//					//playerObj->pos = updatePlayerObj->pos;
+	//					//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
+	//					
+
+	//					//Angle tmpAngle = playerObj->angle;
+	//					//std::cout << "n_history_ticks" << CLIENT_PREDICTION_N_HISTORY_TICKS << std::endl;
+	//					playerObj->setTickData(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle);
+	//					if (playerId == updatePlayerObj->playerId)
+	//					{
+	//						//playerObj->angle = tmpAngle;
+
+	//						// Use this PlayerObj Update message for Prediction.
+	//						// Do not predict to this tick yet, we havn't collected the user input for this input yet.
+	//						int predictToTick = static_cast<int>(timeHandler.getStepTick()) - 1;
+	//						predictionHandler.predict(playerId, link.getPoppedTick(), predictToTick);
+	//					}
+	//						
+	//					//playerObj->pos = updatePlayerObj->pos;
+	//					//if (playerId != updatePlayerObj->playerId)
+	//					//{
+	//					//	playerObj->angle = updatePlayerObj->angle;
+	//					//}
+	//					//playerObj->storeToTickData(
+	//				}
+	//				break;
+	//			case ADD_PLAYER_OBJ:
+	//				{
+	//					AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
+	//					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, link.getPoppedTick());				
+
+	//					if (connectionPhase == ClientPhase::GET_ADDPLAYEROBJ)
+	//						connectionPhase++;
+	//				}
+	//				break;
+	//			case ADD_OBSTACLE:
+	//				{
+	//					AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
+	//					worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
+	//					
+	//					if (connectionPhase == ClientPhase::GET_ADDOBSTACLE)
+	//						connectionPhase++; 
+	//				}
+	//				break;
+	//			case ADD_PROJECTILE:
+	//				{
+	//					printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
+
+	//					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
+	//					worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId, link.getPoppedTick());
+	//				}
+	//				break;
+	//			case UPDATE_PROJECTILE:
+	//				{
+	//					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
+	//					Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
+	//					//projectile->setPos(updateProjectile->pos);
+	//					projectile->setUpdateData(link.getPoppedTick(), projectile->getPos());
+	//					
+	//				}
+	//				break;
+	//			case REMOVE_PROJECTILE:
+	//				{
+	//					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
+	//					worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
+	//					worldModel.getProjectiles().remove(removeProjectile->projectileId);					
+	//				}
+	//				break;
+	//			case KILL:
+	//				{
+	//					Kill *kill = link.getPoppedData<Kill>();
+	//					PlayerObj *killer = (worldModel.getPlayerObjs())[kill->killerId];
+	//					PlayerObj *killed = (worldModel.getPlayerObjs())[kill->killedId];
+	//					killed->pos = kill->respawnPos;
+	//					killed->setAmmoSupply(static_cast<int>(killed->pos.x + killed->pos.y + killer->pos.x + killer->pos.y));
+	//					if (killed->getAmmoCurrentWeapon() <= 0) killed->switchWeapon();
+	//				}
+	//				break;
+	//			case START_GAME:
+	//				//timeHandler.reset();
+	//				break;
+	//			default:
+	//				break;
+	//			};
+
+
+	//		}
+
+	//		//printf("CONNECTION PHASE: %d\n", connectionPhase);
+
+	//		if (connectionPhase == ClientPhase::RUNNING)
+	//		{
+	//			handleEvents();
+	//			int time = timeHandler.getStepTime();
+
+	//			//if (kh.isPressed(CMD_SHOOT))
+	//			//{
+	//			//	ShootCmd shootCmd = {playerId};
+	//			//	
+	//			//	link.pushMessage(shootCmd);
+	//			//	link.transmit();
+	//			//}
+
+	//			PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+
+	//			//if (kh.isPressed(CMD_SWITCH_WEAPON))
+	//			//{
+	//			//	playerObj->switchWeapon();
+	//			//}
+	//			
+	//			bool wasKeyEvent = kh.changePressedToDownState() || kh.changeReleasedToUpState();
+
+	//			// handle shooting
+	//			while (userInput.hasActionCmdOnQueue())
+	//			{
+	//				int actionCmd = userInput.popActionCmd();
+	//			
+	//				if (actionCmd == Cmds::SHOOT)
+	//				{					
+	//					if (playerObj->canShoot(time))
+	//					{
+	//						Projectile::Type weapon = playerObj->getCurrentWeapon();
+	//						playerObj->shoot(time);
+	//						ShootCmd shootCmd(playerId, weapon);
+	//						link.pushMessage(shootCmd, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
+	//					}
+	//				}
+	//				if (actionCmd == Cmds::SWITCH_WEAPON)
+	//				{
+	//					playerObj->switchWeapon();
+	//				}
+	//			}
+	//			
+	//			// If some key was pressed or released send message
+	//			//if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
+	//			if (!kh.isDown(CMD_SWITCH_WEAPON))
+	//			{
+	//				if (this->mousePosChanged && (this->aimMode == MOUSE))
+	//				{
+	//					updatePlayerObjAngle();
+	//					this->mousePosChanged = false;
+	//				}
+
+	//				
+
+	//				int stateCmds = getUserInput()->getCurrentStates().getStates();
+	//				float aimangle = ((worldModel.getPlayerObjs())[playerId])->angle.getFloat();
+	//				
+	//				UserCmd userCmd(stateCmds, aimangle);
+	//				//printf("CLIENT: sending usercmd with tick: %f @ time %d\n", timeHandler.getStepTick(), timeHandler.getStepTime());
+	//				link.pushMessage(userCmd, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
+	//				predictionHandler.setUserCmd(userCmd, static_cast<int>(timeHandler.getStepTick()));
+	//				
+	//			}
+
+	//			// perform final prediction
+	//			predictionHandler.predict(playerId, static_cast<int>(timeHandler.getStepTick()) + 1);
+
+	//			// transmit any messages
+	//			link.transmit();
+	//		}
+	//	}
+	//}
+
+	void Client::handleUserInput()
 	{
-		if (aimMode == KEYBOARD)
+		//float 
+		//if (userInputHandler.hasMousePosChanged() && )
+		//{
+		//}
+
+		int currentTick = static_cast<int>(timeHandler.getStepTick());
+		
+		StateCmds stateCmds = getUserInput()->getCurrentStates();
+
+
+		Angle aimAngle(0.0f);
+		if (worldModel.getPlayerObjs().exists(playerId))
 		{
-			PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-
-			kh.isPressed(CMD_ROTATE_LEFT);
-			kh.isReleased(CMD_ROTATE_LEFT);
-			if (kh.isDown(CMD_ROTATE_LEFT))
+			if (userInput.aimMode == UserInputHandler::MOUSE)
 			{
-				playerObj->angle += 0.1f;	
+				aimAngle = calcPlayerObjAngle(userInput.getMouseScreenPos());
 			}
-
-			kh.isPressed(CMD_ROTATE_RIGHT);
-			kh.isReleased(CMD_ROTATE_RIGHT);
-			if (kh.isDown(CMD_ROTATE_RIGHT))
+			else
 			{
-				playerObj->angle -= 0.1f;	
+				assert(userInput.aimMode == UserInputHandler::KEYBOARD);
+				//playerAngle = (worldModel.getPlayerObjs())[playerId]->angle;
+				UserCmd tmpUserCmd;
+				predictionHandler.getUserCmd(tmpUserCmd, currentTick - 1);
+				Angle preAngle(tmpUserCmd.aimAngle);
+				aimAngle = calcPlayerObjAngle(tmpUserCmd.aimAngle, stateCmds, TimeHandler::TICK_DELTA_TIME);
 			}
+		}
+		//int stateCmds = getUserInput()->getCurrentStates().getStates();
+		
+		//stateCmds.getCurrentState(Cmds::ROTATE_LEFT);
+		
+
+		
+
+
+		
+
+		UserCmd userCmd(stateCmds, aimAngle);
+		predictionHandler.setUserCmd(userCmd, currentTick);
+		link.pushMessage(userCmd, timeHandler.getTime(), currentTick);
+		//printf("CLIENT: sending usercmd with tick: %f @ time %d\n", timeHandler.getStepTick(), timeHandler.getStepTime());
+	}
+
+	void Client::handleServerMessages()
+	{
+		link.retrieve(timeHandler.getTime());
+		
+		while(link.hasMessageOnQueue())
+		{
+			int messageType = link.popMessage();
+			switch(messageType)
+			{
+			case UPDATE_PLAYER_OBJ:
+				{
+					UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
+					
+					//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
+					PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
+					//playerObj->pos = updatePlayerObj->pos;
+					//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
+					
+
+					//Angle tmpAngle = playerObj->angle;
+					//std::cout << "n_history_ticks" << CLIENT_PREDICTION_N_HISTORY_TICKS << std::endl;
+					
+					if (playerId == updatePlayerObj->playerId)
+					{
+						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle);
+						if (differ)
+						{
+							std::cout << "old prediction differ!" << std::endl;
+							predictionHandler.serverInput(playerId, link.getPoppedTick());						
+						}
+						else
+						{
+							std::cout << "old prediction ok!" << std::endl;
+						}
+						//playerObj->angle = tmpAngle;
+
+						// Use this PlayerObj Update message for Prediction.						
+						
+						//predictionHandler.predict(playerId, link.getPoppedTick(), predictToTick);						
+					}
+					else
+					{
+						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle);
+					}
+						
+					//playerObj->pos = updatePlayerObj->pos;
+					//if (playerId != updatePlayerObj->playerId)
+					//{
+					//	playerObj->angle = updatePlayerObj->angle;
+					//}
+					//playerObj->storeToTickData(
+				}
+				break;
+			case ADD_PLAYER_OBJ:
+				{
+					AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
+					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, link.getPoppedTick());				
+
+					if (connectionPhase == ClientPhase::GET_ADDPLAYEROBJ)
+						connectionPhase++;
+				}
+				break;
+			case ADD_OBSTACLE:
+				{
+					AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
+					worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
+					
+					if (connectionPhase == ClientPhase::GET_ADDOBSTACLE)
+						connectionPhase++; 
+				}
+				break;
+			case START_GAME:
+				//timeHandler.reset();
+				break;
+			};
 		}
 	}
 
-	void Client::logic()
+	void Client::runStep()
 	{
 		timeHandler.nextStep();
-		
-		assert(worldModel.isConsistent());
-		if (timeHandler.isNewTick())
+		if (connectionPhase == ClientPhase::RUNNING)
 		{
-			link.retrieve(timeHandler.getTime());
-			//printf("ServerToClientLag = ");
-			//printf(link.getCurrentLag());
-			//printf("\n");
-			std::cout << "ServerToClientLag = " << link.getCurrentLag() << "\n";
-
-			// Read messages from server
-			while(link.hasMessageOnQueue())
+			if (timeHandler.isNewTick())
 			{
-				int messageType = link.popMessage();
-				switch(messageType)
-				{
-				case UPDATE_PLAYER_OBJ:
-					{
-						UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
-						
-						//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
-						PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
-						//playerObj->pos = updatePlayerObj->pos;
-						//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
-						
+				handleUserInput();
 
-						//Angle tmpAngle = playerObj->angle;
-						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle);
-						if (playerId == updatePlayerObj->playerId)
-						{
-							//playerObj->angle = tmpAngle;
-
-							// Use this PlayerObj Update message for Prediction.
-							// Do not predict to this tick yet, we havn't collected the user input for this input yet.
-							int predictToTick = static_cast<int>(timeHandler.getStepTick()) - 1;
-							predictionHandler.predict(playerId, link.getPoppedTick(), predictToTick);
-						}
-							
-						//playerObj->pos = updatePlayerObj->pos;
-						//if (playerId != updatePlayerObj->playerId)
-						//{
-						//	playerObj->angle = updatePlayerObj->angle;
-						//}
-						//playerObj->storeToTickData(
-					}
-					break;
-				case ADD_PLAYER_OBJ:
-					{
-						AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
-						addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, link.getPoppedTick());				
-
-						if (connectionPhase == ClientPhase::GET_ADDPLAYEROBJ)
-							connectionPhase++;
-					}
-					break;
-				case ADD_OBSTACLE:
-					{
-						AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
-						worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
-						
-						if (connectionPhase == ClientPhase::GET_ADDOBSTACLE)
-							connectionPhase++; 
-					}
-					break;
-				case ADD_PROJECTILE:
-					{
-						printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
-
-						AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
-						worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId, link.getPoppedTick());
-					}
-					break;
-				case UPDATE_PROJECTILE:
-					{
-						UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
-						Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
-						//projectile->setPos(updateProjectile->pos);
-						projectile->setUpdateData(link.getPoppedTick(), projectile->getPos());
-						
-					}
-					break;
-				case REMOVE_PROJECTILE:
-					{
-						RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
-						worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
-						worldModel.getProjectiles().remove(removeProjectile->projectileId);					
-					}
-					break;
-				case KILL:
-					{
-						Kill *kill = link.getPoppedData<Kill>();
-						PlayerObj *killer = (worldModel.getPlayerObjs())[kill->killerId];
-						PlayerObj *killed = (worldModel.getPlayerObjs())[kill->killedId];
-						killed->pos = kill->respawnPos;
-						killed->setAmmoSupply(static_cast<int>(killed->pos.x + killed->pos.y + killer->pos.x + killer->pos.y));
-						if (killed->getAmmoCurrentWeapon() <= 0) killed->switchWeapon();
-					}
-					break;
-				case START_GAME:
-					//timeHandler.reset();
-					break;
-				default:
-					break;
-				};
-
-
-			}
-
-			//printf("CONNECTION PHASE: %d\n", connectionPhase);
-
-			if (connectionPhase == ClientPhase::RUNNING)
-			{
-				handleEvents();
-				int time = timeHandler.getStepTime();
-
-				//if (kh.isPressed(CMD_SHOOT))
-				//{
-				//	ShootCmd shootCmd = {playerId};
-				//	
-				//	link.pushMessage(shootCmd);
-				//	link.transmit();
-				//}
-
-				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-
-				//if (kh.isPressed(CMD_SWITCH_WEAPON))
-				//{
-				//	playerObj->switchWeapon();
-				//}
-				
-				bool wasKeyEvent = kh.changePressedToDownState() || kh.changeReleasedToUpState();
-
-				// handle shooting
-				while (userInput.hasActionCmdOnQueue())
-				{
-					int actionCmd = userInput.popActionCmd();
-				
-					if (actionCmd == Cmds::SHOOT)
-					{					
-						if (playerObj->canShoot(time))
-						{
-							Projectile::Type weapon = playerObj->getCurrentWeapon();
-							playerObj->shoot(time);
-							ShootCmd shootCmd(playerId, weapon);
-							link.pushMessage(shootCmd, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
-						}
-					}
-					if (actionCmd == Cmds::SWITCH_WEAPON)
-					{
-						playerObj->switchWeapon();
-					}
-				}
-				
-				// If some key was pressed or released send message
-				//if (wasKeyEvent || (this->mousePosChanged && (this->aimMode == MOUSE)))
-				if (!kh.isDown(CMD_SWITCH_WEAPON))
-				{
-					if (this->mousePosChanged && (this->aimMode == MOUSE))
-					{
-						updatePlayerObjAngle();
-						this->mousePosChanged = false;
-					}
-
-					int stateCmds = getUserInput()->getCurrentStates().getStates();
-					float aimangle = ((worldModel.getPlayerObjs())[playerId])->angle.getFloat();
-					
-					UserCmd userCmd(stateCmds, aimangle);
-					//printf("CLIENT: sending usercmd with tick: %f @ time %d\n", timeHandler.getStepTick(), timeHandler.getStepTime());
-					link.pushMessage(userCmd, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
-					predictionHandler.setUserCmd(userCmd, static_cast<int>(timeHandler.getStepTick()));
-					
-				}
-
-				// perform final prediction
-				predictionHandler.predict(playerId, static_cast<int>(timeHandler.getStepTick()) + 1);
-
-				// transmit any messages
+				// transmit messages
 				link.transmit();
+
+				// perform prediction
+				predictionHandler.predict(playerId, static_cast<int>(timeHandler.getStepTick()) + 1);
 			}
+			else
+			{
+				requestRender = true;
+				//render();
+			}
+		}
+		else
+		{
+			handleServerMessages();
 		}
 	}
 
@@ -311,6 +464,9 @@ namespace Prototype
 			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);//, timeHandler.getStepTick());
 		}
 
+		requestRender = false;
+
+		handleServerMessages();
 
 
 		//// testing Line testing cross point
@@ -380,20 +536,20 @@ namespace Prototype
 		return &kh;
 	}
 
-	void Client::setCurrentMousePos(Vec2<int> mouseScreenPos)
-	{
-		mousePosChanged = true;
-		if (worldModel.getPlayerObjs().exists(playerId))
-		{
-			PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-			
-			viewportHandler.renderArea.size = WorldRenderer::RENDER_SIZE; // set current render area
-			viewportHandler.renderArea.setCenterPos(playerObj->pos); // set current render area
-			mousePos = viewportHandler.screenToGame(mouseScreenPos); // mouse position in game
-		}
-	}
+	//void Client::setCurrentMousePos(Vec2<int> mouseScreenPos)
+	//{
+	//	mousePosChanged = true;
+	//	if (worldModel.getPlayerObjs().exists(playerId))
+	//	{
+	//		PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+	//		
+	//		viewportHandler.renderArea.size = WorldRenderer::RENDER_SIZE; // set current render area
+	//		viewportHandler.renderArea.setCenterPos(playerObj->pos); // set current render area
+	//		mousePos = viewportHandler.screenToGame(mouseScreenPos); // mouse position in game
+	//	}
+	//}
 
-	void Client::updatePlayerObjAngle()
+	Angle Client::calcPlayerObjAngle(Vec2<int> mouseScreenPos)
 	{
 		//std::cout << mouseScreenPos.y << std::endl;
 		
@@ -407,6 +563,7 @@ namespace Prototype
 			//std::cout << mousePos.y << std::endl;
 
 			float angle;
+			Pos mousePos(viewportHandler.screenToGame(worldRenderer.getRenderArea(playerObj), mouseScreenPos));
 			Vec aimVec = mousePos - playerObj->pos;
 			aimVec.normalize();
 			if ((aimVec.x > 0.5) || (aimVec.x < 0.5f))
@@ -419,9 +576,22 @@ namespace Prototype
 				angle = acos(aimVec.x);
 				if (aimVec.y < 0.0f) angle = -angle;
 			}
-			playerObj->angle = angle;
+			//playerObj->angle = angle;
+			return angle;
 
 		}
+		return 0.0f;
+	}
+
+	Angle Client::calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds, int deltaTime)
+	{
+		//PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+
+		bool left = stateCmds.getCurrentState(Cmds::ROTATE_LEFT);
+		bool right = stateCmds.getCurrentState(Cmds::ROTATE_RIGHT);
+		float rotateAmount(static_cast<float>(deltaTime) * PlayerObj::ROTATE_SPEED);
+		Angle deltaAngle((left ? rotateAmount : 0.0f) + (right ? -rotateAmount : 0.0f));
+		return preAngle + deltaAngle;		
 	}
 
 };
