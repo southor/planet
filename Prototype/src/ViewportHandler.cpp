@@ -9,7 +9,7 @@ namespace Prototype
 		glViewport(screenRenderPos.x, screenRenderPos.y, screenRenderSize.x, screenRenderSize.y);
 	}
 
-	Pos ViewportHandler::screenToGame(Vec2<int> screenPos)
+	Pos ViewportHandler::screenToGame(const Rectangle &renderArea, Vec2<int> screenPos)
 	{
 		
 		Vec screenRenderSizef(static_cast<float>(screenRenderSize.x), static_cast<float>(screenRenderSize.y));

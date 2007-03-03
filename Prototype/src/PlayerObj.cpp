@@ -7,6 +7,7 @@ namespace Prototype
 {
 
 	const float PlayerObj::FORWARD_BACKWARD_SPEED = 100.0f / 1000.0f;
+	const float PlayerObj::ROTATE_SPEED = 2.0f / 1000.0f;
 	const float PlayerObj::STRAFE_SPEED = 100.0f / 1000.0f;
 	const float PlayerObj::RECTANGLE_SIZE = 20.0f;
 
@@ -85,20 +86,31 @@ namespace Prototype
 		if (ammo[currentWeapon] == 0) switchWeapon();		
 	}
 
+	bool PlayerObj::setTickDataAndCompare(int tick, const Pos &pos, Angle angle)
+	{
+		UpdateData storedData;
+		historyList.getData(tick, storedData);
+		
+		UpdateData data(pos, angle);			
+		historyList.setData(tick, data);
+
+		return data != storedData;
+	}
+
 	void PlayerObj::updateToTickData(int tick)
 	{
 		UpdateData data;
 		historyList.getData(tick, data);
-		pos = data.pos;
-		angle = data.angle;
+		this->pos = data.pos;
+		this->angle = data.angle;
 	}
 
 	void PlayerObj::updateToTickData(Tickf tick)
 	{
 		UpdateData data;
 		historyList.getData(tick, data);
-		pos = data.pos;
-		angle = data.angle;
+		this->pos = data.pos;
+		this->angle = data.angle;
 	}
 
 	void PlayerObj::setUserCmd(const UserCmd *userCmd)

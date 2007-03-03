@@ -34,6 +34,7 @@ namespace Prototype
 		else
 		{
 			assert(false);
+			return 0;
 		}
 	}
 	

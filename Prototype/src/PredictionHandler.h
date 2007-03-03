@@ -18,14 +18,17 @@ namespace Prototype
 		int getlastTick(PlayerId playerId);
 
 		ClientWorldModel *worldModel;
+
+		int latestServerInputTick;
 		
 	public:
 
-		PredictionHandler() : userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS), worldModel(NULL)
+		PredictionHandler() : userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS), worldModel(NULL), latestServerInputTick(0)
 		{}
 		
 		void setWorldModel(ClientWorldModel *worldModel)			{ this->worldModel = worldModel; }
 
+		void getUserCmd(UserCmd &userCmd, int tick)					{ userCmdHistoryList.getData(tick, userCmd); }
 		void setUserCmd(const UserCmd &userCmd, int tick)			{ userCmdHistoryList.setData(tick, userCmd); }
 
 		// Will overwrite previous predictions from fromTick.
@@ -34,7 +37,17 @@ namespace Prototype
 		// Uses previous prediction to predict further
 		inline void predict(PlayerId playerId, int toTick)
 		{
-			predict(playerId, getlastTick(playerId), toTick);
+			int latestTick = getlastTick(playerId);
+			predict(playerId, latestTick, toTick);
+		}
+
+		void serverInput(PlayerId playerId, int inputTick)
+		{
+			if (latestServerInputTick < inputTick)
+			{
+				predict(playerId, inputTick, getlastTick(playerId));
+				latestServerInputTick = inputTick;
+			}
 		}
 	
 	};

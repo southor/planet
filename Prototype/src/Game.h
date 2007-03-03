@@ -20,6 +20,14 @@ namespace Prototype
 		~Game();
 		void run(std::string &host);
 
+		static const Vec2<int> WINDOW_SIZE;
+
+		static const int SERVER_TO_CLIENT_1_SIMULATED_LAG = 120;
+		static const int SERVER_TO_CLIENT_2_SIMULATED_LAG = 110;
+		static const int CLIENT_1_TO_SERVER_SIMULATED_LAG = 620;
+		static const int CLIENT_2_TO_SERVER_SIMULATED_LAG = 620;
+		
+
 	private:
 		void init();
 		void initWidgets();
@@ -51,7 +59,7 @@ namespace Prototype
 
 		Uint32 mStartTime;
 
-		static const Vec2<int> WINDOW_SIZE;
+		
 	};
 };
 

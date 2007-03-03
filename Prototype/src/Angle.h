@@ -44,6 +44,16 @@ namespace Prototype
 			return *this;
 		}
 
+		inline const bool operator ==(Angle rh) const
+		{			
+			return angle == rh.angle;
+		}
+
+		inline const bool operator !=(Angle rh) const
+		{			
+			return angle != rh.angle;
+		}
+
 		//inline operator float ()
 		//{
 		//	return angle;

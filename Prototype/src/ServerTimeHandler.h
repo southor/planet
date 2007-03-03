@@ -10,7 +10,7 @@ namespace Prototype
 	class ServerTimeHandler : public TimeHandler
 	{
 	public:
-		static const int WAIT_FOR_TICK_TIMEOUT = 50;
+		static const int WAIT_FOR_TICK_TIMEOUT = 700;
 
 		ServerTimeHandler() : tick(0) {}
 

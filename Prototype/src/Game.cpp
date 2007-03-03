@@ -37,6 +37,8 @@ namespace Prototype
 		client1.getUserInput()->setStateCmdKey(Cmds::RIGHT, SDLK_d);
 		client1.getUserInput()->setStateCmdKey(Cmds::FORWARD, SDLK_w);
 		client1.getUserInput()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
+		client1.getUserInput()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
+		client1.getUserInput()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
 		client1.getUserInput()->setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
 		client1.getUserInput()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
@@ -50,7 +52,8 @@ namespace Prototype
 	
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
-		client2.setAimMode(Client::MOUSE);
+		client1.getUserInput()->aimMode = UserInputHandler::KEYBOARD;
+		client2.getUserInput()->aimMode = UserInputHandler::MOUSE;
 		
 		client1.getTimeHandler()->reset();
 		client2.getTimeHandler()->reset();
@@ -175,7 +178,7 @@ namespace Prototype
 		{
 			sender1 = networkClient1.getMessageSender();
 			reciever1 = networkClient1.getMessageReciever();
-			reciever1->setSimulatedLag(30);
+			reciever1->setSimulatedLag(SERVER_TO_CLIENT_1_SIMULATED_LAG);
 			sender1->v = 1;
 			reciever1->v = 1;
 		}
@@ -183,7 +186,7 @@ namespace Prototype
 		{
 			sender3 = networkClient2.getMessageSender();
 			reciever3 = networkClient2.getMessageReciever();
-			reciever3->setSimulatedLag(10);
+			reciever3->setSimulatedLag(SERVER_TO_CLIENT_2_SIMULATED_LAG);
 			sender3->v = 3;
 			reciever3->v = 3;
 		}
@@ -191,13 +194,13 @@ namespace Prototype
 		{
 			sender2 = &(serverClient1->sender);
 			reciever2 = &(serverClient1->reciever);
-			reciever2->setSimulatedLag(28);
+			reciever2->setSimulatedLag(CLIENT_1_TO_SERVER_SIMULATED_LAG);
 			sender2->v = 2;
 			reciever2->v = 2;
 
 			sender4 = &(serverClient2->sender);
 			reciever4 = &(serverClient2->reciever);
-			reciever4->setSimulatedLag(12);
+			reciever4->setSimulatedLag(CLIENT_2_TO_SERVER_SIMULATED_LAG);
 			sender4->v = 4;
 			reciever4->v = 4;
 		}
@@ -292,10 +295,10 @@ namespace Prototype
 			pollEvents();
 
 			if (SHOW_CLIENT_1)
-				client1.logic();
+				client1.runStep();
 				
 			if (SHOW_CLIENT_2)
-				client2.logic();
+				client2.runStep();
 
 			if (SHOW_SERVER)
 			{
@@ -305,8 +308,14 @@ namespace Prototype
 			// guichan
 			//gui.gui->logic();
 
-			// RENDER
-			render(0);
+			// RENDER			
+			if (client1.getRequestRender() &&
+				client2.getRequestRender() &&
+				client2.getRequestRender())
+			{
+				render(0);
+			}
+			//render(0);
 
 			SDL_Delay(1);
 		}
@@ -500,14 +509,10 @@ namespace Prototype
 			
 			case SDL_MOUSEMOTION:
 				{
-					//xrel = event.motion.xrel;
-					//yrel = event.motion.yrel;
-					//printf("Mouse moved by %d,%d to (%d,%d)\n", 
-					//event.motion.xrel, event.motion.yrel,
-					//event.motion.x, event.motion.y);
-					Vec2<int> mouseScreenPos(event.motion.x, event.motion.y);
-					mouseScreenPos.y = WINDOW_SIZE.y - mouseScreenPos.y; // convert from SDL to GL position
-					client2.setCurrentMousePos(mouseScreenPos);
+
+					//Vec2<int> mouseScreenPos(event.motion.x, event.motion.y);
+					//mouseScreenPos.y = WINDOW_SIZE.y - mouseScreenPos.y; // convert from SDL to GL position
+					//client2.setCurrentMousePos(mouseScreenPos);
 				}
 			break;
 				break;

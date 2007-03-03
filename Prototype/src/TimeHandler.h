@@ -13,7 +13,7 @@ namespace Prototype
 
 		//static const float DELTA_TIME_MAX_F;
 
-		static const int TICKS_PER_SECOND = 40;
+		static const int TICKS_PER_SECOND = 6;
 		static const int TICK_DELTA_TIME = 1000 / TICKS_PER_SECOND;
 
 		TimeHandler() : startTime(0)//, deltaTime(1), stepTime(0)
@@ -41,8 +41,8 @@ namespace Prototype
 		//int deltaTime;
 	};
 	
-	static const int MAX_SERVER_TO_CLIENT_LAG = 2000;
-	static const int MAX_CLIENT_TO_SERVER_LAG = 2000;
+	static const int MAX_SERVER_TO_CLIENT_LAG = 3000;
+	static const int MAX_CLIENT_TO_SERVER_LAG = 3000;
 
 };
 #endif
