@@ -2,6 +2,7 @@
 #include "vec3f.h"
 #include "TimeHandler.h"
 #include "NetworkConnection.h"
+#include "Cmds.h"
 
 #include <iostream>
 #include <cmath>
@@ -33,28 +34,6 @@ namespace Prototype
 
 	void Game::run(std::string &host)
 	{
-		client1.getUserInput()->setStateCmdKey(Cmds::LEFT, SDLK_a);
-		client1.getUserInput()->setStateCmdKey(Cmds::RIGHT, SDLK_d);
-		client1.getUserInput()->setStateCmdKey(Cmds::FORWARD, SDLK_w);
-		client1.getUserInput()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
-		client1.getUserInput()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
-		client1.getUserInput()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
-		client1.getUserInput()->setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
-		client1.getUserInput()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
-
-		client2.getUserInput()->setStateCmdKey(Cmds::LEFT, SDLK_j);
-		client2.getUserInput()->setStateCmdKey(Cmds::RIGHT, SDLK_l);
-		client2.getUserInput()->setStateCmdKey(Cmds::FORWARD, SDLK_i);
-		client2.getUserInput()->setStateCmdKey(Cmds::BACKWARD, SDLK_k);
-		client2.getUserInput()->setActionCmdKey(Cmds::SHOOT, SDL_BUTTON_LEFT);
-		client2.getUserInput()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_u);
-	
-	
-		client1.getKeyHandler()->setClient1Keys();
-		client2.getKeyHandler()->setClient2Keys();
-		client1.getUserInput()->aimMode = UserInputHandler::KEYBOARD;
-		client2.getUserInput()->aimMode = UserInputHandler::MOUSE;
-		
 		client1.getTimeHandler()->reset();
 		client2.getTimeHandler()->reset();
 		server.getTimeHandler()->reset();
@@ -326,6 +305,31 @@ namespace Prototype
 		
 	}
 
+	void Game::run2()
+	{
+		while (running) 
+		{
+			pollEvents();
+
+			glClear(GL_COLOR_BUFFER_BIT);
+			
+			// guichan
+			//gui.gui->logic();
+
+			if (client1.getUserInput()->getCurrentState(Cmds::LEFT))
+				planet.viewAngle += 0.5f;
+			if (client1.getUserInput()->getCurrentState(Cmds::RIGHT))
+				planet.viewAngle -= 0.5f;
+
+			planet.render();
+
+			glFlush();
+			SDL_GL_SwapBuffers();
+
+			SDL_Delay(1);
+		}
+	}
+
 	void Game::render(Uint32 time)
 	{
 		//glClear(GL_COLOR_BUFFER_BIT);
@@ -356,7 +360,8 @@ namespace Prototype
 
 
 		draw(time);
-
+		
+		
 		glEnable(GL_LIGHTING);
 		glFlush();
 		SDL_GL_SwapBuffers();
@@ -366,8 +371,6 @@ namespace Prototype
 
 	void Game::draw(Uint32 time)
 	{
-		glDisable(GL_LIGHTING);
-		
 		// Draw x, y, z axis in red, green, blue
 		glDisable(GL_LIGHTING);
 		glPushMatrix();
@@ -473,6 +476,28 @@ namespace Prototype
 		//viewportHandler1.screenRenderSize = Vec2<int>(w/2, (h*3)/4);
 		//viewportHandler2.screenRenderPos = Vec2<int>(w/2, h/4);
 		//viewportHandler2.screenRenderSize = viewportHandler1.screenRenderSize;
+		
+		client1.getUserInput()->setStateCmdKey(Cmds::LEFT, SDLK_a);
+		client1.getUserInput()->setStateCmdKey(Cmds::RIGHT, SDLK_d);
+		client1.getUserInput()->setStateCmdKey(Cmds::FORWARD, SDLK_w);
+		client1.getUserInput()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
+		client1.getUserInput()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
+		client1.getUserInput()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
+		client1.getUserInput()->setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
+		client1.getUserInput()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
+
+		client2.getUserInput()->setStateCmdKey(Cmds::LEFT, SDLK_j);
+		client2.getUserInput()->setStateCmdKey(Cmds::RIGHT, SDLK_l);
+		client2.getUserInput()->setStateCmdKey(Cmds::FORWARD, SDLK_i);
+		client2.getUserInput()->setStateCmdKey(Cmds::BACKWARD, SDLK_k);
+		client2.getUserInput()->setActionCmdKey(Cmds::SHOOT, SDL_BUTTON_LEFT);
+		client2.getUserInput()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_u);
+	
+	
+		client1.getKeyHandler()->setClient1Keys();
+		client2.getKeyHandler()->setClient2Keys();
+		client1.getUserInput()->aimMode = UserInputHandler::KEYBOARD;
+		client2.getUserInput()->aimMode = UserInputHandler::MOUSE;
 	}
 
 	void Game::pollEvents()
