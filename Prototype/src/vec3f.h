@@ -18,12 +18,7 @@ namespace Prototype
 			x = y = z = 0.0f;
 		}
 
-		Vec3f(float x, float y, float z)
-		{
-			this->x = x;
-			this->y = y;
-			this->z = z;    
-		}
+		Vec3f(float x, float y, float z) : x(x), y(y), z(z)	{}
 
 		float operator|(const Vec3f& rh) const
 		{
@@ -124,7 +119,7 @@ namespace Prototype
 			y = y * tmp;
 			z = z * tmp;
 		}
-
+/*
 		static void transformVec(GLfloat *matrix, GLfloat *from, GLfloat *to) 
 		{
 			for(int i=0;i<4.0f;i++) 
@@ -136,7 +131,7 @@ namespace Prototype
 				} 
 			} 
 		}
-
+*/
 	};
 
 

@@ -10,6 +10,7 @@
 #include "Server.h"
 //#include "Gui.h"
 #include "UserInputHandler.h"
+#include "Planet.h"
 
 namespace Prototype
 {
@@ -19,13 +20,14 @@ namespace Prototype
 		Game();
 		~Game();
 		void run(std::string &host);
+		void run2();
 
 		static const Vec2<int> WINDOW_SIZE;
 
 		static const int SERVER_TO_CLIENT_1_SIMULATED_LAG = 120;
 		static const int SERVER_TO_CLIENT_2_SIMULATED_LAG = 110;
-		static const int CLIENT_1_TO_SERVER_SIMULATED_LAG = 620;
-		static const int CLIENT_2_TO_SERVER_SIMULATED_LAG = 620;
+		static const int CLIENT_1_TO_SERVER_SIMULATED_LAG = 120;
+		static const int CLIENT_2_TO_SERVER_SIMULATED_LAG = 120;
 		
 
 	private:
@@ -58,6 +60,8 @@ namespace Prototype
 		//Gui gui;
 
 		Uint32 mStartTime;
+
+		Planet planet;
 
 		
 	};

@@ -3,6 +3,7 @@
 
 bool running;
 
+
 int main(int argc, char **argv)
 {
 	std::string host;
@@ -21,7 +22,8 @@ int main(int argc, char **argv)
 
 	Prototype::Game game;
 	game.run(host);
-
+	//game.run2();
+	
 	return 0;
 }
 
