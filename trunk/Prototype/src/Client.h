@@ -41,7 +41,7 @@ namespace Prototype
 		
 		//void handleEvents();
 		//void logic();		
-		void handleUserInput();
+		void getCurrentUserCmd(UserCmd &userCmd);
 		void handleServerMessages();
 		void runStep();
 
@@ -53,7 +53,7 @@ namespace Prototype
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		KeyHandler* getKeyHandler();
-		inline UserInputHandler* getUserInput()			{ return &userInput; }
+		inline UserInputHandler* getUserInputHandler()	{ return &userInputHandler; }
 		inline ClientTimeHandler* getTimeHandler()		{ return &timeHandler; }
 		inline bool getRequestRender()					{ return requestRender; }
 		
@@ -73,7 +73,9 @@ namespace Prototype
 
 	private:
 
-		
+		static const double OBJECT_LAG_MODIFIER;
+		static const int OBJECT_LAG_ADD_TIME;
+		static const int OBJECT_LAG_ADD_TICK;
 		
 
 		Link link;
@@ -82,13 +84,14 @@ namespace Prototype
 
 
 		KeyHandler kh;
-		UserInputHandler userInput;
+		UserInputHandler userInputHandler;
 
 
 		ClientWorldModel worldModel;
 		WorldRenderer worldRenderer;
 		ClientPlayers players;
 		PredictionHandler predictionHandler;
+		int currObjLag; // controls the interpolation of objects
 
 		PlayerId playerId;
 		Color color;	// should this exist or should the client have an Player object before we connect to server?

@@ -17,7 +17,7 @@ namespace Prototype
 		assert(worldModel);
 		//assert(getlastTick(playerId) >= fromTick);
 		
-		if (fromTick != 0) std::cout << "a prediction from " << fromTick << " to " << toTick << std::endl;
+		//if (fromTick != 0) std::cout << "a prediction from " << fromTick << " to " << toTick << std::endl;
 			
 		playerObj->updateToTickData(fromTick);
 		for(int tick = fromTick; tick < toTick; ++tick)

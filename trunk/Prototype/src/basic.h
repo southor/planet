@@ -72,6 +72,7 @@ namespace Prototype
 	typedef uint PlayerId;
 
 
+	//#define PRINT_VARIABLE (x)  std::cout << "x:"
 
 
 

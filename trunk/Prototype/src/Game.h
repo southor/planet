@@ -24,10 +24,11 @@ namespace Prototype
 
 		static const Vec2<int> WINDOW_SIZE;
 
-		static const int SERVER_TO_CLIENT_1_SIMULATED_LAG = 120;
-		static const int SERVER_TO_CLIENT_2_SIMULATED_LAG = 110;
-		static const int CLIENT_1_TO_SERVER_SIMULATED_LAG = 120;
-		static const int CLIENT_2_TO_SERVER_SIMULATED_LAG = 120;
+		static const int SERVER_TO_CLIENT_1_SIMULATED_LAG = 450;
+		static const int CLIENT_1_TO_SERVER_SIMULATED_LAG = 450;
+
+		static const int SERVER_TO_CLIENT_2_SIMULATED_LAG = 30;		
+		static const int CLIENT_2_TO_SERVER_SIMULATED_LAG = 30;
 		
 
 	private:
