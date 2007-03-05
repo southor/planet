@@ -321,6 +321,12 @@ namespace Prototype
 			if (client1.getUserInputHandler()->getCurrentState(Cmds::RIGHT))
 				planet.viewAngle -= 0.5f;
 
+			if (client1.getUserInputHandler()->getCurrentState(Cmds::FORWARD))
+				planet.viewAngle2 += 0.5f;
+			if (client1.getUserInputHandler()->getCurrentState(Cmds::BACKWARD))
+				planet.viewAngle2 -= 0.5f;
+
+
 			planet.render();
 
 			glFlush();

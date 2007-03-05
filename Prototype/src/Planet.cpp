@@ -4,6 +4,7 @@
 
 namespace Prototype
 {
+	void drawFace(Vec3f v1, Vec3f v2, Vec3f v3);
 
 	void Planet::render()
 	{
@@ -27,6 +28,7 @@ namespace Prototype
 		glDisable(GL_LIGHTING);
 		glPushMatrix();
 			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
+			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
 		
 		
 			glBegin(GL_LINES);
@@ -52,59 +54,88 @@ namespace Prototype
 			//glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
 			//glRotatef(-45.0f, 0.0f, 1.0f, 0.0f);
 			 
-			 
-			 
+			float p;
+			float phi;
+			float theta;
+			
+			// a represents the length from center to the corner of the
+			// planets "height map box". (2a)^2 = (2p)^2 + (2p)^2 + (2p)^2 (pythagorean theorem for box)
+			float a = sqrt(3) * r;
+								
+			Vec3f v(0.0, 0.0, r);
+			
+			// get phi and theta from v 
+			//CartesianToSpherical(v, &p, &phi, &theta);
+			
+			// "rotate" to get the corner points
+			
+			//Vec3f v1 = SphericalToCartesian(a, phi, theta);
 
-			for (int i = 0; i < 15; i++)
-			{
-				for (int j = 0; j < 15; j++)
-				{
-					float a = i / 5.0f;
-					float b = j / 5.0f;
-					/*
-					float w = 0.0f;
-					float ii = j/6.0f;
-					float Omega = i/6.0f;
-					*/
-					
-					Vector3 v(r, 0.0, 0.0);
+			drawFace(Vec3f(r, r, r), Vec3f(r, r, -r), Vec3f(r, -r, r)); // +x face
+			drawFace(Vec3f(-r, r, r), Vec3f(r, r, r), Vec3f(-r, -r, r)); // +z face
 
-					//Mat3f mor(Mat3f::rotateZ(zAngle));
-					//Mat3f ir(Mat3f::rotateX(yAngle));
-					//Mat3f wr(Mat3f::rotateZ(zAngle));
-					
-					//Mat3f m(ir * wr);
+			drawFace(Vec3f(-r, r, -r), Vec3f(-r, r, r), Vec3f(-r, -r, -r)); // -x face
+			drawFace(Vec3f(r, r, -r), Vec3f(-r, r, -r), Vec3f(r, -r, -r)); // -z face
+			
+			drawFace(Vec3f(r, r, r), Vec3f(-r, r, r), Vec3f(r, r, -r)); // +y face
+			drawFace(Vec3f(r, -r, r), Vec3f(-r, -r, r), Vec3f(r, -r, -r)); // -y face
+			
+			
+			//Vec3f v1 = SphericalToCartesian(a, phi-PI_F/4, theta+PI_F/4);
+			//Vec3f v2 = SphericalToCartesian(a, phi+PI_F/4, theta+PI_F/4);
+					//Vec3f v3 = SphericalToCartesian(a, phi+PI_F/4, theta-PI_F/4);
+			//Vec3f v3 = SphericalToCartesian(a, phi-PI_F/4, theta-PI_F/4);
 
-					//v = m * v;
-					
-					a += 45.0f;
-					b -= 45.0f;
-
-
-					v.x = r * sin(a) * cos(b);
-					v.y = r * sin(a) * sin(b);
-					v.z = r * cos(a);
-
-
-
-					glPushMatrix();
-
-					//glRotatef(yAngle, 0.0f, 1.0f, 0.0f);
-					//glRotatef(-zAngle, 0.0f, 0.0f, 1.0f);
-
-					glBegin(GL_POINTS);
-						glColor3f(j/10.0f, 0.0f, 0.0f);
-						//glVertex3f(r, 0.0f, 0.0f);
-						glVertex3f(v.x, v.y, v.z);
-					glEnd();
-					
-					glPopMatrix();
-				}
-			}
 
 		glPopMatrix();
 		glEnable(GL_LIGHTING);
 	
 	}
 
+	void drawFace(Vec3f v1, Vec3f v2, Vec3f v3)
+	{
+		Vec3f v1v2 = v2 - v1;
+		Vec3f v1v3 = v3 - v1;
+
+		float time = SDL_GetTicks();
+
+		float p;
+		float phi;
+		float theta;
+
+		const int DOTS = 20;
+
+		for (int i = 0; i <= DOTS; i++)
+		{
+			for (int j = 0; j <= DOTS; j++)
+			{
+				float ii = i/static_cast<float>(DOTS);
+				float jj = j/static_cast<float>(DOTS);
+	
+				Vec3f v = v1 + v1v2*ii + v1v3*jj;
+/*
+				v.x = r;
+				v.y = v1.y - i;
+				v.z = v1.z - j;
+*/
+				CartesianToSpherical(v, &p, &phi, &theta);
+				p = 5.0f + sin(i/5.0f + time/200.0f);
+				Vec3f vSphere = SphericalToCartesian(p, phi, theta);
+
+				glPushMatrix();
+
+					glBegin(GL_POINTS);
+						glColor3f(0.8f, 0.8f, 0.8f);
+						//glVertex3f(v.x, v.y, v.z);
+
+						glColor3f(v.x/7.0f, v.y/7.0f, v.z/7.0f);
+						glVertex3f(vSphere.x, vSphere.y, vSphere.z);
+					glEnd();
+				
+				glPopMatrix();
+			}
+		}
+
+	}
+	
 };
