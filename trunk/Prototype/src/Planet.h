@@ -15,6 +15,7 @@ namespace Prototype
 		
 	
 		float viewAngle;
+		float viewAngle2;
 
 	private:
 

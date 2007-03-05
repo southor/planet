@@ -30,6 +30,7 @@ namespace Prototype
 		return angle * 360.0f / (2.0f * PI_F);
 	}
 
+
 	//// Functor
 	//template <class T>
 	//class HasId

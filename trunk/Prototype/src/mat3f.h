@@ -93,6 +93,12 @@ namespace Prototype
 	Mat3f operator*(const Mat3f& m, const Mat3f& n);
 
 	Vector3 operator*(const Mat3f& m, const Vector3& v);
+	
+	void CartesianToSpherical(Vec3f &v, float *p, float *phi, float *theta);
+	
+	Vec3f SphericalToCartesian(float p, float phi, float theta);
+
+	
 		
 };
 
