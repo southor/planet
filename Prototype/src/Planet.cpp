@@ -60,7 +60,7 @@ namespace Prototype
 			
 			// a represents the length from center to the corner of the
 			// planets "height map box". (2a)^2 = (2p)^2 + (2p)^2 + (2p)^2 (pythagorean theorem for box)
-			float a = sqrt(3) * r;
+			float a = sqrt(3.0f) * r;
 								
 			Vec3f v(0.0, 0.0, r);
 			
