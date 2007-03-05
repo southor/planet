@@ -60,7 +60,7 @@ namespace Prototype
 		// ------- get state cmd input -------
 		inline StateCmds getCurrentStates()				{ return currentStates; }
 
-		bool getCurrentState(int stateCmd)				{ currentStates.getCurrentState(stateCmd); }
+		bool getCurrentState(int stateCmd)				{ return currentStates.getCurrentState(stateCmd); }
 		void setCurrentState(int stateCmd, bool state)	{ currentStates.setCurrentState(stateCmd, state); }
 
 

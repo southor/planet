@@ -71,6 +71,9 @@ namespace Prototype
 		}
 
 	private:
+
+		static const double PREDICTION_AMOUNT_MODIFIER;
+		static const int PREDICTION_AMOUNT_ADD_TIME;
 		
 		
 		//size_t addPlayer(const ServerPlayer &player);

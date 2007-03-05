@@ -10,8 +10,12 @@
 namespace Prototype
 {
 
+	const double Client::OBJECT_LAG_MODIFIER = 1.2;
+	const int Client::OBJECT_LAG_ADD_TIME = 18;
+	const int Client::OBJECT_LAG_ADD_TICK = 1;
+
 	Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER),
-						connectionPhase(0), requestRender(false)
+						connectionPhase(0), requestRender(false), currObjLag(0)
 	{
 		predictionHandler.setWorldModel(&worldModel);
 	}
@@ -226,7 +230,7 @@ namespace Prototype
 	//	}
 	//}
 
-	void Client::handleUserInput()
+	void Client::getCurrentUserCmd(UserCmd &userCmd)
 	{
 		//float 
 		//if (userInputHandler.hasMousePosChanged() && )
@@ -235,19 +239,19 @@ namespace Prototype
 
 		int currentTick = static_cast<int>(timeHandler.getStepTick());
 		
-		StateCmds stateCmds = getUserInput()->getCurrentStates();
+		StateCmds stateCmds = userInputHandler.getCurrentStates();
 
 
 		Angle aimAngle(0.0f);
 		if (worldModel.getPlayerObjs().exists(playerId))
 		{
-			if (userInput.aimMode == UserInputHandler::MOUSE)
+			if (userInputHandler.aimMode == UserInputHandler::MOUSE)
 			{
-				aimAngle = calcPlayerObjAngle(userInput.getMouseScreenPos());
+				aimAngle = calcPlayerObjAngle(userInputHandler.getMouseScreenPos());
 			}
 			else
 			{
-				assert(userInput.aimMode == UserInputHandler::KEYBOARD);
+				assert(userInputHandler.aimMode == UserInputHandler::KEYBOARD);
 				//playerAngle = (worldModel.getPlayerObjs())[playerId]->angle;
 				UserCmd tmpUserCmd;
 				predictionHandler.getUserCmd(tmpUserCmd, currentTick - 1);
@@ -255,20 +259,18 @@ namespace Prototype
 				aimAngle = calcPlayerObjAngle(tmpUserCmd.aimAngle, stateCmds, TimeHandler::TICK_DELTA_TIME);
 			}
 		}
-		//int stateCmds = getUserInput()->getCurrentStates().getStates();
-		
-		//stateCmds.getCurrentState(Cmds::ROTATE_LEFT);
+
 		
 
 		
 
 
-		
+		userCmd.stateCmds = stateCmds;
+		userCmd.aimAngle = aimAngle;
 
-		UserCmd userCmd(stateCmds, aimAngle);
-		predictionHandler.setUserCmd(userCmd, currentTick);
-		link.pushMessage(userCmd, timeHandler.getTime(), currentTick);
-		//printf("CLIENT: sending usercmd with tick: %f @ time %d\n", timeHandler.getStepTick(), timeHandler.getStepTime());
+		//UserCmd userCmd(stateCmds, aimAngle);
+		//predictionHandler.setUserCmd(userCmd, currentTick);
+		//link.pushMessage(userCmd, timeHandler.getTime(), currentTick);
 	}
 
 	void Client::handleServerMessages()
@@ -298,12 +300,12 @@ namespace Prototype
 						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle);
 						if (differ)
 						{
-							std::cout << "old prediction differ!" << std::endl;
+							//std::cout << "old prediction differ!" << std::endl;
 							predictionHandler.serverInput(playerId, link.getPoppedTick());						
 						}
 						else
 						{
-							std::cout << "old prediction ok!" << std::endl;
+							//std::cout << "old prediction ok!" << std::endl;
 						}
 						//playerObj->angle = tmpAngle;
 
@@ -345,6 +347,12 @@ namespace Prototype
 			case START_GAME:
 				//timeHandler.reset();
 				break;
+			case SET_TICK_0_TIME:
+				timeHandler.enterTick0Time(*(link.getPoppedData<SetTick0Time>()));
+				//std::cout << "tick0Time: " << timeHandler.getTick0Time() << std::endl;
+				break;
+			default:
+				break;
 			};
 		}
 	}
@@ -356,13 +364,32 @@ namespace Prototype
 		{
 			if (timeHandler.isNewTick())
 			{
-				handleUserInput();
+				int currentTick = static_cast<int>(timeHandler.getStepTick());
+				
+
+				// calculate current objectLag				
+				double tmp = static_cast<double>(link.getCurrentLag() - timeHandler.getTick0Time());
+				this->currObjLag = static_cast<int>(tmp * OBJECT_LAG_MODIFIER + OBJECT_LAG_ADD_TIME)
+													/ TimeHandler::TICK_DELTA_TIME + OBJECT_LAG_ADD_TICK;
+				//std::cout << "currObjLag: " << currObjLag << std::endl;
+
+				// get userCmd
+				UserCmd userCmd;
+				getCurrentUserCmd(userCmd);
+				
+				// store userCmd
+				predictionHandler.setUserCmd(userCmd, currentTick);
+				
+				// push userCmd
+				link.pushMessage(userCmd, timeHandler.getTime(), currentTick);
 
 				// transmit messages
 				link.transmit();
 
+
+
 				// perform prediction
-				predictionHandler.predict(playerId, static_cast<int>(timeHandler.getStepTick()) + 1);
+				predictionHandler.predict(playerId, currentTick + 1);
 			}
 			else
 			{
@@ -460,7 +487,9 @@ namespace Prototype
 		worldRenderer.setupProjection();
 		if (worldModel.getPlayerObjs().exists(playerId))
 		{
-			worldModel.updateToTickData(timeHandler.getStepTick());
+			Tickf currentTick = timeHandler.getStepTick();
+			worldModel.updateToTickData(currentTick - static_cast<Tickf>(currObjLag));
+			(worldModel.getPlayerObjs())[playerId]->updateToTickData(currentTick);
 			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);//, timeHandler.getStepTick());
 		}
 

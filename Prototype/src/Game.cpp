@@ -316,9 +316,9 @@ namespace Prototype
 			// guichan
 			//gui.gui->logic();
 
-			if (client1.getUserInput()->getCurrentState(Cmds::LEFT))
+			if (client1.getUserInputHandler()->getCurrentState(Cmds::LEFT))
 				planet.viewAngle += 0.5f;
-			if (client1.getUserInput()->getCurrentState(Cmds::RIGHT))
+			if (client1.getUserInputHandler()->getCurrentState(Cmds::RIGHT))
 				planet.viewAngle -= 0.5f;
 
 			planet.render();
@@ -477,27 +477,27 @@ namespace Prototype
 		//viewportHandler2.screenRenderPos = Vec2<int>(w/2, h/4);
 		//viewportHandler2.screenRenderSize = viewportHandler1.screenRenderSize;
 		
-		client1.getUserInput()->setStateCmdKey(Cmds::LEFT, SDLK_a);
-		client1.getUserInput()->setStateCmdKey(Cmds::RIGHT, SDLK_d);
-		client1.getUserInput()->setStateCmdKey(Cmds::FORWARD, SDLK_w);
-		client1.getUserInput()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
-		client1.getUserInput()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
-		client1.getUserInput()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
-		client1.getUserInput()->setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
-		client1.getUserInput()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
+		client1.getUserInputHandler()->setStateCmdKey(Cmds::LEFT, SDLK_a);
+		client1.getUserInputHandler()->setStateCmdKey(Cmds::RIGHT, SDLK_d);
+		client1.getUserInputHandler()->setStateCmdKey(Cmds::FORWARD, SDLK_w);
+		client1.getUserInputHandler()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
+		client1.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
+		client1.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
+		client1.getUserInputHandler()->setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
+		client1.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
-		client2.getUserInput()->setStateCmdKey(Cmds::LEFT, SDLK_j);
-		client2.getUserInput()->setStateCmdKey(Cmds::RIGHT, SDLK_l);
-		client2.getUserInput()->setStateCmdKey(Cmds::FORWARD, SDLK_i);
-		client2.getUserInput()->setStateCmdKey(Cmds::BACKWARD, SDLK_k);
-		client2.getUserInput()->setActionCmdKey(Cmds::SHOOT, SDL_BUTTON_LEFT);
-		client2.getUserInput()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_u);
+		client2.getUserInputHandler()->setStateCmdKey(Cmds::LEFT, SDLK_j);
+		client2.getUserInputHandler()->setStateCmdKey(Cmds::RIGHT, SDLK_l);
+		client2.getUserInputHandler()->setStateCmdKey(Cmds::FORWARD, SDLK_i);
+		client2.getUserInputHandler()->setStateCmdKey(Cmds::BACKWARD, SDLK_k);
+		client2.getUserInputHandler()->setActionCmdKey(Cmds::SHOOT, SDL_BUTTON_LEFT);
+		client2.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_u);
 	
 	
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
-		client1.getUserInput()->aimMode = UserInputHandler::KEYBOARD;
-		client2.getUserInput()->aimMode = UserInputHandler::MOUSE;
+		client1.getUserInputHandler()->aimMode = UserInputHandler::KEYBOARD;
+		client2.getUserInputHandler()->aimMode = UserInputHandler::MOUSE;
 	}
 
 	void Game::pollEvents()
@@ -551,8 +551,8 @@ namespace Prototype
 			} // end switch
 			
 
-			client1.getUserInput()->pushInput(event);
-			client2.getUserInput()->pushInput(event);
+			client1.getUserInputHandler()->pushInput(event);
+			client2.getUserInputHandler()->pushInput(event);
 
 			// Pass event to guichan
 			//gui.input->pushInput(event);

@@ -26,6 +26,7 @@ namespace Prototype
 		KILL,
 		START_GAME,
 		SYNC_PONG,
+		SET_TICK_0_TIME,
 
 		// client
 		INIT_CLIENT,
@@ -163,6 +164,18 @@ namespace Prototype
 		int pingSendTime;
 
 		SyncPong(int time, int pingSendTime) : time(time), pingSendTime(pingSendTime) {}
+	};
+
+	struct SetTick0Time
+	{
+		static const size_t messageType = SET_TICK_0_TIME;
+
+		int tick0Time;
+
+		SetTick0Time(int tick0Time) : tick0Time(tick0Time)
+		{}
+
+		inline operator int() const		{ return tick0Time; }
 	};
 
 	// --------------------------------------------------------------------------------

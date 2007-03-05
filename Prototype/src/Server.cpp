@@ -7,6 +7,9 @@
 namespace Prototype
 {
 
+	const double Server::PREDICTION_AMOUNT_MODIFIER = 1.1;
+	const int Server::PREDICTION_AMOUNT_ADD_TIME = 10;
+
 	Server::Server() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), lastUpdateTime(0),
 						ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj),
 						requestRender(false)
@@ -241,11 +244,13 @@ namespace Prototype
 			getTimeHandler()->nextTick();
 			lastUpdateTime = time;
 
-			// Send playerObj updates and store state to history
+			// Send playerObj updates and store state to history, also send tick0Time
 			WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
 			WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{
+				
+
 				//GameObjId playerObjId = playerObjsIt->first;
 				PlayerId playerId = playerObjsIt->first;
 				PlayerObj *playerObj = playerObjsIt->second;
@@ -255,9 +260,18 @@ namespace Prototype
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 
 				playerObj->storeToTickData(getTimeHandler()->getTick());
+
+				// Send tick0Time to client
+				{
+					Link &link = players[playerId].link;
+					double lag = static_cast<double>(link.getCurrentLag());
+					int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
+					SetTick0Time tick0Time(-extraPredictionTime);
+					link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				}
 			}
 
-			// Send projectile updates and store state to history
+			// Send projectile updates
 			WorldModel::ProjectileContainer::Iterator projectilesIt = worldModel.getProjectiles().begin();
 			WorldModel::ProjectileContainer::Iterator projectilesEnd = worldModel.getProjectiles().end();
 			for(; projectilesIt != projectilesEnd; ++projectilesIt)
@@ -270,6 +284,8 @@ namespace Prototype
 
 				//projectile->storeToTickData(getTimeHandler()->getTick());
 			}
+
+			
 
 			transmitAll(players);
 			
