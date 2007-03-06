@@ -8,7 +8,7 @@ namespace Prototype
 
 	void Planet::render()
 	{
-		float r = 5.0f;
+		//float r = 5.0f;
 		
 		glMatrixMode(GL_PROJECTION);  // Select The Projection Matrix
 		glLoadIdentity();  // Reset The Projection Matrix
@@ -103,7 +103,7 @@ namespace Prototype
 		float phi;
 		float theta;
 
-		const int DOTS = 20;
+		const int DOTS = 10;
 
 		for (int i = 0; i <= DOTS; i++)
 		{
@@ -119,14 +119,14 @@ namespace Prototype
 				v.z = v1.z - j;
 */
 				CartesianToSpherical(v, &p, &phi, &theta);
-				p = 5.0f + sin(i/5.0f + time/200.0f);
+				p = 5.0f; // + sin(i/5.0f + time/200.0f);
 				Vec3f vSphere = SphericalToCartesian(p, phi, theta);
 
 				glPushMatrix();
 
 					glBegin(GL_POINTS);
 						glColor3f(0.8f, 0.8f, 0.8f);
-						//glVertex3f(v.x, v.y, v.z);
+						glVertex3f(v.x, v.y, v.z);
 
 						glColor3f(v.x/7.0f, v.y/7.0f, v.z/7.0f);
 						glVertex3f(vSphere.x, vSphere.y, vSphere.z);

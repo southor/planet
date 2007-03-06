@@ -317,14 +317,14 @@ namespace Prototype
 			//gui.gui->logic();
 
 			if (client1.getUserInputHandler()->getCurrentState(Cmds::LEFT))
-				planet.viewAngle += 0.5f;
+				planet.viewAngle += 3.0f;
 			if (client1.getUserInputHandler()->getCurrentState(Cmds::RIGHT))
-				planet.viewAngle -= 0.5f;
+				planet.viewAngle -= 3.0f;
 
 			if (client1.getUserInputHandler()->getCurrentState(Cmds::FORWARD))
-				planet.viewAngle2 += 0.5f;
+				planet.viewAngle2 += 3.0f;
 			if (client1.getUserInputHandler()->getCurrentState(Cmds::BACKWARD))
-				planet.viewAngle2 -= 0.5f;
+				planet.viewAngle2 -= 3.0f;
 
 
 			planet.render();
@@ -332,7 +332,7 @@ namespace Prototype
 			glFlush();
 			SDL_GL_SwapBuffers();
 
-			SDL_Delay(1);
+			SDL_Delay(10);
 		}
 	}
 
