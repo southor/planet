@@ -200,8 +200,8 @@ namespace Planet
 	
 	float PlanetFace::getHeight(float s, float t)
 	{
-		if (s == 0.0f || s == 1.0f || t == 0.0f || t == 1.0f)
-			return radius;
+		//if (s == 0.0f || s == 1.0f || t == 0.0f || t == 1.0f)
+		//	return radius;
 			
 		return radius + heightMap.getHeight(s, t) / 2.0f;
 
