@@ -37,7 +37,17 @@ namespace Planet
 				planet.viewAngle2 += 3.0f;
 			if (userInputHandler.getCurrentState(Cmds::BACKWARD))
 				planet.viewAngle2 -= 3.0f;
-			
+
+			if (userInputHandler.getCurrentState(Cmds::TMP_LEFT))
+				planet.shipPhi += 0.05f;
+			if (userInputHandler.getCurrentState(Cmds::TMP_RIGHT))
+				planet.shipPhi -= 0.05f;
+
+			if (userInputHandler.getCurrentState(Cmds::TMP_UP))
+				planet.shipTheta += 0.05f;
+			if (userInputHandler.getCurrentState(Cmds::TMP_DOWN))
+				planet.shipTheta -= 0.05f;
+		
 
 			render(0);
 
@@ -117,6 +127,8 @@ namespace Planet
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
 
+
+
 		glShadeModel(GL_SMOOTH);
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClearDepth(1.0f);
@@ -134,6 +146,12 @@ namespace Planet
 		userInputHandler.setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
 		userInputHandler.setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
 		userInputHandler.setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
+
+		userInputHandler.setStateCmdKey(Cmds::TMP_LEFT, SDLK_LEFT);
+		userInputHandler.setStateCmdKey(Cmds::TMP_RIGHT, SDLK_RIGHT);
+		userInputHandler.setStateCmdKey(Cmds::TMP_UP, SDLK_UP);
+		userInputHandler.setStateCmdKey(Cmds::TMP_DOWN, SDLK_DOWN);
+
 
 		userInputHandler.aimMode = UserInputHandler::KEYBOARD;
 	}

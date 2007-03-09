@@ -39,10 +39,13 @@ namespace Planet
 
 		*phi = acos(z / (*p));
 		
-		if (x >= 0)
+		if (x == 0 && y == 0)
+			*theta = 0.0f;
+		else if (x >= 0)
 			*theta = asin(y / S);
 		else
 			*theta = PI_F - asin(y / S);
+			
 	}
 	
 	void SphericalToCartesian(float p, float phi, float theta, float *x, float *y, float *z)
