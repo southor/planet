@@ -4,8 +4,6 @@
 
 namespace Planet
 {
-	void drawFace(Vec3f v1, Vec3f v2, Vec3f v3);
-
 	void Planet::render()
 	{
 		//float r = 5.0f;
@@ -22,9 +20,6 @@ namespace Planet
 		glLineWidth(2.0);
 		glPointSize(3.0);
 
-
-		glDisable(GL_LIGHTING);
-		
 		glDisable(GL_LIGHTING);
 		glPushMatrix();
 			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
@@ -54,22 +49,21 @@ namespace Planet
 			//glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
 			//glRotatef(-45.0f, 0.0f, 1.0f, 0.0f);
 			 
-			float p;
-			float phi;
-			float theta;
+			//float p;
+			//float phi;
+			//float theta;
 			
 			// a represents the length from center to the corner of the
 			// planets "height map box". (2a)^2 = (2p)^2 + (2p)^2 + (2p)^2 (pythagorean theorem for box)
-			float a = sqrt(3.0f) * r;
+			//float a = sqrt(3.0f) * r;
 								
-			Vec3f v(0.0, 0.0, r);
-			
-			// get phi and theta from v 
-			//CartesianToSpherical(v, &p, &phi, &theta);
+			//Vec3f v(0.0, 0.0, r);
 			
 			// "rotate" to get the corner points
 			
 			//Vec3f v1 = SphericalToCartesian(a, phi, theta);
+			
+			//zBack.draw();
 
 			xFront.draw();
 			xBack.draw();
@@ -79,26 +73,45 @@ namespace Planet
 
 			zFront.draw();
 			zBack.draw();
-
-/*
-			drawFace(Vec3f(r, r, r), Vec3f(r, r, -r), Vec3f(r, -r, r)); // +x face
-			drawFace(Vec3f(-r, r, r), Vec3f(r, r, r), Vec3f(-r, -r, r)); // +z face
-
-			drawFace(Vec3f(-r, r, -r), Vec3f(-r, r, r), Vec3f(-r, -r, -r)); // -x face
-			drawFace(Vec3f(r, r, -r), Vec3f(-r, r, -r), Vec3f(r, -r, -r)); // -z face
 			
-			drawFace(Vec3f(r, r, r), Vec3f(-r, r, r), Vec3f(r, r, -r)); // +y face
-			drawFace(Vec3f(r, -r, r), Vec3f(-r, -r, r), Vec3f(r, -r, -r)); // -y face
-*/			
 			
-			//Vec3f v1 = SphericalToCartesian(a, phi-PI_F/4, theta+PI_F/4);
-			//Vec3f v2 = SphericalToCartesian(a, phi+PI_F/4, theta+PI_F/4);
-					//Vec3f v3 = SphericalToCartesian(a, phi+PI_F/4, theta-PI_F/4);
-			//Vec3f v3 = SphericalToCartesian(a, phi-PI_F/4, theta-PI_F/4);
+			float height = getHeight(shipPhi, shipTheta);
+			//printf("HEIGHT: %f\n", height);
 
+			SpherePoint sp(height, shipPhi, shipTheta);
+			Vec3f vsp = sp.toVector();
+			glBegin(GL_LINES);
+				glColor3f(0.5f, 0.5f, 0.5f);
+				glVertex3f(0.0f, 0.0f, 0.0f);
+				glVertex3f(vsp.x, vsp.y, vsp.z);
+			glEnd();
+
+			glPointSize(10.0);
+			glBegin(GL_POINTS);
+				glColor3f(1.0f, 0.0f, 0.0f);
+				glVertex3f(vsp.x, vsp.y, vsp.z);
+			glEnd();
 
 		glPopMatrix();
 		glEnable(GL_LIGHTING);
 	
 	}
+	
+	float Planet::getHeight(float phi, float theta)
+	{
+		float s, t;
+		SpherePoint sp(1.0f, phi, theta);
+		
+		for (Faces::iterator it = faces.begin(); it < faces.end(); it++)
+		{
+			PlanetFace *face = *it;
+
+			if (face->findIntersection(sp, s, t))
+			{
+				return face->getHeight(s, t);
+			}
+		}
+		
+		assert(true);
+	}	
 };

@@ -22,12 +22,12 @@ namespace Planet
 
 		Vec3f(float x, float y, float z) : x(x), y(y), z(z)	{}
 
-		float operator|(const Vec3f& rh) const
+		float dot(const Vec3f& rh) const
 		{
 			return x * rh.x + y * rh.y + z * rh.z;
 		}
 
-		Vec3f crossproduct(const Vec3f& v) const
+		Vec3f cross(const Vec3f& v) const
 		{
 			return Vec3f(y*v.z - z*v.y,
 						z*v.x - x*v.z,

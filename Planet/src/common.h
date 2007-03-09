@@ -34,9 +34,6 @@
 #include "SDL_net.h"
 //#include "SDL_mixer.h"
 //#include <GL/glu.h>
-//#include "vec3f.h"
-//#include <math.h>
-
 
 #endif
 
