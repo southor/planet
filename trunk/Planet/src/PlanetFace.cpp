@@ -4,6 +4,8 @@ namespace Planet
 {
 	void PlanetFace::init()
 	{
+		heightMap.init("map.png");
+	
 		// create arrays
 		numIndices = resolution*resolution*2 - 2*resolution;
 		
@@ -201,7 +203,9 @@ namespace Planet
 		if (s == 0.0f || s == 1.0f || t == 0.0f || t == 1.0f)
 			return radius;
 			
-		return radius + sin(s*20.0f)/8.0f + cos(t*20.0f)/8.0f;
+		return radius + heightMap.getHeight(s, t) / 2.0f;
+
+		//return radius + sin(s*20.0f)/8.0f + cos(t*20.0f)/8.0f;
 		//return radius + sin(s*5.0f + SDL_GetTicks()/400.0f)/2.0f;
 	}
 };

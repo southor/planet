@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "basic.h"
+#include "HeightMap.h"
 
 namespace Planet
 {
@@ -80,6 +81,8 @@ namespace Planet
 
 		// index array
 		uint *indices;
+		
+		HeightMap heightMap;
 	};
 };
 
