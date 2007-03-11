@@ -9,7 +9,7 @@ namespace Planet
 	class HeightMap
 	{
 	public:
-		HeightMap() {}
+		HeightMap() : map(0) {}
 		~HeightMap();
 		
 		void init(char *image);

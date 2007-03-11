@@ -20,37 +20,37 @@ namespace Planet
 
 		explicit Mat3f(const real* p)
 		{
-			for(int i=0; i<9; ++i)
-				data[i] = p[i];			
+			for (int i = 0; i < 9; ++i)
+				data[i] = p[i];
 		}
 
-		Mat3f( const Mat3f &rh )
+		Mat3f(const Mat3f &rh)
 		{
-			memcpy( this, &rh, sizeof(Mat3f) );
+			memcpy(this, &rh, sizeof(Mat3f));
 		}
 
-		Mat3f &operator=( const Mat3f &rh )
+		Mat3f &operator=(const Mat3f &rh)
 		{
-			memcpy( this, &rh, sizeof(Mat3f) );
+			memcpy(this, &rh, sizeof(Mat3f));
 			return *this;
 		}
 
 		real& operator()(int i, int j) 
 		{
-			return data[i+3*j]; 
+			return data[i + 3 * j]; 
 		}
 
 		real operator()(int i, int j) const 
 		{ 
-			return data[i+3*j];
+			return data[i + 3 * j];
 		}
 
 		static const Mat3f& identity()
 		{
 			static real data[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
-			static Mat3f id(data);
+			static Mat3f identity(data);
 
-			return id;
+			return identity;
 		}
 
 		static Mat3f rotateX(real angle)
@@ -88,6 +88,9 @@ namespace Planet
 			matrix.data[4] = cosAngle;
 			return matrix;
 		}
+		
+		static Mat3f rotateArbitrary(Vector3 &v, real angle);
+		
 	};
 	
 	
@@ -98,9 +101,6 @@ namespace Planet
 	void CartesianToSpherical(float x, float y, float z, float *p, float *phi, float *theta);
 	
 	void SphericalToCartesian(float p, float phi, float theta, float *x, float *y, float *z);
-
-	
-		
 };
 
 #endif

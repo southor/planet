@@ -27,7 +27,7 @@ namespace Planet
 			{
 				double floorDepth = (pixels[x * mapbpp + z * pitch + 0] / 255.0f);
 
-				floorHeights[x + z * width] = (float)(-floorDepth);
+				floorHeights[x + z * width] = (float)(floorDepth);
 			}
 		}
 	}

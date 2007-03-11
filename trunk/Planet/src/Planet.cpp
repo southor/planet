@@ -7,14 +7,14 @@ namespace Planet
 	void Planet::render()
 	{
 		//float r = 5.0f;
-		
+
 		glMatrixMode(GL_PROJECTION);  // Select The Projection Matrix
 		glLoadIdentity();  // Reset The Projection Matrix
 		gluPerspective(45.0f, 1.3333f, 0.1f, 100.0f);
 
 		glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
 		glLoadIdentity();  // Reset The Modelview Matrix
-		gluLookAt(20.0, 10.0, 2.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+		gluLookAt(vsp.x*zoom, vsp.y*zoom, vsp.z*zoom, 0.0, 0.0, 0.0, direction.x, direction.y, direction.z);
 
 
 		glLineWidth(2.0);
@@ -45,41 +45,61 @@ namespace Planet
 				glVertex3f(0.0f, 0.0f, 10.0f);
 			glEnd();
 
+			xFront.init();
+			xBack.init();
 
-			//glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
-			//glRotatef(-45.0f, 0.0f, 1.0f, 0.0f);
-			 
-			//float p;
-			//float phi;
-			//float theta;
-			
-			// a represents the length from center to the corner of the
-			// planets "height map box". (2a)^2 = (2p)^2 + (2p)^2 + (2p)^2 (pythagorean theorem for box)
-			//float a = sqrt(3.0f) * r;
-								
-			//Vec3f v(0.0, 0.0, r);
-			
-			// "rotate" to get the corner points
-			
-			//Vec3f v1 = SphericalToCartesian(a, phi, theta);
-			
-			//zBack.draw();
+			yFront.init();
+			yBack.init();
+
+			zFront.init();
+			zBack.init();
+
+
 
 			xFront.draw();
+			
 			xBack.draw();
 
 			yFront.draw();
 			yBack.draw();
 
 			zFront.draw();
+			
 			zBack.draw();
 			
 			
 			float height = getHeight(shipPhi, shipTheta);
-			//printf("HEIGHT: %f\n", height);
+			
+			//static Vec3f vsp(0.0f, 0.0f, height);
+			//static Vec3f direction = (vsp + Vec3f(0.0f, 2.0f, 0.0f)) - vsp;
 
-			SpherePoint sp(height, shipPhi, shipTheta);
-			Vec3f vsp = sp.toVector();
+			SpherePoint sp = vsp.toSpherePoint();
+			sp.p = getHeight(sp.phi, sp.theta);
+			vsp = sp.toVector();
+			
+			
+			
+			Vec3f normal = vsp;
+			normal.normalize();
+			
+			direction = direction - direction.dot(normal) * normal;
+
+			Vec3f directionLeft = Mat3f::rotateArbitrary(vsp, PI_F/2) * direction;
+			Vec3f directionRight = Mat3f::rotateArbitrary(vsp, -PI_F/2) * direction;
+		 	
+
+
+			if (runUp)
+				vsp += direction / 10.0f;
+			if (runDown)
+				vsp -= direction / 10.0f;
+			if (runLeft)
+				vsp += directionLeft / 10.0f;
+			if (runRight)
+				vsp += directionRight / 10.0f;
+
+
+			
 			glBegin(GL_LINES);
 				glColor3f(0.5f, 0.5f, 0.5f);
 				glVertex3f(0.0f, 0.0f, 0.0f);
@@ -90,6 +110,22 @@ namespace Planet
 			glBegin(GL_POINTS);
 				glColor3f(1.0f, 0.0f, 0.0f);
 				glVertex3f(vsp.x, vsp.y, vsp.z);
+			glEnd();
+
+			glBegin(GL_LINES);
+				glVertex3f(vsp.x, vsp.y, vsp.z);
+				glVertex3f(vsp.x + direction.x, vsp.y + direction.y, vsp.z + direction.z);
+			glEnd();
+
+			glBegin(GL_LINES);
+				glColor3f(0.0f, 0.0f, 1.0f);
+				glVertex3f(vsp.x, vsp.y, vsp.z);
+				glVertex3f(vsp.x + directionLeft.x, vsp.y + directionLeft.y, vsp.z + directionLeft.z);
+			glEnd();
+			glBegin(GL_LINES);
+				glColor3f(0.0f, 1.0f, 0.0f);
+				glVertex3f(vsp.x, vsp.y, vsp.z);
+				glVertex3f(vsp.x + directionRight.x, vsp.y + directionRight.y, vsp.z + directionRight.z);
 			glEnd();
 
 		glPopMatrix();
