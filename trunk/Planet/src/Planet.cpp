@@ -6,15 +6,16 @@ namespace Planet
 {
 	void Planet::render()
 	{
-		//float r = 5.0f;
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		//gluPerspective(45.0f, 1.3333f, 0.1f, 100.0f);
+		glFrustum(-1, 1, -1, 1, 1, 100);
+		
+		Vec3f camera(vsp.x*zoom, vsp.y*zoom, vsp.z*zoom);
 
-		glMatrixMode(GL_PROJECTION);  // Select The Projection Matrix
-		glLoadIdentity();  // Reset The Projection Matrix
-		gluPerspective(45.0f, 1.3333f, 0.1f, 100.0f);
-
-		glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
-		glLoadIdentity();  // Reset The Modelview Matrix
-		gluLookAt(vsp.x*zoom, vsp.y*zoom, vsp.z*zoom, 0.0, 0.0, 0.0, direction.x, direction.y, direction.z);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		gluLookAt(camera.x, camera.y, camera.z, 0.0, 0.0, 0.0, direction.x, direction.y, direction.z);
 
 
 		glLineWidth(2.0);
@@ -22,10 +23,11 @@ namespace Planet
 
 		glDisable(GL_LIGHTING);
 		glPushMatrix();
+
 			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
 			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
-		
-		
+
+		/*
 			glBegin(GL_LINES);
 				glColor3f(1.0f, 1.0f, 0.0f);
 				glVertex3f(0.0f, 0.0f, 0.0f);
@@ -44,7 +46,7 @@ namespace Planet
 				glColor3f(0.0f, 0.0f, 1.0f);
 				glVertex3f(0.0f, 0.0f, 10.0f);
 			glEnd();
-
+		*/
 			xFront.init();
 			xBack.init();
 
@@ -85,7 +87,7 @@ namespace Planet
 			direction = direction - direction.dot(normal) * normal;
 
 			Vec3f directionLeft = Mat3f::rotateArbitrary(vsp, PI_F/2) * direction;
-			Vec3f directionRight = Mat3f::rotateArbitrary(vsp, -PI_F/2) * direction;
+			Vec3f directionRight = -directionLeft;
 		 	
 
 
@@ -127,6 +129,17 @@ namespace Planet
 				glVertex3f(vsp.x, vsp.y, vsp.z);
 				glVertex3f(vsp.x + directionRight.x, vsp.y + directionRight.y, vsp.z + directionRight.z);
 			glEnd();
+
+
+			for (int i = 1; i < 20; i++)
+			{
+				float ii = static_cast<float>(i);
+				glBegin(GL_POINTS);
+					glColor3f(0.0f, 0.0f, 1.0f);
+					glVertex3f(vsp.x*4.0f/ii, vsp.y*4.0f/ii, vsp.z*4.0f/ii);
+				glEnd();
+			}
+
 
 		glPopMatrix();
 		glEnable(GL_LIGHTING);
