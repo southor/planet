@@ -12,7 +12,7 @@ namespace Planet
 	public:
 		PlanetFace(float r, Vec3f v1, Vec3f v2, Vec3f v3, Vec3f v4) 
 			:	radius(r),
-				resolution(20),
+				resolution(40),
 				initialized(false),
 				v1(v1), 
 				v2(v2), 

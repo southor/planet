@@ -21,7 +21,9 @@ namespace Planet
 			TMP_LEFT,
 			TMP_RIGHT,
 			TMP_UP,
-			TMP_DOWN
+			TMP_DOWN,
+			TMP_ZOOM_IN,
+			TMP_ZOOM_OUT		
 		};
 
 		//Action commands

@@ -4,6 +4,45 @@
 
 namespace Planet
 {
+/*
+	static Mat3f rotateZ(real angle)
+	{
+		real sinAngle = sin(angle);
+		real cosAngle = cos(angle);
+		Mat3f matrix = Mat3f::identity();
+		matrix.data[0] = cosAngle;
+		matrix.data[1] = sinAngle;
+		matrix.data[3] = -sinAngle;
+		matrix.data[4] = cosAngle;
+		return matrix;
+	}
+		*/
+	Mat3f Mat3f::rotateArbitrary(Vector3 &vv, real angle)
+	{
+		Vec3f v = vv;
+		v.normalize();
+	
+		real sinAngle = sin(angle);
+		real cosAngle = cos(angle);
+		Mat3f matrix = Mat3f::identity();
+
+		matrix.data[0] = cosAngle + (1 - cosAngle) * v.x * v.x;
+		matrix.data[1] = (1 - cosAngle) * v.y * v.x + sinAngle * v.z;
+		matrix.data[2] = (1 - cosAngle) * v.z * v.x -  sinAngle * v.y;
+
+		matrix.data[3] = (1 - cosAngle) * v.x * v.y - sinAngle * v.z;
+		matrix.data[4] = cosAngle + (1 - cosAngle) * v.y * v.y;
+		matrix.data[5] = (1 - cosAngle) * v.z * v.y + sinAngle * v.x;
+
+		matrix.data[6] = (1 - cosAngle) * v.x * v.z + sinAngle * v.y;
+		matrix.data[7] = (1 - cosAngle) * v.y * v.z - sinAngle * v.x;
+		matrix.data[8] = cosAngle + (1 - cosAngle) * v.z * v.z;
+
+		return matrix;
+	}
+
+
+
 	Mat3f operator*(const Mat3f& m, const Mat3f& n)
 	{
 		Mat3f result;

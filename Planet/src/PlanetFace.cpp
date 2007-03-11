@@ -4,7 +4,10 @@ namespace Planet
 {
 	void PlanetFace::init()
 	{
-		heightMap.init("map.png");
+		if (initialized)
+			return;
+			
+		heightMap.init("ht.png");
 	
 		// create arrays
 		numIndices = resolution*resolution*2 - 2*resolution;
@@ -36,7 +39,7 @@ namespace Planet
 				Vec3f vSphere = sp.toVector();
 	
 				vertices[index] = vSphere;
-				colors[index] = Vec3f(0.0, (sp.p-4.0f)/3.0f, 0.0);
+				colors[index] = Vec3f(0.0, (sp.p-5.0f)/4.0f, 0.0);
 			}
 		}
 		
@@ -200,10 +203,56 @@ namespace Planet
 	
 	float PlanetFace::getHeight(float s, float t)
 	{
-		//if (s == 0.0f || s == 1.0f || t == 0.0f || t == 1.0f)
-		//	return radius;
-			
-		return radius + heightMap.getHeight(s, t) / 2.0f;
+		float height;
+		float res = static_cast<float>(resolution - 1);
+
+		if (s == 1.0f) s -= 0.0001;
+		if (t == 1.0f) t -= 0.0001;
+
+		/*
+		// Get s,t representing top/left vertex (0.44 with resolution 10 becomes 0.4)
+		float s0 = static_cast<float>(static_cast<int>(s * res) / res);
+		float t0 = static_cast<float>(static_cast<int>(t * res) / res);
+
+		// Get s,t representing bottom,right vertex (s0 = 0.4 and resolution 10 gives s1 = 0.5)
+		float s1 = s0 + 1 / res;
+		float t1 = t0 + 1 / res;
+		
+		assert(s0 >= 0.0f && s0 <= 1.0f);
+		assert(t0 >= 0.0f && t0 <= 1.0f);
+		assert(s1 >= 0.0f && s1 <= 1.0f);
+		assert(t1 >= 0.0f && t1 <= 1.0f);
+		
+		
+		// Heights of the four nearby vertices 
+		float height0s0t = heightMap.getHeight(s0, t0);
+		float height1s0t = heightMap.getHeight(s1, t0);
+		float height0s1t = heightMap.getHeight(s0, t1);
+		float height1s1t = heightMap.getHeight(s1, t1);
+
+
+		// Value between 0.0 and 1.0 which tells us where s is between s0 and s1
+		// s0 = 0.4, s1 = 0.5 and s = 0.47 becomes 0.7
+		float sBetween = (s - s0) * res;
+		float tBetween = (t - t0) * res;
+		
+		
+		assert(sBetween >= 0.0f && sBetween <= 1.0f);
+		assert(tBetween >= 0.0f && tBetween <= 1.0f);
+		
+		// Check which vertices we should interpolate between
+		if (sBetween + tBetween <= 1.0f)
+		{
+			height = height0s0t + (height1s0t - height0s0t) * sBetween + (height0s1t - height0s0t) * tBetween;
+		}
+		else
+		{
+			height = height1s1t + (height0s1t - height1s1t) * (1 - sBetween) + (height1s0t - height1s1t) * (1 - tBetween);
+		}
+		*/
+		
+		return radius + heightMap.getHeight(s, t) * 2.0f;
+
 
 		//return radius + sin(s*20.0f)/8.0f + cos(t*20.0f)/8.0f;
 		//return radius + sin(s*5.0f + SDL_GetTicks()/400.0f)/2.0f;

@@ -38,15 +38,15 @@ namespace Planet
 			if (userInputHandler.getCurrentState(Cmds::BACKWARD))
 				planet.viewAngle2 -= 3.0f;
 
-			if (userInputHandler.getCurrentState(Cmds::TMP_LEFT))
-				planet.shipPhi += 0.05f;
-			if (userInputHandler.getCurrentState(Cmds::TMP_RIGHT))
-				planet.shipPhi -= 0.05f;
-
-			if (userInputHandler.getCurrentState(Cmds::TMP_UP))
-				planet.shipTheta += 0.05f;
-			if (userInputHandler.getCurrentState(Cmds::TMP_DOWN))
-				planet.shipTheta -= 0.05f;
+			planet.runUp = userInputHandler.getCurrentState(Cmds::TMP_UP);
+			planet.runDown = userInputHandler.getCurrentState(Cmds::TMP_DOWN);
+			planet.runLeft = userInputHandler.getCurrentState(Cmds::TMP_LEFT);
+			planet.runRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
+				
+			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_IN))
+				planet.zoom += 0.05f;
+			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_OUT))
+				planet.zoom -= 0.05f;
 		
 
 			render(0);
@@ -116,6 +116,8 @@ namespace Planet
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);	
 
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	
 
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
@@ -126,7 +128,6 @@ namespace Planet
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
-
 
 
 		glShadeModel(GL_SMOOTH);
@@ -151,6 +152,8 @@ namespace Planet
 		userInputHandler.setStateCmdKey(Cmds::TMP_RIGHT, SDLK_RIGHT);
 		userInputHandler.setStateCmdKey(Cmds::TMP_UP, SDLK_UP);
 		userInputHandler.setStateCmdKey(Cmds::TMP_DOWN, SDLK_DOWN);
+		userInputHandler.setStateCmdKey(Cmds::TMP_ZOOM_IN, SDLK_q);
+		userInputHandler.setStateCmdKey(Cmds::TMP_ZOOM_OUT, SDLK_e);
 
 
 		userInputHandler.aimMode = UserInputHandler::KEYBOARD;
