@@ -172,8 +172,8 @@ namespace Planet
 
 		// Check if intersection point is inside face
 		Vec3f pv = p - v1;  // vector in plane
-		Vec3f v1v2 = v2-v1;
-		Vec3f v1v4 = v4-v1;
+		Vec3f v1v2 = v2 - v1;
+		Vec3f v1v4 = v4 - v1;
 		
 		s = pv.dot(v1v2) / v1v2.length();
 		t = pv.dot(v1v4) / v1v4.length();
@@ -251,6 +251,7 @@ namespace Planet
 		}
 		*/
 		
+
 		return radius + heightMap.getHeight(s, t) * 2.0f;
 
 

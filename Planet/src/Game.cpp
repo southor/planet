@@ -8,7 +8,7 @@
 
 namespace Planet
 {
-	Game::Game()
+	Game::Game() : viewAngle(0.0f), viewAngle2(0.0f)
 	{
 		init();
 		running = true;
@@ -28,25 +28,26 @@ namespace Planet
 
 			glClear(GL_COLOR_BUFFER_BIT);
 			
+			
 			if (userInputHandler.getCurrentState(Cmds::LEFT))
-				planet.viewAngle += 3.0f;
+				viewAngle += 3.0f;
 			if (userInputHandler.getCurrentState(Cmds::RIGHT))
-				planet.viewAngle -= 3.0f;
+				viewAngle -= 3.0f;
 
 			if (userInputHandler.getCurrentState(Cmds::FORWARD))
-				planet.viewAngle2 += 3.0f;
+				viewAngle2 += 3.0f;
 			if (userInputHandler.getCurrentState(Cmds::BACKWARD))
-				planet.viewAngle2 -= 3.0f;
+				viewAngle2 -= 3.0f;
 
-			planet.runUp = userInputHandler.getCurrentState(Cmds::TMP_UP);
-			planet.runDown = userInputHandler.getCurrentState(Cmds::TMP_DOWN);
-			planet.runLeft = userInputHandler.getCurrentState(Cmds::TMP_LEFT);
-			planet.runRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
+			ship.moveUp = userInputHandler.getCurrentState(Cmds::TMP_UP);
+			ship.moveDown = userInputHandler.getCurrentState(Cmds::TMP_DOWN);
+			ship.moveLeft = userInputHandler.getCurrentState(Cmds::TMP_LEFT);
+			ship.moveRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
 				
 			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_IN))
-				planet.zoom += 0.05f;
+				camera.zoom += 0.05f;
 			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_OUT))
-				planet.zoom -= 0.05f;
+				camera.zoom -= 0.05f;
 		
 			Vec2<int> mouseScreenPos = userInputHandler.getMouseScreenPos();
 		
@@ -55,6 +56,17 @@ namespace Planet
 				mouseScreenPos.y / static_cast<float>(WINDOW_SIZE_Y));
 
 
+			ship.logic();
+
+
+
+			camera.update(ship.position, ship.reference);
+			sight.update(planet.mouseScreenPosRel);
+
+
+			ship.direction = sight.position - ship.position;
+
+			
 			render(0);
 
 			SDL_Delay(10);
@@ -67,8 +79,18 @@ namespace Planet
 
 		glDisable(GL_LIGHTING);
 
-		planet.render();
-		
+		camera.useCamera();
+
+		glPushMatrix();
+			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
+			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
+
+			planet.render();
+			ship.render();
+			sight.render();
+
+		glPopMatrix();
+			
 		glEnable(GL_LIGHTING);
 		glFlush();
 		SDL_GL_SwapBuffers();
@@ -163,6 +185,13 @@ namespace Planet
 
 
 		userInputHandler.aimMode = UserInputHandler::KEYBOARD;
+		
+		
+		planet.init();
+		ship.setPlanet(&planet);
+		sight.setCamera(&camera);
+		sight.setPlanet(&planet);
+
 	}
 
 	void Game::pollEvents()
