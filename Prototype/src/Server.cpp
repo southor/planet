@@ -36,6 +36,16 @@ namespace Prototype
 		worldModel.addRespawnPos(respawnPos2);
 	}
 
+	Server::~Server()
+	{
+		ServerPlayers::Iterator it(players.begin());
+		ServerPlayers::Iterator end(players.end());
+		for(;it != end; ++it)
+		{
+			delete it->second;
+		}		
+	}
+
 	bool Server::clientConnected(MessageSender *messageSender, MessageReciever *messageReciever)
 	{
 		// Temp Link used to simplify sending and retrieving messages during this connection phase.
@@ -89,7 +99,7 @@ namespace Prototype
 	{
 		//PlayerId playerId = players.findFreeId();
 		PlayerId playerId = getIdGenerator()->generatePlayerId();
-		players.add(playerId, ServerPlayer(color, messageSender, messageReciever));
+		players.add(playerId, new ServerPlayer(color, messageSender, messageReciever));
 		return playerId;
 		
 		//ServerClient client(messageSender, messageReciever);
@@ -115,7 +125,7 @@ namespace Prototype
 
 			//Color color(static_cast<float>(playerId % 2), 1.0f-static_cast<float>(playerId % 2), 0.0f); // the correct color should be retrieved from Player
 
-			AddPlayerObj addPlayerObj(playerId, players[playerId].color, playerObj->pos);
+			AddPlayerObj addPlayerObj(playerId, players[playerId]->color, playerObj->pos);
 
 			pushMessageToAll(players, addPlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 		}
@@ -124,7 +134,7 @@ namespace Prototype
 		ServerPlayers::Iterator playersIt;
 		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 		{			
-			const ServerPlayer &player = playersIt->second;
+			const ServerPlayer *player = playersIt->second;
 
 			WorldModel::ObstacleContainer::Iterator obstaclesIt = worldModel.getObstacles().begin();
 			WorldModel::ObstacleContainer::Iterator obstaclesEnd = worldModel.getObstacles().end();
@@ -134,10 +144,10 @@ namespace Prototype
 				Obstacle *obstacle = obstaclesIt->second;
 				
 				AddObstacle addObstacle(obstacleId, *obstacle);
-				player.link.pushMessage(addObstacle, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				player->link.pushMessage(addObstacle, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 			}
 
-			player.link.transmit();
+			player->link.transmit();
 		}
 	}
 
@@ -161,17 +171,17 @@ namespace Prototype
 		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 		{
 			PlayerId playerId = playersIt->first;
-			ServerPlayer player(playersIt->second);
+			ServerPlayer *player(playersIt->second);
 			
-			player.link.retrieve(getTimeHandler()->getTime());
+			player->link.retrieve(getTimeHandler()->getTime());
 
 			// set waitingForClients to true if player doesn't have current tick
-			waitingForClients = waitingForClients || (player.link.getLatestTick() < tick);
+			waitingForClients = waitingForClients || (player->link.getLatestTick() < tick);
 
 			//printf("playerId: %d, latestTick: %d\n", playerId, player.link.getLatestTick());
 
-			if (player.link.getLatestTick() < latestTick) // used for debugging
-				latestTick = player.link.getLatestTick(); // used for debugging
+			if (player->link.getLatestTick() < latestTick) // used for debugging
+				latestTick = player->link.getLatestTick(); // used for debugging
 
 			// Check tick timeout
 			if (getTimeHandler()->getTickFromTimeWithTimeout() >= tick)      //if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
@@ -197,43 +207,66 @@ namespace Prototype
 			for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 			{			
 				PlayerId playerId = playersIt->first;
-				ServerPlayer player(playersIt->second);
+				ServerPlayer *player(playersIt->second);
 
-				player.link.retrieve(getTimeHandler()->getTime());
+				player->link.retrieve(getTimeHandler()->getTime());
 
-				while (player.link.hasMessageOnQueueWithTick(tick))
+				while (player->link.hasMessageOnQueueWithTick(tick))
 				{
-					int messageType = player.link.popMessage();
+					int messageType = player->link.popMessage();
 					if (messageType == USER_CMD)
 					{
-						UserCmd *userCmd = player.link.getPoppedData<UserCmd>();
-						//StateCmds stateCmds(userCmd->stateCmds);
+						UserCmd *userCmd = player->link.getPoppedData<UserCmd>();
 						
-						//printf("SERVER: handling user_cmd @ %d, left: %d\n", getTimeHandler()->getTime(), stateCmds.getCurrentState(Cmds::LEFT));
+						//if (userCmd->shootAction == UserCmd::CONTINUE_SHOOTING)
+						//{
+						//	// check that privious really is START_SHOOTING or CONTINUE_SHOOTING
+						//	UserCmd preUserCmd;
+						//	player.getUserCmd(preUserCmd, getTimeHandler()->getTick() - 1);
+						//	if (preUserCmd.shootAction == UserCmd::NOT_SHOOTING)
+						//	{
+						//		userCmd->shootAction = UserCmd::START_SHOOTING;
+						//	}
+						//}
 						
-						PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-						playerObj->setUserCmd(userCmd);
-
-						//playerObj->movingForward = stateCmds.getCurrentState(Cmds::FORWARD);
-						//playerObj->movingBackward = stateCmds.getCurrentState(Cmds::BACKWARD);
-						//playerObj->strafingLeft = stateCmds.getCurrentState(Cmds::LEFT);
-						//playerObj->strafingRight = stateCmds.getCurrentState(Cmds::RIGHT);
-						//playerObj->angle = userCmd->aimangle;
+						player->setUserCmd(*userCmd, getTimeHandler()->getTick());
+						
 					}
-					else if (messageType == SHOOT_CMD)
-					{
-						printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
+					//else if (messageType == SHOOT_CMD)
+					//{
+					//	printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
 
-						// player shoots
-						ShootCmd *shootCmd = player.link.getPoppedData<ShootCmd>();					
-						GameObjId projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
-						Projectile *projectile = (worldModel.getProjectiles())[projectileId];
-						
-						// send projectile to all clients
-						AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
-													projectile->getAngle().getFloat(), projectile->getShooterId());
-						pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-					}
+					//	// player shoots
+					//	ShootCmd *shootCmd = player.link.getPoppedData<ShootCmd>();					
+					//	GameObjId projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
+					//	Projectile *projectile = (worldModel.getProjectiles())[projectileId];
+					//	
+					//	// send projectile to all clients
+					//	AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
+					//								projectile->getAngle().getFloat(), projectile->getShooterId());
+					//	pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+					//}
+				}
+
+				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+				UserCmd userCmd;
+				player->getUserCmd(userCmd, getTimeHandler()->getTick());
+				playerObj->setUserCmd(&userCmd);
+
+				// shooting
+				if (userCmd.shootAction == UserCmd::START_SHOOTING) std::cout << "server got: start shooting, nShots: " << userCmd.nShots << std::endl;
+				else if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) std::cout << "server got: continue shooting, nShots: " << userCmd.nShots << std::endl;
+				std::vector<GameObjId> shots;
+				worldModel.handlePlayerShooting(playerId, shots);
+				for(size_t i=0; i<shots.size(); ++i)
+				{
+					GameObjId projectileId = shots[i];
+ 					Projectile *projectile = (worldModel.getProjectiles())[projectileId];
+					
+					// send projectile to all clients
+					AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
+												projectile->getAngle().getFloat(), projectile->getShooterId(), projectile->getShootTick());
+					pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				}
 			}		
 
@@ -255,15 +288,16 @@ namespace Prototype
 				PlayerId playerId = playerObjsIt->first;
 				PlayerObj *playerObj = playerObjsIt->second;
 				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
-				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle.getFloat());
+				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
 
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 
+				//playerObj->isConsistent();
 				playerObj->storeToTickData(getTimeHandler()->getTick());
 
 				// Send tick0Time to client
 				{
-					Link &link = players[playerId].link;
+					Link &link = players[playerId]->link;
 					double lag = static_cast<double>(link.getCurrentLag());
 					int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
 					SetTick0Time tick0Time(-extraPredictionTime);
@@ -291,6 +325,17 @@ namespace Prototype
 			
 			requestRender = true;			
 		}
+	}
+
+	void Server::render()
+	{
+		worldRenderer.setupProjection();			
+		PlayerId playerIdFollow(1);
+		if (worldModel.getPlayerObjs().exists(playerIdFollow))
+		{
+			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerIdFollow]); //, static_cast<Tickf>(getTimeHandler()->getTick()));
+		}
+		requestRender = false;
 	}
 	
 };

@@ -8,6 +8,7 @@
 #include "GameObjId.h"
 #include "Angle.h"
 #include "StateCmds.h"
+#include "Projectile.h"
 
 
 namespace Prototype
@@ -47,11 +48,18 @@ namespace Prototype
 		PlayerId playerId;
 		Pos pos;
 		Angle angle;
+		Tickf nextShootTick;
+		int ammo[Projectile::N_TYPES];
 
 		UpdatePlayerObj()		{}
-		UpdatePlayerObj(PlayerId playerId, const Pos &pos, float angle)
-			: playerId(playerId), pos(pos), angle(angle)
-		{}
+		UpdatePlayerObj(PlayerId playerId, const Pos &pos, Angle angle, Tickf nextShootTick, const int ammo[Projectile::N_TYPES])
+			: playerId(playerId), pos(pos), angle(angle), nextShootTick(nextShootTick)
+		{
+			for(int i=0; i<Projectile::N_TYPES; ++i)
+			{
+				this->ammo[i] = ammo[i];
+			}
+		}
 	};
 	
 	struct AddPlayerObj
@@ -108,9 +116,10 @@ namespace Prototype
 		Pos pos;
 		float angle;
 		PlayerId shooterId;
+		Tickf shootTick;
 
-		AddProjectile(GameObjId projectileId, int type, Pos pos, float angle, PlayerId shooterId)
-			: projectileId(projectileId), type(type), pos(pos), angle(angle), shooterId(shooterId)
+		AddProjectile(GameObjId projectileId, int type, Pos pos, float angle, PlayerId shooterId, Tickf shootTick)
+			: projectileId(projectileId), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick)
 		{}
 	};
 
@@ -205,6 +214,13 @@ namespace Prototype
 	{
 		static const size_t messageType = USER_CMD;
 
+		enum ShootAction
+		{
+			START_SHOOTING,
+			CONTINUE_SHOOTING,
+			NOT_SHOOTING
+		};
+
 		//bool cmdLeft;
 		//bool cmdRight;
 		//bool cmdUp;
@@ -214,49 +230,77 @@ namespace Prototype
 		//int stateCmds; // bitpattern
 		StateCmds stateCmds;
 		Angle aimAngle;
+		Projectile::Type weapon;
+		int nShots;
+		ShootAction shootAction;
+		//bool shooting;
+		//bool continuosShooting
 
-
+		
 
 		UserCmd()
 		{}
 
+		//UserCmd(StateCmds stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
+		//{}
+
 		//UserCmd(int stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
-		UserCmd(StateCmds stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
+		UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon, int nShots, ShootAction shootAction)
+			: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots), shootAction(shootAction)
 		{}
 
+		void clear();
+
 		
+
+		inline bool isShooting()				{ return (shootAction == START_SHOOTING) || (shootAction == CONTINUE_SHOOTING); }
 		
-		UserCmd operator +(const UserCmd &rh) const
-		{			
-			
-			UserCmd result(stateCmds | rh.stateCmds, aimAngle + rh.aimAngle);
-			return result;
-		}
+		//UserCmd operator +(const UserCmd &rh) const
+		//{			
+		//	
+		//	//int resultNShots;
+		//	UserCmd result(stateCmds | rh.stateCmds, aimAngle + rh.aimAngle, Projectile::DEFAULT_TYPE, 0, NOT_SHOOTING);
+		//	return result;
+		//}
 
-		UserCmd operator -(const UserCmd &rh) const
-		{
-			UserCmd result(stateCmds & rh.stateCmds, aimAngle - rh.aimAngle);
-			return result;
-		}
+		//UserCmd operator -(const UserCmd &rh) const
+		//{
+		//	UserCmd result(stateCmds & rh.stateCmds, aimAngle - rh.aimAngle, Projectile::DEFAULT_TYPE, 0, NOT_SHOOTING);
+		//	return result;
+		//}
 
-		UserCmd operator *(float rh) const
-		{			
-			return *this;
-		}
+		//UserCmd operator *(float rh) const
+		//{			
+		//	UserCmd result(stateCmds, aimAngle * rh, Projectile::DEFAULT_TYPE, 0, NOT_SHOOTING);
+		//	return result;
+		//}
 
-	};
+		static void interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData);
 
-	struct ShootCmd
-	{
-		static const size_t messageType = SHOOT_CMD;
 
-		PlayerId playerId;
-		int weapon;
-		
-		ShootCmd(PlayerId playerId, int weapon)
-			: playerId(playerId), weapon(weapon)
-		{}
-	};
+		// Produces the next legal UserCmd from this one.
+		void assumeNext(UserCmd &resultData) const;
+
+
+		//inline static const UserCmd& getDefaultUserCmd()		{ return defaultUserCmd; }
+		static const UserCmd DEFAULT_USER_CMD;
+
+		// debug
+		bool isConsistent() const;
+
+	};	
+
+	//struct ShootCmd
+	//{
+	//	static const size_t messageType = SHOOT_CMD;
+
+	//	PlayerId playerId;
+	//	int weapon;
+	//	
+	//	ShootCmd(PlayerId playerId, int weapon)
+	//		: playerId(playerId), weapon(weapon)
+	//	{}
+	//};
 
 };
 

@@ -18,6 +18,17 @@ namespace Prototype
 						connectionPhase(0), requestRender(false), currObjLag(0)
 	{
 		predictionHandler.setWorldModel(&worldModel);
+		assert(predictionHandler.isConsistent());
+	}
+
+	Client::~Client()
+	{
+		ClientPlayers::Iterator it(players.begin());
+		ClientPlayers::Iterator end(players.end());
+		for(; it != end; ++it)
+		{
+			delete it->second;
+		}
 	}
 
 	//void Client::handleEvents()
@@ -232,16 +243,29 @@ namespace Prototype
 
 	void Client::getCurrentUserCmd(UserCmd &userCmd)
 	{
-		//float 
-		//if (userInputHandler.hasMousePosChanged() && )
-		//{
-		//}
-
+		// get current tick
 		int currentTick = static_cast<int>(timeHandler.getStepTick());
 		
+		// get playerobj
+		PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+		if (!playerObj)
+		{
+			userCmd.clear();
+			return;
+		}
+
+		// get previous user command
+		UserCmd preUserCmd;
+		predictionHandler.getUserCmd(preUserCmd, currentTick - 1);
+
+		// get userCmd to start with (could contain postponed actionCmds from previous tick)
+		predictionHandler.getUserCmd(userCmd, currentTick);
+
+		
+		// get stateCmds
 		StateCmds stateCmds = userInputHandler.getCurrentStates();
 
-
+		// get angle
 		Angle aimAngle(0.0f);
 		if (worldModel.getPlayerObjs().exists(playerId))
 		{
@@ -252,29 +276,67 @@ namespace Prototype
 			else
 			{
 				assert(userInputHandler.aimMode == UserInputHandler::KEYBOARD);
-				//playerAngle = (worldModel.getPlayerObjs())[playerId]->angle;
-				UserCmd tmpUserCmd;
-				predictionHandler.getUserCmd(tmpUserCmd, currentTick - 1);
-				Angle preAngle(tmpUserCmd.aimAngle);
-				aimAngle = calcPlayerObjAngle(tmpUserCmd.aimAngle, stateCmds, TimeHandler::TICK_DELTA_TIME);
+				//playerAngle = (worldModel.getPlayerObjs())[playerId]->angle;				
+				Angle preAngle(preUserCmd.aimAngle);
+				aimAngle = calcPlayerObjAngle(preUserCmd.aimAngle, stateCmds, TimeHandler::TICK_DELTA_TIME);
 			}
 		}
 
-		
-
-		
-
-
+		// set stateCmds and aimAngle
 		userCmd.stateCmds = stateCmds;
 		userCmd.aimAngle = aimAngle;
 
-		//UserCmd userCmd(stateCmds, aimAngle);
-		//predictionHandler.setUserCmd(userCmd, currentTick);
-		//link.pushMessage(userCmd, timeHandler.getTime(), currentTick);
+		// set shooting actions
+		//Tickf startShootTick = playerObj->getNextShootTick();
+		//bool continuous = true;
+		assert(userCmd.nShots == 0);
+		for(size_t i=0; i<userInputHandler.getNActionCmdsOnQueue(); ++i)
+		{
+			int actionCmd = userInputHandler.popActionCmd();
+
+			if (actionCmd == Cmds::START_SHOOT)
+			{
+				userCmd.shootAction = UserCmd::START_SHOOTING;
+				//continuous = false;
+			}
+			else if (userCmd.nShots == 0)
+			{
+				if (userCmd.isShooting() && (actionCmd == Cmds::STOP_SHOOT))
+				{
+					userCmd.nShots = tmax(1, playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING));
+					//userCmd.shooting = false;
+					userCmd.shootAction = UserCmd::NOT_SHOOTING;
+				}
+				else if (actionCmd == Cmds::SWITCH_WEAPON)
+				{
+					userCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
+				}
+			}
+			else
+			{				
+				assert(userCmd.nShots >= 1);
+				if (actionCmd == Cmds::SWITCH_WEAPON)
+				{
+					UserCmd nextUserCmd;
+					userCmd.assumeNext(nextUserCmd);
+					nextUserCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
+					break;
+				}
+			}
+		}
+		if (userCmd.isShooting())
+		{
+			std::cout << "client is shooting" << std::endl;			
+			userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING);			
+		}
+
+		
+		assert(userCmd.isConsistent());
 	}
 
 	void Client::handleServerMessages()
 	{
+		
 		link.retrieve(timeHandler.getTime());
 		
 		while(link.hasMessageOnQueue())
@@ -297,7 +359,7 @@ namespace Prototype
 					
 					if (playerId == updatePlayerObj->playerId)
 					{
-						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle);
+						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle, updatePlayerObj->nextShootTick);
 						if (differ)
 						{
 							//std::cout << "old prediction differ!" << std::endl;
@@ -315,7 +377,7 @@ namespace Prototype
 					}
 					else
 					{
-						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle);
+						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle, updatePlayerObj->nextShootTick);
 					}
 						
 					//playerObj->pos = updatePlayerObj->pos;
@@ -345,7 +407,10 @@ namespace Prototype
 				}
 				break;
 			case START_GAME:
-				//timeHandler.reset();
+				{
+					//timeHandler.reset();
+					
+				}
 				break;
 			case SET_TICK_0_TIME:
 				timeHandler.enterTick0Time(*(link.getPoppedData<SetTick0Time>()));
@@ -355,15 +420,28 @@ namespace Prototype
 				break;
 			};
 		}
+
+		//if (connectionPhase == ClientPhase::RUNNING)
+		//{
+		//	// start
+		//	UserCmd startUserCmd;
+		//	startUserCmd.clear();
+		//	timeHandler.nextStep();				
+		//	predictionHandler.setUserCmd(startUserCmd, static_cast<int>(timeHandler.getStepTick()));
+		//}
 	}
 
 	void Client::runStep()
 	{
+		assert(isConsistent());
+		
 		timeHandler.nextStep();
 		if (connectionPhase == ClientPhase::RUNNING)
 		{
 			if (timeHandler.isNewTick())
 			{
+				assert(predictionHandler.isConsistent());
+				
 				int currentTick = static_cast<int>(timeHandler.getStepTick());
 				
 
@@ -380,13 +458,11 @@ namespace Prototype
 				// store userCmd
 				predictionHandler.setUserCmd(userCmd, currentTick);
 				
-				// push userCmd
+				// push userCmd to serverlink
 				link.pushMessage(userCmd, timeHandler.getTime(), currentTick);
 
 				// transmit messages
 				link.transmit();
-
-
 
 				// perform prediction
 				predictionHandler.predict(playerId, currentTick + 1);
@@ -482,8 +558,9 @@ namespace Prototype
 		return false;
 	}
 
-	void Client::render()
+	void Client::renderAndUpdate()
 	{
+		//render
 		worldRenderer.setupProjection();
 		if (worldModel.getPlayerObjs().exists(playerId))
 		{
@@ -492,9 +569,9 @@ namespace Prototype
 			(worldModel.getPlayerObjs())[playerId]->updateToTickData(currentTick);
 			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);//, timeHandler.getStepTick());
 		}
-
 		requestRender = false;
 
+		//update
 		handleServerMessages();
 
 
@@ -532,7 +609,8 @@ namespace Prototype
 		
 		//size_t playerId = players.getSize();
 		//size_t playerObjId = playerId; // for now
-		players.add(playerId, Player(playerColor));
+		
+		players.add(playerId, new Player(playerColor));
 		//players[playerId].playerObjId = playerObjId;
 		//worldModel.addPlayerObj(playerId, playerObjId, playerPos);
 		

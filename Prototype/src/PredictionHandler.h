@@ -20,23 +20,31 @@ namespace Prototype
 		ClientWorldModel *worldModel;
 
 		int latestServerInputTick;
-		
-	public:
-
-		PredictionHandler() : userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS), worldModel(NULL), latestServerInputTick(0)
-		{}
-		
-		void setWorldModel(ClientWorldModel *worldModel)			{ this->worldModel = worldModel; }
-
-		void getUserCmd(UserCmd &userCmd, int tick)					{ userCmdHistoryList.getData(tick, userCmd); }
-		void setUserCmd(const UserCmd &userCmd, int tick)			{ userCmdHistoryList.setData(tick, userCmd); }
 
 		// Will overwrite previous predictions from fromTick.
 		void predict(PlayerId playerId, int fromTick, int toTick);
 		
+	public:
+
+		PredictionHandler();
+		
+		void setWorldModel(ClientWorldModel *worldModel)			{ this->worldModel = worldModel; }
+
+		void getUserCmd(UserCmd &userCmd, int tick)					{ userCmdHistoryList.getData(tick, userCmd);
+																	  assert(userCmd.isConsistent()); }
+		void setUserCmd(const UserCmd &userCmd, int tick)			{ assert(userCmd.isConsistent());
+																	  userCmdHistoryList.setData(tick, userCmd); }
+
+		// Repredicts the old prediction, overwrites old data but do not produce new one.
+		inline void rePredict(PlayerId playerId, int fromTick)
+		{
+			int latestTick = getlastTick(playerId);
+			predict(playerId, fromTick, latestTick);
+		}
+		
 		// Uses previous prediction to predict further
 		inline void predict(PlayerId playerId, int toTick)
-		{
+		{			
 			int latestTick = getlastTick(playerId);
 			predict(playerId, latestTick, toTick);
 		}
@@ -45,10 +53,14 @@ namespace Prototype
 		{
 			if (latestServerInputTick < inputTick)
 			{
-				predict(playerId, inputTick, getlastTick(playerId));
+				rePredict(playerId, inputTick);
 				latestServerInputTick = inputTick;
 			}
 		}
+
+		// debug
+		bool isTick0UserCmdConsistent();
+		bool isConsistent();
 	
 	};
 };

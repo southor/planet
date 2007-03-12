@@ -35,7 +35,7 @@ namespace Prototype
 		//void addPlayerObj(size_t playerId, size_t playerObjId, const Pos &playerPos);
 		void addPlayerObj(PlayerId playerId, const Pos &playerPos, bool isMe, int tick);
 		void addObstacle(GameObjId obstacleId, const Rectangle &obstacleArea);
-		void addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId, int tick);
+		void addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId, Tickf shootTick);
 
 		void updatePlayerObjMovement(PlayerId playerId, float deltaTime);
 

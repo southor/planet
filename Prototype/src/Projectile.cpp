@@ -8,11 +8,15 @@ namespace Prototype
 	const Projectile::Properties Projectile::properties[2] = {{1000.0f/1000.0f, 20, 0, 0, 75},
 															   {200.0f/1000.0f, 100, 50, 100.0f, 500}};
 
-	Projectile::Projectile(Type type, const Pos &pos, Angle angle, PlayerId shooterId, size_t nHistoryTicks, int tick)
-		: historyList(nHistoryTicks), type(type), pos(pos), angle(angle), shooterId(shooterId)
+	Projectile::Projectile(Type type, const Pos &pos, Angle angle, PlayerId shooterId, size_t nHistoryTicks, int currentTick, Tickf shootTick)
+		: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick)
 	{
+		// Set position at currentTick, Projectiles current tick is actually shootTick before we set position
+		this->pos = getPosAtTick(shootTick, currentTick);
+		
 		// insert data into history list
-		historyList.setData(tick, pos);
+		historyList.setDefaultData(this->pos);
+		historyList.setData(static_cast<int>(shootTick), pos);
 	}
 
 	Line Projectile::getLine() const
@@ -36,6 +40,25 @@ namespace Prototype
 			blastDamage = static_cast<int>(properties[type].blastDamage * (1.0f - distance / blastDistance)) + 1;
 		}
 		return blastDamage;
+	}
+
+	Pos Projectile::getPosAtTick(Tickf currentTick, Tickf resultTick)
+	{
+		Tickf tickDiff = resultTick - currentTick;
+		float speed = getSpeed();
+		Vec moveVec(getLine().getDirection() * speed * static_cast<float>(tickDiff));
+
+		return getPos() + moveVec;
+	}
+
+	void Projectile::getPosAtTick(int tick, const Pos &pos, Tickf resultTick, Pos &resultPos, Projectile *projectile)
+	{		
+		Pos tmpPos(projectile->getPos());
+		projectile->setPos(pos);
+
+		resultPos = projectile->getPosAtTick(static_cast<Tickf>(tick), resultTick);
+
+		projectile->setPos(tmpPos);
 	}
 
 };

@@ -84,10 +84,10 @@ namespace Prototype
 				//RenderPlayerObj<Players> renderPlayerObj(&players, tick);
 				RenderPlayerObj<Players> renderPlayerObj(&players);
 				//RenderProjectile renderProjectile(tick);
-				RenderProjectile renderProjectile;
+				RenderProjectile renderProjectile;				
 				ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderObstacle);
 				ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderPlayerObj);
-				ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderProjectile);			
+				ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderProjectile);
 				//render explosion
 				RenderExplosion renderExplosion;
 				ForEach(explosions.begin(), explosions.end(), renderExplosion);
@@ -181,7 +181,7 @@ namespace Prototype
 				//Color playerColor(0.7f, 0.7f, 0.7f);
 				//if (players->isValid(playerId))
 				//{
-				Color playerColor = (*players)[playerId].color;
+				Color playerColor = (*players)[playerId]->color;
 				//}
 
 				// render triangle

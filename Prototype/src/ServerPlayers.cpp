@@ -8,7 +8,7 @@ namespace Prototype
 		ServerPlayers::Iterator end = serverPlayers.end();
 		for(; it != end; ++it)
 		{
-			it->second.link.transmit();
+			it->second->link.transmit();
 		}
 	}
 

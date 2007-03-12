@@ -10,7 +10,7 @@ namespace Prototype
 		StateCmds()	: states(0) {}
 		StateCmds(int states) : states(states) {}
 	
-		bool getCurrentState(int stateCmd);
+		bool getCurrentState(int stateCmd) const;
 		void setCurrentState(int stateCmd, bool state);
 
 		//int getStates()	{ return states; }

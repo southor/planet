@@ -38,6 +38,8 @@ namespace Prototype
 
 		Client();
 
+		~Client();
+
 		
 		//void handleEvents();
 		//void logic();		
@@ -46,7 +48,7 @@ namespace Prototype
 		void runStep();
 
 		bool initConnection();
-		void render();
+		void renderAndUpdate();
 		
 		
 		void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, int tick);
@@ -57,8 +59,8 @@ namespace Prototype
 		inline ClientTimeHandler* getTimeHandler()		{ return &timeHandler; }
 		inline bool getRequestRender()					{ return requestRender; }
 		
-		void setPlayerId(PlayerId playerId) { this->playerId = playerId; }
-		void setColor(Color color) { this->color = color; }
+		void setPlayerId(PlayerId playerId)				{ this->playerId = playerId; }
+		void setColor(Color color)						{ this->color = color; }
 		inline void setViewport(int x, int y, int w, int h)
 		{
 			viewportHandler.screenRenderPos.x = x;
@@ -66,8 +68,8 @@ namespace Prototype
 			viewportHandler.screenRenderSize.x = w;
 			viewportHandler.screenRenderSize.y = h;
 		}
-		inline void useViewport()			 { viewportHandler.useViewport(); }
-		void setCurrentMousePos(Vec2<int> mouseScreenPos);
+		inline void useViewport()						{ viewportHandler.useViewport(); }
+		//void setCurrentMousePos(Vec2<int> mouseScreenPos);
 		//inline void setAimMode(UserInputHandler::AimMode aimMode)				{ userInputHandler. }
 		
 
@@ -113,6 +115,13 @@ namespace Prototype
 		Angle calcPlayerObjAngle(Vec2<int> mouseScreenPos);
 
 		Angle calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds, int deltaTime);
+
+		//debug
+		bool isConsistent()
+		{
+			//just test one thing for now
+			return predictionHandler.isConsistent();
+		}
 
 	};
 };

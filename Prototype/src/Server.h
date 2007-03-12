@@ -30,6 +30,8 @@ namespace Prototype
 	public:
 		Server();
 
+		~Server();
+
 		void logic();
 
 		bool clientConnected(MessageSender *messageSender, MessageReciever *messageReciever);
@@ -59,16 +61,7 @@ namespace Prototype
 			viewportHandler.screenRenderSize.y = h;
 		}
 		inline void useViewport()			 { viewportHandler.useViewport(); }
-		void render()
-		{
-			worldRenderer.setupProjection();			
-			PlayerId playerIdFollow(1);
-			if (worldModel.getPlayerObjs().exists(playerIdFollow))
-			{
-				worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerIdFollow]);//, static_cast<Tickf>(getTimeHandler()->getTick()));
-			}
-			requestRender = false;
-		}
+		void render();
 
 	private:
 

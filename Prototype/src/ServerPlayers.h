@@ -6,7 +6,7 @@
 namespace Prototype
 {
 
-	typedef IdMap<PlayerId, ServerPlayer> ServerPlayers;
+	typedef IdMap<PlayerId, ServerPlayer*> ServerPlayers;
 
 	template <typename MessageData>
 	void pushMessageToAll(ServerPlayers &serverPlayers, const MessageData &messageData, int currentTime, int currentTick)
@@ -15,7 +15,7 @@ namespace Prototype
 		ServerPlayers::Iterator end = serverPlayers.end();
 		for(; it != end; ++it)
 		{
-			it->second.link.pushMessage(messageData, currentTime, currentTick);
+			it->second->link.pushMessage(messageData, currentTime, currentTick);
 		}
 	}
 

@@ -17,7 +17,7 @@ namespace Prototype
 		Player(const Color &color) : color(color)			{}
 	};
 
-	typedef IdMap<PlayerId, Player> Players;
+	typedef IdMap<PlayerId, Player*> Players;
 };
 
 #endif

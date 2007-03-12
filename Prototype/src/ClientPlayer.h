@@ -8,7 +8,7 @@ namespace Prototype
 {
 	typedef Player ClientPlayer;
 
-	typedef IdMap<PlayerId, ClientPlayer> ClientPlayers;
+	typedef IdMap<PlayerId, ClientPlayer*> ClientPlayers;
 };
 
 #endif
