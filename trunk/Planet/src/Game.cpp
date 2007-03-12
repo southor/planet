@@ -48,6 +48,12 @@ namespace Planet
 			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_OUT))
 				planet.zoom -= 0.05f;
 		
+			Vec2<int> mouseScreenPos = userInputHandler.getMouseScreenPos();
+		
+			planet.mouseScreenPosRel = Vec2<float>(
+				mouseScreenPos.x / static_cast<float>(WINDOW_SIZE_X), 
+				mouseScreenPos.y / static_cast<float>(WINDOW_SIZE_Y));
+
 
 			render(0);
 

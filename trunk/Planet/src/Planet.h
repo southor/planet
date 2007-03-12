@@ -78,6 +78,8 @@ namespace Planet
 	
 		void render();
 		
+		
+		bool checkCollision(Vec3f startPos, Vec3f endPos, Vec3f *collisionPoint);
 		float getHeight(float phi, float theta);
 	
 		float viewAngle;
@@ -95,6 +97,8 @@ namespace Planet
 		
 		Vec3f vsp;
 		Vec3f direction;
+		
+		Vec2<float> mouseScreenPosRel;
 		
 	private:
 		PlanetFace xFront;
