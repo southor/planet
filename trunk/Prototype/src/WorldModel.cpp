@@ -1,4 +1,5 @@
 #include "WorldModel.h"
+#include "Cmds.h"
 
 namespace Prototype
 {
@@ -74,19 +75,24 @@ namespace Prototype
 		if (moveAlignedToAngle) moveAngle = playerObj->angle;
 		else moveAngle = PI_F/2.0f;
 		Vec moveVec(0.0f, 0.0f);
-		if (playerObj->movingForward == true)
+		//if (playerObj->movingForward == true)
+		const StateCmds &stateCmds(playerObj->getUserCmd().stateCmds);
+		if (stateCmds.getCurrentState(Cmds::FORWARD))
 		{
 			moveVec += Vec(cos(moveAngle.getFloat()) * fbMoveDistance, sin(moveAngle.getFloat()) * fbMoveDistance);
 		}
-		if (playerObj->movingBackward == true)
+		//if (playerObj->movingBackward == true)
+		if (stateCmds.getCurrentState(Cmds::BACKWARD))
 		{
 			moveVec += Vec(cos((moveAngle + Angle::PI).getFloat()) * fbMoveDistance, sin((moveAngle + Angle::PI).getFloat()) * fbMoveDistance);
 		}
-		if (playerObj->strafingLeft == true)
+		//if (playerObj->strafingLeft == true)
+		if (stateCmds.getCurrentState(Cmds::LEFT))
 		{
 			moveVec += Vec(cos((moveAngle + Angle::PI/2.0f).getFloat()) * strafeMoveDistance, sin((moveAngle + Angle::PI/2.0f).getFloat()) * strafeMoveDistance);
 		}
-		if (playerObj->strafingRight == true)
+		//if (playerObj->strafingRight == true)
+		if (stateCmds.getCurrentState(Cmds::RIGHT))
 		{
 			moveVec += Vec(cos((moveAngle - Angle::PI/2.0f).getFloat()) * strafeMoveDistance, sin((moveAngle - Angle::PI/2.0f).getFloat()) * strafeMoveDistance);
 		}

@@ -16,7 +16,16 @@ namespace Prototype
 
 	void ServerWorldModel::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
-		playerObjs.add(playerId, new PlayerObj(playerPos, 1, getTimeHandler()->getTick()));
+		PlayerObj *playerObj = new PlayerObj(playerPos, 1, getTimeHandler()->getTick());
+		//try
+		//{
+			playerObjs.add(playerId, playerObj);
+		//}
+		//catch (std::bad_alloc ba)
+		//{
+		//	std::cout << ba.what() << std::endl;
+		//	throw ba;
+		//}
 	}
 
 	GameObjId ServerWorldModel::addObstacle(const Rectangle &obstacleArea)
@@ -72,7 +81,7 @@ namespace Prototype
 		
 		// move projectile
 		Projectile *projectile = projectilePair.second;
-		Vec moveVec(projectile->getLine().getDirection() * projectile->getSpeed() * deltaTime);
+		Vec moveVec(projectile->getLine().getDirection() * projectile->getSpeed());
 		projectile->setPos(projectile->getPos() + moveVec);
 		Line projectileLine(projectile->getLine());
 
@@ -179,7 +188,7 @@ namespace Prototype
 		
 	}
 
-	GameObjId ServerWorldModel::playerShoot(PlayerId playerId, Projectile::Type weapon)
+	GameObjId ServerWorldModel::playerShoot(PlayerId playerId, Projectile::Type weapon, Tickf shootTick)
 	{
 		PlayerObj *playerObj = getPlayerObjs()[playerId];
 		Pos pos(playerObj->getPos());
@@ -187,9 +196,49 @@ namespace Prototype
 
 		//GameObjId projectileId = getProjectiles().findFreeId();
 		GameObjId projectileId = getIdGenerator()->generateGameObjId();
-		getProjectiles().add(projectileId, new Projectile(weapon, pos, angle, playerId, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick()));
+		Projectile *projectile = new Projectile(weapon, pos, angle, playerId, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick(), shootTick);		
+		getProjectiles().add(projectileId, projectile);
 
 		return projectileId;
+	}
+
+	void ServerWorldModel::handlePlayerShooting(PlayerId playerId, std::vector<GameObjId> &shots)
+	{	
+		int currentTick = getTimeHandler()->getTick();
+		Tickf currentTickf = static_cast<Tickf>(currentTick);
+
+		PlayerObj *playerObj = getPlayerObjs()[playerId];
+		const UserCmd &userCmd(playerObj->getUserCmd());
+		
+		/**
+		 * Fix problems with lost UserCmd messages, problems arises
+		 * when a CONTINUE_SHOOTING was recieved with no prior START_SHOOTING.
+		 */
+		Tickf nextShootTick = playerObj->getNextShootTick();
+		if ((userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) && (nextShootTick < currentTickf))
+		{
+			Tickf shootInterval = Projectile::getShootInterval(userCmd.weapon);
+			int nShotIntervalDelay = 1 + static_cast<int>((currentTickf - nextShootTick) / shootInterval);
+			
+			// Delay nextShootTick
+			playerObj->setNextShootTick(nextShootTick + static_cast<Tickf>(nShotIntervalDelay) * shootInterval);
+		}
+		
+		// Do any shooting
+		int nShots = userCmd.nShots;
+		Projectile::Type weapon = userCmd.weapon;
+		for(int i=0; i<nShots; ++i)
+		{
+			std::cout << "server: handlePlayerShooting: ";
+			if (userCmd.shootAction == UserCmd::START_SHOOTING) std::cout << "start shooting" << std::endl;
+			else if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) std::cout << "continue shooting" << std::endl;
+			else std::cout << "not shooting!";
+			std::cout << std::endl;
+			
+			Tickf shootTick = playerObj->getShotTick(currentTick, i);
+			playerObj->updateNextShootTime(currentTick);
+			shots.push_back(playerShoot(playerId, weapon, shootTick));
+		}
 	}
 };
 

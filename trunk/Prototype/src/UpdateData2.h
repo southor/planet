@@ -49,6 +49,8 @@ namespace Prototype
 			return *this;
 		}
 	};
+
+	
 };
 
 #endif

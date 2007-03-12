@@ -21,13 +21,14 @@ namespace Prototype
 
 		//Action commands
 		enum
-		{
-			SHOOT = 0,
-			SWITCH_WEAPON
+		{			
+			SWITCH_WEAPON = 0,
+			START_SHOOT,
+			STOP_SHOOT
 		};
 
 		static const int N_STATE_CMDS = 6;
-		static const int N_ACTION_CMDS = 2;
+		static const int N_ACTION_CMDS = 3;
 
 		//static const int N_CMDS = 8; // all commands
 		//static const int N_SERVER_STATE_CMDS = 4; // first group of commands

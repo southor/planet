@@ -23,9 +23,6 @@ namespace Prototype
 
 		static const Vec WORLD_SIZE;		
 
-		//typedef std::vector<Obstacle*> ObstacleContainer;
-		//typedef std::list<PlayerObj*> PlayerObjContainer;
-		//typedef std::list<Projectile*> ProjectileContainer;
 		typedef IdMap<GameObjId, Obstacle*> ObstacleContainer;
 		typedef IdMap<GameObjId, PlayerObj*> PlayerObjContainer;
 		typedef IdMap<GameObjId, Projectile*> ProjectileContainer;

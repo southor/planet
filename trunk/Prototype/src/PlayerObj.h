@@ -7,7 +7,7 @@
 #include "HistoryList.inl"
 #include "Angle.h"
 #include "messages.h"
-#include "UpdateData2.h"
+//#include "UpdateData2.h"
 
 namespace Prototype
 {
@@ -18,9 +18,9 @@ namespace Prototype
 		
 		static const int N_WEAPONS = Projectile::N_TYPES;
 
-		Projectile::Type currentWeapon; // used by client
-		int ammo[N_WEAPONS]; // used by client
-		int nextShootTime; // used by client
+		//Projectile::Type currentWeapon;
+		int ammo[N_WEAPONS];
+		Tickf nextShootTick;
 
 		//struct UpdateData : public UpdateData2<Pos, Angle>
 		//{
@@ -36,37 +36,40 @@ namespace Prototype
 
 			Pos pos;
 			Angle angle;
+			Tickf nextShootTick;
 
 			inline UpdateData()			{}
-			inline UpdateData(const Pos &pos, Angle angle)
-				: pos(pos), angle(angle)
+			inline UpdateData(const Pos &pos, Angle angle, Tickf nextShootTick)
+				: pos(pos), angle(angle), nextShootTick(nextShootTick)
 			{}
 
 			UpdateData operator +(const UpdateData &rh) const
 			{
-				UpdateData result(pos + rh.pos, angle + rh.angle);
+				UpdateData result(pos + rh.pos, angle + rh.angle, nextShootTick + rh.nextShootTick);
 				return result;
 			}
 
 			UpdateData operator -(const UpdateData &rh) const
 			{
-				UpdateData result(pos - rh.pos, angle - rh.angle);
+				UpdateData result(pos - rh.pos, angle - rh.angle, nextShootTick - rh.nextShootTick);
 				return result;
 			}
 
 			UpdateData operator *(float rh) const
 			{
-				UpdateData result(pos * rh, angle * rh);
+				UpdateData result(pos * rh, angle * rh, nextShootTick * rh);
 				return result;
 			}
 
 			bool operator !=(const UpdateData &rh) const
 			{				
-				return (pos != rh.pos) || (angle != rh.angle);				
+				return (pos != rh.pos) || (angle != rh.angle) || (nextShootTick != rh.nextShootTick);
 			}
 		};
 		
 		HistoryList<UpdateData> historyList;
+
+		UserCmd userCmd;
 
 	public:
 
@@ -77,12 +80,15 @@ namespace Prototype
 		Pos pos;
 		Angle angle;
 
+		
+
 		int health;
 
-		bool movingForward;
-		bool movingBackward;
-		bool strafingLeft;
-		bool strafingRight;
+		//bool movingForward;
+		//bool movingBackward;
+		//bool strafingLeft;
+		//bool strafingRight;
+		
 
 		//PlayerObj(size_t playerId, const Pos &pos);
 		PlayerObj(const Pos &pos, size_t nHistoryTicks, int tick);
@@ -90,6 +96,8 @@ namespace Prototype
 		~PlayerObj()										{}
 
 		Pos getPos() const									{ return pos; }
+		//inline Angle getAngle()								{ return userCmd.aimAngle; }
+		//inline void setAngle(Angle angle)					{ userCmd.aimAngle = angle; }
 		void getRectangle(Rectangle &rectangle) const;
 		//size_t getPlayerId() const						{ return playerId; }	
 
@@ -99,24 +107,29 @@ namespace Prototype
 
 		void respawn(const Pos &respawnPos);
 
-		// memberfunctions used by client
-		inline Projectile::Type getCurrentWeapon() const	{ return currentWeapon; }
-		void setAmmoSupply(int seed);
-		void switchWeapon();
-		int getAmmoCurrentWeapon() const					{ return ammo[currentWeapon]; }
-		inline bool canShoot(int time) const				{ return (ammo[currentWeapon] > 0) && (nextShootTime <= time); }
-		void shoot(int time);
 
-		inline void setTickData(int tick, const Pos &pos, Angle angle)
+		Tickf getNextShootTick() const						{ return nextShootTick; }
+		void setNextShootTick(Tickf nextShootTick)			{ this->nextShootTick = nextShootTick; }
+		inline Projectile::Type getCurrentWeapon() const	{ return userCmd.weapon; }
+		void setAmmoSupply(int seed);
+		//void switchWeapon();
+		Projectile::Type getNextWeapon(Projectile::Type weapon);
+
+		const int* getAmmo() const							{ return ammo; }
+		int getAmmoCurrentWeapon() const					{ return ammo[getCurrentWeapon()]; }
+		//inline bool canShoot(int time) const				{ return (getAmmoCurrentWeapon() > 0) && (nextShootTick <= time); }
+		//void shoot(int time);
+
+		inline void setTickData(int tick, const Pos &pos, Angle angle, Tickf nextShootTick)
 		{
-			UpdateData data(pos, angle);
+			UpdateData data(pos, angle, nextShootTick);
 			historyList.setData(tick, data);
 		}
 
 		// @return true if there was a differ
-		bool setTickDataAndCompare(int tick, const Pos &pos, Angle angle);
+		bool setTickDataAndCompare(int tick, const Pos &pos, Angle angle, Tickf nextShootTick);
 
-		inline void storeToTickData(int tick)				{ setTickData(tick, pos, angle); }
+		inline void storeToTickData(int tick)				{ setTickData(tick, pos, angle, nextShootTick); }
 
 		void updateToTickData(int tick);
 
@@ -124,7 +137,18 @@ namespace Prototype
 
 		inline int getLastStoredTick()						{ return historyList.getLastTick(); }
 
+		const UserCmd& getUserCmd()							{ return userCmd; }
 		void setUserCmd(const UserCmd *userCmd);
+
+		int getNTickShots(Projectile::Type weapon, int currentTick, bool continuous);
+
+		//static Projectile::Type switchWeapon(Projectile::Type currentWeapon)
+		
+		void updateNextShootTime(int currentTick);
+
+		Tickf getShotTick(int currentTick, int shotN);
+
+		bool isConsistent();
 
 	};
 };

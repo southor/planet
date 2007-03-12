@@ -345,13 +345,13 @@ namespace Prototype
 		if (SHOW_CLIENT_1)
 		{
 			client1.useViewport();
-			client1.render();
+			client1.renderAndUpdate();
 		}
 
 		if (SHOW_CLIENT_2)
 		{
 			client2.useViewport();
-			client2.render();
+			client2.renderAndUpdate();
 		}
 
 		if (SHOW_SERVER)
@@ -489,14 +489,14 @@ namespace Prototype
 		client1.getUserInputHandler()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
 		client1.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
 		client1.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
-		client1.getUserInputHandler()->setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
+		client1.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOT, Cmds::STOP_SHOOT, SDLK_SPACE);
 		client1.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
 		client2.getUserInputHandler()->setStateCmdKey(Cmds::LEFT, SDLK_j);
 		client2.getUserInputHandler()->setStateCmdKey(Cmds::RIGHT, SDLK_l);
 		client2.getUserInputHandler()->setStateCmdKey(Cmds::FORWARD, SDLK_i);
 		client2.getUserInputHandler()->setStateCmdKey(Cmds::BACKWARD, SDLK_k);
-		client2.getUserInputHandler()->setActionCmdKey(Cmds::SHOOT, SDL_BUTTON_LEFT);
+		client1.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOT, Cmds::STOP_SHOOT, SDL_BUTTON_LEFT);		
 		client2.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_u);
 	
 	

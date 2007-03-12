@@ -7,7 +7,7 @@ namespace Prototype
 {
 	ClientWorldModel::~ClientWorldModel()			
 	{
-		deleteAllObjs();
+		deleteAllObjs();		
 	}
 
 	//void ClientWorldModel::addPlayerObj(PlayerId playerId, size_t playerObjId, const Pos &playerPos)
@@ -25,9 +25,9 @@ namespace Prototype
 		obstacles.add(obstacleId, new Obstacle(obstacleArea));
 	}
 
-	void ClientWorldModel::addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId, int tick)
+	void ClientWorldModel::addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId, Tickf shootTick)
 	{
-		projectiles.add(projectileId, new Projectile(type, pos, angle, shooterId, CLIENT_INTERPOOLATION_N_HISTORY_TICKS, tick));
+		projectiles.add(projectileId, new Projectile(type, pos, angle, shooterId, CLIENT_INTERPOOLATION_N_HISTORY_TICKS, 0, shootTick));
 	}
 
 	void ClientWorldModel::updatePlayerObjMovement(PlayerId playerId, float deltaTime)
