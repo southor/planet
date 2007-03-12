@@ -29,17 +29,7 @@ namespace Planet
 	class Planet
 	{
 	public:
-		Planet() :	viewAngle(0.0f), 
-					viewAngle2(0.0f),
-					shipPhi(0.0f),
-					shipTheta(0.0f),
-					zoom(4.0f),
-					runUp(false),
-					runDown(false),
-					runLeft(false),
-					runRight(false),
-					vsp(0.0f, 0.0f, 5.0f),
-					xFront(r, c1, c2, c3, c4),
+		Planet() :	xFront(r, c1, c2, c3, c4),
 					xBack(r, c6, c5, c8, c7),
 					yFront(r, c5, c6, c2, c1),
 					yBack(r, c4, c3, c7, c8),
@@ -52,8 +42,7 @@ namespace Planet
 			faces.push_back(&yBack);
 			faces.push_back(&zFront);
 			faces.push_back(&zBack);
-		
-			direction = (vsp + Vec3f(0.0f, 2.0f, 0.0f)) - vsp;
+			
 		
 		/*
 			printf("xFront: %d\n", xFront.angleWithinFace(0.0f, 0.0f));
@@ -78,25 +67,11 @@ namespace Planet
 	
 		void render();
 		
+		void init();
 		
 		bool checkCollision(Vec3f startPos, Vec3f endPos, Vec3f *collisionPoint);
 		float getHeight(float phi, float theta);
 	
-		float viewAngle;
-		float viewAngle2;
-		
-		float shipPhi;
-		float shipTheta;
-		
-		bool runUp;
-		bool runDown;
-		bool runLeft;
-		bool runRight;
-		
-		float zoom;
-		
-		Vec3f vsp;
-		Vec3f direction;
 		
 		Vec2<float> mouseScreenPosRel;
 		

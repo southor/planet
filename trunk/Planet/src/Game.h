@@ -5,6 +5,9 @@
 #include "basic.h"
 #include "UserInputHandler.h"
 #include "Planet.h"
+#include "Ship.h"
+#include "Camera.h"
+#include "Sight.h"
 
 #define WINDOW_SIZE_X 800
 #define WINDOW_SIZE_Y 600
@@ -28,6 +31,14 @@ namespace Planet
 		SDL_Surface *screen;
 
 		Planet planet;
+		Ship ship;
+		Camera camera;
+		Sight sight;
+		
+		// TMP / DEBUG
+		float viewAngle;
+		float viewAngle2;
+
 		
 		UserInputHandler userInputHandler;
 	};
