@@ -1,6 +1,5 @@
 #include "HeightMap.h"
-
-#define WORLD_SIZE 30
+#include <string>
 
 namespace Planet
 {
