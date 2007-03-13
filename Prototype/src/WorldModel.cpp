@@ -7,8 +7,8 @@ namespace Prototype
 
 	void WorldModel::storeToTickData(int tick)
 	{
-		PlayerObjContainer::Iterator it = getPlayerObjs().begin();
-		PlayerObjContainer::Iterator end = getPlayerObjs().end();
+		PlayerObjs::Iterator it = getPlayerObjs().begin();
+		PlayerObjs::Iterator end = getPlayerObjs().end();
 		for(; it != end; ++it)
 		{
 			it->second->storeToTickData(tick);
@@ -17,8 +17,8 @@ namespace Prototype
 
 	void WorldModel::updateToTickData(int tick)
 	{
-		PlayerObjContainer::Iterator it = getPlayerObjs().begin();
-		PlayerObjContainer::Iterator end = getPlayerObjs().end();
+		PlayerObjs::Iterator it = getPlayerObjs().begin();
+		PlayerObjs::Iterator end = getPlayerObjs().end();
 		for(; it != end; ++it)
 		{
 			it->second->updateToTickData(tick);
@@ -27,8 +27,8 @@ namespace Prototype
 
 	void WorldModel::updateToTickData(Tickf tick)
 	{
-		PlayerObjContainer::Iterator it = getPlayerObjs().begin();
-		PlayerObjContainer::Iterator end = getPlayerObjs().end();
+		PlayerObjs::Iterator it = getPlayerObjs().begin();
+		PlayerObjs::Iterator end = getPlayerObjs().end();
 		for(; it != end; ++it)
 		{
 			it->second->updateToTickData(tick);
@@ -53,8 +53,8 @@ namespace Prototype
 	Obstacle* WorldModel::Move::findAnyOverlap(const Rectangle &rectangle)
 	{
 		assert(obstacles);
-		ObstacleContainer::Iterator it = obstacles->begin();
-		ObstacleContainer::Iterator end = obstacles->end();		
+		Obstacles::Iterator it = obstacles->begin();
+		Obstacles::Iterator end = obstacles->end();		
 		for(; it != end; ++it)
 		{
 			Obstacle *obstacle = it->second;
@@ -63,10 +63,10 @@ namespace Prototype
 		return NULL;
 	}
 
-	void WorldModel::MovePlayerObj::operator ()(const PlayerObjContainer::Pair &playerObjPair)
+	void WorldModel::MovePlayerObj::operator ()(const PlayerObjs::Pair &playerObjPair)
 	{
-		float fbMoveDistance = deltaTime * PlayerObj::FORWARD_BACKWARD_SPEED;
-		float strafeMoveDistance = deltaTime * PlayerObj::STRAFE_SPEED;
+		float fbMoveDistance = PlayerObj::getForwardBackwardSpeed();
+		float strafeMoveDistance = PlayerObj::getStrafeSpeed();
 
 		// ----- produce a movevector from current actions and angle of playerObj ------
 

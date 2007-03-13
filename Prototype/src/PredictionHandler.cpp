@@ -40,7 +40,7 @@ namespace Prototype
 			playerObj->setUserCmd(&userCmd);
 			//playerObj->setUserCmd = userCmd;
 			
-			worldModel->updatePlayerObjMovement(playerId, static_cast<float>(TimeHandler::TICK_DELTA_TIME));
+			worldModel->updatePlayerObjMovement(playerId);
 			playerObj->updateNextShootTime(tick);
 			
 			playerObj->storeToTickData(tick + 1);

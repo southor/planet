@@ -114,7 +114,7 @@ namespace Prototype
 		 */
 		Angle calcPlayerObjAngle(Vec2<int> mouseScreenPos);
 
-		Angle calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds, int deltaTime);
+		Angle calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds);
 
 		//debug
 		bool isConsistent()

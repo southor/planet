@@ -84,10 +84,12 @@ namespace Prototype
 				//RenderPlayerObj<Players> renderPlayerObj(&players, tick);
 				RenderPlayerObj<Players> renderPlayerObj(&players);
 				//RenderProjectile renderProjectile(tick);
-				RenderProjectile renderProjectile;				
+				RenderProjectile renderProjectile;
+				WorldModel::Projectiles &projectiles = worldModel.getProjectiles();
+				//if (projectiles.getSize() > 0) std::cout << "[[[[[[[[[[[[[[[ Have projectiles to render ]]]]]]]]]]]]]]]]]" << std::endl;
 				ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderObstacle);
 				ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderPlayerObj);
-				ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderProjectile);
+				ForEach(projectiles.begin(), projectiles.end(), renderProjectile);
 				//render explosion
 				RenderExplosion renderExplosion;
 				ForEach(explosions.begin(), explosions.end(), renderExplosion);
@@ -128,9 +130,9 @@ namespace Prototype
 		//	{}
 
 		//	// game objects
-		//	void operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair);
-		//	void operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair);
-		//	void operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair);
+		//	void operator ()(const WorldModel::Obstacles::Pair &obstaclePair);
+		//	void operator ()(const WorldModel::PlayerObjs::Pair &playerObjPair);
+		//	void operator ()(const WorldModel::Projectiles::Pair &projectilePair);
 		//	
 		//	// visual effects
 		//	void operator ()(const Explosion &explosion);
@@ -139,7 +141,7 @@ namespace Prototype
 		class RenderObstacle
 		{
 		public:
-			void operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair);
+			void operator ()(const WorldModel::Obstacles::Pair &obstaclePair);
 		};
 
 		template <class Players>
@@ -154,7 +156,7 @@ namespace Prototype
 			inline RenderPlayerObj(Players *players) : players(players)
 			{}
 
-			void operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair)
+			void operator ()(const WorldModel::PlayerObjs::Pair &playerObjPair)
 			{
 				static const Color PLAYER_RECTANGLE_COLOR = Color(0.7f,0.7f,0.7f);
 				static const float PLAYER_RECTANGLE_ALPHA = 0.5f;
@@ -207,7 +209,7 @@ namespace Prototype
 		public:
 			//inline RenderProjectile(Tickf tick) : tick(tick)
 			//{}
-			void operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair);			
+			void operator ()(const WorldModel::Projectiles::Pair &projectilePair);			
 		};
 
 		class RenderExplosion

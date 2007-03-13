@@ -11,25 +11,25 @@ namespace Prototype
 	private:
 		
 
-		//typedef IdMap<GameObjId, Obstacle*> ClientObstacleContainer;
-		//typedef IdMap<GameObjId, PlayerObj*> ClientPlayerObjContainer;
-		//typedef IdMap<GameObjId, Projectile*> ClientProjectileContainer;
+		//typedef IdMap<GameObjId, Obstacle*> ClientObstacles;
+		//typedef IdMap<GameObjId, PlayerObj*> ClientPlayerObjs;
+		//typedef IdMap<GameObjId, Projectile*> ClientProjectiles;
 
-		ObstacleContainer obstacles;
-		PlayerObjContainer playerObjs;
-		ProjectileContainer projectiles;
+		Obstacles obstacles;
+		PlayerObjs playerObjs;
+		Projectiles projectiles;
 
 	public:
 
 		~ClientWorldModel();
 				
-		ObstacleContainer& getObstacles()						{ return obstacles; }
-		PlayerObjContainer& getPlayerObjs()						{ return playerObjs; }
-		ProjectileContainer& getProjectiles()					{ return projectiles; }
+		Obstacles& getObstacles()						{ return obstacles; }
+		PlayerObjs& getPlayerObjs()						{ return playerObjs; }
+		Projectiles& getProjectiles()					{ return projectiles; }
 
-		const ObstacleContainer& getObstacles() const			{ return obstacles; }
-		const PlayerObjContainer& getPlayerObjs() const			{ return playerObjs; }
-		const ProjectileContainer& getProjectiles() const		{ return projectiles; }
+		const Obstacles& getObstacles() const			{ return obstacles; }
+		const PlayerObjs& getPlayerObjs() const			{ return playerObjs; }
+		const Projectiles& getProjectiles() const		{ return projectiles; }
 
 
 		//void addPlayerObj(size_t playerId, size_t playerObjId, const Pos &playerPos);
@@ -37,7 +37,7 @@ namespace Prototype
 		void addObstacle(GameObjId obstacleId, const Rectangle &obstacleArea);
 		void addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId, Tickf shootTick);
 
-		void updatePlayerObjMovement(PlayerId playerId, float deltaTime);
+		void updatePlayerObjMovement(PlayerId playerId);
 
 	};
 };

@@ -134,14 +134,14 @@ namespace Prototype
 	// -------------------------------   RenderGameObject  ----------------------------------
 	// --------------------------------------------------------------------------------------
 
-	void WorldRenderer::RenderObstacle::operator ()(const WorldModel::ObstacleContainer::Pair &obstaclePair)
+	void WorldRenderer::RenderObstacle::operator ()(const WorldModel::Obstacles::Pair &obstaclePair)
 	{
 		glColor3f(0.0f,0.0f,0.0f);
 		WorldRenderer::renderRectangle(*(obstaclePair.second), GL_QUADS);
 	}
 
 	//template <class Players>
-	//void WorldRenderer::RenderPlayerObj<Players>::operator ()(const WorldModel::PlayerObjContainer::Pair &playerObjPair)
+	//void WorldRenderer::RenderPlayerObj<Players>::operator ()(const WorldModel::PlayerObjs::Pair &playerObjPair)
 	//{
 	//	static const Color PLAYER_RECTANGLE_COLOR = Color(0.7f,0.7f,0.7f);
 	//	static const float PLAYER_RECTANGLE_ALPHA = 0.5f;
@@ -186,7 +186,7 @@ namespace Prototype
 	//	glPopMatrix();
 	//}
 
-	void WorldRenderer::RenderProjectile::operator ()(const WorldModel::ProjectileContainer::Pair &projectilePair)
+	void WorldRenderer::RenderProjectile::operator ()(const WorldModel::Projectiles::Pair &projectilePair)
 	{
 		static const Color projectileColors[Projectile::N_TYPES] = {Color(0.0f,0.0f,0.0f), Color(0.0f, 0.0f, 0.0f)};
 		static const float projectileWidths[Projectile::N_TYPES] = {1.2f, 4.0f};

@@ -15,13 +15,13 @@ namespace Prototype
 	private:
 
 
-/*		typedef IdMap<GameObjId, Obstacle*> ServerObstacleContainer;
-		typedef IdMap<GameObjId, PlayerObj*> ServerPlayerObjContainer;
-		typedef IdMap<GameObjId, Projectile*> ServerProjectileContainer;	*/	
+/*		typedef IdMap<GameObjId, Obstacle*> ServerObstacles;
+		typedef IdMap<GameObjId, PlayerObj*> ServerPlayerObjs;
+		typedef IdMap<GameObjId, Projectile*> ServerProjectiles;	*/	
 
-		ObstacleContainer obstacles;
-		PlayerObjContainer playerObjs;
-		ProjectileContainer projectiles;
+		Obstacles obstacles;
+		PlayerObjs playerObjs;
+		Projectiles projectiles;
 
 		typedef std::vector<Pos> RespawnPoss;
 		RespawnPoss respawnPoss;
@@ -34,17 +34,17 @@ namespace Prototype
 
 			RespawnPoss *respawnPoss;
 			ServerPlayers *players;
-			PlayerObjContainer *playerObjs;
+			PlayerObjs *playerObjs;
 
 			std::vector<RemoveProjectile> projectilesHit;
 
 		public:
 			// @param deltaTime Time in milliseconds since last move.
-			MoveProjectile(ObstacleContainer *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, PlayerObjContainer *playerObjs, RespawnPoss *respawnPoss, float deltaTime)
-				: Move(obstacles, deltaTime), ServerGlobalAccess(serverGlobalAccess), respawnPoss(respawnPoss), players(players), playerObjs(playerObjs)
+			MoveProjectile(Obstacles *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, PlayerObjs *playerObjs, RespawnPoss *respawnPoss)
+				: Move(obstacles), ServerGlobalAccess(serverGlobalAccess), respawnPoss(respawnPoss), players(players), playerObjs(playerObjs)
 			{}
 
-			void operator ()(const ProjectileContainer::Pair &projectilePair);
+			void operator ()(const Projectiles::Pair &projectilePair);
 
 			inline std::vector<RemoveProjectile>& getProjectilesHit()	
 			{
@@ -62,13 +62,13 @@ namespace Prototype
 
 		~ServerWorldModel();
 		
-		ObstacleContainer& getObstacles()						{ return obstacles; }
-		PlayerObjContainer& getPlayerObjs()						{ return playerObjs; }
-		ProjectileContainer& getProjectiles()					{ return projectiles; }
+		Obstacles& getObstacles()						{ return obstacles; }
+		PlayerObjs& getPlayerObjs()						{ return playerObjs; }
+		Projectiles& getProjectiles()					{ return projectiles; }
 
-		const ObstacleContainer& getObstacles() const			{ return obstacles; }
-		const PlayerObjContainer& getPlayerObjs() const			{ return playerObjs; }
-		const ProjectileContainer& getProjectiles() const		{ return projectiles; }
+		const Obstacles& getObstacles() const			{ return obstacles; }
+		const PlayerObjs& getPlayerObjs() const			{ return playerObjs; }
+		const Projectiles& getProjectiles() const		{ return projectiles; }
 
 
 		void addPlayerObj(PlayerId playerId, const Pos &playerPos);
@@ -76,8 +76,8 @@ namespace Prototype
 
 		void addRespawnPos(Pos pos)						{ respawnPoss.push_back(pos); }
 		
-		void updatePlayerObjMovements(float deltaTime);
-		void updateProjectileMovements(float deltaTime, ServerPlayers &players);
+		void updatePlayerObjMovements();
+		void updateProjectileMovements(ServerPlayers &players);
 
 		// @retunr projectileId
 		GameObjId playerShoot(PlayerId playerId, Projectile::Type weapon, Tickf shootTick);
