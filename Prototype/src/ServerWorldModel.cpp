@@ -215,39 +215,41 @@ namespace Prototype
 		PlayerObj *playerObj = getPlayerObjs()[playerId];
 		const UserCmd &userCmd(playerObj->getUserCmd());
 		
-		/**
-		 * Fix problems with lost UserCmd messages, problems arises
-		 * when a CONTINUE_SHOOTING was recieved with no prior START_SHOOTING.
-		 */
-		Tickf nextShootTick = playerObj->getNextShootTick();
-		if ((userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) && (nextShootTick < currentTickf))
-		{
-			assert(false); // should not happen with TCP
-			
-			Tickf shootInterval = Projectile::getShootInterval(userCmd.weapon);
-			int nShotIntervalDelay = 1 + static_cast<int>((currentTickf - nextShootTick) / shootInterval);
-			
-			// Delay nextShootTick
-			playerObj->setNextShootTick(nextShootTick + static_cast<Tickf>(nShotIntervalDelay) * shootInterval);
+		assert((userCmd.firstShotTick >= playerObj->getNextShootTick()) &&
+				(playerObj->getNextShootTick() >= currentTickf));
+		
+		///**
+		// * Fix problems with lost UserCmd messages, problems arises
+		// * when a CONTINUE_SHOOTING was recieved with no prior START_SHOOTING.
+		// */
+		//Tickf nextShootTick = playerObj->getNextShootTick();
+		//if ((userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) && (nextShootTick < currentTickf))
+		//{
+		//	assert(false); // should not happen with TCP
+		//	
+		//	Tickf shootInterval = Projectile::getShootInterval(userCmd.weapon);
+		//	int nShotIntervalDelay = 1 + static_cast<int>((currentTickf - nextShootTick) / shootInterval);
+		//	
+		//	// Delay nextShootTick
+		//	playerObj->setNextShootTick(nextShootTick + static_cast<Tickf>(nShotIntervalDelay) * shootInterval);
 
-			assert(playerObj->getNextShootTick() >= currentTickf);
-		}
+		//	assert(playerObj->getNextShootTick() >= currentTickf);
+		//}
 		
 		// Do any shooting
 		int nShots = userCmd.nShots;
 		Projectile::Type weapon = userCmd.weapon;
 		for(int i=0; i<nShots; ++i)
 		{
-			std::cout << "server: handlePlayerShooting: ";
-			if (userCmd.shootAction == UserCmd::START_SHOOTING) std::cout << "start shooting" << std::endl;
-			else if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) std::cout << "continue shooting" << std::endl;
-			else std::cout << "not shooting!";
-			std::cout << std::endl;
+			//std::cout << "server: handlePlayerShooting: ";
+			//if (userCmd.shootAction == UserCmd::START_SHOOTING) std::cout << "start shooting" << std::endl;
+			//else if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) std::cout << "continue shooting" << std::endl;
+			//else std::cout << "not shooting!";
+			//std::cout << std::endl;
 			
-			Tickf shootTick = playerObj->getShotTick(currentTick, i);
-			playerObj->updateNextShootTime(currentTick);
+			Tickf shootTick = playerObj->getShotTick(currentTick, i);			
 			shots.push_back(playerShoot(playerId, weapon, shootTick));
-		}
+		}		
 	}
 };
 

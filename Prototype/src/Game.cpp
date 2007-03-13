@@ -489,14 +489,14 @@ namespace Prototype
 		client1.getUserInputHandler()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
 		client1.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
 		client1.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
-		client1.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOT, Cmds::STOP_SHOOT, SDLK_SPACE);
+		client1.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDLK_SPACE);
 		client1.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
 		client2.getUserInputHandler()->setStateCmdKey(Cmds::LEFT, SDLK_j);
 		client2.getUserInputHandler()->setStateCmdKey(Cmds::RIGHT, SDLK_l);
 		client2.getUserInputHandler()->setStateCmdKey(Cmds::FORWARD, SDLK_i);
 		client2.getUserInputHandler()->setStateCmdKey(Cmds::BACKWARD, SDLK_k);
-		client1.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOT, Cmds::STOP_SHOOT, SDL_BUTTON_LEFT);		
+		client2.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);		
 		client2.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_u);
 	
 	

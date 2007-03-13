@@ -36,14 +36,17 @@ namespace Prototype
 		//deltaTime = stepTime - preStepTime;
 		//if (deltaTime == 0) deltaTime = 1; // avoiding division with zero problems
 
-		stepTickf = tmax(stepTickf, static_cast<Tickf>(getTime() - getTick0Time())
-									/ static_cast<Tickf>(TICK_DELTA_TIME));
-
 		int preStepTick = stepTick;
+
+		stepTickf = tmax(stepTickf, static_cast<Tickf>(getTime() - getTick0Time()) / static_cast<Tickf>(TICK_DELTA_TIME));
 		stepTick = static_cast<int>(stepTickf);
 
 		if (stepTick != preStepTick)
+		{
+			assert(stepTick > preStepTick);
+			stepTick = preStepTick + 1; // only step one tick at a time
 			newTick = true;
+		}
 	}
 
 	int ClientTimeHandler::getTickTime()

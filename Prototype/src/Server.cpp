@@ -228,7 +228,7 @@ namespace Prototype
 						//	}
 						//}
 						
-						player->setUserCmd(*userCmd, getTimeHandler()->getTick());
+						player->setUserCmd(*userCmd, player->link.getPoppedTick());
 						
 					}
 					//else if (messageType == SHOOT_CMD)
@@ -248,13 +248,20 @@ namespace Prototype
 				}
 
 				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+				playerObj->updateToTickData(getTimeHandler()->getTick());
 				UserCmd userCmd;
 				player->getUserCmd(userCmd, getTimeHandler()->getTick());
+				userCmd.isConsistent(getTimeHandler()->getTick());
 				playerObj->setUserCmd(&userCmd);
 
 				// shooting
-				if (userCmd.shootAction == UserCmd::START_SHOOTING) std::cout << "server got: start shooting, nShots: " << userCmd.nShots << std::endl;
-				else if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) std::cout << "server got: continue shooting, nShots: " << userCmd.nShots << std::endl;
+				if (userCmd.nShots > 0)
+				{
+					//if (userCmd.shootAction == UserCmd::START_SHOOTING) std::cout << "server got: start shooting, nShots: " << userCmd.nShots << std::endl;
+					//else if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) std::cout << "server got: continue shooting, nShots: " << userCmd.nShots << std::endl;
+					//else std::cout << "server got: not shooting, nShots: " << userCmd.nShots << std::endl;
+					std::cout << "server: nShots: " << userCmd.nShots << std::endl;
+				}
 				std::vector<GameObjId> shots;
 				worldModel.handlePlayerShooting(playerId, shots);
 				for(size_t i=0; i<shots.size(); ++i)
@@ -267,6 +274,9 @@ namespace Prototype
 												projectile->getAngle().getFloat(), projectile->getShooterId(), projectile->getShootTick());
 					pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				}
+
+				// Update next shoot tick for currentTick + 1
+				playerObj->updateNextShootTick(getTimeHandler()->getTick());
 			}		
 
 			// update movements of objects

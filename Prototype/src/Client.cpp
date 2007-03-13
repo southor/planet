@@ -287,53 +287,97 @@ namespace Prototype
 		userCmd.stateCmds = stateCmds;
 		userCmd.aimAngle = aimAngle;
 
-		// set shooting actions
-		//Tickf startShootTick = playerObj->getNextShootTick();
-		//bool continuous = true;
+		// set shooting action and nShots
 		assert(userCmd.nShots == 0);
-		for(size_t i=0; i<userInputHandler.getNActionCmdsOnQueue(); ++i)
+		userCmd.firstShotTick = playerObj->getNextShootTick();
+		//if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING)		
+		if (userCmd.isShooting())
+		{			
+			assert(userCmd.firstShotTick >= static_cast<Tickf>(currentTick));
+			userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);
+		}
+		//else
+		//{
+		//	assert(userCmd.shootAction == UserCmd::NOT_SHOOTING);
+		//}
+		while(userInputHandler.hasActionCmdOnQueue())
 		{
 			int actionCmd = userInputHandler.popActionCmd();
 
-			if (actionCmd == Cmds::START_SHOOT)
+			if ((userCmd.nShots > 0) || userCmd.isShooting())
 			{
-				userCmd.shootAction = UserCmd::START_SHOOTING;
-				//continuous = false;
-			}
-			else if (userCmd.nShots == 0)
-			{
-				if (userCmd.isShooting() && (actionCmd == Cmds::STOP_SHOOT))
+				if (actionCmd == Cmds::STOP_SHOOTING)
 				{
-					userCmd.nShots = tmin(1, playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING));
-					//userCmd.shooting = false;
-					userCmd.shootAction = UserCmd::NOT_SHOOTING;
+					//userCmd.shootAction = UserCmd::NOT_SHOOTING;
+					userCmd.shooting = false;
+					userCmd.nShots = tmin(1, userCmd.nShots);
+					std::cout << "    -- stop shooting" << std::endl;
+				}
+				else if (actionCmd == Cmds::SWITCH_WEAPON)
+				{
+					UserCmd nextUserCmd;
+					userCmd.assumeNext(nextUserCmd);
+					nextUserCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
+					predictionHandler.setUserCmd(nextUserCmd, currentTick + 1);
+					break;
+				}
+			}
+			else
+			{
+				if (actionCmd == Cmds::START_SHOOTING)
+				{
+					//userCmd.shootAction = UserCmd::START_SHOOTING;
+					userCmd.shooting = true;
+					userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);
+					//continuous = false;
+					std::cout << "    -- start shooting" << std::endl;
 				}
 				else if (actionCmd == Cmds::SWITCH_WEAPON)
 				{
 					userCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
 				}
 			}
-			else
-			{				
-				assert(userCmd.nShots >= 1);
-				if (actionCmd == Cmds::SWITCH_WEAPON)
-				{
-					UserCmd nextUserCmd;
-					userCmd.assumeNext(nextUserCmd);
-					nextUserCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
-					break;
-				}
-			}
+
+			//if (actionCmd == Cmds::START_SHOOT)
+			//{
+			//	userCmd.shootAction = UserCmd::START_SHOOTING;
+			//	userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick, false);
+			//	//continuous = false;
+			//}
+			//else if (userCmd.nShots == 0)
+			//{
+			//	if (userCmd.isShooting() && (actionCmd == Cmds::STOP_SHOOT))
+			//	{
+			//		userCmd.nShots = tmin(1, playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING));
+			//		//userCmd.shooting = false;
+			//		userCmd.shootAction = UserCmd::NOT_SHOOTING;
+			//	}
+			//	else if (actionCmd == Cmds::SWITCH_WEAPON)
+			//	{
+			//		userCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
+			//	}
+			//}
+			//else
+			//{				
+			//	assert(userCmd.nShots >= 1);
+			//	if (actionCmd == Cmds::SWITCH_WEAPON)
+			//	{
+			//		UserCmd nextUserCmd;
+			//		userCmd.assumeNext(nextUserCmd);
+			//		nextUserCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
+			//		break;
+			//	}
+			//}
 		}
-		if (userCmd.isShooting())
+		if (userCmd.isShooting() || (userCmd.nShots > 0))
 		{			
-			userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING);			
+			//userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING);
 			std::cout << "-- " << currentTick << " shooting, nShots = " << userCmd.nShots;
 			std::cout << "   playerObj.nextShootTick  = " << playerObj->getNextShootTick() << std::endl;
 		}
 
 		
-		assert(userCmd.isConsistent());
+		assert(userCmd.isConsistent(currentTick));
 	}
 
 	void Client::handleServerMessages()

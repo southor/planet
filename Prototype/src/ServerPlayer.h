@@ -13,7 +13,7 @@ namespace Prototype
 	{
 	private:
 		static const int USER_CMD_HISTORY_TIME = 200;
-		static const int USER_CMD_HISTORY_SIZE = USER_CMD_HISTORY_TIME / TimeHandler::TICK_DELTA_TIME;
+		static const int USER_CMD_HISTORY_SIZE = USER_CMD_HISTORY_TIME / TimeHandler::TICK_DELTA_TIME + 1;
 
 		HistoryList<UserCmd> userCmdHistoryList;
 	public:
@@ -33,8 +33,8 @@ namespace Prototype
 		}
 
 		void getUserCmd(UserCmd &userCmd, int tick)					{ userCmdHistoryList.getData(tick, userCmd);
-																	  assert(userCmd.isConsistent()); }
-		void setUserCmd(const UserCmd &userCmd, int tick)			{ assert(userCmd.isConsistent());
+																	  assert(userCmd.isConsistent(tick)); }
+		void setUserCmd(const UserCmd &userCmd, int tick)			{ assert(userCmd.isConsistent(tick));
 																	  userCmdHistoryList.setData(tick, userCmd); }
 
 	};
