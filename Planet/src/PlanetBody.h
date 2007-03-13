@@ -1,5 +1,5 @@
-#ifndef __Planet_h__
-#define __Planet_h__
+#ifndef __PlanetBody_h__
+#define __PlanetBody_h__
 
 #include <vector>
 
@@ -12,10 +12,10 @@ namespace Planet
 {
 	typedef std::vector<PlanetFace*> Faces;
 
-	class Planet
+	class PlanetBody
 	{
 	public:
-		Planet(float radius);
+		PlanetBody(float radius);
 	
 		void render();
 		

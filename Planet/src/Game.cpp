@@ -8,7 +8,7 @@
 
 namespace Planet
 {
-	Game::Game() : planet(5.0f), viewAngle(0.0f), viewAngle2(0.0f)
+	Game::Game() : planetBody(5.0f), viewAngle(0.0f), viewAngle2(0.0f)
 	{
 		init();
 		running = true;
@@ -92,7 +92,7 @@ namespace Planet
 
 
 
-			planet.render();
+			planetBody.render();
 
 			// Disable lights for ship and sight rendering
 			glDisable(GL_LIGHTING);
@@ -197,10 +197,10 @@ namespace Planet
 		userInputHandler.aimMode = UserInputHandler::KEYBOARD;
 		
 		
-		planet.init();
-		ship.setPlanet(&planet);
+		planetBody.init();
+		ship.setPlanet(&planetBody);
 		sight.setCamera(&camera);
-		sight.setPlanet(&planet);
+		sight.setPlanet(&planetBody);
 
 	}
 

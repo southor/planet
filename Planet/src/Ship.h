@@ -3,7 +3,7 @@
 
 #include "common.h"
 #include "basic.h"
-#include "Planet.h"
+#include "PlanetBody.h"
 
 namespace Planet
 {
@@ -20,7 +20,7 @@ namespace Planet
 			reference = (position + Vec3f(0.0f, 2.0f, 0.0f)) - position;
 		}
 	
-		void setPlanet(Planet *planet) { this->planet = planet; }
+		void setPlanet(PlanetBody *planetBody) { this->planetBody = planetBody; }
 	
 		void logic();
 		void render();
@@ -36,7 +36,7 @@ namespace Planet
 		Vec3f reference;
 		
 	private:
-		Planet *planet;
+		PlanetBody *planetBody;
 	};
 };
 

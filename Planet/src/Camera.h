@@ -3,7 +3,7 @@
 
 #include "common.h"
 #include "basic.h"
-#include "Planet.h"
+#include "PlanetBody.h"
 
 
 namespace Planet
