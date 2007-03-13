@@ -36,15 +36,15 @@ namespace Prototype
 		return obstacleId;
 	}
 
-	void ServerWorldModel::updatePlayerObjMovements(float deltaTime)
+	void ServerWorldModel::updatePlayerObjMovements()
 	{
-		MovePlayerObj move(&getObstacles(), deltaTime, moveAlignedToAngle);
+		MovePlayerObj move(&getObstacles(), moveAlignedToAngle);
 		ForEach(getPlayerObjs().begin(), getPlayerObjs().end(), move);
 	}
 
-	void ServerWorldModel::updateProjectileMovements(float deltaTime, ServerPlayers &players)
+	void ServerWorldModel::updateProjectileMovements(ServerPlayers &players)
 	{
-		MoveProjectile move(&obstacles, &players, *this, &(getPlayerObjs()), &respawnPoss, deltaTime);
+		MoveProjectile move(&obstacles, &players, *this, &(getPlayerObjs()), &respawnPoss);
 		ForEach(projectiles.begin(), projectiles.end(), move);
 		
 		if (move.getProjectilesHit().size() > 0)
@@ -62,8 +62,8 @@ namespace Prototype
 			}
 
 			//std::cout << "\tprojectiles left: " << projectiles.getSize() << std::endl;
-			//ProjectileContainer::Iterator it2 = projectiles.begin();
-			//ProjectileContainer::Iterator it2End = projectiles.end();
+			//Projectiles::Iterator it2 = projectiles.begin();
+			//Projectiles::Iterator it2End = projectiles.end();
 			//for(; it2 != it2End; ++it2)
 			//{
 			//	std::cout << "\tprojectile left: " << it2->first << std::endl;
@@ -73,7 +73,7 @@ namespace Prototype
 
 
 
-	void ServerWorldModel::MoveProjectile::operator ()(const ProjectileContainer::Pair &projectilePair)
+	void ServerWorldModel::MoveProjectile::operator ()(const Projectiles::Pair &projectilePair)
 	{
 		assert(players); // must be able to send updates
 		assert(obstacles);
@@ -91,8 +91,8 @@ namespace Prototype
 		float minHitDist = 2.0f;			
 		GameObjId obstacleIdHit;
 
-		ObstacleContainer::Iterator obstacleIt = obstacles->begin();
-		ObstacleContainer::Iterator obstacleEnd = obstacles->end();		
+		Obstacles::Iterator obstacleIt = obstacles->begin();
+		Obstacles::Iterator obstacleEnd = obstacles->end();		
 		for(; obstacleIt != obstacleEnd; ++obstacleIt)
 		{
 			float localMinHitDist =  projectileLine.minCrossPoint(*(obstacleIt->second));
@@ -106,8 +106,8 @@ namespace Prototype
 		bool hitPlayerObj = false;
 		GameObjId playerIdHit;
 
-		PlayerObjContainer::Iterator playerObjIt = playerObjs->begin();
-		PlayerObjContainer::Iterator playerObjEnd = playerObjs->end();		
+		PlayerObjs::Iterator playerObjIt = playerObjs->begin();
+		PlayerObjs::Iterator playerObjEnd = playerObjs->end();		
 		for(; playerObjIt != playerObjEnd; ++playerObjIt)
 		{
 			if (playerObjIt->first != static_cast<GameObjId>(projectile->getShooterId())) // cannot hit the shooter itself
@@ -122,6 +122,10 @@ namespace Prototype
 					playerIdHit = playerObjIt->first;
 				}
 			}
+			//else
+			//{
+			//	std::cout << "the shooter was not hit by himself" << std::endl;
+			//}
 		}
 		
 
@@ -183,6 +187,7 @@ namespace Prototype
 			// remove projectile later
 			RemoveProjectile removeProjectile(projectilePair.first, hitPos);
 			projectilesHit.push_back(removeProjectile);
+			//std::cout << "((((( projectile hit! )))))" << std::endl;
 			
 		}
 		
@@ -217,11 +222,15 @@ namespace Prototype
 		Tickf nextShootTick = playerObj->getNextShootTick();
 		if ((userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) && (nextShootTick < currentTickf))
 		{
+			assert(false); // should not happen with TCP
+			
 			Tickf shootInterval = Projectile::getShootInterval(userCmd.weapon);
 			int nShotIntervalDelay = 1 + static_cast<int>((currentTickf - nextShootTick) / shootInterval);
 			
 			// Delay nextShootTick
 			playerObj->setNextShootTick(nextShootTick + static_cast<Tickf>(nShotIntervalDelay) * shootInterval);
+
+			assert(playerObj->getNextShootTick() >= currentTickf);
 		}
 		
 		// Do any shooting

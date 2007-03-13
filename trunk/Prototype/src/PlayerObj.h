@@ -71,11 +71,15 @@ namespace Prototype
 
 		UserCmd userCmd;
 
+		static const float FORWARD_BACKWARD_SPEED; // speed in distance-units per millisecond
+		static const float ROTATE_SPEED; // speed in angle-units per millisecond
+		static const float STRAFE_SPEED; // speed in distance-units per millisecond
+
 	public:
 
-		static const float FORWARD_BACKWARD_SPEED;
-		static const float ROTATE_SPEED;
-		static const float STRAFE_SPEED;
+
+
+		
 		static const float RECTANGLE_SIZE;
 		Pos pos;
 		Angle angle;
@@ -94,6 +98,10 @@ namespace Prototype
 		PlayerObj(const Pos &pos, size_t nHistoryTicks, int tick);
 
 		~PlayerObj()										{}
+
+		static float getForwardBackwardSpeed()				{ return FORWARD_BACKWARD_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
+		static float getRotateSpeed()						{ return ROTATE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
+		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 
 		Pos getPos() const									{ return pos; }
 		//inline Angle getAngle()								{ return userCmd.aimAngle; }

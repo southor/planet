@@ -23,9 +23,9 @@ namespace Prototype
 
 		static const Vec WORLD_SIZE;		
 
-		typedef IdMap<GameObjId, Obstacle*> ObstacleContainer;
-		typedef IdMap<GameObjId, PlayerObj*> PlayerObjContainer;
-		typedef IdMap<GameObjId, Projectile*> ProjectileContainer;
+		typedef IdMap<GameObjId, Obstacle*> Obstacles;
+		typedef IdMap<GameObjId, PlayerObj*> PlayerObjs;
+		typedef IdMap<GameObjId, Projectile*> Projectiles;
 
 
 		WorldModel() : moveAlignedToAngle(MOVE_ALIGNED_TO_ANGLE_DEFAULT)
@@ -35,13 +35,13 @@ namespace Prototype
 
 		void deleteAllObjs();
 		
-		virtual ObstacleContainer& getObstacles() = 0;
-		virtual PlayerObjContainer& getPlayerObjs() = 0;
-		virtual ProjectileContainer& getProjectiles() = 0;
+		virtual Obstacles& getObstacles() = 0;
+		virtual PlayerObjs& getPlayerObjs() = 0;
+		virtual Projectiles& getProjectiles() = 0;
 
-		virtual const ObstacleContainer& getObstacles() const = 0;
-		virtual const PlayerObjContainer& getPlayerObjs() const = 0;
-		virtual const ProjectileContainer& getProjectiles() const = 0;
+		virtual const Obstacles& getObstacles() const = 0;
+		virtual const PlayerObjs& getPlayerObjs() const = 0;
+		virtual const Projectiles& getProjectiles() const = 0;
 
 		// history functions
 		void storeToTickData(int tick);
@@ -57,45 +57,44 @@ namespace Prototype
 		//class Delete
 		//{
 		//public:
-		//	void operator ()(const ObstacleContainer::Pair &obstaclePair)		{ delete obstaclePair.second; }
-		//	void operator ()(const PlayerObjContainer::Pair &playerObjPair)		{ delete playerObjPair.second; }
-		//	void operator ()(const ProjectileContainer::Pair &projectilePair)	{ delete projectilePair.second; }
+		//	void operator ()(const Obstacles::Pair &obstaclePair)		{ delete obstaclePair.second; }
+		//	void operator ()(const PlayerObjs::Pair &playerObjPair)		{ delete playerObjPair.second; }
+		//	void operator ()(const Projectiles::Pair &projectilePair)	{ delete projectilePair.second; }
 		//};
 
 		class DeleteObstacle
 		{
 		public:
-			void operator ()(const ObstacleContainer::Pair &obstaclePair)		{ delete obstaclePair.second; }
+			void operator ()(const Obstacles::Pair &obstaclePair)		{ delete obstaclePair.second; }
 		};
 
 		class DeletePlayerObj
 		{
 		public:
-			void operator ()(const PlayerObjContainer::Pair &playerObjPair)		{ delete playerObjPair.second; }
+			void operator ()(const PlayerObjs::Pair &playerObjPair)		{ delete playerObjPair.second; }
 		};
 
 		class DeleteProjectile
 		{
 		public:
-			void operator ()(const ProjectileContainer::Pair &projectilePair)	{ delete projectilePair.second; }
+			void operator ()(const Projectiles::Pair &projectilePair)	{ delete projectilePair.second; }
 		};
 
 
 		class Move
 		{
 		protected:
-			ObstacleContainer *obstacles;
-			float deltaTime; // Time in milliseconds since last move.
+			Obstacles *obstacles;
 			
 			Obstacle* findAnyOverlap(const Rectangle &rectangle);
 		public:
 			// @param deltaTime Time in milliseconds since last move.
-			Move(ObstacleContainer *obstacles, float deltaTime)
-				: obstacles(obstacles), deltaTime(deltaTime)
+			Move(Obstacles *obstacles)
+				: obstacles(obstacles)
 			{}
 
 			//// @param deltaTime Time in milliseconds since last move.
-			//Move(ObstacleContainer *obstacles, PlayerObjContainer *playerObjs, float deltaTime)
+			//Move(Obstacles *obstacles, PlayerObjs *playerObjs, float deltaTime)
 			//	: obstacles(obstacles), playerObjs(playerObjs), deltaTime(deltaTime), moveAlignedToAngle(false)
 			//{}
 		};
@@ -106,11 +105,11 @@ namespace Prototype
 			bool moveAlignedToAngle;
 		public:
 			// @param deltaTime Time in milliseconds since last move.
-			MovePlayerObj(ObstacleContainer *obstacles, float deltaTime, bool moveAlignedToAngle)
-				: Move(obstacles, deltaTime), moveAlignedToAngle(moveAlignedToAngle)
+			MovePlayerObj(Obstacles *obstacles, bool moveAlignedToAngle)
+				: Move(obstacles), moveAlignedToAngle(moveAlignedToAngle)
 			{}
 
-			void operator ()(const PlayerObjContainer::Pair &playerObjPair);
+			void operator ()(const PlayerObjs::Pair &playerObjPair);
 		};
 	};
 };

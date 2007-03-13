@@ -122,6 +122,7 @@ namespace Prototype
 		historyList.getData(tick, data);
 		this->pos = data.pos;
 		this->angle = data.angle;
+		this->nextShootTick = data.nextShootTick;
 	}
 
 	void PlayerObj::updateToTickData(Tickf tick)
@@ -130,6 +131,7 @@ namespace Prototype
 		historyList.getData(tick, data);
 		this->pos = data.pos;
 		this->angle = data.angle;
+		this->nextShootTick = data.nextShootTick;
 	}
 
 	void PlayerObj::setUserCmd(const UserCmd *userCmd)
@@ -146,9 +148,11 @@ namespace Prototype
 
 	int PlayerObj::getNTickShots(Projectile::Type weapon, int currentTick, bool continuous)
 	{
+		if (!continuous) std::cout << "      %%      continuous == false" << std::endl;
 		Tickf startShootTick = continuous ? nextShootTick : tmax(nextShootTick, static_cast<Tickf>(currentTick)); 
-		Tickf totalShootTicks = static_cast<Tickf>(currentTick + 1) - startShootTick;		
-		int nShots = static_cast<int>(totalShootTicks / Projectile::getShootInterval(weapon));
+		Tickf totalShootTicks = static_cast<Tickf>(currentTick + 1) - startShootTick;
+		//if (!continuous) std::cout << "      %%      totalShootTicks: " << totalShootTicks << std::endl;
+		int nShots = (totalShootTicks > 0.0) ? static_cast<int>(totalShootTicks / Projectile::getShootInterval(weapon)) + 1 : 0;
 		//assert(nShots >= 0);
 		return tmax(0, nShots);
 	}
@@ -157,7 +161,11 @@ namespace Prototype
 	{
 		assert(userCmd.isConsistent());
 
+		//Tickf oldNextShootTick = nextShootTick;
 		nextShootTick = getShotTick(currentTick, userCmd.nShots);
+
+		//if (userCmd.nShots > 0) std::cout << "        ##       nextShootTick is now: " << nextShootTick << std::endl;
+
 		//if (userCmd.shootAction == UserCmd::START_SHOOTING)
 		//{
 		//	nextShootTick = tmax(nextShootTick, static_cast<Tickf>(currentTick));
@@ -176,6 +184,7 @@ namespace Prototype
 		}
 		else
 		{
+			//assert(nextShootTick >= static_cast<Tickf>(currentTick));
 			startShootTick = nextShootTick;
 		}
 		return startShootTick + Projectile::getShootInterval(userCmd.weapon) * static_cast<Tickf>(shotN);

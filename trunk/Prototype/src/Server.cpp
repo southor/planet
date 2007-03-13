@@ -116,8 +116,8 @@ namespace Prototype
 	{
 		//getTimeHandler()->reset();
 		
-		WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
-		WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+		WorldModel::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
+		WorldModel::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 		for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 		{
 			PlayerId playerId = playerObjsIt->first;
@@ -136,8 +136,8 @@ namespace Prototype
 		{			
 			const ServerPlayer *player = playersIt->second;
 
-			WorldModel::ObstacleContainer::Iterator obstaclesIt = worldModel.getObstacles().begin();
-			WorldModel::ObstacleContainer::Iterator obstaclesEnd = worldModel.getObstacles().end();
+			WorldModel::Obstacles::Iterator obstaclesIt = worldModel.getObstacles().begin();
+			WorldModel::Obstacles::Iterator obstaclesEnd = worldModel.getObstacles().end();
 			for(; obstaclesIt != obstaclesEnd; ++obstaclesIt)
 			{
 				GameObjId obstacleId = obstaclesIt->first;
@@ -186,7 +186,7 @@ namespace Prototype
 			// Check tick timeout
 			if (getTimeHandler()->getTickFromTimeWithTimeout() >= tick)      //if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
 			{
-				printf("#################### TIMEOUT ######################\n");
+				if (SERVER_PRINT_NETWORK_DEBUG) printf("#################### TIMEOUT ######################\n");
 				waitingForClients = false;
 				break; // exit for loop
 			}
@@ -194,10 +194,9 @@ namespace Prototype
 
 		if (!waitingForClients)
 		{
-			printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
+			if (SERVER_PRINT_NETWORK_DEBUG) printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
 
-			int deltaTime = ServerTimeHandler::TICK_DELTA_TIME;
-			float deltaTimef = static_cast<float>(deltaTime);
+
 			lastUpdateTime = time;
 
 			worldModel.isConsistent();
@@ -271,15 +270,15 @@ namespace Prototype
 			}		
 
 			// update movements of objects
-			worldModel.updatePlayerObjMovements(deltaTimef);
-			worldModel.updateProjectileMovements(deltaTimef, players);
+			worldModel.updatePlayerObjMovements();
+			worldModel.updateProjectileMovements(players);
 
 			getTimeHandler()->nextTick();
 			lastUpdateTime = time;
 
 			// Send playerObj updates and store state to history, also send tick0Time
-			WorldModel::PlayerObjContainer::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
-			WorldModel::PlayerObjContainer::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+			WorldModel::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
+			WorldModel::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{
 				
@@ -306,8 +305,8 @@ namespace Prototype
 			}
 
 			// Send projectile updates
-			WorldModel::ProjectileContainer::Iterator projectilesIt = worldModel.getProjectiles().begin();
-			WorldModel::ProjectileContainer::Iterator projectilesEnd = worldModel.getProjectiles().end();
+			WorldModel::Projectiles::Iterator projectilesIt = worldModel.getProjectiles().begin();
+			WorldModel::Projectiles::Iterator projectilesEnd = worldModel.getProjectiles().end();
 			for(; projectilesIt != projectilesEnd; ++projectilesIt)
 			{			
 				Projectile *projectile = projectilesIt->second;

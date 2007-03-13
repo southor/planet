@@ -248,6 +248,7 @@ namespace Prototype
 		
 		// get playerobj
 		PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+		playerObj->updateToTickData(currentTick);
 		if (!playerObj)
 		{
 			userCmd.clear();
@@ -278,7 +279,7 @@ namespace Prototype
 				assert(userInputHandler.aimMode == UserInputHandler::KEYBOARD);
 				//playerAngle = (worldModel.getPlayerObjs())[playerId]->angle;				
 				Angle preAngle(preUserCmd.aimAngle);
-				aimAngle = calcPlayerObjAngle(preUserCmd.aimAngle, stateCmds, TimeHandler::TICK_DELTA_TIME);
+				aimAngle = calcPlayerObjAngle(preUserCmd.aimAngle, stateCmds);
 			}
 		}
 
@@ -303,7 +304,7 @@ namespace Prototype
 			{
 				if (userCmd.isShooting() && (actionCmd == Cmds::STOP_SHOOT))
 				{
-					userCmd.nShots = tmax(1, playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING));
+					userCmd.nShots = tmin(1, playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING));
 					//userCmd.shooting = false;
 					userCmd.shootAction = UserCmd::NOT_SHOOTING;
 				}
@@ -325,9 +326,10 @@ namespace Prototype
 			}
 		}
 		if (userCmd.isShooting())
-		{
-			std::cout << "client is shooting" << std::endl;			
+		{			
 			userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING);			
+			std::cout << "-- " << currentTick << " shooting, nShots = " << userCmd.nShots;
+			std::cout << "   playerObj.nextShootTick  = " << playerObj->getNextShootTick() << std::endl;
 		}
 
 		
@@ -690,13 +692,13 @@ namespace Prototype
 		return 0.0f;
 	}
 
-	Angle Client::calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds, int deltaTime)
+	Angle Client::calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds)
 	{
 		//PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 
 		bool left = stateCmds.getCurrentState(Cmds::ROTATE_LEFT);
 		bool right = stateCmds.getCurrentState(Cmds::ROTATE_RIGHT);
-		float rotateAmount(static_cast<float>(deltaTime) * PlayerObj::ROTATE_SPEED);
+		float rotateAmount(PlayerObj::getRotateSpeed());
 		Angle deltaAngle((left ? rotateAmount : 0.0f) + (right ? -rotateAmount : 0.0f));
 		return preAngle + deltaAngle;		
 	}

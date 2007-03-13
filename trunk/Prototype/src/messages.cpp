@@ -32,18 +32,18 @@ namespace Prototype
 		resultData = *this;
 
 		// modify shooting		
-		if (resultData.shootAction != NOT_SHOOTING)
+		if (shootAction != NOT_SHOOTING)
 		{
 			resultData.shootAction = CONTINUE_SHOOTING;
 		}
 		resultData.nShots = 0;
-		//if (resultData.shootAction == NOT_SHOOTING)
+		//if (shootAction == NOT_SHOOTING)
 		//{
 		//	resultData.nShots = 0;
 		//}
 		//else
 		//{
-		//	assert(resultData.isShooting());
+		//	assert(isShooting());
 		//	resultData.shootAction = CONTINUE_SHOOTING;
 		//}
 	}

@@ -30,10 +30,10 @@ namespace Prototype
 		projectiles.add(projectileId, new Projectile(type, pos, angle, shooterId, CLIENT_INTERPOOLATION_N_HISTORY_TICKS, 0, shootTick));
 	}
 
-	void ClientWorldModel::updatePlayerObjMovement(PlayerId playerId, float deltaTime)
+	void ClientWorldModel::updatePlayerObjMovement(PlayerId playerId)
 	{
-		MovePlayerObj move(&getObstacles(), deltaTime, moveAlignedToAngle);
-		PlayerObjContainer::Pair playerObjPair(playerId, (getPlayerObjs())[playerId]);
+		MovePlayerObj move(&getObstacles(), moveAlignedToAngle);
+		PlayerObjs::Pair playerObjPair(playerId, (getPlayerObjs())[playerId]);
 		move(playerObjPair);
 		//ForEach(getPlayerObjs().begin(), getPlayerObjs().end(), move);
 	}

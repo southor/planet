@@ -69,6 +69,7 @@ namespace Prototype
 		static const int PREDICTION_AMOUNT_ADD_TIME;
 		
 		
+		
 		//size_t addPlayer(const ServerPlayer &player);
 
 		
