@@ -1,19 +1,45 @@
 #include "PlanetFace.h"
+#include "TextureHandler.h"
 
 namespace Planet
 {
+	PlanetFace::PlanetFace(float r, Vec3f v1, Vec3f v2, Vec3f v3, Vec3f v4, const std::string &heightmapFile, const std::string &textureFile) 
+		:	radius(r),
+			resolution(40),
+			initialized(false),
+			v1(v1), 
+			v2(v2), 
+			v3(v3), 
+			v4(v4), 
+			sp1(v1), 
+			sp2(v2), 
+			sp3(v3), 
+			sp4(v4),
+			vertices(0),
+			colors(0),
+			normals(0),
+			indices(0),
+			heightmapFile(heightmapFile),
+			textureFile(textureFile)
+	{
+	}
+
+
 	void PlanetFace::init()
 	{
 		if (initialized)
 			return;
-			
-		heightMap.init("ht.png");
-	
+
+		heightMap.init(heightmapFile);
+		texture = TextureHandler::loadTexture(textureFile);
+
 		// create arrays
-		numIndices = resolution*resolution*2 - 2*resolution;
+		numIndices = (resolution * resolution * 2) - (2 * resolution);
 		
-		vertices = new Vec3f[resolution*resolution];
-		colors = new Vec3f[resolution*resolution];
+		vertices = new Vec3f[resolution * resolution];
+		colors = new Vec3f[resolution * resolution];
+		normals = new Vec3f[resolution * resolution];
+		textureCoords = new Vec2f[resolution * resolution];
 		indices = new uint[numIndices];
 	
 		Vec3f v1v2 = v2 - v1;
@@ -40,8 +66,41 @@ namespace Planet
 	
 				vertices[index] = vSphere;
 				colors[index] = Vec3f(0.0, (sp.p-5.0f)/4.0f, 0.0);
+				textureCoords[index] = Vec2f(s*1.0f, t*1.0f);
 			}
 		}
+		
+		// Fill up normal array
+		for (int i = 0; i < resolution; i++)
+		{
+			for (int j = 0; j < resolution; j++)
+			{
+				int index = i * resolution + j;
+				
+				Vec3f p = getVertex(i, j);
+				
+				Vec3f pUp = getVertex(i - 1, j);
+				Vec3f pLeft = getVertex(i, j - 1);
+				Vec3f pDown = getVertex(i + 1, j);
+				Vec3f pRight = getVertex(i, j + 1);
+				
+				Vec3f u1 = pRight - p;
+				Vec3f u2 = pUp - p;
+				Vec3f u3 = pLeft - p;
+				Vec3f u4 = pDown - p;
+
+				Vec3f n1 = u1.cross(u2);
+				Vec3f n2 = u2.cross(u3);
+				Vec3f n3 = u3.cross(u4);
+				Vec3f n4 = u4.cross(u1);
+
+				Vec3f normal = n1 + n2 + n3 + n4;
+	
+				normal.normalize();
+				
+				normals[i * resolution + j] = normal;
+			}
+		}		
 		
 		int index = 0;
 		
@@ -79,10 +138,17 @@ namespace Planet
 		if (!initialized)
 			init();
 
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+
 		glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), vertices);
-		glColorPointer(3, GL_FLOAT, sizeof(Vec3f), colors);
-			
+		glNormalPointer(GL_FLOAT, sizeof(Vec3f), normals);
+		glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
+		
 		glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
+	
 	
 	
 		/*
@@ -252,10 +318,22 @@ namespace Planet
 		*/
 		
 
-		return radius + heightMap.getHeight(s, t) * 2.0f;
+		return radius + heightMap.getHeight(s, t) * 3.0f;
 
 
 		//return radius + sin(s*20.0f)/8.0f + cos(t*20.0f)/8.0f;
 		//return radius + sin(s*5.0f + SDL_GetTicks()/400.0f)/2.0f;
 	}
+	
+	Vec3f PlanetFace::getVertex(int row, int col)
+	{
+		if (row < 0) row = 0;
+		if (row >= resolution) row = resolution - 1;
+
+		if (col < 0) col = 0;
+		if (col >= resolution) col = resolution - 1;
+		
+		return vertices[row * resolution + col];
+	}
+
 };

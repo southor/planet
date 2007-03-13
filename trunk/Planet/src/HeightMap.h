@@ -12,7 +12,7 @@ namespace Planet
 		HeightMap() : map(0) {}
 		~HeightMap();
 		
-		void init(char *image);
+		void init(const std::string &image);
 		
 		void draw(GLuint texture);
 

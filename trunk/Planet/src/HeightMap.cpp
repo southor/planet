@@ -4,9 +4,9 @@
 
 namespace Planet
 {
-	void HeightMap::init(char *image)
+	void HeightMap::init(const std::string &image)
 	{
-		map = IMG_Load(image);
+		map = IMG_Load(("images/" + image).c_str());
 		if (!map)
 		{
 			printf("IMG_Load: %s\n", IMG_GetError());

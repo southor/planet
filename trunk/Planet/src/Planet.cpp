@@ -19,7 +19,9 @@ namespace Planet
 		glLineWidth(2.0);
 		glPointSize(3.0);
 
-	/*
+	
+		/*
+		glDisable(GL_LIGHTING);
 		glBegin(GL_LINES);
 			glColor3f(1.0f, 1.0f, 0.0f);
 			glVertex3f(0.0f, 0.0f, 0.0f);
@@ -38,7 +40,8 @@ namespace Planet
 			glColor3f(0.0f, 0.0f, 1.0f);
 			glVertex3f(0.0f, 0.0f, 10.0f);
 		glEnd();
-	*/
+		glEnable(GL_LIGHTING);
+		*/
 
 
 		xFront.draw();
