@@ -9,8 +9,8 @@
 #include "Camera.h"
 #include "Sight.h"
 
-#define WINDOW_SIZE_X 800
-#define WINDOW_SIZE_Y 600
+//#define WINDOW_SIZE_X 800
+//#define WINDOW_SIZE_Y 600
 
 namespace Planet
 {
@@ -20,6 +20,8 @@ namespace Planet
 		Game();
 		~Game();
 		void run();
+
+		static const Vec2<int> WINDOW_SIZE;
 
 	private:
 		void init();

@@ -8,6 +8,9 @@
 
 namespace Planet
 {
+	
+	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(800, 600);
+	
 	Game::Game() : planetBody(5.0f), viewAngle(0.0f), viewAngle2(0.0f)
 	{
 		init();
@@ -51,7 +54,8 @@ namespace Planet
 			ship.logic();
 
 			camera.update(ship.position, ship.reference);
-			sight.update(userInputHandler.getMouseScreenPos(), WINDOW_SIZE_X, WINDOW_SIZE_Y);
+			//sight.update(userInputHandler.getMouseScreenPos(), WINDOW_SIZE_X, WINDOW_SIZE_Y);
+			sight.update(userInputHandler.getMouseScreenPos(), WINDOW_SIZE.x, WINDOW_SIZE.y);
 
 			ship.direction = sight.position - ship.position;
 
@@ -66,7 +70,8 @@ namespace Planet
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); 
+		//glViewport(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); 
+		glViewport(0, 0, WINDOW_SIZE.x, WINDOW_SIZE.y); 
 
 		glEnable(GL_LIGHTING);
 		glEnable(GL_DEPTH_TEST);
@@ -135,8 +140,10 @@ namespace Planet
 
 		
 		uint flags = SDL_HWSURFACE | SDL_OPENGL; // |SDL_FULLSCREEN;
-		uint w = WINDOW_SIZE_X;
-		uint h = WINDOW_SIZE_Y;
+		//uint w = WINDOW_SIZE_X;
+		//uint h = WINDOW_SIZE_Y;
+		uint w = WINDOW_SIZE.x;
+		uint h = WINDOW_SIZE.y;
 
 		uint bpp = 32;	
 
@@ -183,7 +190,8 @@ namespace Planet
 		userInputHandler.setStateCmdKey(Cmds::BACKWARD, SDLK_s);
 		userInputHandler.setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
 		userInputHandler.setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
-		userInputHandler.setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
+		//userInputHandler.setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
+		userInputHandler.setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);
 		userInputHandler.setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
 		userInputHandler.setStateCmdKey(Cmds::TMP_LEFT, SDLK_LEFT);

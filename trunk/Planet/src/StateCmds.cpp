@@ -2,7 +2,7 @@
 
 namespace Planet
 {
-	bool StateCmds::getCurrentState(int stateCmd)
+	bool StateCmds::getCurrentState(int stateCmd) const
 	{ 
 		return static_cast<bool>((1 << stateCmd) & states); 
 	}
