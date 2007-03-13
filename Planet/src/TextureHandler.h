@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "SDL_OpenGL.h"
+#include <string>
 
 namespace Planet
 {
