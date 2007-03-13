@@ -10,28 +10,13 @@ namespace Planet
 	class PlanetFace
 	{
 	public:
-		PlanetFace(float r, Vec3f v1, Vec3f v2, Vec3f v3, Vec3f v4) 
-			:	radius(r),
-				resolution(40),
-				initialized(false),
-				v1(v1), 
-				v2(v2), 
-				v3(v3), 
-				v4(v4), 
-				sp1(v1), 
-				sp2(v2), 
-				sp3(v3), 
-				sp4(v4),
-				vertices(0),
-				colors(0),
-				indices(0)
-		{
-		}
+		PlanetFace(float r, Vec3f v1, Vec3f v2, Vec3f v3, Vec3f v4, const std::string &heightmapFile, const std::string &textureFile);
 
 		~PlanetFace()
 		{
 			delete [] vertices;
 			delete [] colors;
+			delete [] normals;
 			delete [] indices;
 		}
 
@@ -50,6 +35,8 @@ namespace Planet
 		// Checks intersection between the line p2-p1 and this plane
 		bool findIntersection(Vec3f &p1, Vec3f &p2, float &s, float &t);
 
+
+		Vec3f getVertex(int row, int col);
 
 		// Vertexes (corners) in clockwise order
 		Vec3f v1;
@@ -82,7 +69,17 @@ namespace Planet
 		// index array
 		uint *indices;
 		
+		// normal array
+		Vec3f *normals;
+		
+		Vec2f *textureCoords;
+		
 		HeightMap heightMap;
+		
+		uint texture;
+		
+		std::string heightmapFile;
+		std::string textureFile;
 	};
 };
 

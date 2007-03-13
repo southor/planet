@@ -29,12 +29,12 @@ namespace Planet
 	class Planet
 	{
 	public:
-		Planet() :	xFront(r, c1, c2, c3, c4),
-					xBack(r, c6, c5, c8, c7),
-					yFront(r, c5, c6, c2, c1),
-					yBack(r, c4, c3, c7, c8),
-					zFront(r, c5, c1, c4, c8),
-					zBack(r, c2, c6, c7, c3)
+		Planet() :	xFront(r, c1, c2, c3, c4, "ht.png", "grass_texture.png"),
+					xBack(r, c6, c5, c8, c7, "ht.png", "grass_snow_texture.jpg"),
+					yFront(r, c5, c6, c2, c1, "ht.png", "grass_texture.png"),
+					yBack(r, c4, c3, c7, c8, "ht.png", "grass_texture.png"),
+					zFront(r, c5, c1, c4, c8, "ht.png", "grass_texture.png"),
+					zBack(r, c2, c6, c7, c3, "ht.png", "grass_texture.png")
 		{
 			faces.push_back(&xFront);
 			faces.push_back(&xBack);

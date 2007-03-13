@@ -11,11 +11,10 @@ namespace Planet
 	class Camera
 	{
 	public:
-		Camera() : position(20.0f, 20.0f, 20.0f), up(0.0f, 1.0f, 0.0f), zoom(2.0f) {}
+		Camera() : position(20.0f, 20.0f, 20.0f), up(0.0f, 1.0f, 0.0f), zoom(1.8f) {}
 	
 		void update(Vec3f &position, Vec3f &up);
 		void useCamera();
-		
 	
 		Vec3f position;
 		Vec3f lookAt;

@@ -75,9 +75,12 @@ namespace Planet
 
 	void Game::render(Uint32 time)
 	{
+		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); 
 
-		glDisable(GL_LIGHTING);
+		glEnable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
 
 		camera.useCamera();
 
@@ -85,16 +88,32 @@ namespace Planet
 			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
 			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
 
+			float light_ambient[] = {0.3, 0.3, 0.3, 1.0};
+			float light_diffuse[] = {0.5, 0.5, 0.5, 1.0};
+			float light_specular[] = {1.0, 0.0, 0.0, 1.0};
+			float light_position[] = {00.0, 10.0, 0.0, 0.0};
+			
+			glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+			glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+			glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+			glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+			glEnable(GL_LIGHT0);
+
+
+
 			planet.render();
+
+			glDisable(GL_LIGHTING);
+			glDisable(GL_DEPTH_TEST);
+
 			ship.render();
 			sight.render();
 
 		glPopMatrix();
 			
-		glEnable(GL_LIGHTING);
 		glFlush();
 		SDL_GL_SwapBuffers();
-		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void Game::init()
@@ -142,10 +161,10 @@ namespace Planet
 		SDL_EnableUNICODE(1);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_COLOR_ARRAY);	
+		glEnableClientState(GL_NORMAL_ARRAY);	
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	
 
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
@@ -155,15 +174,15 @@ namespace Planet
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_DEPTH_TEST);
 
 
 		glShadeModel(GL_SMOOTH);
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClearDepth(1.0f);
-		glClearAccum(0.0, 0.0, 0.0, 0.0);
-		//glEnable(GL_DEPTH_TEST);
-		//glDepthFunc(GL_LEQUAL);
+		//glClearDepth(1.0f);
+		//glClearAccum(0.0, 0.0, 0.0, 0.0);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 
