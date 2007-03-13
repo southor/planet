@@ -10,7 +10,6 @@
 #include "Server.h"
 //#include "Gui.h"
 #include "UserInputHandler.h"
-#include "Planet.h"
 
 namespace Prototype
 {
@@ -20,7 +19,6 @@ namespace Prototype
 		Game();
 		~Game();
 		void run(std::string &host);
-		void run2();
 
 		static const Vec2<int> WINDOW_SIZE;
 
@@ -61,10 +59,6 @@ namespace Prototype
 		//Gui gui;
 
 		Uint32 mStartTime;
-
-		Planet planet;
-
-		
 	};
 };
 
