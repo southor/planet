@@ -4,7 +4,7 @@
 #include "Cmds.h"
 #include "StateCmds.h"
 #include "common.h"
-#include "basic.h"
+#include "vec2.h"
 
 #include <deque>
 #include <map>
@@ -14,6 +14,23 @@ namespace Planet
 	class UserInputHandler
 	{
 	private:
+
+		struct Action
+		{			
+			int key;
+			bool press;
+
+			Action()												{}
+			Action(bool press, int key) : press(press), key(key)	{}
+
+			bool operator <(Action action) const
+			{
+				if (this->key < action.key) return true;
+				else if (this->key > action.key) return false;
+				else return this->press < action.press;
+			}
+		};
+
 		// current state of the state commands
 		StateCmds currentStates;
 
@@ -24,12 +41,14 @@ namespace Planet
 		std::map<int, int> stateCmdKeyMap;
 
 		// holds the key of the action command
-		std::map<int, int> actionCmdKeyMap;
+		std::map<Action, int> actionCmdKeyMap;
 
 
 		// mouse position in screen coordinates
-		Vec2i mouseScreenPos;
+		Vec2<int> mouseScreenPos;
 		//bool mousePosChanged;
+
+		static const int NO_ACTION_CMD = -1;
 		
 
 	public:
@@ -52,7 +71,11 @@ namespace Planet
 		//void setStateCmdButton(int stateCmd, int button); // mouse button
 
 		// ------- set Action cmd keys and mouse buttons -------
-		void setActionCmdKey(int actionCmd, int key);
+		void setActionCmdKey(int actionCmdPress, int actionCmdRelease, int key);
+		inline void setActionCmdKey(int actionCmd, int key)
+		{
+			setActionCmdKey(actionCmd, NO_ACTION_CMD, key);
+		}		
 		//void setActionCmdKey(int actionCmd, int key); // keyboard key
 		//void setActionCmdButton(int actionCmd, int button); // mouse button
 
@@ -71,7 +94,7 @@ namespace Planet
 		void pushActionCmd(int actionCmd);
 
 		// ------- mouse move input -----------
-		inline Vec2i& getMouseScreenPos()		{ return mouseScreenPos; }
+		inline Vec2<int>& getMouseScreenPos()		{ return mouseScreenPos; }
 		//inline bool hasMousePosChanged()
 		//{
 		//	bool tmp = mousePosChanged;

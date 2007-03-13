@@ -5,6 +5,10 @@ namespace Planet
 {
 	namespace Cmds
 	{
+
+		static const int N_STATE_CMDS = 12;
+		static const int N_ACTION_CMDS = 3;
+
 		// State Commands
 		enum
 		{
@@ -28,13 +32,13 @@ namespace Planet
 
 		//Action commands
 		enum
-		{
-			SHOOT = 0,
-			SWITCH_WEAPON
+		{			
+			SWITCH_WEAPON = 0,
+			START_SHOOTING,
+			STOP_SHOOTING
 		};
 
-		static const int N_STATE_CMDS = 10;
-		static const int N_ACTION_CMDS = 2;
+
 	};
 };
 
