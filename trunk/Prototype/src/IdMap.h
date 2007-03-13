@@ -388,7 +388,8 @@ namespace Prototype
 		inline Iterator find(Id id)			{ return map.find(id); }
 		inline bool exists(Id id) const		{ return map.find(id) != map.end(); }
 
-		void add(Id id, T item)				{ assert((map.insert(Pair(id, item))).second); }
+		void add(Id id, T item)				{ bool result = (map.insert(Pair(id, item))).second;
+											  assert(result); }
 		bool remove(Id id)					{ bool removed = (map.erase(id) > 0);
 											  assert(removed);
 											  return removed; }
