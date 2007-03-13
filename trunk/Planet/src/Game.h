@@ -4,13 +4,7 @@
 #include "common.h"
 #include "basic.h"
 #include "UserInputHandler.h"
-#include "PlanetBody.h"
-#include "Ship.h"
-#include "Camera.h"
-#include "Sight.h"
-
-//#define WINDOW_SIZE_X 800
-//#define WINDOW_SIZE_Y 600
+#include "Client.h"
 
 namespace Planet
 {
@@ -32,17 +26,13 @@ namespace Planet
 		bool running;
 		SDL_Surface *screen;
 
-		PlanetBody planetBody;
-		Ship ship;
-		Camera camera;
-		Sight sight;
-		
+		Client client;
+
+		SDL_Thread *serverThread;
+
 		// TMP / DEBUG
 		float viewAngle;
 		float viewAngle2;
-
-		
-		UserInputHandler userInputHandler;
 	};
 };
 

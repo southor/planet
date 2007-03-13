@@ -5,13 +5,27 @@
 #include <cmath>
 
 #include "SDL_endian.h"
+#include "SDL_thread.h"
 
 namespace Planet
 {
-	
+	bool runningServer;
+
+	int runServer(void *unused)
+	{
+		while (runningServer)
+		{
+			printf("runServer(..)\n");
+			SDL_Delay(1000);
+		}
+
+		return 0;
+	}
+
+
 	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(800, 600);
 	
-	Game::Game() : planetBody(5.0f), viewAngle(0.0f), viewAngle2(0.0f)
+	Game::Game() : viewAngle(0.0f), viewAngle2(0.0f)
 	{
 		init();
 		running = true;
@@ -19,6 +33,8 @@ namespace Planet
 
 	Game::~Game()
 	{
+		SDL_WaitThread(serverThread, NULL);
+
 		SDL_Quit( );
 		SDLNet_Quit();
 	}
@@ -29,35 +45,21 @@ namespace Planet
 		{
 			pollEvents();
 			
-			if (userInputHandler.getCurrentState(Cmds::LEFT))
+			if (client.getUserInputHandler()->getCurrentState(Cmds::LEFT))
 				viewAngle += 3.0f;
-			if (userInputHandler.getCurrentState(Cmds::RIGHT))
+			if (client.getUserInputHandler()->getCurrentState(Cmds::RIGHT))
 				viewAngle -= 3.0f;
 
-			if (userInputHandler.getCurrentState(Cmds::FORWARD))
+			if (client.getUserInputHandler()->getCurrentState(Cmds::FORWARD))
 				viewAngle2 += 3.0f;
-			if (userInputHandler.getCurrentState(Cmds::BACKWARD))
+			if (client.getUserInputHandler()->getCurrentState(Cmds::BACKWARD))
 				viewAngle2 -= 3.0f;
 
-			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_IN))
-				camera.zoom += 0.05f;
-			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_OUT))
-				camera.zoom -= 0.05f;
+			//if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_IN))
+			//	camera.zoom += 0.05f;
+			//if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_OUT))
+			//	camera.zoom -= 0.05f;
 
-			ship.moveUp = userInputHandler.getCurrentState(Cmds::TMP_UP);
-			ship.moveDown = userInputHandler.getCurrentState(Cmds::TMP_DOWN);
-			ship.moveLeft = userInputHandler.getCurrentState(Cmds::TMP_LEFT);
-			ship.moveRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
-				
-		
-			// Logic
-			ship.logic();
-
-			camera.update(ship.position, ship.reference);
-			//sight.update(userInputHandler.getMouseScreenPos(), WINDOW_SIZE_X, WINDOW_SIZE_Y);
-			sight.update(userInputHandler.getMouseScreenPos(), WINDOW_SIZE.x, WINDOW_SIZE.y);
-
-			ship.direction = sight.position - ship.position;
 
 			
 			render(0);
@@ -76,7 +78,7 @@ namespace Planet
 		glEnable(GL_LIGHTING);
 		glEnable(GL_DEPTH_TEST);
 
-		camera.useCamera();
+		client.getCamera()->useCamera();
 
 		glPushMatrix();
 			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
@@ -95,16 +97,8 @@ namespace Planet
 
 			glEnable(GL_LIGHT0);
 
+			client.renderAndUpdate();			
 
-
-			planetBody.render();
-
-			// Disable lights for ship and sight rendering
-			glDisable(GL_LIGHTING);
-			glDisable(GL_DEPTH_TEST);
-
-			ship.render();
-			sight.render();
 
 		glPopMatrix();
 			
@@ -184,32 +178,37 @@ namespace Planet
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 
-		userInputHandler.setStateCmdKey(Cmds::LEFT, SDLK_a);
-		userInputHandler.setStateCmdKey(Cmds::RIGHT, SDLK_d);
-		userInputHandler.setStateCmdKey(Cmds::FORWARD, SDLK_w);
-		userInputHandler.setStateCmdKey(Cmds::BACKWARD, SDLK_s);
-		userInputHandler.setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
-		userInputHandler.setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
-		//userInputHandler.setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
-		userInputHandler.setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);
-		userInputHandler.setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::LEFT, SDLK_a);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::RIGHT, SDLK_d);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::FORWARD, SDLK_w);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
+		//client.getUserInputHandler()->.setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
+		client.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);
+		client.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
-		userInputHandler.setStateCmdKey(Cmds::TMP_LEFT, SDLK_LEFT);
-		userInputHandler.setStateCmdKey(Cmds::TMP_RIGHT, SDLK_RIGHT);
-		userInputHandler.setStateCmdKey(Cmds::TMP_UP, SDLK_UP);
-		userInputHandler.setStateCmdKey(Cmds::TMP_DOWN, SDLK_DOWN);
-		userInputHandler.setStateCmdKey(Cmds::TMP_ZOOM_IN, SDLK_q);
-		userInputHandler.setStateCmdKey(Cmds::TMP_ZOOM_OUT, SDLK_e);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_LEFT, SDLK_LEFT);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_RIGHT, SDLK_RIGHT);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_UP, SDLK_UP);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_DOWN, SDLK_DOWN);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_ZOOM_IN, SDLK_q);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_ZOOM_OUT, SDLK_e);
 
 
-		userInputHandler.aimMode = UserInputHandler::KEYBOARD;
+		client.getUserInputHandler()->aimMode = UserInputHandler::KEYBOARD;
 		
-		
-		planetBody.init();
-		ship.setPlanet(&planetBody);
-		sight.setCamera(&camera);
-		sight.setPlanet(&planetBody);
+		client.init();
 
+
+		runningServer = true;	
+		serverThread = SDL_CreateThread(runServer, 0);
+
+		if (serverThread == 0)
+		{
+			fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
+	        exit(-1);
+		}
 	}
 
 	void Game::pollEvents()
@@ -226,6 +225,7 @@ namespace Planet
 				{
 				case SDLK_ESCAPE:
 					running = false;
+					runningServer = false;
 					break;				   
 				case SDLK_f:					
 					if (event.key.keysym.mod & KMOD_CTRL)
@@ -240,7 +240,7 @@ namespace Planet
 				break;
 			}
 
-			userInputHandler.pushInput(event);
+			client.getUserInputHandler()->pushInput(event);
 		}		
 	}
 };
