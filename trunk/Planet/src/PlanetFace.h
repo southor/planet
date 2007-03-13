@@ -26,18 +26,19 @@ namespace Planet
 
 		float getHeight(float s, float t);
 
-		// Checks intersection between the line sp-(0,0,0) and this plane
+		// Checks intersection between the line sp-(0,0,0) and this planet face/side
 		bool findIntersection(SpherePoint &sp, float &s, float &t);
 
-		// Checks intersection between the line p2-(0,0,0) and this plane
+		// Checks intersection between the line p2-(0,0,0) and this planet face/side
 		bool findIntersection(Vec3f &p2, float &s, float &t);
 
-		// Checks intersection between the line p2-p1 and this plane
+		// Checks intersection between the line p2-p1 and this planet face/side
 		bool findIntersection(Vec3f &p1, Vec3f &p2, float &s, float &t);
 
 
 		Vec3f getVertex(int row, int col);
 
+	private:
 		// Vertexes (corners) in clockwise order
 		Vec3f v1;
 		Vec3f v2;

@@ -4,7 +4,7 @@
 #include "Cmds.h"
 #include "StateCmds.h"
 #include "common.h"
-#include "vec2.h"
+#include "basic.h"
 
 #include <deque>
 #include <map>
@@ -28,7 +28,7 @@ namespace Planet
 
 
 		// mouse position in screen coordinates
-		Vec2<int> mouseScreenPos;
+		Vec2i mouseScreenPos;
 		//bool mousePosChanged;
 		
 
@@ -71,7 +71,7 @@ namespace Planet
 		void pushActionCmd(int actionCmd);
 
 		// ------- mouse move input -----------
-		inline Vec2<int>& getMouseScreenPos()		{ return mouseScreenPos; }
+		inline Vec2i& getMouseScreenPos()		{ return mouseScreenPos; }
 		//inline bool hasMousePosChanged()
 		//{
 		//	bool tmp = mousePosChanged;

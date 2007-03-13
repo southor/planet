@@ -17,15 +17,16 @@ namespace Planet
 		void setCamera(Camera *camera) { this->camera = camera; }
 		void setPlanet(Planet *planet) { this->planet = planet; }
 	
-		void update(Vec2<float> &mouseScreenPosRel);
+		void update(Vec2i &mouseScreenPos, int w, int h);
 
 		void render();
 		
+
+		Vec3f position;
+
 	private:
 		Camera *camera;
 		Planet *planet;
-	public:
-		Vec3f position;
 	};
 };
 
