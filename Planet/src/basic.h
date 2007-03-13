@@ -14,6 +14,8 @@
 
 namespace Planet
 {
+	const bool SERVER_PRINT_NETWORK_DEBUG = false;
+
 	typedef unsigned char uchar;
 	typedef unsigned char ushort;
 	typedef unsigned int uint;	
@@ -32,19 +34,6 @@ namespace Planet
 		return angle * 360.0f / (2.0f * PI_F);
 	}
 
-
-	//// Functor
-	//template <class T>
-	//class HasId
-	//{
-	//private:
-	//	int id;
-	//public:
-	//	HasId(int id) : id(id)	{}
-	//	bool operator ()(const T &o)	{ return o.id == this->id; }
-	//	bool operator ()(const T *o)	{ return o->id == this->id; }
-	//};
-
 	template <class It, class Functor>
 	void ForEach(It begin, It end, Functor &fun)
 	{
@@ -54,8 +43,6 @@ namespace Planet
 			fun(*it);
 		}
 	}
-
-
 
 	template <typename T>
 	inline T tmin(T a, T b)			{ return a < b ? a : b; }
@@ -69,17 +56,7 @@ namespace Planet
 		return tmin(tmin(a, b), tmin(c, d));		
 	}
 
-
-	//typedef size_t GameObjId;
-
 	typedef uint PlayerId;
-
-
-	//#define PRINT_VARIABLE (x)  std::cout << "x:"
-
-
-
-	
 };
 
 #endif
