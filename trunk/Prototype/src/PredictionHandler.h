@@ -31,8 +31,8 @@ namespace Prototype
 		void setWorldModel(ClientWorldModel *worldModel)			{ this->worldModel = worldModel; }
 
 		void getUserCmd(UserCmd &userCmd, int tick)					{ userCmdHistoryList.getData(tick, userCmd);
-																	  assert(userCmd.isConsistent()); }
-		void setUserCmd(const UserCmd &userCmd, int tick)			{ assert(userCmd.isConsistent());
+																	  assert(userCmd.isConsistent(tick)); }
+		void setUserCmd(const UserCmd &userCmd, int tick)			{ assert(userCmd.isConsistent(tick));
 																	  userCmdHistoryList.setData(tick, userCmd); }
 
 		// Repredicts the old prediction, overwrites old data but do not produce new one.

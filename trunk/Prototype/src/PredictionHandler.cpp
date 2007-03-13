@@ -41,7 +41,7 @@ namespace Prototype
 			//playerObj->setUserCmd = userCmd;
 			
 			worldModel->updatePlayerObjMovement(playerId);
-			playerObj->updateNextShootTime(tick);
+			playerObj->updateNextShootTick(tick);
 			
 			playerObj->storeToTickData(tick + 1);
 		}
@@ -52,7 +52,7 @@ namespace Prototype
 	{
 		UserCmd testUserCmd;
 		userCmdHistoryList.getData(0, testUserCmd);
-		return testUserCmd.isConsistent();
+		return testUserCmd.isConsistent(0);
 	}
 
 	//debug

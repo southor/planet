@@ -65,6 +65,8 @@ namespace Prototype
 			{				
 				return (pos != rh.pos) || (angle != rh.angle) || (nextShootTick != rh.nextShootTick);
 			}
+
+			static void interExtraPolate(int tick1, const UpdateData &data1, int tick2, const UpdateData &data2, Tickf resultTick, UpdateData &resultData);
 		};
 		
 		HistoryList<UpdateData> historyList;
@@ -137,7 +139,8 @@ namespace Prototype
 		// @return true if there was a differ
 		bool setTickDataAndCompare(int tick, const Pos &pos, Angle angle, Tickf nextShootTick);
 
-		inline void storeToTickData(int tick)				{ setTickData(tick, pos, angle, nextShootTick); }
+		inline void storeToTickData(int tick)				{ assert(nextShootTick >= tick);
+															  setTickData(tick, pos, angle, nextShootTick); }
 
 		void updateToTickData(int tick);
 
@@ -148,11 +151,12 @@ namespace Prototype
 		const UserCmd& getUserCmd()							{ return userCmd; }
 		void setUserCmd(const UserCmd *userCmd);
 
-		int getNTickShots(Projectile::Type weapon, int currentTick, bool continuous);
+		int getNTickShots(Projectile::Type weapon, int currentTick);
 
 		//static Projectile::Type switchWeapon(Projectile::Type currentWeapon)
 		
-		void updateNextShootTime(int currentTick);
+		// Updates nextShootTick for next tick (currentTick + 1)
+		void updateNextShootTick(int currentTick);
 
 		Tickf getShotTick(int currentTick, int shotN);
 

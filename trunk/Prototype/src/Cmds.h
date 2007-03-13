@@ -23,8 +23,8 @@ namespace Prototype
 		enum
 		{			
 			SWITCH_WEAPON = 0,
-			START_SHOOT,
-			STOP_SHOOT
+			START_SHOOTING,
+			STOP_SHOOTING
 		};
 
 		static const int N_STATE_CMDS = 6;

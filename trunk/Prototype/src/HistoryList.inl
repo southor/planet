@@ -102,33 +102,33 @@ namespace Prototype
 			//float distFromTick1 = tick - tick1;
 			//T::extrapolate(tickToDataRef(tick1), tickToDataRef(tick2), distFromTick1, data);
 
-			if (tick1 == tick2) 
+			//if (tick1 == tick2) 
+			//{
+			//	// avoiding division by zero
+			//	data = tickToDataRef(tick1);
+			//	//return tickToDataRef(tick1); 
+			//}
+			//else
+			//{
+			//	
+
+
+			if (interExtraPolate) // no host, ordinary interExtraPolation
 			{
-				// avoiding division by zero
-				data = tickToDataRef(tick1);
-				//return tickToDataRef(tick1); 
+				interExtraPolate(tick1, tickToDataRef(tick1), tick2, tickToDataRef(tick2), static_cast<Tickf>(tick), data);
 			}
-			else
+			else // host logic, only tick1 used
 			{
-				
-
-
-				if (interExtraPolate) // no host, ordinary interExtraPolation
-				{
-					interExtraPolate(tick1, tickToDataRef(tick1), tick2, tickToDataRef(tick2), static_cast<Tickf>(tick), data);
-				}
-				else // host logic, only tick1 used
-				{
-					assert(hostInterExtraPolate);
-					assert(hostObj);
-					hostInterExtraPolate(tick1, tickToDataRef(tick1), static_cast<Tickf>(tick), data, hostObj);
-				}
-				//localInterExtraPolate(tick1, tickToDataRef(tick1), tick2, tickToDataRef(tick2), static_cast<Tickf>(tick), data);
-				
-				
-
-				
+				assert(hostInterExtraPolate);
+				assert(hostObj);
+				hostInterExtraPolate(tick1, tickToDataRef(tick1), static_cast<Tickf>(tick), data, hostObj);
 			}
+			//localInterExtraPolate(tick1, tickToDataRef(tick1), tick2, tickToDataRef(tick2), static_cast<Tickf>(tick), data);
+				
+				
+
+				
+			//}
 		}
 		else if (tick < firstTickTmp)
 		{

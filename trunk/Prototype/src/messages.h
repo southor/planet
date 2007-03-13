@@ -214,12 +214,12 @@ namespace Prototype
 	{
 		static const size_t messageType = USER_CMD;
 
-		enum ShootAction
-		{
-			START_SHOOTING,
-			CONTINUE_SHOOTING,
-			NOT_SHOOTING
-		};
+		//enum ShootAction
+		//{
+		//	START_SHOOTING,
+		//	CONTINUE_SHOOTING,
+		//	NOT_SHOOTING
+		//};
 
 		//bool cmdLeft;
 		//bool cmdRight;
@@ -230,10 +230,13 @@ namespace Prototype
 		//int stateCmds; // bitpattern
 		StateCmds stateCmds;
 		Angle aimAngle;
+		
 		Projectile::Type weapon;
 		int nShots;
-		ShootAction shootAction;
-		//bool shooting;
+		Tickf firstShotTick;
+		bool shooting; // keep shooting at the end of this Tick?
+		
+		//ShootAction shootAction;
 		//bool continuosShooting
 
 		
@@ -245,15 +248,16 @@ namespace Prototype
 		//{}
 
 		//UserCmd(int stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
-		UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon, int nShots, ShootAction shootAction)
-			: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots), shootAction(shootAction)
+		UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon, int nShots, bool shooting, Tickf firstShotTick)
+			: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots), shooting(shooting), firstShotTick(firstShotTick)
 		{}
 
 		void clear();
 
 		
 
-		inline bool isShooting()				{ return (shootAction == START_SHOOTING) || (shootAction == CONTINUE_SHOOTING); }
+		//inline bool isShooting() const				{ return (shootAction != NOT_SHOOTING); }
+		inline bool isShooting() const					{ return shooting; }
 		
 		//UserCmd operator +(const UserCmd &rh) const
 		//{			
@@ -286,7 +290,8 @@ namespace Prototype
 		static const UserCmd DEFAULT_USER_CMD;
 
 		// debug
-		bool isConsistent() const;
+		//inline bool isConsistent() const						{ return isConsistent(0); }
+		bool isConsistent(int currentTick) const;
 
 	};	
 
