@@ -4,7 +4,7 @@
 #include "common.h"
 #include "basic.h"
 #include "UserInputHandler.h"
-#include "Planet.h"
+#include "PlanetBody.h"
 #include "Ship.h"
 #include "Camera.h"
 #include "Sight.h"
@@ -30,7 +30,7 @@ namespace Planet
 		bool running;
 		SDL_Surface *screen;
 
-		Planet planet;
+		PlanetBody planetBody;
 		Ship ship;
 		Camera camera;
 		Sight sight;

@@ -24,7 +24,7 @@ namespace Planet
 			
 			Vec3f mouseVector = mouseViewPlanePos - camera->position;
 
-			bool mousePlanetCollision = planet->checkCollision(mouseViewPlanePos, mouseViewPlanePos + mouseVector * 1000.0f, &position);
+			bool mousePlanetCollision = planetBody->checkCollision(mouseViewPlanePos, mouseViewPlanePos + mouseVector * 1000.0f, &position);
 		}
 		
 		void Sight::render()

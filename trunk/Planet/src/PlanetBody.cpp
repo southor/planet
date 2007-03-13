@@ -1,8 +1,8 @@
-#include "Planet.h"
+#include "PlanetBody.h"
 
 namespace Planet
 {
-	Planet::Planet(float radius) 
+	PlanetBody::PlanetBody(float radius) 
 		:	r(radius),
 
 			// the corners of the cube, clockwise.
@@ -32,7 +32,7 @@ namespace Planet
 	}
 
 
-	void Planet::init()
+	void PlanetBody::init()
 	{
 		xFront.init();
 		xBack.init();
@@ -44,7 +44,7 @@ namespace Planet
 		zBack.init();
 	}
 		
-	void Planet::render()
+	void PlanetBody::render()
 	{
 		/*
 		glLineWidth(2.0);
@@ -83,7 +83,7 @@ namespace Planet
 		zBack.draw();
 	}
 	
-	bool Planet::checkCollision(Vec3f startPos, Vec3f endPos, Vec3f *collisionPos)
+	bool PlanetBody::checkCollision(Vec3f startPos, Vec3f endPos, Vec3f *collisionPos)
 	{
 		Vec3f direction = endPos - startPos;
 		
@@ -119,7 +119,7 @@ namespace Planet
 	}
 
 	
-	float Planet::getHeight(float phi, float theta)
+	float PlanetBody::getHeight(float phi, float theta)
 	{
 		float s, t;
 		SpherePoint sp(1.0f, phi, theta);

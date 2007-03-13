@@ -5,7 +5,7 @@ namespace Planet
 	void Ship::logic()
 	{
 		SpherePoint sp = position.toSpherePoint();
-		sp.p = planet->getHeight(sp.phi, sp.theta);
+		sp.p = planetBody->getHeight(sp.phi, sp.theta);
 		position = sp.toVector();
 		
 		

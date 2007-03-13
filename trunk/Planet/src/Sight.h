@@ -3,7 +3,7 @@
 
 #include "common.h"
 #include "basic.h"
-#include "Planet.h"
+#include "PlanetBody.h"
 #include "Camera.h"
 
 
@@ -15,7 +15,7 @@ namespace Planet
 		Sight() : camera(0) {}
 	
 		void setCamera(Camera *camera) { this->camera = camera; }
-		void setPlanet(Planet *planet) { this->planet = planet; }
+		void setPlanet(PlanetBody *planetBody) { this->planetBody = planetBody; }
 	
 		void update(Vec2i &mouseScreenPos, int w, int h);
 
@@ -26,7 +26,7 @@ namespace Planet
 
 	private:
 		Camera *camera;
-		Planet *planet;
+		PlanetBody *planetBody;
 	};
 };
 
