@@ -31,12 +31,12 @@ namespace Planet
 		bool moveLeft;
 		bool moveRight;
 			
-		Planet *planet;
-			
-			
 		Vec3f position;
 		Vec3f direction;
 		Vec3f reference;
+		
+	private:
+		Planet *planet;
 	};
 };
 

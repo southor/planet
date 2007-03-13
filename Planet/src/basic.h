@@ -19,6 +19,7 @@ namespace Planet
 	typedef unsigned int uint;	
 	
 	typedef Vec2<float> Vec2f;
+	typedef Vec2<int> Vec2i;
 	
 	typedef Vec2f Vec;
 	typedef Vec Pos;

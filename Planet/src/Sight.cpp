@@ -2,8 +2,13 @@
 
 namespace Planet
 {
-		void Sight::update(Vec2<float> &mouseScreenPosRel)
+		void Sight::update(Vec2i &mouseScreenPos, int w, int h)
 		{
+			Vec2f mouseScreenPosRel = Vec2f(
+				mouseScreenPos.x / static_cast<float>(w), 
+				mouseScreenPos.y / static_cast<float>(h));
+
+
 			Vec3f look = camera->lookAt - camera->position;
 		
 			Vec3f viewPlaneVectorRight = look.cross(camera->up);

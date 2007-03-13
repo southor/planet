@@ -88,7 +88,7 @@ namespace Planet
 
 		case SDL_MOUSEMOTION:
 			{
-				Vec2<int> tmpMouseScreenPos(event.motion.x, event.motion.y);
+				Vec2i tmpMouseScreenPos(event.motion.x, event.motion.y);
 				tmpMouseScreenPos.y = WINDOW_SIZE_Y - tmpMouseScreenPos.y; // convert from SDL to GL position
 				//setCurrentMousePos(mouseScreenPos);
 				//mousePosChanged = true;

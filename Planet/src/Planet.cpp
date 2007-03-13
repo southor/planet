@@ -2,6 +2,36 @@
 
 namespace Planet
 {
+	Planet::Planet(float radius) 
+		:	r(radius),
+
+			// the corners of the cube, clockwise.
+			c1(r, r, r),
+			c2(r, r, -r),
+			c3(r, -r, -r),
+			c4(r, -r, r),
+			c5(-r, r, r),
+			c6(-r, r, -r),
+			c7(-r, -r, -r),
+			c8(-r, -r, r),
+
+			// the faces of the cube
+			xFront(r, c1, c2, c3, c4, "ht.png", "grass_texture.png"),
+			xBack(r, c6, c5, c8, c7, "ht.png", "grass_snow_texture.jpg"),
+			yFront(r, c5, c6, c2, c1, "ht.png", "grass_texture.png"),
+			yBack(r, c4, c3, c7, c8, "ht.png", "grass_texture.png"),
+			zFront(r, c5, c1, c4, c8, "ht.png", "grass_texture.png"),
+			zBack(r, c2, c6, c7, c3, "ht.png", "grass_texture.png")
+	{
+		faces.push_back(&xFront);
+		faces.push_back(&xBack);
+		faces.push_back(&yFront);
+		faces.push_back(&yBack);
+		faces.push_back(&zFront);
+		faces.push_back(&zBack);
+	}
+
+
 	void Planet::init()
 	{
 		xFront.init();
@@ -16,11 +46,10 @@ namespace Planet
 		
 	void Planet::render()
 	{
+		/*
 		glLineWidth(2.0);
 		glPointSize(3.0);
 
-	
-		/*
 		glDisable(GL_LIGHTING);
 		glBegin(GL_LINES);
 			glColor3f(1.0f, 1.0f, 0.0f);
@@ -106,5 +135,6 @@ namespace Planet
 		}
 		
 		assert(true);
+		return 0.0f;
 	}	
 };

@@ -8,7 +8,7 @@
 
 namespace Planet
 {
-	Game::Game() : viewAngle(0.0f), viewAngle2(0.0f)
+	Game::Game() : planet(5.0f), viewAngle(0.0f), viewAngle2(0.0f)
 	{
 		init();
 		running = true;
@@ -25,9 +25,6 @@ namespace Planet
 		while (running) 
 		{
 			pollEvents();
-
-			glClear(GL_COLOR_BUFFER_BIT);
-			
 			
 			if (userInputHandler.getCurrentState(Cmds::LEFT))
 				viewAngle += 3.0f;
@@ -39,30 +36,22 @@ namespace Planet
 			if (userInputHandler.getCurrentState(Cmds::BACKWARD))
 				viewAngle2 -= 3.0f;
 
+			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_IN))
+				camera.zoom += 0.05f;
+			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_OUT))
+				camera.zoom -= 0.05f;
+
 			ship.moveUp = userInputHandler.getCurrentState(Cmds::TMP_UP);
 			ship.moveDown = userInputHandler.getCurrentState(Cmds::TMP_DOWN);
 			ship.moveLeft = userInputHandler.getCurrentState(Cmds::TMP_LEFT);
 			ship.moveRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
 				
-			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_IN))
-				camera.zoom += 0.05f;
-			if (userInputHandler.getCurrentState(Cmds::TMP_ZOOM_OUT))
-				camera.zoom -= 0.05f;
 		
-			Vec2<int> mouseScreenPos = userInputHandler.getMouseScreenPos();
-		
-			planet.mouseScreenPosRel = Vec2<float>(
-				mouseScreenPos.x / static_cast<float>(WINDOW_SIZE_X), 
-				mouseScreenPos.y / static_cast<float>(WINDOW_SIZE_Y));
-
-
+			// Logic
 			ship.logic();
 
-
-
 			camera.update(ship.position, ship.reference);
-			sight.update(planet.mouseScreenPosRel);
-
+			sight.update(userInputHandler.getMouseScreenPos(), WINDOW_SIZE_X, WINDOW_SIZE_Y);
 
 			ship.direction = sight.position - ship.position;
 
@@ -88,6 +77,7 @@ namespace Planet
 			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
 			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
 
+			// Setup lights
 			float light_ambient[] = {0.3, 0.3, 0.3, 1.0};
 			float light_diffuse[] = {0.5, 0.5, 0.5, 1.0};
 			float light_specular[] = {1.0, 0.0, 0.0, 1.0};
@@ -104,6 +94,7 @@ namespace Planet
 
 			planet.render();
 
+			// Disable lights for ship and sight rendering
 			glDisable(GL_LIGHTING);
 			glDisable(GL_DEPTH_TEST);
 
@@ -242,7 +233,6 @@ namespace Planet
 			}
 
 			userInputHandler.pushInput(event);
-		}
-		
+		}		
 	}
 };
