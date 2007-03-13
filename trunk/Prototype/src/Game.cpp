@@ -305,37 +305,6 @@ namespace Prototype
 		
 	}
 
-	void Game::run2()
-	{
-		while (running) 
-		{
-			pollEvents();
-
-			glClear(GL_COLOR_BUFFER_BIT);
-			
-			// guichan
-			//gui.gui->logic();
-
-			if (client1.getUserInputHandler()->getCurrentState(Cmds::LEFT))
-				planet.viewAngle += 3.0f;
-			if (client1.getUserInputHandler()->getCurrentState(Cmds::RIGHT))
-				planet.viewAngle -= 3.0f;
-
-			if (client1.getUserInputHandler()->getCurrentState(Cmds::FORWARD))
-				planet.viewAngle2 += 3.0f;
-			if (client1.getUserInputHandler()->getCurrentState(Cmds::BACKWARD))
-				planet.viewAngle2 -= 3.0f;
-
-
-			planet.render();
-
-			glFlush();
-			SDL_GL_SwapBuffers();
-
-			SDL_Delay(10);
-		}
-	}
-
 	void Game::render(Uint32 time)
 	{
 		//glClear(GL_COLOR_BUFFER_BIT);

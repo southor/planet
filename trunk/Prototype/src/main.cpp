@@ -22,8 +22,6 @@ int main(int argc, char **argv)
 
 	Prototype::Game game;
 	game.run(host);
-	//game.run2();
-	//delete game;
 	
 	return 0;
 }
