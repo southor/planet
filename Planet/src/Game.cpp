@@ -5,7 +5,6 @@
 #include <cmath>
 
 #include "SDL_endian.h"
-#include "SDL_thread.h"
 
 namespace Planet
 {
@@ -85,10 +84,10 @@ namespace Planet
 			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
 
 			// Setup lights
-			float light_ambient[] = {0.3, 0.3, 0.3, 1.0};
-			float light_diffuse[] = {0.5, 0.5, 0.5, 1.0};
-			float light_specular[] = {1.0, 0.0, 0.0, 1.0};
-			float light_position[] = {00.0, 10.0, 0.0, 0.0};
+			float light_ambient[] = {0.3f, 0.3f, 0.3f, 1.0f};
+			float light_diffuse[] = {0.5f, 0.5f, 0.5f, 1.0f};
+			float light_specular[] = {1.0f, 0.0f, 0.0f, 1.0f};
+			float light_position[] = {0.0f, 10.0f, 0.0f, 0.0f};
 			
 			glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 			glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);

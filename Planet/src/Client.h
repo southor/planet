@@ -9,7 +9,7 @@
 #include "Camera.h"
 #include "Sight.h"
 
-//#include "ClientWorldModel.h"
+//#include "ClientPlanet.h"
 //#include "ClientPlayer.h"
 //#include "WorldRenderer.h"
 //#include "KeyHandler.h"
@@ -97,7 +97,7 @@ namespace Planet
 
 		UserInputHandler userInputHandler;
 
-	//	ClientWorldModel worldModel;
+	//	ClientPlanet worldModel;
 	//	WorldRenderer worldRenderer;
 	//	ClientPlayers players;
 	//	PredictionHandler predictionHandler;

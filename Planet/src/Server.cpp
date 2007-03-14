@@ -17,10 +17,10 @@ namespace Planet
 	//{
 	//	// outer walls
 	//	static const float WALL_THICKNESS = 500.0f;
-	//	Rectangle wall1(0.0f, -WALL_THICKNESS, WorldModel::WORLD_SIZE.x, WALL_THICKNESS);
-	//	Rectangle wall2(0.0f, WorldModel::WORLD_SIZE.y, WorldModel::WORLD_SIZE.x, WALL_THICKNESS);
-	//	Rectangle wall3(-WALL_THICKNESS, -WALL_THICKNESS, WALL_THICKNESS, WorldModel::WORLD_SIZE.y + WALL_THICKNESS*2.0f);
-	//	Rectangle wall4(WorldModel::WORLD_SIZE.x, -WALL_THICKNESS, WALL_THICKNESS, WorldModel::WORLD_SIZE.y + WALL_THICKNESS*2.0f);
+	//	Rectangle wall1(0.0f, -WALL_THICKNESS, Planet::WORLD_SIZE.x, WALL_THICKNESS);
+	//	Rectangle wall2(0.0f, Planet::WORLD_SIZE.y, Planet::WORLD_SIZE.x, WALL_THICKNESS);
+	//	Rectangle wall3(-WALL_THICKNESS, -WALL_THICKNESS, WALL_THICKNESS, Planet::WORLD_SIZE.y + WALL_THICKNESS*2.0f);
+	//	Rectangle wall4(Planet::WORLD_SIZE.x, -WALL_THICKNESS, WALL_THICKNESS, Planet::WORLD_SIZE.y + WALL_THICKNESS*2.0f);
 	//	worldModel.addObstacle(wall1);
 	//	worldModel.addObstacle(wall2);
 	//	worldModel.addObstacle(wall3);
@@ -112,8 +112,8 @@ namespace Planet
 
 	//void Server::startGame()
 	//{
-	//	WorldModel::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
-	//	WorldModel::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+	//	Planet::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
+	//	Planet::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 	//	for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 	//	{
 	//		PlayerId playerId = playerObjsIt->first;
@@ -130,8 +130,8 @@ namespace Planet
 	//	{			
 	//		const ServerPlayer *player = playersIt->second;
 
-	//		WorldModel::Obstacles::Iterator obstaclesIt = worldModel.getObstacles().begin();
-	//		WorldModel::Obstacles::Iterator obstaclesEnd = worldModel.getObstacles().end();
+	//		Planet::Obstacles::Iterator obstaclesIt = worldModel.getObstacles().begin();
+	//		Planet::Obstacles::Iterator obstaclesEnd = worldModel.getObstacles().end();
 	//		for(; obstaclesIt != obstaclesEnd; ++obstaclesIt)
 	//		{
 	//			GameObjId obstacleId = obstaclesIt->first;
@@ -280,8 +280,8 @@ namespace Planet
 	//		lastUpdateTime = time;
 
 	//		// Send playerObj updates and store state to history, also send tick0Time
-	//		WorldModel::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
-	//		WorldModel::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+	//		Planet::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
+	//		Planet::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
 	//		for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 	//		{
 	//			
@@ -308,8 +308,8 @@ namespace Planet
 	//		}
 
 	//		// Send projectile updates
-	//		WorldModel::Projectiles::Iterator projectilesIt = worldModel.getProjectiles().begin();
-	//		WorldModel::Projectiles::Iterator projectilesEnd = worldModel.getProjectiles().end();
+	//		Planet::Projectiles::Iterator projectilesIt = worldModel.getProjectiles().begin();
+	//		Planet::Projectiles::Iterator projectilesEnd = worldModel.getProjectiles().end();
 	//		for(; projectilesIt != projectilesEnd; ++projectilesIt)
 	//		{			
 	//			Projectile *projectile = projectilesIt->second;

@@ -26,7 +26,7 @@ namespace Planet
 	typedef Vec2f Vec;
 	typedef Vec Pos;
 
-	typedef double Tickf; // used by Client
+	typedef double Tickf;
 
 	//template <typename T>
 	inline float radianToDegree(float angle)
