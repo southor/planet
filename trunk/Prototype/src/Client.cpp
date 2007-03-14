@@ -300,43 +300,92 @@ namespace Prototype
 		//{
 		//	assert(userCmd.shootAction == UserCmd::NOT_SHOOTING);
 		//}
+		bool startShootingThisTick = false;
 		while(userInputHandler.hasActionCmdOnQueue())
 		{
 			int actionCmd = userInputHandler.popActionCmd();
 
-			if ((userCmd.nShots > 0) || userCmd.isShooting())
+			if (actionCmd == Cmds::START_SHOOTING)
 			{
-				if (actionCmd == Cmds::STOP_SHOOTING)
-				{
-					//userCmd.shootAction = UserCmd::NOT_SHOOTING;
-					userCmd.shooting = false;
-					userCmd.nShots = tmin(1, userCmd.nShots);
-					std::cout << "    -- stop shooting" << std::endl;
-				}
-				else if (actionCmd == Cmds::SWITCH_WEAPON)
+				std::cout << "    -- start shooting" << std::endl;
+				
+				userCmd.shooting = true;
+				startShootingThisTick = true;
+				userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);				
+			}
+			else if (actionCmd == Cmds::STOP_SHOOTING)
+			{
+				std::cout << "    -- stop shooting" << std::endl;
+				
+				userCmd.shooting = false;
+				if (startShootingThisTick && (userCmd.nShots >= 1)) userCmd.nShots = 1;
+				else userCmd.nShots = 0;				
+			}
+			else if (actionCmd == Cmds::SWITCH_WEAPON)
+			{
+				std::cout << "    -- switch weapon" << std::endl;
+
+				Projectile::Type nextWeapon = playerObj->getNextWeapon(userCmd.weapon);
+				if (userCmd.nShots > 0)
 				{
 					UserCmd nextUserCmd;
 					userCmd.assumeNext(nextUserCmd);
-					nextUserCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
+					nextUserCmd.weapon = nextWeapon;
 					predictionHandler.setUserCmd(nextUserCmd, currentTick + 1);
 					break;
+				}
+				else
+				{
+					userCmd.weapon = nextWeapon;
 				}
 			}
 			else
 			{
-				if (actionCmd == Cmds::START_SHOOTING)
-				{
-					//userCmd.shootAction = UserCmd::START_SHOOTING;
-					userCmd.shooting = true;
-					userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);
-					//continuous = false;
-					std::cout << "    -- start shooting" << std::endl;
-				}
-				else if (actionCmd == Cmds::SWITCH_WEAPON)
-				{
-					userCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
-				}
+				assert(false);
 			}
+
+			//if ((userCmd.nShots > 0) || userCmd.isShooting())
+			//{
+			//	if (actionCmd == Cmds::START_SHOOTING)
+			//	{
+			//		userCmd.shooting = true;
+			//		startShootingThisTick = true;
+			//	}
+			//	else if (actionCmd == Cmds::STOP_SHOOTING)
+			//	{
+			//		//userCmd.shootAction = UserCmd::NOT_SHOOTING;
+			//		userCmd.shooting = false;
+			//		if (startShootingThisTick) userCmd.nShots = tmin(1, userCmd.nShots);
+			//		std::cout << "    -- stop shooting" << std::endl;
+			//	}
+			//	else if (actionCmd == Cmds::SWITCH_WEAPON)
+			//	{
+			//		UserCmd nextUserCmd;
+			//		userCmd.assumeNext(nextUserCmd);
+			//		nextUserCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
+			//		predictionHandler.setUserCmd(nextUserCmd, currentTick + 1);
+			//		break;
+			//	}
+			//}
+			//else
+			//{
+			//	if (actionCmd == Cmds::START_SHOOTING)
+			//	{
+			//		//userCmd.shootAction = UserCmd::START_SHOOTING;
+			//		userCmd.shooting = true;					
+			//		userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);
+			//		startShootingThisTick = true;
+			//		std::cout << "    -- start shooting" << std::endl;
+			//	}
+			//	else if (actionCmd == Cmds::STOP_SHOOTING)
+			//	{
+			//		userCmd.shooting = false;
+			//	}
+			//	else if (actionCmd == Cmds::SWITCH_WEAPON)
+			//	{
+			//		userCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
+			//	}
+			//}
 
 			//if (actionCmd == Cmds::START_SHOOT)
 			//{
