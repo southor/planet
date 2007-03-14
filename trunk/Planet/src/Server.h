@@ -5,7 +5,7 @@
 
 //#include "messages.h"
 //#include "ServerPlayers.h"
-//#include "ServerWorldModel.h"
+//#include "ServerPlanet.h"
 //#include "ServerTimeHandler.h"
 #include "StateCmds.h"
 #include "Cmds.h"
@@ -59,7 +59,7 @@ namespace Planet
 	//	static const double PREDICTION_AMOUNT_MODIFIER;
 	//	static const int PREDICTION_AMOUNT_ADD_TIME;
 	//	
-	//	ServerWorldModel worldModel;
+	//	ServerPlanet worldModel;
 	//	ServerPlayers players;
 
 	//	ServerGlobalObj serverGlobalObj;

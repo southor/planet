@@ -22,7 +22,7 @@ namespace Planet
 	//Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER),
 	//					connectionPhase(0), requestRender(false), currObjLag(0)
 	//{
-	//	predictionHandler.setWorldModel(&worldModel);
+	//	predictionHandler.setPlanet(&worldModel);
 	//	assert(predictionHandler.isConsistent());
 	//}
 

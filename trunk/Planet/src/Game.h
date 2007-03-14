@@ -6,6 +6,8 @@
 #include "UserInputHandler.h"
 #include "Client.h"
 
+#include "SDL_thread.h"
+
 namespace Planet
 {
 	class Game 
