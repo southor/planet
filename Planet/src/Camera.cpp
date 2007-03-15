@@ -8,7 +8,7 @@ namespace Planet
 	{
 		Vec3f down = -up;
 		down.normalize();
-		down = down / zoom;
+		down = down / (zoom * 2.0f);
 		
 		Vec3f right = down.cross(position - position * this->zoom);
 		right.normalize();
