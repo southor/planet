@@ -243,6 +243,10 @@ namespace Prototype
 
 	void Client::getCurrentUserCmd(UserCmd &userCmd)
 	{
+		//static int lastTick = -100;
+		//assert(timeHandler.getStepTick() >= (lastTick +1));
+		//lastTick = timeHandler.getStepTick();
+
 		// get current tick
 		int currentTick = static_cast<int>(timeHandler.getStepTick());
 		
@@ -427,6 +431,35 @@ namespace Prototype
 						connectionPhase++; 
 				}
 				break;
+			case ADD_PROJECTILE:
+				{
+					printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
+
+					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
+					worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId, link.getPoppedTick(), addProjectile->objLag);
+				}
+				break;
+			case UPDATE_PROJECTILE:
+				{
+					//printf("CLIENT: handling update_projectile @ %d\n", timeHandler.getTime());
+					
+					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
+					Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
+					//projectile->setPos(updateProjectile->pos);
+					projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
+					//projectile->setPos(updateProjectile->pos);
+					//std::cout << "client projectile:  pos.x = " << projectile->getPos().x << "  pos.y = " << projectile->getPos().y << std::endl;
+				}
+				break;
+			case REMOVE_PROJECTILE:
+				{
+					printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
+					
+					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
+					worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
+					worldModel.getProjectiles().remove(removeProjectile->projectileId);
+				}
+				break;
 			case START_GAME:
 				{
 					//timeHandler.reset();
@@ -585,8 +618,46 @@ namespace Prototype
 		if (worldModel.getPlayerObjs().exists(playerId))
 		{
 			Tickf currentTickf = timeHandler.getStepTick();
-			worldModel.updateToTickData(currentTickf - static_cast<Tickf>(currentObjLag));
+			Tickf playerObjRenderTickf = currentTickf - static_cast<Tickf>(currentObjLag);			
+			
+			
+			worldModel.updatePlayerObjsToTickData(playerObjRenderTickf);
 			(worldModel.getPlayerObjs())[playerId]->updateToTickData(currentTickf);
+
+
+			
+			//WorldModel::PlayerObjs::Iterator playerObjIt = worldModel.getPlayerObjs().begin();
+			//WorldModel::PlayerObjs::Iterator playerObjEnd = worldModel.getPlayerObjs().end();
+			//for(; it != end; ++it)
+			//{
+			//	it->second->updateToTickData(tick);
+			//}
+			//(worldModel.getPlayerObjs())[playerId]->updateToTickData(currentTickf);
+
+			WorldModel::Projectiles::Iterator projectilesIt = worldModel.getProjectiles().begin();
+			WorldModel::Projectiles::Iterator projectilesEnd = worldModel.getProjectiles().end();
+			for(; projectilesIt != projectilesEnd; ++projectilesIt)
+			{
+				//std::cout << "projectile at client!" << std::endl;
+				
+				Projectile *projectile = projectilesIt->second;
+				Tickf projectileRenderTickf;
+				if (projectile->getShooterId() == static_cast<GameObjId>(playerId))
+				{
+					projectileRenderTickf = currentTickf;
+				}
+				else
+				{
+					projectileRenderTickf = Projectile::RENDER_LAG_MODS.getRenderTick(currentTickf, projectile, currentObjLag);					
+				}
+
+				projectile->updateToTickData(projectileRenderTickf);
+				projectile->render = (projectileRenderTickf >= projectile->getShootTick());
+
+				
+			}
+
+
 			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);//, timeHandler.getStepTick());
 		}
 		requestRender = false;

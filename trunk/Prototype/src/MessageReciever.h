@@ -13,7 +13,7 @@
 namespace Prototype
 {
 
-	const bool SERVER_PRINT_NETWORK_DEBUG = false;
+	const bool SERVER_PRINT_NETWORK_DEBUG = true;
 
 	class MessageReciever
 	{

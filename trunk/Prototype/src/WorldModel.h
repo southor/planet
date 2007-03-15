@@ -44,9 +44,9 @@ namespace Prototype
 		virtual const Projectiles& getProjectiles() const = 0;
 
 		// history functions
-		void storeToTickData(int tick);
-		void updateToTickData(int tick);
-		void updateToTickData(Tickf tick);
+		//void storeToTickData(int tick);
+		//void updatePlayerObjsToTickData(int tick);
+		void updatePlayerObjsToTickData(Tickf tick);
 
 		
 

@@ -132,11 +132,20 @@ namespace Prototype
 		}
 		else if (tick < firstTickTmp)
 		{
-			// use first stored value
-			data = tickToDataRef(firstTickTmp);
-			//return tickToDataRef(firstTickTmp);
+			if (interExtraPolate) // no host
+			{
 			
-			if (tick != 0) std::cout << "first stored history data was used, diff: " << firstTickTmp - tick << std::endl;
+				// use first stored value
+				data = tickToDataRef(firstTickTmp);
+			
+				if (tick != 0) std::cout << "first stored history data was used, diff: " << firstTickTmp - tick << std::endl;
+			}
+			else
+			{
+				assert(hostInterExtraPolate);
+				assert(hostObj);
+				hostInterExtraPolate(firstTickTmp, tickToDataRef(firstTickTmp), static_cast<Tickf>(tick), data, hostObj);
+			}
 		}
 		else
 		{

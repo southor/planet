@@ -193,14 +193,19 @@ namespace Prototype
 		static const float projectileAlphas[Projectile::N_TYPES] = {0.3f, 0.3f};
 		
 		Projectile *projectile = projectilePair.second;
-		//projectile->updateToTickData(tick);
-		
-		Projectile::Type type = projectile->getType();		
-		Line line(projectile->getLine());
+		if (projectile->render)
+		{
 
-		Color color(projectileColors[type]);
-		glColor4f(color.r, color.g, color.b, projectileAlphas[type]);
-		WorldRenderer::renderLine(line, projectileWidths[type], projectileAlphas[type]);
+			//projectile->updateToTickData(tick);
+			
+			Projectile::Type type = projectile->getType();		
+			Line line(projectile->getLine());
+
+			Color color(projectileColors[type]);
+			glColor4f(color.r, color.g, color.b, projectileAlphas[type]);
+			WorldRenderer::renderLine(line, projectileWidths[type], projectileAlphas[type]);
+		}
+		
 	}
 
 	void WorldRenderer::RenderExplosion::operator ()(const Explosion &explosion)

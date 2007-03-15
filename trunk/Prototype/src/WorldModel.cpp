@@ -5,27 +5,27 @@ namespace Prototype
 {
 	const Vec WorldModel::WORLD_SIZE = Vec(800.0f / 2.0f, 600.0f * (3.0f / 4.0f));
 
-	void WorldModel::storeToTickData(int tick)
-	{
-		PlayerObjs::Iterator it = getPlayerObjs().begin();
-		PlayerObjs::Iterator end = getPlayerObjs().end();
-		for(; it != end; ++it)
-		{
-			it->second->storeToTickData(tick);
-		}
-	}
+	//void WorldModel::storeToTickData(int tick)
+	//{
+	//	PlayerObjs::Iterator it = getPlayerObjs().begin();
+	//	PlayerObjs::Iterator end = getPlayerObjs().end();
+	//	for(; it != end; ++it)
+	//	{
+	//		it->second->storeToTickData(tick);
+	//	}
+	//}
 
-	void WorldModel::updateToTickData(int tick)
-	{
-		PlayerObjs::Iterator it = getPlayerObjs().begin();
-		PlayerObjs::Iterator end = getPlayerObjs().end();
-		for(; it != end; ++it)
-		{
-			it->second->updateToTickData(tick);
-		}
-	}
+	//void WorldModel::updatePlayerObjsToTickData(int tick)
+	//{
+	//	PlayerObjs::Iterator it = getPlayerObjs().begin();
+	//	PlayerObjs::Iterator end = getPlayerObjs().end();
+	//	for(; it != end; ++it)
+	//	{
+	//		it->second->updateToTickData(tick);
+	//	}
+	//}
 
-	void WorldModel::updateToTickData(Tickf tick)
+	void WorldModel::updatePlayerObjsToTickData(Tickf tick)
 	{
 		PlayerObjs::Iterator it = getPlayerObjs().begin();
 		PlayerObjs::Iterator end = getPlayerObjs().end();
