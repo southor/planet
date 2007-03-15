@@ -120,12 +120,17 @@ namespace Planet
 		int numberOfPlayers = dropDownNumberOfPlayers->getSelected() + 1;
 	
 		if (actionEvent.getId() == "START_SERVER")
+		{
 			game->startServer(numberOfPlayers);
-
+			buttonStartServer->setEnabled(false);
+		}
+		
 		if (actionEvent.getId() == "CONNECT_TO_SERVER")
 		{
-			game->connectToServer(host);
-			game->toggleMenu();
+			bool connected = game->connectToServer(host);
+			
+			if (connected)
+				game->toggleMenu();
 		}
 	}	
 };
