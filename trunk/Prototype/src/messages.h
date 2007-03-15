@@ -115,11 +115,12 @@ namespace Prototype
 		int type;
 		Pos pos;
 		float angle;
-		PlayerId shooterId;
+		GameObjId shooterId;
 		Tickf shootTick;
+		int objLag;
 
-		AddProjectile(GameObjId projectileId, int type, Pos pos, float angle, PlayerId shooterId, Tickf shootTick)
-			: projectileId(projectileId), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick)
+		AddProjectile(GameObjId projectileId, int type, Pos pos, float angle, GameObjId shooterId, Tickf shootTick, int objLag)
+			: projectileId(projectileId), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
 		{}
 	};
 
@@ -236,6 +237,11 @@ namespace Prototype
 		Tickf firstShotTick;
 		bool shooting; // keep shooting at the end of this Tick?
 		
+		int objLag; // The object lag the client uses this tick
+		
+
+
+
 		//ShootAction shootAction;
 		//bool continuosShooting
 
@@ -248,10 +254,13 @@ namespace Prototype
 		//{}
 
 		//UserCmd(int stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
-		UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon, int nShots, bool shooting, Tickf firstShotTick)
-			: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots), shooting(shooting), firstShotTick(firstShotTick)
+		UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon,
+				int nShots, bool shooting, Tickf firstShotTick, int objLag)
+			: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots),
+			  shooting(shooting), firstShotTick(firstShotTick), objLag(objLag)
 		{}
 
+		
 		void clear();
 
 		

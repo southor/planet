@@ -15,7 +15,7 @@ namespace Prototype
 		{
 			Tickf totalDiff = static_cast<Tickf>(tick2) - static_cast<Tickf>(tick1);
 			Tickf resultDiff = resultTick - static_cast<Tickf>(tick1);
-			float tValue = static_cast<float>(resultDiff) / static_cast<float>(totalDiff);
+			double tValue = static_cast<double>(resultDiff) / static_cast<double>(totalDiff);
 
 			resultData = data1 + (data2 - data1) * tValue;
 		}

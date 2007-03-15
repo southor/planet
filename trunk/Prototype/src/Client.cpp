@@ -15,7 +15,7 @@ namespace Prototype
 	const int Client::OBJECT_LAG_ADD_TICK = 1;
 
 	Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER),
-						connectionPhase(0), requestRender(false), currObjLag(0)
+						connectionPhase(0), requestRender(false), currentObjLag(0)
 	{
 		predictionHandler.setWorldModel(&worldModel);
 		assert(predictionHandler.isConsistent());
@@ -307,7 +307,7 @@ namespace Prototype
 
 			if (actionCmd == Cmds::START_SHOOTING)
 			{
-				std::cout << "    -- start shooting" << std::endl;
+				if (DEBUG_SHOOTING) std::cout << "    -- start shooting" << std::endl;
 				
 				userCmd.shooting = true;
 				startShootingThisTick = true;
@@ -315,7 +315,7 @@ namespace Prototype
 			}
 			else if (actionCmd == Cmds::STOP_SHOOTING)
 			{
-				std::cout << "    -- stop shooting" << std::endl;
+				if (DEBUG_SHOOTING) std::cout << "    -- stop shooting" << std::endl;
 				
 				userCmd.shooting = false;
 				if (startShootingThisTick && (userCmd.nShots >= 1)) userCmd.nShots = 1;
@@ -323,7 +323,7 @@ namespace Prototype
 			}
 			else if (actionCmd == Cmds::SWITCH_WEAPON)
 			{
-				std::cout << "    -- switch weapon" << std::endl;
+				if (DEBUG_SHOOTING) std::cout << "    -- switch weapon" << std::endl;
 
 				Projectile::Type nextWeapon = playerObj->getNextWeapon(userCmd.weapon);
 				if (userCmd.nShots > 0)
@@ -343,82 +343,8 @@ namespace Prototype
 			{
 				assert(false);
 			}
-
-			//if ((userCmd.nShots > 0) || userCmd.isShooting())
-			//{
-			//	if (actionCmd == Cmds::START_SHOOTING)
-			//	{
-			//		userCmd.shooting = true;
-			//		startShootingThisTick = true;
-			//	}
-			//	else if (actionCmd == Cmds::STOP_SHOOTING)
-			//	{
-			//		//userCmd.shootAction = UserCmd::NOT_SHOOTING;
-			//		userCmd.shooting = false;
-			//		if (startShootingThisTick) userCmd.nShots = tmin(1, userCmd.nShots);
-			//		std::cout << "    -- stop shooting" << std::endl;
-			//	}
-			//	else if (actionCmd == Cmds::SWITCH_WEAPON)
-			//	{
-			//		UserCmd nextUserCmd;
-			//		userCmd.assumeNext(nextUserCmd);
-			//		nextUserCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
-			//		predictionHandler.setUserCmd(nextUserCmd, currentTick + 1);
-			//		break;
-			//	}
-			//}
-			//else
-			//{
-			//	if (actionCmd == Cmds::START_SHOOTING)
-			//	{
-			//		//userCmd.shootAction = UserCmd::START_SHOOTING;
-			//		userCmd.shooting = true;					
-			//		userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);
-			//		startShootingThisTick = true;
-			//		std::cout << "    -- start shooting" << std::endl;
-			//	}
-			//	else if (actionCmd == Cmds::STOP_SHOOTING)
-			//	{
-			//		userCmd.shooting = false;
-			//	}
-			//	else if (actionCmd == Cmds::SWITCH_WEAPON)
-			//	{
-			//		userCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
-			//	}
-			//}
-
-			//if (actionCmd == Cmds::START_SHOOT)
-			//{
-			//	userCmd.shootAction = UserCmd::START_SHOOTING;
-			//	userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick, false);
-			//	//continuous = false;
-			//}
-			//else if (userCmd.nShots == 0)
-			//{
-			//	if (userCmd.isShooting() && (actionCmd == Cmds::STOP_SHOOT))
-			//	{
-			//		userCmd.nShots = tmin(1, playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING));
-			//		//userCmd.shooting = false;
-			//		userCmd.shootAction = UserCmd::NOT_SHOOTING;
-			//	}
-			//	else if (actionCmd == Cmds::SWITCH_WEAPON)
-			//	{
-			//		userCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
-			//	}
-			//}
-			//else
-			//{				
-			//	assert(userCmd.nShots >= 1);
-			//	if (actionCmd == Cmds::SWITCH_WEAPON)
-			//	{
-			//		UserCmd nextUserCmd;
-			//		userCmd.assumeNext(nextUserCmd);
-			//		nextUserCmd.weapon = playerObj->getNextWeapon(userCmd.weapon);
-			//		break;
-			//	}
-			//}
 		}
-		if (userCmd.isShooting() || (userCmd.nShots > 0))
+		if ((userCmd.isShooting() || (userCmd.nShots > 0)) && DEBUG_SHOOTING)
 		{			
 			//userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING);
 			std::cout << "-- " << currentTick << " shooting, nShots = " << userCmd.nShots;
@@ -542,13 +468,13 @@ namespace Prototype
 
 				// calculate current objectLag				
 				double tmp = static_cast<double>(link.getCurrentLag() - timeHandler.getTick0Time());
-				this->currObjLag = static_cast<int>(tmp * OBJECT_LAG_MODIFIER + OBJECT_LAG_ADD_TIME)
+				this->currentObjLag = static_cast<int>(tmp * OBJECT_LAG_MODIFIER + OBJECT_LAG_ADD_TIME)
 													/ TimeHandler::TICK_DELTA_TIME + OBJECT_LAG_ADD_TICK;
-				//std::cout << "currObjLag: " << currObjLag << std::endl;
 
 				// get userCmd
 				UserCmd userCmd;
 				getCurrentUserCmd(userCmd);
+				userCmd.objLag = this->currentObjLag; // send currentObjLag to server
 				
 				// store userCmd
 				predictionHandler.setUserCmd(userCmd, currentTick);
@@ -565,7 +491,6 @@ namespace Prototype
 			else
 			{
 				requestRender = true;
-				//render();
 			}
 		}
 		else
@@ -659,9 +584,9 @@ namespace Prototype
 		worldRenderer.setupProjection();
 		if (worldModel.getPlayerObjs().exists(playerId))
 		{
-			Tickf currentTick = timeHandler.getStepTick();
-			worldModel.updateToTickData(currentTick - static_cast<Tickf>(currObjLag));
-			(worldModel.getPlayerObjs())[playerId]->updateToTickData(currentTick);
+			Tickf currentTickf = timeHandler.getStepTick();
+			worldModel.updateToTickData(currentTickf - static_cast<Tickf>(currentObjLag));
+			(worldModel.getPlayerObjs())[playerId]->updateToTickData(currentTickf);
 			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);//, timeHandler.getStepTick());
 		}
 		requestRender = false;

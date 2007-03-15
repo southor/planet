@@ -4,7 +4,7 @@
 namespace Prototype
 {
 	
-	const UserCmd UserCmd::DEFAULT_USER_CMD = UserCmd(0, 0.0f, Projectile::DEFAULT_TYPE, 0, false, 0);
+	const UserCmd UserCmd::DEFAULT_USER_CMD = UserCmd(0, 0.0f, Projectile::DEFAULT_TYPE, 0, false, 0, 0);
 	
 	void UserCmd::interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData)
 	{
@@ -14,6 +14,9 @@ namespace Prototype
 
 		// calculate aimAngle, assume continues rotation
 		standardInterExtraPolate(tick1, data1.aimAngle, tick2, data2.aimAngle, resultTick, resultData.aimAngle);
+		
+		// calculate objLag
+		standardInterExtraPolate(tick1, data1.objLag, tick2, data2.objLag, resultTick, resultData.objLag);
 
 		// set first shoot tick data
 		resultData.firstShotTick = resultTick;

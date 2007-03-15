@@ -135,6 +135,8 @@ namespace Prototype
 			// use first stored value
 			data = tickToDataRef(firstTickTmp);
 			//return tickToDataRef(firstTickTmp);
+			
+			if (tick != 0) std::cout << "first stored history data was used, diff: " << firstTickTmp - tick << std::endl;
 		}
 		else
 		{

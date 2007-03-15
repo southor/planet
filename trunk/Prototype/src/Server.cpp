@@ -202,9 +202,9 @@ namespace Prototype
 			worldModel.isConsistent();
 
 			// Read messages from clients
-			ServerPlayers::Iterator playersIt;
+			//ServerPlayers::Iterator playersIt;
 			for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
-			{			
+			{
 				PlayerId playerId = playersIt->first;
 				ServerPlayer *player(playersIt->second);
 
@@ -255,40 +255,46 @@ namespace Prototype
 				playerObj->setUserCmd(&userCmd);
 
 				// shooting
-				if (userCmd.nShots > 0)
-				{
-					//if (userCmd.shootAction == UserCmd::START_SHOOTING) std::cout << "server got: start shooting, nShots: " << userCmd.nShots << std::endl;
-					//else if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) std::cout << "server got: continue shooting, nShots: " << userCmd.nShots << std::endl;
-					//else std::cout << "server got: not shooting, nShots: " << userCmd.nShots << std::endl;
-					std::cout << "server: nShots: " << userCmd.nShots << std::endl;
-				}
-				std::vector<GameObjId> shots;
-				worldModel.handlePlayerShooting(playerId, shots);
-				for(size_t i=0; i<shots.size(); ++i)
-				{
-					GameObjId projectileId = shots[i];
- 					Projectile *projectile = (worldModel.getProjectiles())[projectileId];
-					
-					// send projectile to all clients
-					AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
-												projectile->getAngle().getFloat(), projectile->getShooterId(), projectile->getShootTick());
-					pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-				}
-
-				// Update next shoot tick for currentTick + 1
-				playerObj->updateNextShootTick(getTimeHandler()->getTick());
+				//if (userCmd.nShots > 0)
+				//{
+				//	std::cout << getTimeHandler()->getTick() << "  server: nShots: " << userCmd.nShots << std::endl;
+				//}
+				//std::vector<GameObjId> shots;
+				worldModel.handlePlayerShooting(playerId, players);
+				//for(size_t i=0; i<shots.size(); ++i)
+				//{
+				//	GameObjId projectileId = shots[i];
+ 				//	Projectile *projectile = (worldModel.getProjectiles())[projectileId];
+				//	
+				//	// send projectile to all clients
+				//	AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
+				//								projectile->getAngle().getFloat(), projectile->getShooterId(), projectile->getShootTick(), projectile->getObjLag());
+				//	pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				//}
 			}		
 
-			// update movements of objects
+			// handle projectile hits
+			worldModel.performProjectileHits(players);
+			
+			// update movements of objects, from currentTick to currentTick + 1
+			worldModel.updateProjectileMovements();
 			worldModel.updatePlayerObjMovements();
-			worldModel.updateProjectileMovements(players);
-
+			
+			// Update next shoot tick for currentTick + 1
+			WorldModel::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
+			WorldModel::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
+			{				
+				playerObjsIt->second->updateNextShootTick(getTimeHandler()->getTick());
+			}
+			
+			// next tick!!
 			getTimeHandler()->nextTick();
 			lastUpdateTime = time;
 
 			// Send playerObj updates and store state to history, also send tick0Time
-			WorldModel::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
-			WorldModel::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+			/*WorldModel::PlayerObjs::Iterator*/ playerObjsIt = worldModel.getPlayerObjs().begin();
+			/*WorldModel::PlayerObjs::Iterator*/ playerObjsEnd = worldModel.getPlayerObjs().end();
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{
 				
@@ -296,6 +302,7 @@ namespace Prototype
 				//GameObjId playerObjId = playerObjsIt->first;
 				PlayerId playerId = playerObjsIt->first;
 				PlayerObj *playerObj = playerObjsIt->second;
+				
 				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
 

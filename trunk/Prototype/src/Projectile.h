@@ -4,6 +4,7 @@
 #include "MovableObj.h"
 #include "Line.h"
 #include "basic.h"
+#include "GameObjId.h"
 #include "HistoryList.inl"
 #include "Angle.h"
 #include "TimeHandler.h"
@@ -42,7 +43,7 @@ namespace Prototype
 
 		Pos pos;
 
-		Projectile(Type type, const Pos &pos, Angle angle, PlayerId shooterId, size_t nHistoryTicks, int currentTick, Tickf shootTick);
+		Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, int currentTick, Tickf shootTick, int objLag);
 
 		~Projectile()											{}
 
@@ -61,6 +62,7 @@ namespace Prototype
 		// @return distance units per tick
 		inline float getSpeed() const							{ return properties[type].speed * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 		
+		inline int getObjLag() const							{ return objLag; }
 		inline int getDirectDamage() const						{ return properties[type].directDamage; }
 		static inline int getDirectDamage(Type type)			{ return properties[type].directDamage; }
 		//static inline int getShootIntervalTime(Type type)		{ return properties[type].shootInterval; }
@@ -73,7 +75,7 @@ namespace Prototype
 		int getBlastDamage(float blastPos, const Pos &targetPos) const;
 		
 		
-		PlayerId getShooterId() const							{ return shooterId; }
+		GameObjId getShooterId() const							{ return shooterId; }
 
 		inline void setUpdateData(int tick, const Pos &pos)		{ historyList.setData(tick, pos); }
 		inline void storeToTickData(int tick)					{ historyList.setData(tick, pos); }
@@ -85,8 +87,10 @@ namespace Prototype
 
 		Type type;
 		Angle angle;
-		PlayerId shooterId;
+		
+		GameObjId shooterId;
 		Tickf shootTick; // the exact moment when it is shot.
+		int objLag; // The client object lag that this projectile was shot with
 	};
 };
 

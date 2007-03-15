@@ -32,6 +32,8 @@ namespace Prototype
 	{
 	public:
 
+		static const bool DEBUG_SHOOTING = false;
+
 		static const int MAX_N_PLAYERS = 2;
 
 
@@ -93,7 +95,7 @@ namespace Prototype
 		WorldRenderer worldRenderer;
 		ClientPlayers players;
 		PredictionHandler predictionHandler;
-		int currObjLag; // controls the interpolation of objects
+		int currentObjLag; // controls the interpolation of objects
 
 		PlayerId playerId;
 		Color color;	// should this exist or should the client have an Player object before we connect to server?
