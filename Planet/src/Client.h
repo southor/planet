@@ -8,12 +8,11 @@
 #include "Ship.h"
 #include "Camera.h"
 #include "Sight.h"
+#include "ClientTimeHandler.h"
 
 //#include "ClientPlanet.h"
 //#include "ClientPlayer.h"
 //#include "WorldRenderer.h"
-//#include "KeyHandler.h"
-//#include "ClientTimeHandler.h"
 //#include "ViewportHandler.h"
 //#include "PredictionHandler.h"
 
@@ -47,19 +46,19 @@ namespace Planet
 	//	void handleServerMessages();
 		void runStep();
 
-	//	bool initConnection();
+		bool initConnection();
 		void renderAndUpdate();
 	//
 	//	void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, int tick);
 
-	//	void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
+		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		UserInputHandler* getUserInputHandler()	{ return &userInputHandler; }
 		Camera* getCamera() { return &camera; }	
 	//	inline ClientTimeHandler* getTimeHandler()		{ return &timeHandler; }
 	//	inline bool getRequestRender()					{ return requestRender; }
 	//	
-	//	void setPlayerId(PlayerId playerId)				{ this->playerId = playerId; }
-	//	void setColor(Color color)						{ this->color = color; }
+		void setPlayerId(PlayerId playerId)				{ this->playerId = playerId; }
+		void setColor(Color color)						{ this->color = color; }
 	//	inline void setViewport(int x, int y, int w, int h)
 	//	{
 	//		viewportHandler.screenRenderPos.x = x;
@@ -91,9 +90,9 @@ namespace Planet
 	//	static const int OBJECT_LAG_ADD_TIME;
 	//	static const int OBJECT_LAG_ADD_TICK;
 
-	//	Link link;
-	//	size_t connectionPhase;
-	//	ClientTimeHandler timeHandler;
+		Link link;
+		size_t connectionPhase;
+		ClientTimeHandler timeHandler;
 
 		UserInputHandler userInputHandler;
 
@@ -103,8 +102,8 @@ namespace Planet
 	//	PredictionHandler predictionHandler;
 	//	int currObjLag; // controls the interpolation of objects
 
-	//	PlayerId playerId;
-	//	Color color;	// should this exist or should the client have an Player object before we connect to server?
+		PlayerId playerId;
+		Color color;	// should this exist or should the client have an Player object before we connect to server?
 
 	//	// stores viewport parameters
 	//	ViewportHandler viewportHandler;

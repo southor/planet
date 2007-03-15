@@ -5,7 +5,7 @@
 #include "basic.h"
 #include "StandardInterExtraPolate.h"
 
-namespace Prototype
+namespace Planet
 {	
 
 	// template argument Id must be a number type.

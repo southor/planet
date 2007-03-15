@@ -4,7 +4,7 @@
 #include "HistoryList.h"
 #include <iostream>
 
-namespace Prototype
+namespace Planet
 {
 
 	//template <typename Data, typename Host>

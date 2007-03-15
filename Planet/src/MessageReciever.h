@@ -2,7 +2,7 @@
 #define __MessageReciever_h__
 
 #include "Message.h"
-//%#include "TimeHandler.h"
+#include "TimeHandler.h"
 #include "basic.h"
 
 #include <deque>
@@ -19,7 +19,7 @@ namespace Planet
 		int lt;
 		std::deque<Message> lagQueue;
 		std::deque<Message> recieveQueue;
-//%		TimeHandler lagTimeHandler;
+		TimeHandler lagTimeHandler;
 
 
 	public:

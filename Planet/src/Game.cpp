@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Cmds.h"
+#include "Server.h"
 
 #include <iostream>
 #include <cmath>
@@ -8,15 +9,15 @@
 
 namespace Planet
 {
-	bool runningServer;
+	bool runningServer = false;
+	int numberOfClients = 0;
 
 	int runServer(void *unused)
 	{
-		while (runningServer)
-		{
-			printf("runServer(..)\n");
-			SDL_Delay(1000);
-		}
+		printf("Starting server...\n");
+
+		Server server;
+		server.run(runningServer, numberOfClients);
 
 		return 0;
 	}
@@ -24,15 +25,15 @@ namespace Planet
 
 	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(800, 600);
 	
-	Game::Game() : viewAngle(0.0f), viewAngle2(0.0f)
+	Game::Game() : viewAngle(0.0f), viewAngle2(0.0f), serverThread(0), connectedToServer(false), running(true), showMenu(false)
 	{
 		init();
-		running = true;
 	}
 
 	Game::~Game()
 	{
-		SDL_WaitThread(serverThread, NULL);
+		if (serverThread)
+			SDL_WaitThread(serverThread, NULL);
 
 		SDL_Quit( );
 		SDLNet_Quit();
@@ -40,9 +41,28 @@ namespace Planet
 
 	void Game::run()
 	{
+		std::string host("localhost");
+
 		while (running) 
 		{
 			pollEvents();
+			gui.logic();
+			client.runStep();
+
+			render(0);
+
+
+			if (client.getUserInputHandler()->getCurrentState(Cmds::START_SERVER))
+				startServer(1);
+
+			if (client.getUserInputHandler()->getCurrentState(Cmds::CONNECT_TO_SERVER))
+				connectToServer(host);
+
+			// Workaround using both state and action cmd
+			if (client.getUserInputHandler()->getCurrentState(Cmds::TOGGLE_MENU))
+				if (client.getUserInputHandler()->hasActionCmdOnQueue())
+					if (client.getUserInputHandler()->popActionCmd() == Cmds::TOGGLE_MENU)
+						toggleMenu();
 			
 			if (client.getUserInputHandler()->getCurrentState(Cmds::LEFT))
 				viewAngle += 3.0f;
@@ -54,14 +74,10 @@ namespace Planet
 			if (client.getUserInputHandler()->getCurrentState(Cmds::BACKWARD))
 				viewAngle2 -= 3.0f;
 
-			//if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_IN))
-			//	camera.zoom += 0.05f;
-			//if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_OUT))
-			//	camera.zoom -= 0.05f;
-
-
-			
-			render(0);
+			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_IN))
+				client.camera.zoom += 0.05f;
+			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_OUT))
+				client.camera.zoom -= 0.05f;
 
 			SDL_Delay(10);
 		}
@@ -83,8 +99,14 @@ namespace Planet
 			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
 			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
 
+			float redAmbient = 0.2f;
+
+			if (!connectedToServer)
+				redAmbient = 1.0f;
+
+
 			// Setup lights
-			float light_ambient[] = {0.3f, 0.3f, 0.3f, 1.0f};
+			float light_ambient[] = {redAmbient, 0.2f, 0.2f, 1.0f};
 			float light_diffuse[] = {0.5f, 0.5f, 0.5f, 1.0f};
 			float light_specular[] = {1.0f, 0.0f, 0.0f, 1.0f};
 			float light_position[] = {0.0f, 10.0f, 0.0f, 0.0f};
@@ -95,11 +117,15 @@ namespace Planet
 			glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 			glEnable(GL_LIGHT0);
-
+				
 			client.renderAndUpdate();			
 
 
 		glPopMatrix();
+			
+		if (showMenu)
+			gui.render();
+
 			
 		glFlush();
 		SDL_GL_SwapBuffers();
@@ -187,6 +213,12 @@ namespace Planet
 		client.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
+		client.getUserInputHandler()->setStateCmdKey(Cmds::TOGGLE_MENU, SDLK_F1);
+		client.getUserInputHandler()->setActionCmdKey(Cmds::TOGGLE_MENU, SDLK_F1);
+
+		client.getUserInputHandler()->setStateCmdKey(Cmds::START_SERVER, SDLK_F2);
+		client.getUserInputHandler()->setStateCmdKey(Cmds::CONNECT_TO_SERVER, SDLK_F3);
+
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_LEFT, SDLK_LEFT);
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_RIGHT, SDLK_RIGHT);
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_UP, SDLK_UP);
@@ -198,16 +230,69 @@ namespace Planet
 		client.getUserInputHandler()->aimMode = UserInputHandler::KEYBOARD;
 		
 		client.init();
+		gui.init(this);
+	}
 
-
-		runningServer = true;	
+	void Game::startServer(int clients)
+	{
+		if (runningServer)
+			return;		// Server already started
+		
+		runningServer = true;
+		numberOfClients = clients;
 		serverThread = SDL_CreateThread(runServer, 0);
 
 		if (serverThread == 0)
 		{
-			fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
+			fprintf(stderr, "Unable to create server thread: %s\n", SDL_GetError());
 	        exit(-1);
 		}
+	}
+
+	void Game::connectToServer(std::string &host)
+	{
+		if (connectedToServer)
+			return;		//already connected to server
+	
+		MessageSender *sender;
+		MessageReciever *reciever;
+	
+		// Connect to server
+		while (running)
+		{
+			if (CLIENT_PRINT_NETWORK_DEBUG) printf("CLIENT: Trying to connect to server\n");
+
+			pollEvents();
+
+			bool connected = networkClient.openConnection(host);
+			
+			if (connected)
+				break;
+				
+			SDL_Delay(20);
+		}
+		
+		sender = networkClient.getMessageSender();
+		reciever = networkClient.getMessageReciever();
+		client.setConnection(sender, reciever);
+		client.setColor(Color(0.0f, 1.0f, 0.0f));
+		
+		// Initialize
+		while (running)
+		{
+			if (CLIENT_PRINT_NETWORK_DEBUG) printf("CLIENT: Initializing\n");
+
+			pollEvents();
+		
+			bool initialized = client.initConnection();
+
+			if (initialized)
+				break;
+				
+			SDL_Delay(5);
+		}
+		
+		connectedToServer = true;
 	}
 
 	void Game::pollEvents()
@@ -240,6 +325,7 @@ namespace Planet
 			}
 
 			client.getUserInputHandler()->pushInput(event);
+			gui.pushInput(event);
 		}		
 	}
 };
