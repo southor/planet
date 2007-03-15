@@ -237,14 +237,16 @@ namespace Planet
 		ship.moveLeft = userInputHandler.getCurrentState(Cmds::TMP_LEFT);
 		ship.moveRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
 			
-	
 		// Logic
 		ship.logic();
 
-		camera.update(ship.position, ship.reference);
-		sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
+		ship.lookAt(sight.position);
 
-		ship.direction = sight.position - ship.position;
+		camera.update(ship.position, ship.reference);
+
+		sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
+	 
+
 		
 	//	assert(isConsistent());
 	//	

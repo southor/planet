@@ -22,7 +22,7 @@ namespace Planet
 		static const Vec2<int> WINDOW_SIZE;
 
 		void startServer(int clients);
-		void connectToServer(std::string &host);
+		bool connectToServer(std::string &host);
 
 		void toggleMenu() {	showMenu = showMenu ^ 1; }
 

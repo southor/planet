@@ -159,8 +159,6 @@ namespace Planet
 
 		
 		uint flags = SDL_HWSURFACE | SDL_OPENGL; // |SDL_FULLSCREEN;
-		//uint w = WINDOW_SIZE_X;
-		//uint h = WINDOW_SIZE_Y;
 		uint w = WINDOW_SIZE.x;
 		uint h = WINDOW_SIZE.y;
 
@@ -209,7 +207,7 @@ namespace Planet
 		client.getUserInputHandler()->setStateCmdKey(Cmds::BACKWARD, SDLK_s);
 		client.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
 		client.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
-		//client.getUserInputHandler()->.setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
+		//client.getUserInputHandler()->setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
@@ -249,28 +247,18 @@ namespace Planet
 		}
 	}
 
-	void Game::connectToServer(std::string &host)
+	bool Game::connectToServer(std::string &host)
 	{
 		if (connectedToServer)
-			return;		//already connected to server
+			return false;		// already connected to server
 	
 		MessageSender *sender;
 		MessageReciever *reciever;
 	
+		if (CLIENT_PRINT_NETWORK_DEBUG) printf("CLIENT: Trying to connect to server\n");
+
 		// Connect to server
-		while (running)
-		{
-			if (CLIENT_PRINT_NETWORK_DEBUG) printf("CLIENT: Trying to connect to server\n");
-
-			pollEvents();
-
-			bool connected = networkClient.openConnection(host);
-			
-			if (connected)
-				break;
-				
-			SDL_Delay(20);
-		}
+		bool connected = networkClient.openConnection(host);
 		
 		sender = networkClient.getMessageSender();
 		reciever = networkClient.getMessageReciever();
@@ -278,7 +266,7 @@ namespace Planet
 		client.setColor(Color(0.0f, 1.0f, 0.0f));
 		
 		// Initialize
-		while (running)
+		while (running && connected)
 		{
 			if (CLIENT_PRINT_NETWORK_DEBUG) printf("CLIENT: Initializing\n");
 
@@ -287,12 +275,15 @@ namespace Planet
 			bool initialized = client.initConnection();
 
 			if (initialized)
+			{
+				connectedToServer = true;
 				break;
+			}
 				
 			SDL_Delay(5);
 		}
 		
-		connectedToServer = true;
+		return connectedToServer;
 	}
 
 	void Game::pollEvents()
