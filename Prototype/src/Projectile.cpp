@@ -5,14 +5,18 @@
 namespace Prototype
 {
 
+	const Projectile::RenderLagMods Projectile::RENDER_LAG_MODS = Projectile::RenderLagMods(0.0f, 1.0f);
+	
 	const Projectile::Properties Projectile::properties[2] = {{200.0f/1000.0f, 20, 0, 0, 75},
 															   {200.0f/1000.0f, 100, 50, 100.0f, 500}};
 
-	Projectile::Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, int currentTick, Tickf shootTick, int objLag)
-		: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
+	//Projectile::Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, int currentTick, Tickf shootTick, int objLag)
+	//	: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
+	Projectile::Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, Tickf shootTick, int objLag)
+		: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag), render(true)
 	{
 		// Set position at currentTick, Projectiles current tick is actually shootTick before we set position
-		this->pos = getPosAtTick(shootTick, currentTick);
+		this->pos = getPosAtTick(shootTick, static_cast<int>(shootTick));
 		
 		// insert data into history list
 		historyList.setDefaultData(this->pos);
@@ -53,12 +57,13 @@ namespace Prototype
 
 	void Projectile::getPosAtTick(int tick, const Pos &pos, Tickf resultTick, Pos &resultPos, Projectile *projectile)
 	{		
-		Pos tmpPos(projectile->getPos());
+		Pos tmpPos1(projectile->getPos());
 		projectile->setPos(pos);
 
-		resultPos = projectile->getPosAtTick(static_cast<Tickf>(tick), resultTick);
-
-		projectile->setPos(tmpPos);
+		Pos tmpPos2 = projectile->getPosAtTick(static_cast<Tickf>(tick), resultTick);
+		projectile->setPos(tmpPos1);
+		
+		resultPos = tmpPos2;
 	}
 
 };

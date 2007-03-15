@@ -27,7 +27,7 @@ namespace Prototype
 
 	void ClientWorldModel::addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId, Tickf shootTick, int objLag)
 	{
-		projectiles.add(projectileId, new Projectile(type, pos, angle, shooterId, CLIENT_INTERPOOLATION_N_HISTORY_TICKS, 0, shootTick, objLag));
+		projectiles.add(projectileId, new Projectile(type, pos, angle, shooterId, CLIENT_INTERPOOLATION_N_HISTORY_TICKS, shootTick, objLag));
 	}
 
 	void ClientWorldModel::updatePlayerObjMovement(PlayerId playerId)

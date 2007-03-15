@@ -18,7 +18,7 @@ namespace Prototype
 		
 		//static const int TICKS_PER_SECOND = 50;
 
-		ClientTimeHandler() : TimeHandler(), stepTick(0), stepTickf(0.0f), newTick(true)//, deltaTime(1), stepTime(0), 
+		ClientTimeHandler() : TimeHandler(), stepTick(0), stepTickf(0.0f), newTick(false)//, deltaTime(1), stepTime(0), 
 		{
 			setTick0Time(0);
 		}

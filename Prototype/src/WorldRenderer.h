@@ -205,9 +205,9 @@ namespace Prototype
 		class RenderProjectile
 		{
 		private:
-			//Tickf tick;
+			//Tickf renderTick;
 		public:
-			//inline RenderProjectile(Tickf tick) : tick(tick)
+			//inline RenderProjectile(Tickf renderTick) : renderTick(renderTick)
 			//{}
 			void operator ()(const WorldModel::Projectiles::Pair &projectilePair);			
 		};

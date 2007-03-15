@@ -282,7 +282,7 @@ namespace Prototype
 
 		//GameObjId projectileId = getProjectiles().findFreeId();
 		GameObjId projectileId = getIdGenerator()->generateGameObjId();
-		Projectile *projectile = new Projectile(weapon, pos, angle, playerId, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick(), shootTick, objLag);		
+		Projectile *projectile = new Projectile(weapon, pos, angle, playerId, 1, shootTick, objLag);		
 		getProjectiles().add(projectileId, projectile);
 
 		return projectileId;
