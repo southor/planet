@@ -64,6 +64,10 @@ namespace Planet
 	
 		NetworkMessageSender sender;
 		NetworkMessageReciever reciever;
+		
+		bool connected;
+		
+		NetworkServerClient() : connected(false) {}
 	};
 
 	typedef std::vector<NetworkServerClient*> Clients;
@@ -75,6 +79,7 @@ namespace Planet
 		
 		void start();
 		NetworkServerClient* checkForNewClient();
+		Clients& getClients() { return clients; }
 		void close();
 		
 	private:

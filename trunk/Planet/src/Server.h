@@ -1,14 +1,18 @@
-#ifndef __server_h__
-#define __server_h__
+#ifndef __Server_h__
+#define __Server_h__
 
 #include <vector>
 
 //#include "messages.h"
-//#include "ServerPlayers.h"
+#include "ServerPlayers.h"
 //#include "ServerPlanet.h"
-//#include "ServerTimeHandler.h"
+#include "ServerTimeHandler.h"
+#include "IdGenerator.h"
 #include "StateCmds.h"
 #include "Cmds.h"
+#include "MessageSender.h"
+#include "MessageReciever.h"
+#include "Link.h"
 
 //#include "ViewportHandler.h"
 //#include "WorldRenderer.h"
@@ -30,15 +34,19 @@ namespace Planet
 		Server();
 		~Server();
 
+		void run(bool &runningServer, int numberOfClients);
+
 	//	void logic();
 
-	//	bool clientConnected(MessageSender *messageSender, MessageReciever *messageReciever);
+	bool clientConnected(MessageSender *messageSender, MessageReciever *messageReciever);
 
-	//	// @return The PlayerId that the new player got
-	//	PlayerId addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever);
+	private:
+	// @return The PlayerId that the new player got
+	PlayerId addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever);
 
 	//	void addPlayerObj(PlayerId playerId, const Pos &playerPos);
 
+	public:
 	//	// start game, no more clients can join
 	//	void startGame();
 
@@ -54,13 +62,16 @@ namespace Planet
 	//	inline void useViewport()			 { viewportHandler.useViewport(); }
 	//	void render();
 
+		ServerTimeHandler* getTimeHandler() { return &timeHandler; }
+		ServerIdGenerator* getIdGenerator() { return &idGenerator; }
+
 	//private:
 
 	//	static const double PREDICTION_AMOUNT_MODIFIER;
 	//	static const int PREDICTION_AMOUNT_ADD_TIME;
 	//	
 	//	ServerPlanet worldModel;
-	//	ServerPlayers players;
+		ServerPlayers players;
 
 	//	ServerGlobalObj serverGlobalObj;
 	//	int lastUpdateTime;
@@ -72,6 +83,10 @@ namespace Planet
 	//	WorldRenderer worldRenderer;
 
 	//	bool requestRender;
+	
+
+		ServerTimeHandler timeHandler;
+		ServerIdGenerator idGenerator;
 	};
 };
 

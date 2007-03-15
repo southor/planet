@@ -22,6 +22,10 @@ namespace Planet
 			ROTATE_LEFT,
 			ROTATE_RIGHT,
 			
+			START_SERVER,
+			CONNECT_TO_SERVER,
+			TOGGLE_MENU,
+			
 			TMP_LEFT,
 			TMP_RIGHT,
 			TMP_UP,

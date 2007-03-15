@@ -68,8 +68,7 @@ namespace Planet
 		}
 		*/
 
-//%		while (lagQueue.size() > 0 && (lagTimeHandler.getTime() >= (lagQueue.front().time + simulatedLag)))
-		while (lagQueue.size() > 0)
+		while (lagQueue.size() > 0 && (lagTimeHandler.getTime() >= (lagQueue.front().time + simulatedLag)))
 		{
 			Message message = lagQueue.front();
 			lagQueue.pop_front();
@@ -87,7 +86,7 @@ namespace Planet
 	{
 		lag = (currentTime - message.time) + simulatedLag;
 		//LagMessage lagMessage(message, lagTimeHandler.getTime());
-//%		message.time = lagTimeHandler.getTime();
+		message.time = lagTimeHandler.getTime();
 		lagQueue.push_back(message);
 
 		//printf("%d putting %d on lag queue\n", v, message.tick);

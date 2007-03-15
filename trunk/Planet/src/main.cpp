@@ -1,7 +1,5 @@
 #include "Game.h"
 
-bool running;
-
 int main(int argc, char **argv)
 {
 	std::string host;

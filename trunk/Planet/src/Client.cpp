@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "Game.h"
 //#include "Player.h"
 #include <string>
 #include <algorithm>
@@ -9,7 +10,7 @@ namespace Planet
 	//const int Client::OBJECT_LAG_ADD_TIME = 18;
 	//const int Client::OBJECT_LAG_ADD_TICK = 1;
 
-	Client::Client() : planetBody(5.0f) {}
+	Client::Client() : planetBody(5.0f), connectionPhase(0) {}
 
 	void Client::init()
 	{
@@ -17,6 +18,8 @@ namespace Planet
 		ship.setPlanet(&planetBody);
 		sight.setCamera(&camera);
 		sight.setPlanet(&planetBody);
+		
+		timeHandler.reset();
 	}
 
 	//Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER),
@@ -239,7 +242,7 @@ namespace Planet
 		ship.logic();
 
 		camera.update(ship.position, ship.reference);
-		//sight.update(userInputHandler.getMouseScreenPos(), WINDOW_SIZE.x, WINDOW_SIZE.y);
+		sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
 
 		ship.direction = sight.position - ship.position;
 		
@@ -288,84 +291,84 @@ namespace Planet
 	//	}
 	}
 
-	//bool Client::initConnection()
-	//{
-	//	if (connectionPhase == ClientPhase::SEND_INITCLIENT)
-	//	{
-	//		// send init package to server
-	//		InitClient initClient = InitClient(color);
-	//		link.pushMessage(initClient, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
-	//		link.transmit();
+	bool Client::initConnection()
+	{
+		if (connectionPhase == ClientPhase::SEND_INITCLIENT)
+		{
+			// send init package to server
+			InitClient initClient = InitClient(color);
+			link.pushMessage(initClient, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
+			link.transmit();
 
-	//		connectionPhase++;
-	//	}
+			connectionPhase++;
+		}
 
-	//	if (connectionPhase == ClientPhase::WAIT_WELCOME_CLIENT)
-	//	{
-	//		link.retrieve(timeHandler.getTime());
-	//		if (link.hasMessageOnQueue())
-	//		{
-	//			int messageType = link.popMessage();
-	//			if (messageType == WELCOME_CLIENT)
-	//			{
-	//				WelcomeClient *welcomeClient = link.getPoppedData<WelcomeClient>();
-	//			
-	//				setPlayerId(welcomeClient->playerId);
+		if (connectionPhase == ClientPhase::WAIT_WELCOME_CLIENT)
+		{
+			link.retrieve(timeHandler.getTime());
+			if (link.hasMessageOnQueue())
+			{
+				int messageType = link.popMessage();
+				if (messageType == WELCOME_CLIENT)
+				{
+					WelcomeClient *welcomeClient = link.getPoppedData<WelcomeClient>();
+				
+					setPlayerId(welcomeClient->playerId);
 
-	//				connectionPhase++;
-	//			}
-	//			else
-	//			{
-	//				assert(false);
-	//			}
-	//		}
-	//	}
+					connectionPhase++;
+				}
+				else
+				{
+					assert(false);
+				}
+			}
+		}
 
-	//	if (connectionPhase == ClientPhase::SYNC_SEND_PING)
-	//	{
-	//		// send ping to server with current client time
-	//		SyncPing syncPing(playerId, timeHandler.getTime());
-	//		link.pushMessage(syncPing, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
-	//		link.transmit();
+		if (connectionPhase == ClientPhase::SYNC_SEND_PING)
+		{
+			// send ping to server with current client time
+			SyncPing syncPing(playerId, timeHandler.getTime());
+			link.pushMessage(syncPing, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
+			link.transmit();
 
-	//		connectionPhase++;
-	//	}
+			connectionPhase++;
+		}
 
-	//	if (connectionPhase == ClientPhase::SYNC_GET_PONG)
-	//	{
-	//		// get pong pack from server with server time and time when ping was sent
-	//		link.retrieve(timeHandler.getTime());
-	//		if (link.hasMessageOnQueue())
-	//		{
-	//			int messageType = link.popMessage();
-	//			if (messageType == SYNC_PONG)
-	//			{
-	//				SyncPong *syncPong = link.getPoppedData<SyncPong>();
-	//				
-	//				int clientTime = timeHandler.getTime();
-	//				int serverTime = syncPong->time;
+		if (connectionPhase == ClientPhase::SYNC_GET_PONG)
+		{
+			// get pong pack from server with server time and time when ping was sent
+			link.retrieve(timeHandler.getTime());
+			if (link.hasMessageOnQueue())
+			{
+				int messageType = link.popMessage();
+				if (messageType == SYNC_PONG)
+				{
+					SyncPong *syncPong = link.getPoppedData<SyncPong>();
+					
+					int clientTime = timeHandler.getTime();
+					int serverTime = syncPong->time;
 
-	//				int pingTime = clientTime - syncPong->pingSendTime;
-	//				int serverClientDiff = (serverTime + pingTime/2) - clientTime;
+					int pingTime = clientTime - syncPong->pingSendTime;
+					int serverClientDiff = (serverTime + pingTime/2) - clientTime;
 
-	//				printf("Adjusting client time with diff: %d\n", serverClientDiff);
+					printf("Adjusting client time with diff: %d\n", serverClientDiff);
 
-	//				// Modify client time to match server time
-	//				timeHandler.incrementTime(serverClientDiff);
- //
-	//				connectionPhase++;
+					// Modify client time to match server time
+					timeHandler.incrementTime(serverClientDiff);
+ 
+					connectionPhase++;
 
-	//				return true;
-	//			}
-	//			else
-	//			{
-	//				assert(false);
-	//			}
-	//		}
-	//	}
+					return true;
+				}
+				else
+				{
+					assert(false);
+				}
+			}
+		}
 
-	//	return false;
-	//}
+		return false;
+	}
 
 	void Client::renderAndUpdate()
 	{
@@ -415,15 +418,13 @@ namespace Planet
 	//	}
 	//}
 
-	//void Client::setConnection(MessageSender *messageSender, MessageReciever *messageReciever)
-	//{
-	//	//this->messageSender = messageSender;
-	//	//this->messageReciever = messageReciever;
-	//	link.setMessageSender(messageSender);
-	//	link.setMessageReciever(messageReciever);
+	void Client::setConnection(MessageSender *messageSender, MessageReciever *messageReciever)
+	{
+		link.setMessageSender(messageSender);
+		link.setMessageReciever(messageReciever);
 
-	//	//link.setSimulatedRecieveLag(2);
-	//}
+		//link.setSimulatedRecieveLag(2);
+	}
 
 	//KeyHandler* Client::getKeyHandler()
 	//{

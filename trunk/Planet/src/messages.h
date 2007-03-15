@@ -4,12 +4,12 @@
 //#include <vector>
 
 //#include "Rectangle.h"
-//#include "Color.h"
+#include "Color.h"
 //#include "GameObjId.h"
 //#include "Angle.h"
 //#include "StateCmds.h"
 //#include "Projectile.h"
-
+#include "basic.h"
 
 namespace Planet
 {
@@ -85,27 +85,27 @@ namespace Planet
 	//	{}
 	//};
 
-	//struct WelcomeClient
-	//{
-	//	static const size_t messageType = WELCOME_CLIENT;
+	struct WelcomeClient
+	{
+		static const size_t messageType = WELCOME_CLIENT;
 
-	//	PlayerId playerId;
+		PlayerId playerId;
 
-	//	WelcomeClient(PlayerId playerId) 
-	//		: playerId(playerId) {}
-	//};
+		WelcomeClient(PlayerId playerId) 
+			: playerId(playerId) {}
+	};
 
-	//struct AddPlayer
-	//{
-	//	static const size_t messageType = ADD_PLAYER;
+	struct AddPlayer
+	{
+		static const size_t messageType = ADD_PLAYER;
 
-	//	PlayerId playerId;
-	//	Color color;
-	//	Pos startPos;
-	//	
-	//	AddPlayer(PlayerId playerId, Color color, Pos startPos) 
-	//		: playerId(playerId), color(color), startPos(startPos) {}
-	//};
+		PlayerId playerId;
+		Color color;
+		Pos startPos;
+		
+		AddPlayer(PlayerId playerId, Color color, Pos startPos) 
+			: playerId(playerId), color(color), startPos(startPos) {}
+	};
 
 	//struct AddProjectile
 	//{
@@ -159,56 +159,56 @@ namespace Planet
 	//		: killerId(killerId), killedId(killedId), respawnPos(respawnPos)
 	//	{}
 	//};
-	//
-	//struct StartGame
-	//{
-	//	static const size_t messageType = START_GAME;
-	//};
+	
+	struct StartGame
+	{
+		static const size_t messageType = START_GAME;
+	};
 
-	//struct SyncPong
-	//{
-	//	static const size_t messageType = SYNC_PONG;
+	struct SyncPong
+	{
+		static const size_t messageType = SYNC_PONG;
 
-	//	int time;
-	//	int pingSendTime;
+		int time;
+		int pingSendTime;
 
-	//	SyncPong(int time, int pingSendTime) : time(time), pingSendTime(pingSendTime) {}
-	//};
+		SyncPong(int time, int pingSendTime) : time(time), pingSendTime(pingSendTime) {}
+	};
 
-	//struct SetTick0Time
-	//{
-	//	static const size_t messageType = SET_TICK_0_TIME;
+	struct SetTick0Time
+	{
+		static const size_t messageType = SET_TICK_0_TIME;
 
-	//	int tick0Time;
+		int tick0Time;
 
-	//	SetTick0Time(int tick0Time) : tick0Time(tick0Time)
-	//	{}
+		SetTick0Time(int tick0Time) : tick0Time(tick0Time)
+		{}
 
-	//	inline operator int() const		{ return tick0Time; }
-	//};
+		inline operator int() const		{ return tick0Time; }
+	};
 
 	//// --------------------------------------------------------------------------------
 	//// --------------------------------- client messages ------------------------------
 	//// --------------------------------------------------------------------------------
 
-	//struct InitClient
-	//{
-	//	static const size_t messageType = INIT_CLIENT;
+	struct InitClient
+	{
+		static const size_t messageType = INIT_CLIENT;
 
-	//	Color color;
-	//	
-	//	InitClient(Color color) : color(color) {}
-	//};
+		Color color;
+		
+		InitClient(Color color) : color(color) {}
+	};
+	
+	struct SyncPing
+	{
+		static const size_t messageType = SYNC_PING;
 
-	//struct SyncPing
-	//{
-	//	static const size_t messageType = SYNC_PING;
+		PlayerId playerId;
+		int pingSendTime;
 
-	//	PlayerId playerId;
-	//	int pingSendTime;
-
-	//	SyncPing(PlayerId playerId, int pingSendTime) : playerId(playerId), pingSendTime(pingSendTime) {}
-	//};
+		SyncPing(PlayerId playerId, int pingSendTime) : playerId(playerId), pingSendTime(pingSendTime) {}
+	};
 
 	//struct UserCmd
 	//{
