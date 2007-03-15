@@ -28,29 +28,29 @@ namespace Prototype
 
 
 
-		class MoveProjectile : public Move, public ServerGlobalAccess
-		{
-		private:
+		//class MoveProjectile : public Move, public ServerGlobalAccess
+		//{
+		//private:
 
-			RespawnPoss *respawnPoss;
-			ServerPlayers *players;
-			PlayerObjs *playerObjs;
+		//	RespawnPoss *respawnPoss;
+		//	ServerPlayers *players;
+		//	PlayerObjs *playerObjs;
 
-			std::vector<RemoveProjectile> projectilesHit;
+		//	std::vector<RemoveProjectile> projectilesHit;
 
-		public:
-			// @param deltaTime Time in milliseconds since last move.
-			MoveProjectile(Obstacles *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, PlayerObjs *playerObjs, RespawnPoss *respawnPoss)
-				: Move(obstacles), ServerGlobalAccess(serverGlobalAccess), respawnPoss(respawnPoss), players(players), playerObjs(playerObjs)
-			{}
+		//public:
+		//	// @param deltaTime Time in milliseconds since last move.
+		//	MoveProjectile(Obstacles *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, PlayerObjs *playerObjs, RespawnPoss *respawnPoss)
+		//		: Move(obstacles), ServerGlobalAccess(serverGlobalAccess), respawnPoss(respawnPoss), players(players), playerObjs(playerObjs)
+		//	{}
 
-			void operator ()(const Projectiles::Pair &projectilePair);
+		//	void operator ()(const Projectiles::Pair &projectilePair);
 
-			inline std::vector<RemoveProjectile>& getProjectilesHit()	
-			{
-				return projectilesHit;
-			}
-		};
+		//	inline std::vector<RemoveProjectile>& getProjectilesHit()	
+		//	{
+		//		return projectilesHit;
+		//	}
+		//};
 
 	public:
 
@@ -77,12 +77,13 @@ namespace Prototype
 		void addRespawnPos(Pos pos)						{ respawnPoss.push_back(pos); }
 		
 		void updatePlayerObjMovements();
-		void updateProjectileMovements(ServerPlayers &players);
+		void updateProjectileMovements();
+		void performProjectileHits(ServerPlayers &players);
 
 		// @retunr projectileId
-		GameObjId playerShoot(PlayerId playerId, Projectile::Type weapon, Tickf shootTick);
+		GameObjId playerShoot(PlayerId playerId, Projectile::Type weapon, Tickf shootTick, int objLag);
 
-		void handlePlayerShooting(PlayerId playerId, std::vector<GameObjId> &shots);
+		void handlePlayerShooting(PlayerId playerId, ServerPlayers &players);
 	};
 };
 
