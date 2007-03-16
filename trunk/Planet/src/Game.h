@@ -7,6 +7,7 @@
 #include "Client.h"
 #include "NetworkConnection.h"
 #include "Gui.h"
+#include "SkyBox.h"
 
 #include "SDL_thread.h"
 
@@ -47,6 +48,7 @@ namespace Planet
 
 		Gui gui;
 
+		SkyBox skyBox;
 
 		// TMP / DEBUG
 		float viewAngle;

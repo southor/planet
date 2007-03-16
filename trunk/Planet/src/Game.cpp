@@ -90,19 +90,21 @@ namespace Planet
 		//glViewport(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); 
 		glViewport(0, 0, WINDOW_SIZE.x, WINDOW_SIZE.y); 
 
-		glEnable(GL_LIGHTING);
-		glEnable(GL_DEPTH_TEST);
-
 		client.getCamera()->useCamera();
 
+
+		skyBox.render();
+
+
 		glPushMatrix();
+
 			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
 			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
 
 			float redAmbient = 0.2f;
 
 			if (!connectedToServer)
-				redAmbient = 1.0f;
+				redAmbient = 0.8f;
 
 
 			// Setup lights
@@ -119,6 +121,8 @@ namespace Planet
 			glEnable(GL_LIGHT0);
 				
 			client.renderAndUpdate();			
+
+
 
 
 		glPopMatrix();
@@ -192,7 +196,7 @@ namespace Planet
 
 
 		glShadeModel(GL_SMOOTH);
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 		//glClearDepth(1.0f);
 		//glClearAccum(0.0, 0.0, 0.0, 0.0);
 		glEnable(GL_DEPTH_TEST);
@@ -226,7 +230,8 @@ namespace Planet
 
 
 		client.getUserInputHandler()->aimMode = UserInputHandler::KEYBOARD;
-		
+	
+		skyBox.init();
 		client.init();
 		gui.init(this);
 	}
