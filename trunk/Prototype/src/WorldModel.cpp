@@ -35,6 +35,40 @@ namespace Prototype
 		}
 	}
 
+	void WorldModel::playerShoot(PlayerId playerId, Projectile::Type weapon, Tickf shootTick, int objLag, GameObjId projectileId)
+	{
+		PlayerObj *playerObj = getPlayerObjs()[playerId];
+		Pos pos(playerObj->getPos());
+		Angle angle = playerObj->angle;
+
+		//GameObjId projectileId = getProjectiles().findFreeId();
+		//GameObjId projectileId = getIdGenerator()->generateGameObjId();
+		Projectile *projectile = new Projectile(weapon, pos, angle, playerId, 1, shootTick, objLag);		
+		getProjectiles().add(projectileId, projectile);
+
+		//return projectileId;
+	}
+
+	bool WorldModel::playerTryShoot(PlayerId playerId, int currentTick, int shotN, GameObjId projectileId)
+	{
+		Tickf currentTickf = static_cast<Tickf>(currentTick);
+		
+		PlayerObj *playerObj = getPlayerObjs()[playerId];		
+
+		//Projectile::Type weapon = userCmd.weapon;
+		
+		Tickf shootTick = playerObj->getShotTick(currentTick, shotN);
+		if ((shootTick >= currentTickf) && (playerObj->getAmmoCurrentWeapon() >= 0))
+		{
+			const UserCmd &userCmd(playerObj->getUserCmd());
+			assert((shotN < userCmd.nShots) && (shotN >= 0));
+
+			playerShoot(playerId, userCmd.weapon, shootTick, userCmd.objLag, projectileId);
+			Projectile *projectile = (getProjectiles())[projectileId];
+			return true;
+		}
+		return false;
+	}
 
 
 

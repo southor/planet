@@ -11,6 +11,7 @@
 #include "ClientTimeHandler.h"
 #include "ViewportHandler.h"
 #include "PredictionHandler.h"
+#include "ClientGlobalAccess.h"
 
 namespace Prototype
 {
@@ -28,11 +29,11 @@ namespace Prototype
 		};
 	};
 
-	class Client
+	class Client : public ClientGlobalAccess
 	{
 	public:
 
-		static const bool DEBUG_SHOOTING = false;
+		static const bool DEBUG_SHOOTING = true;
 
 		static const int MAX_N_PLAYERS = 2;
 
@@ -58,7 +59,7 @@ namespace Prototype
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		KeyHandler* getKeyHandler();
 		inline UserInputHandler* getUserInputHandler()	{ return &userInputHandler; }
-		inline ClientTimeHandler* getTimeHandler()		{ return &timeHandler; }
+		//inline ClientTimeHandler* getTimeHandler()		{ return &timeHandler; }
 		inline bool getRequestRender()					{ return requestRender; }
 		
 		void setPlayerId(PlayerId playerId)				{ this->playerId = playerId; }
@@ -81,10 +82,11 @@ namespace Prototype
 		static const int OBJECT_LAG_ADD_TIME;
 		static const int OBJECT_LAG_ADD_TICK;
 		
+		ClientGlobalObj clientGlobalObj;
 
 		Link link;
 		size_t connectionPhase;
-		ClientTimeHandler timeHandler;
+		//ClientTimeHandler timeHandler;
 
 
 		KeyHandler kh;

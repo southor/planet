@@ -190,7 +190,7 @@ namespace Prototype
 	{
 		static const Color projectileColors[Projectile::N_TYPES] = {Color(0.0f,0.0f,0.0f), Color(0.0f, 0.0f, 0.0f)};
 		static const float projectileWidths[Projectile::N_TYPES] = {1.2f, 4.0f};
-		static const float projectileAlphas[Projectile::N_TYPES] = {0.3f, 0.3f};
+		static const float projectileAlphas[Projectile::N_TYPES] = {0.7f, 0.7f};
 		
 		Projectile *projectile = projectilePair.second;
 		if (projectile->render)
@@ -211,7 +211,7 @@ namespace Prototype
 	void WorldRenderer::RenderExplosion::operator ()(const Explosion &explosion)
 	{
 		const Color &color = explosion.color;
-		glColor4f(color.r, color.g, color.b, 0.3f);
+		glColor4f(color.r, color.g, color.b, 0.8f);
 		Rectangle explosionRectangle(explosion.pos, explosion.size);
 		WorldRenderer::renderRectangle(explosionRectangle, GL_QUADS);
 	}

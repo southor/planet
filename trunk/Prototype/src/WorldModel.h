@@ -48,6 +48,17 @@ namespace Prototype
 		//void updatePlayerObjsToTickData(int tick);
 		void updatePlayerObjsToTickData(Tickf tick);
 
+		/**
+		 * @param projectileId The id that the projectile should get		 
+		 */
+		void playerShoot(PlayerId playerId, Projectile::Type weapon, Tickf shootTick, int objLag, GameObjId projectileId);
+
+		/**
+		 * @param projectileId The id that the projectile should get
+		 * @return true if projectile was created		 
+		 */
+		bool playerTryShoot(PlayerId playerId, int currentTick, int shotN, GameObjId projectileId);
+
 		
 
 		bool isConsistent();

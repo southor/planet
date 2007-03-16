@@ -80,8 +80,7 @@ namespace Prototype
 		void updateProjectileMovements();
 		void performProjectileHits(ServerPlayers &players);
 
-		// @retunr projectileId
-		GameObjId playerShoot(PlayerId playerId, Projectile::Type weapon, Tickf shootTick, int objLag);
+
 
 		void handlePlayerShooting(PlayerId playerId, ServerPlayers &players);
 	};

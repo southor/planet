@@ -21,7 +21,7 @@ namespace Prototype
 			bool press;
 
 			Action()												{}
-			Action(bool press, int key) : press(press), key(key)	{}
+			Action(int key, bool press) : key(key), press(press) 	{}
 
 			bool operator <(Action action) const
 			{
@@ -92,6 +92,7 @@ namespace Prototype
 		bool hasActionCmdOnQueue();
 		int popActionCmd();
 		void pushActionCmd(int actionCmd);
+		void pushActionCmdIf(int key, bool press);
 
 		// ------- mouse move input -----------
 		inline Vec2<int>& getMouseScreenPos()		{ return mouseScreenPos; }

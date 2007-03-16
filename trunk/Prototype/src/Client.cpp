@@ -14,7 +14,7 @@ namespace Prototype
 	const int Client::OBJECT_LAG_ADD_TIME = 18;
 	const int Client::OBJECT_LAG_ADD_TICK = 1;
 
-	Client::Client() : worldRenderer(WorldRenderer::FOLLOW_PLAYER),
+	Client::Client() : ClientGlobalAccess(&clientGlobalObj), worldModel(&clientGlobalObj), worldRenderer(WorldRenderer::FOLLOW_PLAYER),
 						connectionPhase(0), requestRender(false), currentObjLag(0)
 	{
 		predictionHandler.setWorldModel(&worldModel);
@@ -248,7 +248,7 @@ namespace Prototype
 		//lastTick = timeHandler.getStepTick();
 
 		// get current tick
-		int currentTick = static_cast<int>(timeHandler.getStepTick());
+		int currentTick = static_cast<int>(getStepTick());
 		
 		// get playerobj
 		PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
@@ -264,7 +264,7 @@ namespace Prototype
 		predictionHandler.getUserCmd(preUserCmd, currentTick - 1);
 
 		// get userCmd to start with (could contain postponed actionCmds from previous tick)
-		predictionHandler.getUserCmd(userCmd, currentTick);
+		predictionHandler.getUserCmd(userCmd, currentTick);		
 
 		
 		// get stateCmds
@@ -287,9 +287,10 @@ namespace Prototype
 			}
 		}
 
-		// set stateCmds and aimAngle
+		// set stateCmds, aimAngle and firstProjectileId
 		userCmd.stateCmds = stateCmds;
 		userCmd.aimAngle = aimAngle;
+		userCmd.firstProjectileId = getIdGenerator()->getNextId();
 
 		// set shooting action and nShots
 		assert(userCmd.nShots == 0);
@@ -362,7 +363,7 @@ namespace Prototype
 	void Client::handleServerMessages()
 	{
 		
-		link.retrieve(timeHandler.getTime());
+		link.retrieve(getTimeHandler()->getTime());
 		
 		while(link.hasMessageOnQueue())
 		{
@@ -433,10 +434,18 @@ namespace Prototype
 				break;
 			case ADD_PROJECTILE:
 				{
-					printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
+					//printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
 
-					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
-					worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId, link.getPoppedTick(), addProjectile->objLag);
+					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();					
+					bool projectileAlreadyCreated = false;
+					if (static_cast<PlayerId>(addProjectile->shooterId) == playerId)
+					{
+						projectileAlreadyCreated = worldModel.getProjectiles().exists(addProjectile->projectileId);
+					}
+					if (!projectileAlreadyCreated)
+					{
+						worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId, link.getPoppedTick(), addProjectile->objLag);
+					}
 				}
 				break;
 			case UPDATE_PROJECTILE:
@@ -453,11 +462,20 @@ namespace Prototype
 				break;
 			case REMOVE_PROJECTILE:
 				{
-					printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
+					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
 					
 					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
-					worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
+					//worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
 					worldModel.getProjectiles().remove(removeProjectile->projectileId);
+				}
+				break;
+			case PROJECTILE_HIT:
+				{
+					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
+					
+					ProjectileHit *projectileHit = link.getPoppedData<ProjectileHit>();
+					worldRenderer.projectileHit((worldModel.getProjectiles())[projectileHit->projectileId], projectileHit->hitPosition);
+					worldModel.getProjectiles().remove(projectileHit->projectileId);
 				}
 				break;
 			case START_GAME:
@@ -467,7 +485,7 @@ namespace Prototype
 				}
 				break;
 			case SET_TICK_0_TIME:
-				timeHandler.enterTick0Time(*(link.getPoppedData<SetTick0Time>()));
+				getTimeHandler()->enterTick0Time(*(link.getPoppedData<SetTick0Time>()));
 				//std::cout << "tick0Time: " << timeHandler.getTick0Time() << std::endl;
 				break;
 			default:
@@ -489,18 +507,18 @@ namespace Prototype
 	{
 		assert(isConsistent());
 		
-		timeHandler.nextStep();
+		getTimeHandler()->nextStep();
 		if (connectionPhase == ClientPhase::RUNNING)
 		{
-			if (timeHandler.isNewTick())
+			if (getTimeHandler()->isNewTick())
 			{
 				assert(predictionHandler.isConsistent());
 				
-				int currentTick = static_cast<int>(timeHandler.getStepTick());
+				int currentTick = static_cast<int>(getStepTick());
 				
 
 				// calculate current objectLag				
-				double tmp = static_cast<double>(link.getCurrentLag() - timeHandler.getTick0Time());
+				double tmp = static_cast<double>(link.getCurrentLag() - getTimeHandler()->getTick0Time());
 				this->currentObjLag = static_cast<int>(tmp * OBJECT_LAG_MODIFIER + OBJECT_LAG_ADD_TIME)
 													/ TimeHandler::TICK_DELTA_TIME + OBJECT_LAG_ADD_TICK;
 
@@ -513,10 +531,16 @@ namespace Prototype
 				predictionHandler.setUserCmd(userCmd, currentTick);
 				
 				// push userCmd to serverlink
-				link.pushMessage(userCmd, timeHandler.getTime(), currentTick);
+				link.pushMessage(userCmd, getTimeHandler()->getTime(), currentTick);
 
 				// transmit messages
 				link.transmit();
+
+				//perform shooting
+				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+				playerObj->updateToTickData(currentTick);
+				playerObj->setUserCmd(&userCmd);
+				worldModel.handlePlayerShooting(playerId);
 
 				// perform prediction
 				predictionHandler.predict(playerId, currentTick + 1);
@@ -538,7 +562,7 @@ namespace Prototype
 		{
 			// send init package to server
 			InitClient initClient = InitClient(color);
-			link.pushMessage(initClient, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
+			link.pushMessage(initClient, getTimeHandler()->getTime(), static_cast<int>(getStepTick()));
 			link.transmit();
 
 			connectionPhase++;
@@ -546,7 +570,7 @@ namespace Prototype
 
 		if (connectionPhase == ClientPhase::WAIT_WELCOME_CLIENT)
 		{
-			link.retrieve(timeHandler.getTime());
+			link.retrieve(getTimeHandler()->getTime());
 			if (link.hasMessageOnQueue())
 			{
 				int messageType = link.popMessage();
@@ -555,6 +579,7 @@ namespace Prototype
 					WelcomeClient *welcomeClient = link.getPoppedData<WelcomeClient>();
 				
 					setPlayerId(welcomeClient->playerId);
+					getIdGenerator()->setPlayerId(welcomeClient->playerId);
 
 					connectionPhase++;
 				}
@@ -568,8 +593,8 @@ namespace Prototype
 		if (connectionPhase == ClientPhase::SYNC_SEND_PING)
 		{
 			// send ping to server with current client time
-			SyncPing syncPing(playerId, timeHandler.getTime());
-			link.pushMessage(syncPing, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
+			SyncPing syncPing(playerId, getTimeHandler()->getTime());
+			link.pushMessage(syncPing, getTimeHandler()->getTime(), static_cast<int>(getStepTick()));
 			link.transmit();
 
 			connectionPhase++;
@@ -578,7 +603,7 @@ namespace Prototype
 		if (connectionPhase == ClientPhase::SYNC_GET_PONG)
 		{
 			// get pong pack from server with server time and time when ping was sent
-			link.retrieve(timeHandler.getTime());
+			link.retrieve(getTimeHandler()->getTime());
 			if (link.hasMessageOnQueue())
 			{
 				int messageType = link.popMessage();
@@ -586,7 +611,7 @@ namespace Prototype
 				{
 					SyncPong *syncPong = link.getPoppedData<SyncPong>();
 					
-					int clientTime = timeHandler.getTime();
+					int clientTime = getTimeHandler()->getTime();
 					int serverTime = syncPong->time;
 
 					int pingTime = clientTime - syncPong->pingSendTime;
@@ -595,7 +620,7 @@ namespace Prototype
 					printf("Adjusting client time with diff: %d\n", serverClientDiff);
 
 					// Modify client time to match server time
-					timeHandler.incrementTime(serverClientDiff);
+					getTimeHandler()->incrementTime(serverClientDiff);
  
 					connectionPhase++;
 
@@ -617,7 +642,7 @@ namespace Prototype
 		worldRenderer.setupProjection();
 		if (worldModel.getPlayerObjs().exists(playerId))
 		{
-			Tickf currentTickf = timeHandler.getStepTick();
+			Tickf currentTickf = getStepTick();
 			Tickf playerObjRenderTickf = currentTickf - static_cast<Tickf>(currentObjLag);			
 			
 			
@@ -714,7 +739,7 @@ namespace Prototype
 		if (isMe)
 		{
 			
-			// set ammo supply
+			// set ammo supply			
 			(worldModel.getPlayerObjs())[playerId]->setAmmoSupply(static_cast<int>(playerPos.x + playerPos.y));
 		}
 	}

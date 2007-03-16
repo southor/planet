@@ -24,6 +24,7 @@ namespace Prototype
 		ADD_PROJECTILE,
 		UPDATE_PROJECTILE,
 		REMOVE_PROJECTILE,
+		PROJECTILE_HIT,
 		KILL,
 		START_GAME,
 		SYNC_PONG,
@@ -141,9 +142,20 @@ namespace Prototype
 		static const size_t messageType = REMOVE_PROJECTILE;
 
 		GameObjId projectileId;
+
+		RemoveProjectile(GameObjId projectileId)
+			: projectileId(projectileId)
+		{}
+	};
+
+	struct ProjectileHit
+	{
+		static const size_t messageType = PROJECTILE_HIT;
+
+		GameObjId projectileId;
 		Pos hitPosition;
 
-		RemoveProjectile(GameObjId projectileId, Pos hitPosition)
+		ProjectileHit(GameObjId projectileId, Pos hitPosition)
 			: projectileId(projectileId), hitPosition(hitPosition)
 		{}
 	};
@@ -238,6 +250,7 @@ namespace Prototype
 		bool shooting; // keep shooting at the end of this Tick?
 		
 		int objLag; // The object lag the client uses this tick
+		GameObjId firstProjectileId; // the id of the first projectile shot during this tick
 		
 
 
@@ -254,10 +267,10 @@ namespace Prototype
 		//{}
 
 		//UserCmd(int stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
-		UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon,
-				int nShots, bool shooting, Tickf firstShotTick, int objLag)
-			: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots),
-			  shooting(shooting), firstShotTick(firstShotTick), objLag(objLag)
+		UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon, int nShots,
+				bool shooting, Tickf firstShotTick, GameObjId firstProjectileId, int objLag)
+			: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots), shooting(shooting),
+			  firstShotTick(firstShotTick), firstProjectileId(firstProjectileId), objLag(objLag)
 		{}
 
 		

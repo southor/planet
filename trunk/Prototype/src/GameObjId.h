@@ -27,6 +27,11 @@ namespace Prototype
 		inline GameObjId(PlayerId playerId) : playerId(playerId), generatedId(0)
 		{}
 
+		//inline GameObjId getNextId()
+		//{
+		//	return GameObjId(playerId, generatedId + 1);
+		//}
+
 		// debugging
 		bool isPlayerObjId() const
 		{
@@ -98,6 +103,17 @@ namespace Prototype
 		inline bool operator <=(const GameObjId &gameObjId) const
 		{
 			return !(*this > gameObjId);
+		}
+
+		GameObjId operator +(int n) const
+		{
+			return GameObjId(playerId, static_cast<uint>(static_cast<int>(generatedId) + n));
+		}
+
+		const GameObjId& operator +=(int n)
+		{
+			generatedId += n;
+			return *this;
 		}
 
 	};

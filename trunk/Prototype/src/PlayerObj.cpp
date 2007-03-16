@@ -157,10 +157,24 @@ namespace Prototype
 	int PlayerObj::getNTickShots(Projectile::Type weapon, int currentTick)
 	{ 
 		assert(nextShootTick >= currentTick);
-		Tickf totalShootTicks = static_cast<Tickf>(currentTick + 1) - nextShootTick;
-		//assert(totalShootTicks >= 0.0);
-		int nShots = static_cast<int>(totalShootTicks / Projectile::getShootInterval(weapon)) + 1;
-		return tmax(0, nShots);
+		//Tickf missedShootTicks = nextShootTick - static_cast<Tickf>(currentTick);
+		//int missedShots = static_cast<int>(missedShootTicks / Projectile::getShootInterval(weapon));
+
+
+		//Tickf shootInterval = Projectile::getShootInterval(weapon);
+		//int nShots = static_cast<int>(0.9999 / shootInterval) - missedShots;
+
+		Tickf nextTickf = static_cast<Tickf>(currentTick + 1);
+		Tickf shootInterval = Projectile::getShootInterval(weapon);
+		
+		Tickf currentShootTick = nextShootTick;
+		int nShots = 0;
+		while(currentShootTick < nextTickf)
+		{			
+			++nShots;
+			currentShootTick = nextShootTick + nShots * shootInterval;
+		}
+		return nShots;
 	}
 
 	void PlayerObj::updateNextShootTick(int currentTick)
