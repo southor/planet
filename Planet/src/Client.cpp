@@ -6,7 +6,7 @@
 namespace Planet
 {
 
-	Client::Client() : planetBody(5.0f), connectionPhase(0) {}
+	Client::Client() : ClientGlobalAccess(&clientGlobalObj), planetBody(5.0f), connectionPhase(0) {}
 
 	void Client::init()
 	{
@@ -15,7 +15,7 @@ namespace Planet
 		sight.setCamera(&camera);
 		sight.setPlanet(&planetBody);
 		
-		timeHandler.reset();
+		getTimeHandler()->reset();
 	}
 
 
@@ -48,7 +48,7 @@ namespace Planet
 		{
 			// send init package to server
 			InitClient initClient = InitClient(color);
-			link.pushMessage(initClient, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
+			link.pushMessage(initClient, getTimeHandler()->getTime(), static_cast<int>(getStepTick()));
 			link.transmit();
 
 			connectionPhase++;
@@ -56,7 +56,7 @@ namespace Planet
 
 		if (connectionPhase == ClientPhase::WAIT_WELCOME_CLIENT)
 		{
-			link.retrieve(timeHandler.getTime());
+			link.retrieve(getTimeHandler()->getTime());
 			if (link.hasMessageOnQueue())
 			{
 				int messageType = link.popMessage();
@@ -78,8 +78,8 @@ namespace Planet
 		if (connectionPhase == ClientPhase::SYNC_SEND_PING)
 		{
 			// send ping to server with current client time
-			SyncPing syncPing(playerId, timeHandler.getTime());
-			link.pushMessage(syncPing, timeHandler.getTime(), static_cast<int>(timeHandler.getStepTick()));
+			SyncPing syncPing(playerId, getTimeHandler()->getTime());
+			link.pushMessage(syncPing, getTimeHandler()->getTime(), static_cast<int>(getStepTick()));
 			link.transmit();
 
 			connectionPhase++;
@@ -88,7 +88,7 @@ namespace Planet
 		if (connectionPhase == ClientPhase::SYNC_GET_PONG)
 		{
 			// get pong pack from server with server time and time when ping was sent
-			link.retrieve(timeHandler.getTime());
+			link.retrieve(getTimeHandler()->getTime());
 			if (link.hasMessageOnQueue())
 			{
 				int messageType = link.popMessage();
@@ -96,7 +96,7 @@ namespace Planet
 				{
 					SyncPong *syncPong = link.getPoppedData<SyncPong>();
 					
-					int clientTime = timeHandler.getTime();
+					int clientTime = getTimeHandler()->getTime();
 					int serverTime = syncPong->time;
 
 					int pingTime = clientTime - syncPong->pingSendTime;
@@ -105,7 +105,7 @@ namespace Planet
 					printf("Adjusting client time with diff: %d\n", serverClientDiff);
 
 					// Modify client time to match server time
-					timeHandler.incrementTime(serverClientDiff);
+					getTimeHandler()->incrementTime(serverClientDiff);
  
 					connectionPhase++;
 

@@ -1,22 +1,20 @@
 #ifndef __clienttimehandler_h__
 #define __clienttimehandler_h__
 
-#include "basic.h"
 #include "TimeHandler.h"
+#include "basic.h"
 
 
 namespace Planet
 {
-
 	class ClientTimeHandler : public TimeHandler
 	{
 	public:
 
-		ClientTimeHandler() : TimeHandler(), stepTick(0), stepTickf(0.0f), newTick(true)//, deltaTime(1), stepTime(0), 
+		ClientTimeHandler() : TimeHandler(), stepTick(0), stepTickf(0.0f), newTick(false)//, deltaTime(1), stepTime(0), 
 		{
 			setTick0Time(0);
-		}
-	
+		}		
 		inline Tickf getStepTick()				{ return stepTickf; }
 		int getTickTime();
 

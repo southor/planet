@@ -14,18 +14,24 @@ namespace Planet
 		static const PlayerId INVALID_CREATOR_ID = GameObjId::INVALID_PLAYER_ID;
 		PlayerId creatorId;
 				
-		uint nextId;	
+		uint nextId;
 	
 	public:
 
 		inline IdGenerator() : creatorId(INVALID_CREATOR_ID), nextId(1) // zero is taken for PlayerObjId
 		{}
 
+		inline GameObjId getNextId()
+		{
+			return GameObjId(creatorId, nextId);
+		}
+
 		inline GameObjId generateGameObjId()
 		{
 			assert(creatorId != INVALID_CREATOR_ID); // creator Id must be set!
 			return GameObjId(creatorId, nextId++);
 		}
+
 	};
 
 	class ClientIdGenerator : public IdGenerator

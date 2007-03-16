@@ -100,6 +100,17 @@ namespace Planet
 			return !(*this > gameObjId);
 		}
 
+		GameObjId operator +(int n) const
+		{
+			return GameObjId(playerId, static_cast<uint>(static_cast<int>(generatedId) + n));
+		}
+
+		const GameObjId& operator +=(int n)
+		{
+			generatedId += n;
+			return *this;
+		}
+
 	};
 
 };
