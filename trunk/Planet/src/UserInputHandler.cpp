@@ -11,8 +11,8 @@ namespace Planet
 	
 	void UserInputHandler::setActionCmdKey(int actionCmdPress, int actionCmdRelease, int key)
 	{
-		Action pressAction(true, key);
-		Action releaseAction(false, key);
+		Action pressAction(key, true);
+		Action releaseAction(key, false);
 		actionCmdKeyMap[pressAction] = actionCmdPress;
 		actionCmdKeyMap[releaseAction] = actionCmdRelease;
 	}
@@ -38,75 +38,79 @@ namespace Planet
 	{
 		actionCmdQueue.push_back(actionCmd);
 	}
+
+	void UserInputHandler::pushActionCmdIf(int key, bool press)
+	{
+		Action action(key, press);
+		if (actionCmdKeyMap.count(action) > 0)
+		{
+			int actionCmd = actionCmdKeyMap[action];
+			if (actionCmd != NO_ACTION_CMD) pushActionCmd(actionCmd);
+		}
+	}
 	
 	void UserInputHandler::pushInput(const SDL_Event &event)
 	{
 		int key;
 		int button;
-		Action action;
+
+		//event.
 	
 		switch(event.type)
 		{
 		case SDL_KEYDOWN:
-			key = action.key = event.key.keysym.sym;
-			action.press = true;
+			key = event.key.keysym.sym;
 
 			// set state command bit in currentStates to true
 			if (stateCmdKeyMap.count(key) > 0)
 				setCurrentState(stateCmdKeyMap[key], true);
 
-			// push action command if action key pressed
-			if (actionCmdKeyMap.count(action) > 0)
-				pushActionCmd(actionCmdKeyMap[action]);
+			// push if there is a corresponding actionCmd
+			pushActionCmdIf(key, true);
 
 			break;
 
 		case SDL_KEYUP:
-			key = action.key = event.key.keysym.sym;
-			action.press = false;
+			key = event.key.keysym.sym;
 
 			// set state command bit in currentStates to false
 			if (stateCmdKeyMap.count(key) > 0)
 				setCurrentState(stateCmdKeyMap[key], false);
 
 			// push action command if action key released
-			if (actionCmdKeyMap.count(action) > 0)
-				pushActionCmd(actionCmdKeyMap[action]);
+			pushActionCmdIf(key, false);
 
 			break;
 			
 		case SDL_MOUSEBUTTONDOWN:
-			button = action.key = event.button.button;
-			action.press = true;
-
+			button = event.button.button;
 
 			// set state command bit in currentStates to true
 			if (stateCmdKeyMap.count(button) > 0)
 				setCurrentState(stateCmdKeyMap[button], true);
 
 			// push action command if action key pressed
-			if (actionCmdKeyMap.count(action) > 0)
-				pushActionCmd(actionCmdKeyMap[action]);
+			pushActionCmdIf(button, true);
 			
 			break;
 		case SDL_MOUSEBUTTONUP:
-			button = action.key = event.button.button;
-			action.press = false;
+			button = event.button.button;
 
 			// set state command bit in currentStates to false
 			if (stateCmdKeyMap.count(button) > 0)
 				setCurrentState(stateCmdKeyMap[button], false);
 
 			// push action command if action key released
-			if (actionCmdKeyMap.count(action) > 0)
-				pushActionCmd(actionCmdKeyMap[action]);
+			pushActionCmdIf(button, false);
+
 			break;
 
 		case SDL_MOUSEMOTION:
 			{
 				Vec2<int> tmpMouseScreenPos(event.motion.x, event.motion.y);
 				tmpMouseScreenPos.y = Game::WINDOW_SIZE.y - tmpMouseScreenPos.y; // convert from SDL to GL position
-
+				//setCurrentMousePos(mouseScreenPos);
+				//mousePosChanged = true;
 				this->mouseScreenPos = tmpMouseScreenPos;			
 			}
 			break;

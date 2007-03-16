@@ -14,17 +14,34 @@ namespace Planet
 	void ClientTimeHandler::nextStep()
 	{
 
-		int preStepTick = stepTick;
 
-		stepTickf = tmax(stepTickf, static_cast<Tickf>(getTime() - getTick0Time()) / static_cast<Tickf>(TICK_DELTA_TIME));
-		stepTick = static_cast<int>(stepTickf);
 
-		if (stepTick != preStepTick)
+		Tickf stepTickfTmp = tmax(stepTickf, static_cast<Tickf>(getTime() - getTick0Time()) / static_cast<Tickf>(TICK_DELTA_TIME));
+		int stepTickTmp = static_cast<int>(stepTickfTmp);
+
+		if (stepTickTmp >= stepTick)
 		{
-			assert(stepTick > preStepTick);
-			stepTick = preStepTick + 1; // only step one tick at a time
-			newTick = true;
+			int preStepTick = stepTick;
+			stepTickf = stepTickfTmp;
+			stepTick = stepTickTmp;
+			
+			if (stepTick > preStepTick)
+			{
+				assert(stepTick > preStepTick);
+				if (stepTick > preStepTick + 1)
+				{
+					stepTick = preStepTick + 1; // only step one tick at a time
+					stepTickf = static_cast<Tickf>(stepTick);
+				}
+
+				newTick = true;				
+			}
+
+			//assert(((stepTick > preStepTick) || !newTick) && (stepTick >= preStepTick));
 		}
+
+
+		//assert(((stepTick > preStepTick) || !newTick) && (stepTick >= preStepTick));
 	}
 
 	int ClientTimeHandler::getTickTime()

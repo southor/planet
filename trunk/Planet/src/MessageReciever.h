@@ -10,6 +10,9 @@
 
 namespace Planet
 {
+
+	//const bool SERVER_PRINT_NETWORK_DEBUG = false;
+
 	class MessageReciever
 	{
 	private:

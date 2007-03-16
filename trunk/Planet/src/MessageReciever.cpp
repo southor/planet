@@ -1,6 +1,8 @@
 #include "MessageReciever.h"
 #include "common.h"
 
+
+
 namespace Planet
 {
 	bool MessageReciever::hasMessageOnQueue()
@@ -8,7 +10,6 @@ namespace Planet
 		if (recieveQueue.size() > 0)
 		{
 			return true;
-			//return lagTimeHandler.getTime() >= (lagQueue.front().time + simulatedLag);
 		}
 		return false;
 	}
@@ -85,26 +86,12 @@ namespace Planet
 	void MessageReciever::putMessageToLagQueue(Message message, int currentTime)
 	{
 		lag = (currentTime - message.time) + simulatedLag;
-		//LagMessage lagMessage(message, lagTimeHandler.getTime());
+
 		message.time = lagTimeHandler.getTime();
 		lagQueue.push_back(message);
 
 		//printf("%d putting %d on lag queue\n", v, message.tick);
-		
-		//MessageReciever::retrieve(0);
-		
-		/*
-		while (lagQueue.size() > 0)
-		{
-			Message m = lagQueue.front();
-			lagQueue.pop_front();
-			
-			recieveQueue.push_back(m);
 
-			if (m.tick > getLatestTick())
-				setLatestTick(m.tick);
-		}
-		*/
 	}
 	
 	Message MessageReciever::popMessage()
