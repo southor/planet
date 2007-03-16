@@ -9,7 +9,6 @@ namespace Planet
 	void ConfigHandler::loadFile(std::string fileName)
 	{
 		std::ifstream file(fileName.c_str());
-		assert(file.good());
 
 		std::string line;
 		std::string token;
