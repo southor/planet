@@ -28,6 +28,7 @@ namespace Planet
 	
 	void Sight::render()
 	{
+		glPointSize(6.0);
 		glBegin(GL_POINTS);
 			glColor3f(0.0, 1.0f, 0.0f);
 			glVertex3f(position.x, position.y, position.z);

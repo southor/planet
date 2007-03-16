@@ -14,6 +14,7 @@ namespace Planet
 	public:
 		Ship() 
 			:	position(0.0f, 0.0f, 6.29f),
+				direction(0.0f, 0.0f, 0.0f),
 				moveUp(false),
 				moveDown(false),
 				moveLeft(false),
@@ -28,9 +29,12 @@ namespace Planet
 	
 		void setPlanet(PlanetBody *planetBody) { this->planetBody = planetBody; }
 	
+		// Used by server
 		void logic();
 		void lookAt(Vec3f &lookAt);
 		
+		// Used by client
+		void setState(Vec3f &pos, Vec3f &dir);
 		
 		void render();
 		
@@ -44,7 +48,11 @@ namespace Planet
 		Vec3f direction;
 		Vec3f reference;
 		
+		Vec3f prevPosition;
+		
 	private:
+		void updateRotation();
+	
 		PlanetBody *planetBody;
 
 		float rotateForward;
