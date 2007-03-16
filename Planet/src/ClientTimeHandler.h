@@ -12,35 +12,16 @@ namespace Planet
 	{
 	public:
 
-		//static const int DELTA_TIME_MAX = 1000/30;
-
-		//static const float DELTA_TIME_MAX_F;
-
-		
-		
-		//static const int TICKS_PER_SECOND = 50;
-
 		ClientTimeHandler() : TimeHandler(), stepTick(0), stepTickf(0.0f), newTick(true)//, deltaTime(1), stepTime(0), 
 		{
 			setTick0Time(0);
 		}
-
-		//inline int getTime()					{ return SDL_GetTicks() - startTime; }
-
-		//inline int getStepTime()				{ return stepTime; }		
+	
 		inline Tickf getStepTick()				{ return stepTickf; }
 		int getTickTime();
 
 		// returns true only once for every new Tick
 		bool isNewTick();											  
-
-		//int getDeltaTime()					{ return deltaTime; }
-
-		//float getDeltaTimef()					{ return static_cast<float>(deltaTime); }
-		
-		//int getTick();
-		
-		//void reset();
 
 		void nextStep();
 
@@ -55,12 +36,8 @@ namespace Planet
 		
 		
 	private:
-		//int startTime;
-		//int stepTime;
 		Tickf stepTickf;
 		int stepTick;
-		//int deltaTime;
-		//int tick0Time;
 		bool newTick;
 
 		

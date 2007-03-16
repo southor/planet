@@ -1,14 +1,7 @@
 #ifndef __Messages_h__
 #define __Messages_h__
 
-//#include <vector>
-
-//#include "Rectangle.h"
 #include "Color.h"
-//#include "GameObjId.h"
-//#include "Angle.h"
-//#include "StateCmds.h"
-//#include "Projectile.h"
 #include "basic.h"
 
 namespace Planet
@@ -40,51 +33,6 @@ namespace Planet
 	// --------------------------------- server messages ------------------------------
 	// --------------------------------------------------------------------------------
 
-	//struct UpdatePlayerObj
-	//{
-	//	static const size_t messageType = UPDATE_PLAYER_OBJ;
-
-	//	//size_t playerObjId;
-	//	PlayerId playerId;
-	//	Pos pos;
-	//	Angle angle;
-	//	Tickf nextShootTick;
-	//	int ammo[Projectile::N_TYPES];
-
-	//	UpdatePlayerObj()		{}
-	//	UpdatePlayerObj(PlayerId playerId, const Pos &pos, Angle angle, Tickf nextShootTick, const int ammo[Projectile::N_TYPES])
-	//		: playerId(playerId), pos(pos), angle(angle), nextShootTick(nextShootTick)
-	//	{
-	//		for(int i=0; i<Projectile::N_TYPES; ++i)
-	//		{
-	//			this->ammo[i] = ammo[i];
-	//		}
-	//	}
-	//};
-	//
-	//struct AddPlayerObj
-	//{
-	//	static const size_t messageType = ADD_PLAYER_OBJ;
-
-	//	Color color;
-	//	Pos pos;
-	//	PlayerId playerId;
-	//
-	//	AddPlayerObj(PlayerId playerId, const Color &color, const Pos &pos)
-	//		: playerId(playerId), color(color), pos(pos) {}
-	//};
-
-	//struct AddObstacle
-	//{
-	//	static const size_t messageType = ADD_OBSTACLE;
-
-	//	GameObjId obstacleId;
-	//	Rectangle obstacleArea;
-	//	AddObstacle(GameObjId obstacleId, const Rectangle &obstacleArea)
-	//		: obstacleId(obstacleId), obstacleArea(obstacleArea)
-	//	{}
-	//};
-
 	struct WelcomeClient
 	{
 		static const size_t messageType = WELCOME_CLIENT;
@@ -106,59 +54,6 @@ namespace Planet
 		AddPlayer(PlayerId playerId, Color color, Pos startPos) 
 			: playerId(playerId), color(color), startPos(startPos) {}
 	};
-
-	//struct AddProjectile
-	//{
-	//	static const size_t messageType = ADD_PROJECTILE;
-
-	//	GameObjId projectileId;
-	//	int type;
-	//	Pos pos;
-	//	float angle;
-	//	PlayerId shooterId;
-	//	Tickf shootTick;
-
-	//	AddProjectile(GameObjId projectileId, int type, Pos pos, float angle, PlayerId shooterId, Tickf shootTick)
-	//		: projectileId(projectileId), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick)
-	//	{}
-	//};
-
-	//struct UpdateProjectile
-	//{
-	//	static const size_t messageType = UPDATE_PROJECTILE;
-
-	//	GameObjId projectileId;
-	//	Pos pos;
-
-	//	UpdateProjectile(GameObjId projectileId, Pos pos)
-	//		: projectileId(projectileId), pos(pos)
-	//	{}
-	//};
-
-	//struct RemoveProjectile
-	//{
-	//	static const size_t messageType = REMOVE_PROJECTILE;
-
-	//	GameObjId projectileId;
-	//	Pos hitPosition;
-
-	//	RemoveProjectile(GameObjId projectileId, Pos hitPosition)
-	//		: projectileId(projectileId), hitPosition(hitPosition)
-	//	{}
-	//};
-
-	//struct Kill
-	//{
-	//	static const size_t messageType = KILL;
-
-	//	PlayerId killerId;
-	//	PlayerId killedId;
-	//	Pos respawnPos;
-
-	//	Kill(PlayerId killerId, PlayerId killedId, Pos respawnPos)
-	//		: killerId(killerId), killedId(killedId), respawnPos(respawnPos)
-	//	{}
-	//};
 	
 	struct StartGame
 	{
@@ -210,88 +105,6 @@ namespace Planet
 		SyncPing(PlayerId playerId, int pingSendTime) : playerId(playerId), pingSendTime(pingSendTime) {}
 	};
 
-	//struct UserCmd
-	//{
-	//	static const size_t messageType = USER_CMD;
-
-	//	//enum ShootAction
-	//	//{
-	//	//	START_SHOOTING,
-	//	//	CONTINUE_SHOOTING,
-	//	//	NOT_SHOOTING
-	//	//};
-
-	//	//bool cmdLeft;
-	//	//bool cmdRight;
-	//	//bool cmdUp;
-	//	//bool cmdDown;
-	//	//float viewangle;
-
-	//	//int stateCmds; // bitpattern
-	//	StateCmds stateCmds;
-	//	Angle aimAngle;
-	//	
-	//	Projectile::Type weapon;
-	//	int nShots;
-	//	Tickf firstShotTick;
-	//	bool shooting; // keep shooting at the end of this Tick?
-	//	
-	//	//ShootAction shootAction;
-	//	//bool continuosShooting
-
-	//	
-
-	//	UserCmd()
-	//	{}
-
-	//	//UserCmd(StateCmds stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
-	//	//{}
-
-	//	//UserCmd(int stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
-	//	UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon, int nShots, bool shooting, Tickf firstShotTick)
-	//		: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots), shooting(shooting), firstShotTick(firstShotTick)
-	//	{}
-
-	//	void clear();
-
-	//	//inline bool isShooting() const				{ return (shootAction != NOT_SHOOTING); }
-	//	inline bool isShooting() const					{ return shooting; }
-	//	
-	//	//UserCmd operator +(const UserCmd &rh) const
-	//	//{			
-	//	//	
-	//	//	//int resultNShots;
-	//	//	UserCmd result(stateCmds | rh.stateCmds, aimAngle + rh.aimAngle, Projectile::DEFAULT_TYPE, 0, NOT_SHOOTING);
-	//	//	return result;
-	//	//}
-
-	//	//UserCmd operator -(const UserCmd &rh) const
-	//	//{
-	//	//	UserCmd result(stateCmds & rh.stateCmds, aimAngle - rh.aimAngle, Projectile::DEFAULT_TYPE, 0, NOT_SHOOTING);
-	//	//	return result;
-	//	//}
-
-	//	//UserCmd operator *(float rh) const
-	//	//{			
-	//	//	UserCmd result(stateCmds, aimAngle * rh, Projectile::DEFAULT_TYPE, 0, NOT_SHOOTING);
-	//	//	return result;
-	//	//}
-
-	//	static void interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData);
-
-
-	//	// Produces the next legal UserCmd from this one.
-	//	void assumeNext(UserCmd &resultData) const;
-
-
-	//	//inline static const UserCmd& getDefaultUserCmd()		{ return defaultUserCmd; }
-	//	static const UserCmd DEFAULT_USER_CMD;
-
-	//	// debug
-	//	//inline bool isConsistent() const						{ return isConsistent(0); }
-	//	bool isConsistent(int currentTick) const;
-
-	//};	
 };
 
 #endif

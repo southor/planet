@@ -391,7 +391,7 @@ namespace Planet
 		void add(Id id, T item)				{ bool result = (map.insert(Pair(id, item))).second;
 											  assert(result); }
 		bool remove(Id id)					{ bool removed = (map.erase(id) > 0);
-											  assert(removed);
+											 //assert(removed);
 											  return removed; }
 
 		T& operator[](Id id)
