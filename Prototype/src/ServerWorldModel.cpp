@@ -87,7 +87,7 @@ namespace Prototype
 	void ServerWorldModel::performProjectileHits(ServerPlayers &players)
 	{
 
-		std::vector<RemoveProjectile> projectilesHit;
+		std::vector<ProjectileHit> projectilesHit;
 		
 		Projectiles::Iterator projectileIt(getProjectiles().begin());
 		Projectiles::Iterator projectileEnd(getProjectiles().end());
@@ -226,9 +226,9 @@ namespace Prototype
 					
 				}
 
-				// remove projectile later
-				RemoveProjectile removeProjectile(projectileIt->first, hitPos);
-				projectilesHit.push_back(removeProjectile);
+				// push projectile hit for later
+				ProjectileHit projectileHit(projectileIt->first, hitPos);
+				projectilesHit.push_back(projectileHit);
 				//std::cout << "((((( projectile hit! )))))" << std::endl;
 				
 			}
@@ -237,11 +237,11 @@ namespace Prototype
 		if (projectilesHit.size() > 0)
 		{
 			//std::cout << "---- number of projectiles to remove: " << move.getProjectilesHit().size() << std::endl;
-			std::vector<RemoveProjectile>::iterator it = projectilesHit.begin();
-			std::vector<RemoveProjectile>::iterator end = projectilesHit.end();
+			std::vector<ProjectileHit>::iterator it = projectilesHit.begin();
+			std::vector<ProjectileHit>::iterator end = projectilesHit.end();
 			for(; it != end ; ++it)
 			{
-				projectiles.remove(it->projectileId);
+				assert(projectiles.remove(it->projectileId));
 				//std::cout << "\tremoving projectile: " << it->projectileId << std::endl;
 				
 				// send message			
@@ -274,20 +274,6 @@ namespace Prototype
 	//	
 	//}
 
-	GameObjId ServerWorldModel::playerShoot(PlayerId playerId, Projectile::Type weapon, Tickf shootTick, int objLag)
-	{
-		PlayerObj *playerObj = getPlayerObjs()[playerId];
-		Pos pos(playerObj->getPos());
-		Angle angle = playerObj->angle;
-
-		//GameObjId projectileId = getProjectiles().findFreeId();
-		GameObjId projectileId = getIdGenerator()->generateGameObjId();
-		Projectile *projectile = new Projectile(weapon, pos, angle, playerId, 1, shootTick, objLag);		
-		getProjectiles().add(projectileId, projectile);
-
-		return projectileId;
-	}
-
 	void ServerWorldModel::handlePlayerShooting(PlayerId playerId, ServerPlayers &players)
 	{	
 		int currentTick = getTimeHandler()->getTick();
@@ -299,45 +285,40 @@ namespace Prototype
 		assert((userCmd.firstShotTick >= playerObj->getNextShootTick()) &&
 				(playerObj->getNextShootTick() >= currentTickf));
 		
-		///**
-		// * Fix problems with lost UserCmd messages, problems arises
-		// * when a CONTINUE_SHOOTING was recieved with no prior START_SHOOTING.
-		// */
-		//Tickf nextShootTick = playerObj->getNextShootTick();
-		//if ((userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) && (nextShootTick < currentTickf))
-		//{
-		//	assert(false); // should not happen with TCP
-		//	
-		//	Tickf shootInterval = Projectile::getShootInterval(userCmd.weapon);
-		//	int nShotIntervalDelay = 1 + static_cast<int>((currentTickf - nextShootTick) / shootInterval);
-		//	
-		//	// Delay nextShootTick
-		//	playerObj->setNextShootTick(nextShootTick + static_cast<Tickf>(nShotIntervalDelay) * shootInterval);
-
-		//	assert(playerObj->getNextShootTick() >= currentTickf);
-		//}
-		
 		// Do any shooting
 		int nShots = userCmd.nShots;
 		Projectile::Type weapon = userCmd.weapon;
 		for(int i=0; i<nShots; ++i)
 		{
-			//std::cout << "server: handlePlayerShooting: ";
-			//if (userCmd.shootAction == UserCmd::START_SHOOTING) std::cout << "start shooting" << std::endl;
-			//else if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING) std::cout << "continue shooting" << std::endl;
-			//else std::cout << "not shooting!";
-			//std::cout << std::endl;
 			
-			Tickf shootTick = playerObj->getShotTick(currentTick, i);			
-			GameObjId projectileId = playerShoot(playerId, weapon, shootTick, userCmd.objLag);
-			Projectile *projectile = (getProjectiles())[projectileId];
-
-			std::cout << "server tick: " << getTimeHandler()->getTick() << "    projectile shot, objLag =  " << projectile->getObjLag() << std::endl;
+			//Tickf shootTick = playerObj->getShotTick(currentTick, i);
+			//GameObjId projectileId = playerShoot(playerId, weapon, shootTick, userCmd.objLag);
+			//Projectile *projectile = (getProjectiles())[projectileId];
 			
-			// send projectile to all clients
-			AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
-										projectile->getAngle().getFloat(), projectile->getShooterId(), projectile->getShootTick(), projectile->getObjLag());
-			pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+			//GameObjId projectileId = getIdGenerator()->generateGameObjId();
+			GameObjId projectileId = userCmd.firstProjectileId + i;
+			if (playerTryShoot(playerId, currentTick, i, projectileId))
+			{		
+				Projectile *projectile = (getProjectiles())[projectileId];
+				std::cout << "server tick: " << getTimeHandler()->getTick() << "    projectile shot, objLag =  " << projectile->getObjLag() << std::endl;
+				
+				// send projectile to all clients
+				AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
+											projectile->getAngle().getFloat(), projectile->getShooterId(),
+											projectile->getShootTick(), projectile->getObjLag());
+				pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				//ServerPlayers::Iterator it = players.begin();
+				//ServerPlayers::Iterator end = players.end();
+				//for(; it != end; ++it)
+				//{
+				//	if (it->first != playerId) it->second->link.pushMessage(addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				//}
+			}
+			else
+			{
+				RemoveProjectile removeProjectile(projectileId);
+				players[playerId]->link.pushMessage(removeProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+			}
 		}		
 	}
 };

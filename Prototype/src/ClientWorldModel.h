@@ -3,10 +3,11 @@
 
 #include "WorldModel.h"
 #include "IdMap.h"
+#include "ClientGlobalAccess.h"
 
 namespace Prototype
 {
-	class ClientWorldModel : public WorldModel
+	class ClientWorldModel : public WorldModel, public ClientGlobalAccess
 	{
 	private:
 		
@@ -20,6 +21,9 @@ namespace Prototype
 		Projectiles projectiles;
 
 	public:
+
+		ClientWorldModel(ClientGlobalObj *clientGlobalObj) : ClientGlobalAccess(clientGlobalObj)
+		{}
 
 		~ClientWorldModel();
 				
@@ -38,6 +42,8 @@ namespace Prototype
 		void addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId, Tickf shootTick, int objLag);
 
 		void updatePlayerObjMovement(PlayerId playerId);
+
+		void handlePlayerShooting(PlayerId playerId);
 
 	};
 };
