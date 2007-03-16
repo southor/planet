@@ -8,7 +8,6 @@ namespace Planet
 		if (hasPoppedMessage)
 		{
 			delete [] poppedMessage.data;
-			//resetPoppedMessage();
 			hasPoppedMessage = false;
 		}
 	}

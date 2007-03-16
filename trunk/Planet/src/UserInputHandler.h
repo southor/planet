@@ -46,7 +46,6 @@ namespace Planet
 
 		// mouse position in screen coordinates
 		Vec2<int> mouseScreenPos;
-		//bool mousePosChanged;
 
 		static const int NO_ACTION_CMD = -1;
 		
@@ -67,17 +66,13 @@ namespace Planet
 
 		// ------- set State cmd keys and mouse buttons -------
 		void setStateCmdKey(int stateCmd, int key);
-		//void setStateCmdKey(int stateCmd, int key); // keyboard key
-		//void setStateCmdButton(int stateCmd, int button); // mouse button
 
 		// ------- set Action cmd keys and mouse buttons -------
 		void setActionCmdKey(int actionCmdPress, int actionCmdRelease, int key);
 		inline void setActionCmdKey(int actionCmd, int key)
 		{
 			setActionCmdKey(actionCmd, NO_ACTION_CMD, key);
-		}		
-		//void setActionCmdKey(int actionCmd, int key); // keyboard key
-		//void setActionCmdButton(int actionCmd, int button); // mouse button
+		}
 
 
 		// ------- get state cmd input -------
@@ -94,22 +89,13 @@ namespace Planet
 		void pushActionCmd(int actionCmd);
 
 		// ------- mouse move input -----------
-		inline Vec2<int>& getMouseScreenPos()		{ return mouseScreenPos; }
-		//inline bool hasMousePosChanged()
-		//{
-		//	bool tmp = mousePosChanged;
-		//	mousePosChanged = false;
-		//	return tmp;
-		//}		
+		inline Vec2<int>& getMouseScreenPos()		{ return mouseScreenPos; }	
 		
 		// ------ primitive event input --------
 		void pushInput(const SDL_Event &event);
 
 	private:
 
-		
-
-		//void setCurrentMousePos(Vec2<int> mouseScreenPos, const ViewportHandler &viewportHandler);
 
 	};
 };

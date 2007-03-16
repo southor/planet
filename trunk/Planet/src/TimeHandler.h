@@ -9,10 +9,6 @@ namespace Planet
 	{
 	public:
 
-		//static const int DELTA_TIME_MAX = 1000/30;
-
-		//static const float DELTA_TIME_MAX_F;
-
 		static const int TICKS_PER_SECOND = 20;
 		static const int TICK_DELTA_TIME = 1000 / TICKS_PER_SECOND;
 
@@ -22,23 +18,11 @@ namespace Planet
 		inline int getTime()				{ return SDL_GetTicks() - startTime; }
 		
 		inline void incrementTime(int inc)	{ startTime -= inc; }
-
-		//int getStepTime()					{ return stepTime; }
-
-		//int getDeltaTime()				{ return deltaTime; }
-
-		//float getDeltaTimef()				{ return static_cast<float>(deltaTime); }
-		
-		//int getTick();
 		
 		virtual void reset();
 
-		//void nextStep();
-		
 	private:
 		int startTime;
-		//int stepTime;
-		//int deltaTime;
 	};
 	
 	static const int MAX_SERVER_TO_CLIENT_LAG = 1500;
