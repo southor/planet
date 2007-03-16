@@ -2,7 +2,7 @@
 #define __clientglobalaccess_h__
 
 #include "ClientTimeHandler.h"
-//#include "IdGenerator.h"
+#include "IdGenerator.h"
 
 namespace Planet
 {
@@ -10,7 +10,7 @@ namespace Planet
 	{
 	public:
 		ClientTimeHandler timeHandler;
-		//ClientIdGenerator idGenerator;
+		ClientIdGenerator idGenerator;
 	};
 	
 	class ClientGlobalAccess
@@ -31,11 +31,11 @@ namespace Planet
 			return &(clientGlobalObj->timeHandler);
 		}
 
-		//inline ClientIdGenerator* getIdGenerator()
-		//{
-		//	assert(clientGlobalObj);
-		//	return &(clientGlobalObj->idGenerator);
-		//}
+		inline ClientIdGenerator* getIdGenerator()
+		{
+			assert(clientGlobalObj);
+			return &(clientGlobalObj->idGenerator);
+		}
 
 		inline Tickf getStepTick()
 		{			
