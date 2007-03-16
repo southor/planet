@@ -46,10 +46,11 @@ namespace Planet
 		
 	void PlanetBody::render()
 	{
-		/*
+		
 		glLineWidth(2.0);
 		glPointSize(3.0);
 
+		/*
 		glDisable(GL_LIGHTING);
 		glBegin(GL_LINES);
 			glColor3f(1.0f, 1.0f, 0.0f);
@@ -72,7 +73,7 @@ namespace Planet
 		glEnable(GL_LIGHTING);
 		*/
 
-
+		
 		xFront.draw();
 		xBack.draw();
 
@@ -81,6 +82,7 @@ namespace Planet
 
 		zFront.draw();
 		zBack.draw();
+		
 	}
 	
 	bool PlanetBody::checkCollision(Vec3f startPos, Vec3f endPos, Vec3f *collisionPos)
