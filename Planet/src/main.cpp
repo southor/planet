@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "ConfigHandler.h"
 
 int main(int argc, char **argv)
 {
