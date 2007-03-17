@@ -58,11 +58,19 @@ namespace Planet
 			if (client.getUserInputHandler()->getCurrentState(Cmds::CONNECT_TO_SERVER))
 				connectToServer(host);
 
-			// Workaround using both state and action cmd
-			if (client.getUserInputHandler()->getCurrentState(Cmds::TOGGLE_MENU))
-				if (client.getUserInputHandler()->hasActionCmdOnQueue())
-					if (client.getUserInputHandler()->popActionCmd() == Cmds::TOGGLE_MENU)
-						toggleMenu();
+			if (client.getUserInputHandler()->hasActionCmdOnQueue())
+			{
+				//pushActionCmd(int actionCmd)
+				int actionCmd = client.getUserInputHandler()->popActionCmd();
+				if (actionCmd == Cmds::TOGGLE_MENU) toggleMenu();
+				else client.getUserInputHandler()->pushActionCmd(actionCmd);
+			}
+			//// Workaround using both state and action cmd
+			//if (client.getUserInputHandler()->getCurrentState(Cmds::TOGGLE_MENU))
+			//	if (client.getUserInputHandler()->hasActionCmdOnQueue())
+			//		if (client.getUserInputHandler()->popActionCmd() == Cmds::TOGGLE_MENU)
+			//			toggleMenu();
+
 			
 			if (client.getUserInputHandler()->getCurrentState(Cmds::LEFT))
 				viewAngle += 3.0f;

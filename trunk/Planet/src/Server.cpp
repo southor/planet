@@ -104,7 +104,7 @@ namespace Planet
 				// add player to server
 				PlayerId playerId = addClient(color, messageSender, messageReciever);
 
-				Pos startPos(200.0f + playerId * 50.0f, 200.0f);
+				Pos startPos(200.0f + playerId * 50.0f, 200.0f, 0.0f);
 //%				addPlayerObj(playerId, startPos);
 
 				// send WelcomeClient with playerId to client

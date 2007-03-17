@@ -23,8 +23,8 @@ namespace Planet
 	
 	typedef Vec2<float> Vec2f;
 	typedef Vec2<int> Vec2i;
-	
-	typedef Vec2f Vec;
+
+	typedef Vec3f Vec;
 	typedef Vec Pos;
 
 	typedef double Tickf;
@@ -56,6 +56,16 @@ namespace Planet
 	{
 		return tmin(tmin(a, b), tmin(c, d));		
 	}
+
+	template <typename T>
+	void tcopy(T *from, T *to, size_t n)
+	{
+		for(size_t i=0; i<n; ++i)
+		{
+			to[i] = from[i];
+		}
+	}
+	
 
 	typedef uint PlayerId;
 };
