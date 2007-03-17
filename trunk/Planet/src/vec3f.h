@@ -138,7 +138,23 @@ namespace Planet
 			CartesianToSpherical(x, y, z, &(sp.p), &(sp.phi), &(sp.theta));
 			return sp;
 		}
-		
+
+		Vec3f getOrtoganal()
+		{
+			Vec3f v = *this;
+			Vec3f yAxis(0.0f, 1.0f, 0.0f);
+			Vec3f xAxis(1.0f, 0.0f, 0.0f);
+			
+			Vec3f ortogonal = yAxis - v * yAxis.dot(v);
+			
+			if (ortogonal.length() == 0.0f)
+				ortogonal = xAxis - v * xAxis.dot(v);
+
+			ortogonal.normalize();
+
+			return ortogonal;
+		}
+
 /*
 		static void transformVec(GLfloat *matrix, GLfloat *from, GLfloat *to) 
 		{

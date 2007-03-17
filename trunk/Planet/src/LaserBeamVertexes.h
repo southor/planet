@@ -1,7 +1,7 @@
 #ifndef _LaserBeamVertexes_h_
 #define _LaserBeamVertexes_h_
 
-#include "externdata.h"
+#include "ExternData.inl"
 #include "vec4f.h"
 #include "Line.h"
 #include "Color.h"

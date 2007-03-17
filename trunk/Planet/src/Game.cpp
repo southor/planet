@@ -101,7 +101,7 @@ namespace Planet
 		client.getCamera()->useCamera();
 
 
-		skyBox.render();
+		skyBox.render(client.getCamera()->position);
 
 
 		glPushMatrix();
@@ -117,7 +117,7 @@ namespace Planet
 
 			// Setup lights
 			float light_ambient[] = {redAmbient, 0.2f, 0.2f, 1.0f};
-			float light_diffuse[] = {0.5f, 0.5f, 0.5f, 1.0f};
+			float light_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
 			float light_specular[] = {1.0f, 0.0f, 0.0f, 1.0f};
 			float light_position[] = {0.0f, 10.0f, 0.0f, 0.0f};
 			
@@ -223,7 +223,6 @@ namespace Planet
 		client.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
-		client.getUserInputHandler()->setStateCmdKey(Cmds::TOGGLE_MENU, SDLK_F1);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::TOGGLE_MENU, SDLK_F1);
 
 		client.getUserInputHandler()->setStateCmdKey(Cmds::START_SERVER, SDLK_F2);

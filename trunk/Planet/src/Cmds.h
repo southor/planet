@@ -24,7 +24,6 @@ namespace Planet
 			
 			START_SERVER,
 			CONNECT_TO_SERVER,
-			//TOGGLE_MENU,
 			
 			TMP_LEFT,
 			TMP_RIGHT,

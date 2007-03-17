@@ -7,27 +7,29 @@ namespace Planet
 {
 	void SkyBox::init()
 	{
-		textures[0] = TextureHandler::loadTexture("skybox/box1.png");
-		textures[1] = TextureHandler::loadTexture("skybox/box2.png");
-		textures[2] = TextureHandler::loadTexture("skybox/box3.png");
-		textures[3] = TextureHandler::loadTexture("skybox/box4.png");
-		textures[4] = TextureHandler::loadTexture("skybox/box5.png");
-		textures[5] = TextureHandler::loadTexture("skybox/box6.png");
+		textures[0] = TextureHandler::loadTexture("images/skybox/box1.png");
+		textures[1] = TextureHandler::loadTexture("images/skybox/box2.png");
+		textures[2] = TextureHandler::loadTexture("images/skybox/box3.png");
+		textures[3] = TextureHandler::loadTexture("images/skybox/box4.png");
+		textures[4] = TextureHandler::loadTexture("images/skybox/box5.png");
+		textures[5] = TextureHandler::loadTexture("images/skybox/box6.png");
 	}
 	
-	void SkyBox::render()
+	void SkyBox::render(Vec3f &position)
 	{
 		glDisable(GL_LIGHTING);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
 		glDepthMask(GL_FALSE);
 	
-		glColor3f(1.0f, 1.0f, 1.0f);
+		glColor4f(1.0f, 1.0f, 1.0f, 0.2f);
 	 
 		glPushMatrix();
-	 
+			glTranslatef(position.x, position.y, position.z);
+
 			glScalef(50.0f, 50.0f, 50.0f);
-		
+
+
 			float r = 1.0f;
 
 			// Y
@@ -98,6 +100,8 @@ namespace Planet
 		
 		glPopMatrix();
 		
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 		
 		glEnable(GL_LIGHTING);
 		glEnable(GL_DEPTH_TEST);
