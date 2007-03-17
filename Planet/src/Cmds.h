@@ -24,7 +24,7 @@ namespace Planet
 			
 			START_SERVER,
 			CONNECT_TO_SERVER,
-			TOGGLE_MENU,
+			//TOGGLE_MENU,
 			
 			TMP_LEFT,
 			TMP_RIGHT,
@@ -39,7 +39,10 @@ namespace Planet
 		{			
 			SWITCH_WEAPON = 0,
 			START_SHOOTING,
-			STOP_SHOOTING
+			STOP_SHOOTING,
+
+			// other commands
+			TOGGLE_MENU
 		};
 
 

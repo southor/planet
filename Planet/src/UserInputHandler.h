@@ -49,6 +49,7 @@ namespace Planet
 
 		static const int NO_ACTION_CMD = -1;
 		
+		void pushActionCmdIf(int key, bool press);
 
 	public:
 
@@ -87,7 +88,7 @@ namespace Planet
 		bool hasActionCmdOnQueue();
 		int popActionCmd();
 		void pushActionCmd(int actionCmd);
-		void pushActionCmdIf(int key, bool press);
+		
 
 		// ------- mouse move input -----------
 		inline Vec2<int>& getMouseScreenPos()		{ return mouseScreenPos; }
