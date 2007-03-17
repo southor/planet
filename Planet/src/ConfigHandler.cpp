@@ -13,7 +13,7 @@ namespace Planet
 		std::string line;
 		std::string token;
 
-		float value;
+		double value;
 
 		while (std::getline(file, line)) 
 		{
@@ -25,7 +25,7 @@ namespace Planet
 		}
 	}
 	
-	float ConfigHandler::getValue(std::string option)
+	double ConfigHandler::getDoubleValue(std::string option)
 	{
 		if (configMap.count(option) > 0)
 		{
