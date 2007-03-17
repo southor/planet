@@ -47,29 +47,29 @@ namespace Planet
 
 		LaserBeamVertexes()	{}
 
-		const Line& getLine() const					{ return line; }		
-		float getWidth() const						{ return width; }
-		const Color& getColor() const				{ return color; }
-		float getIntensity() const					{ return intensity; }
-		bool getTrailMode() const					{ return trailMode; }
+		inline const Line& getLine() const					{ return line; }		
+		inline float getWidth() const						{ return width; }
+		inline const Color& getColor() const				{ return color; }
+		inline float getIntensity() const					{ return intensity; }
+		inline bool getTrailMode() const					{ return trailMode; }
 
 
 		// set line
-		void setLine(const Line &line)
+		inline void setLine(const Line &line)
 		{
 			this->line = line;
 			updateVecs();
 		}
 		
 		// set width
-		void setWidth(float width)
+		inline void setWidth(float width)
 		{
 			this->width = width;
 			updateVecs();
 		}
 
 		// set both line and width
-		void setVecs(const Line &line, float width)
+		inline void setVecs(const Line &line, float width)
 		{
 			this->line = line;
 			this->width = width;
@@ -77,28 +77,28 @@ namespace Planet
 		}
 
 		// set color
-		void setColor(const Color &color)
+		inline void setColor(const Color &color)
 		{
 			this->color = color;
 			updateColors();
 		}
 
 		// set intensity (alpha value)
-		void setIntensity(float intensity)
+		inline void setIntensity(float intensity)
 		{
 			this->intensity = intensity;
 			updateColors();
 		}
 
 		// set trail mode
-		void setTrailMode(bool trailMode)
+		inline void setTrailMode(bool trailMode)
 		{
 			this->trailMode = trailMode;
 			updateColors();
 		}
 
 		// set color, intensity (alpha value) and trail mode
-		void setTrailMode(const Color &color, float intensity, bool trailMode)
+		inline void setColors(const Color &color, float intensity, bool trailMode)
 		{
 			this->color = color;
 			this->intensity = intensity;

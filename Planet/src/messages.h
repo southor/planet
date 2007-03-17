@@ -3,6 +3,8 @@
 
 #include "Color.h"
 #include "basic.h"
+#include "Projectile.h"
+#include "StateCmds.h"
 
 namespace Planet
 {
@@ -216,54 +218,56 @@ namespace Planet
 		SyncPing(PlayerId playerId, int pingSendTime) : playerId(playerId), pingSendTime(pingSendTime) {}
 	};
 
-	//struct UserCmd
-	//{
-	//	static const size_t messageType = USER_CMD;
+	struct UserCmd
+	{
+		static const size_t messageType = USER_CMD;
 
-	//	StateCmds stateCmds;
-	//	Angle aimAngle;
-	//	
-	//	Projectile::Type weapon;
-	//	int nShots;
-	//	Tickf firstShotTick;
-	//	bool shooting; // keep shooting at the end of this Tick?
-	//	
-	//	int objLag; // The object lag the client uses this tick
-	//	GameObjId firstProjectileId; // the id of the first projectile shot during this tick
-	//	
-
-
-	//	
-
-	//	UserCmd()
-	//	{}
-
-	//	UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon, int nShots,
-	//			bool shooting, Tickf firstShotTick, GameObjId firstProjectileId, int objLag)
-	//		: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots), shooting(shooting),
-	//		  firstShotTick(firstShotTick), firstProjectileId(firstProjectileId), objLag(objLag)
-	//	{}
-
-	//	
-	//	void clear();
-
-	//	inline bool isShooting() const					{ return shooting; }
+		StateCmds stateCmds;
+		//Angle aimAngle;
+		
+		Projectile::Type weapon;
+		int nShots;
+		Tickf firstShotTick;
+		bool shooting; // keep shooting at the end of this Tick?
+		
+		int objLag; // The object lag the client uses this tick
+		GameObjId firstProjectileId; // the id of the first projectile shot during this tick
+		
 
 
-	//	static void interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData);
+		
+
+		UserCmd()
+		{}
+
+		UserCmd(StateCmds stateCmds, //Angle aimAngle,
+				Projectile::Type weapon, int nShots,
+				bool shooting, Tickf firstShotTick, GameObjId firstProjectileId, int objLag)
+			: stateCmds(stateCmds), //aimAngle(aimAngle),
+				weapon(weapon), nShots(nShots), shooting(shooting),
+			  firstShotTick(firstShotTick), firstProjectileId(firstProjectileId), objLag(objLag)
+		{}
+
+		
+		void clear();
+
+		inline bool isShooting() const					{ return shooting; }
 
 
-	//	// Produces the next legal UserCmd from this one.
-	//	void assumeNext(UserCmd &resultData) const;
+		static void interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData);
 
 
-	//	//inline static const UserCmd& getDefaultUserCmd()		{ return defaultUserCmd; }
-	//	static const UserCmd DEFAULT_USER_CMD;
+		// Produces the next legal UserCmd from this one.
+		void assumeNext(UserCmd &resultData) const;
 
-	//	// debug
-	//	bool isConsistent(int currentTick) const;
 
-	//};
+		//inline static const UserCmd& getDefaultUserCmd()		{ return defaultUserCmd; }
+		static const UserCmd DEFAULT_USER_CMD;
+
+		// debug
+		bool isConsistent(int currentTick) const;
+
+	};
 
 };
 

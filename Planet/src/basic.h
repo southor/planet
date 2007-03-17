@@ -6,8 +6,8 @@
 #include "vec2.h"
 #include "assert.h"
 #include "vec3f.h"
-#include "mat3f.h"
-#include "SpherePoint.h"
+//#include "mat3f.h"
+//#include "SpherePoint.h"
 
 #define PI_F 3.141592654f
 #define TWO_PI_F 6.283185308f

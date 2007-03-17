@@ -104,6 +104,16 @@ namespace Planet
 			return Vec3f(-x, -y, -z);
 		}
 
+		inline bool operator==(const Vec3f& rh) const
+		{
+			return (rh.x == x) && (rh.y == y) && (rh.z == z);
+		}
+
+		inline bool operator!=(const Vec3f& rh) const
+		{
+			return (rh.x != x) || (rh.y != y) || (rh.z != z);
+		}
+
 		float length() const
 		{
 			return std::sqrt(x*x + y*y + z*z);

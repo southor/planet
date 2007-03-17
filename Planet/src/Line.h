@@ -2,10 +2,13 @@
 #define __line_h__
 
 #include "basic.h"
+//#include "vec3f.h"
 
 
 namespace Planet
 {
+
+	//typedef Vec3f Pos;
 
 	class Line
 	{
@@ -22,7 +25,7 @@ namespace Planet
 			: pos(x, y, z), ext(ex, ey, ez)											{}
 
 		// @return A normalized direction vector
-		inline Vec getDirection()
+		inline Vec getDirection() const
 		{
 			Vec direction(ext);
 			direction.normalize();
@@ -39,7 +42,7 @@ namespace Planet
 		}
 
 		// @param d position along line
-		inline Pos getPosAlong(float d)
+		inline Pos getPosAlong(float d) const
 		{
 			return pos + ext * d;
 		}

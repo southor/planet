@@ -2,6 +2,7 @@
 #define __gameobjid_h__
 
 #include "basic.h"
+//#include "PlayerId.h"
 
 namespace Planet
 {
