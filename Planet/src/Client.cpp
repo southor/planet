@@ -6,7 +6,7 @@
 namespace Planet
 {
 
-	Client::Client() : ClientGlobalAccess(&clientGlobalObj), planetBody(5.0f), connectionPhase(0) {}
+	Client::Client() : ClientGlobalAccess(&clientGlobalObj), planetBody(5.0f, "maps/test/"), connectionPhase(0) {}
 
 	void Client::init()
 	{
@@ -29,18 +29,11 @@ namespace Planet
 		ship.moveRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
 			
 		// Logic
-		ship.logic();
-
-		ship.lookAt(sight.position);
+		ship.logic(sight.position);
 
 		camera.update(ship.position, ship.reference);
 
 		sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
-	 
-
-		
-		
-
 	}
 
 	bool Client::initConnection()
@@ -134,7 +127,7 @@ namespace Planet
 		ship.render();
 		sight.render();
 
-
+		planetRenderer.render(ship.position, ship.direction);
 
 		requestRender = false;
 

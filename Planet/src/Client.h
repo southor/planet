@@ -10,6 +10,7 @@
 #include "Sight.h"
 #include "ClientTimeHandler.h"
 #include "ClientGlobalAccess.h"
+#include "PlanetRenderer.h"
 
 namespace Planet
 {
@@ -84,6 +85,8 @@ namespace Planet
 
 
 		UserInputHandler userInputHandler;
+
+		PlanetRenderer planetRenderer;
 
 
 		//ClientWorldModel worldModel;

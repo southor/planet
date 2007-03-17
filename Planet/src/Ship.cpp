@@ -2,51 +2,54 @@
 
 namespace Planet
 {
-	void Ship::logic()
+	void Ship::setStartPosition(Pos pos)
 	{
+		reference = (position + position.getOrtoganal()) - position;
+	}
+
+	void Ship::logic(Pos &lookAt)
+	{
+		Vec normal = position;
+		normal.normalize();
+		
+		// Set look direction 
+		direction = lookAt - position;
+
+		Vec dn = direction.dot(normal) * normal;
+		
+		direction = direction - dn;
+
+
+		// Update direction and position
 		SpherePoint sp = position.toSpherePoint();
 		sp.p = planetBody->getHeight(sp.phi, sp.theta);
 		position = sp.toVector();
 		
-		Vec3f normal = position;
-		normal.normalize();
-		
 		reference = reference - reference.dot(normal) * normal;
+		reference.normalize();
 
-		Vec3f direction = reference;
+		Vec direction = reference;
 		//direction = direction * 3.0f;
-		Vec3f directionLeft = Mat3f::rotateArbitrary(position, PI_F/2) * direction;
-		Vec3f directionRight = -directionLeft;
+		Vec directionLeft = Mat3f::rotateArbitrary(position, PI_F/2) * direction;
+		Vec directionRight = -directionLeft;
 
 		prevPosition = position;
 
 
 		if (moveUp)
-			position += direction / 20.0f;
+			position += direction / 10.0f;
 
 		if (moveDown)
-			position -= direction / 20.0f;
+			position -= direction / 10.0f;
 
 		if (moveLeft)
-			position += directionLeft / 20.0f;
+			position += directionLeft / 10.0f;
 			
 		if (moveRight)
-			position += directionRight / 20.0f;
+			position += directionRight / 10.0f;
 	}
 	
-	void Ship::lookAt(Vec3f &lookAt)
-	{
-		direction = lookAt - position;
-
-		Vec3f normal = position;
-		normal.normalize();
-		
-		Vec3f dn = direction.dot(normal) * normal;
-		
-		direction = direction - dn;
-	}
-	
-	void Ship::setState(Vec3f &pos, Vec3f &dir)
+	void Ship::setState(Pos &pos, Vec &dir)
 	{
 		// Update position
 		prevPosition = position;
@@ -84,14 +87,14 @@ namespace Planet
 	{
 		updateRotation();
 	
-		Vec3f normal = position;
+		Vec normal = position;
 		normal.normalize();
 
 		direction.normalize();
 		direction = direction / 2.0f;
 		
-		Vec3f directionLeft = Mat3f::rotateArbitrary(position, PI_F/2) * direction * 0.8f;
-		Vec3f directionRight = -directionLeft;
+		Vec directionLeft = Mat3f::rotateArbitrary(position, PI_F/2) * direction * 0.8f;
+		Vec directionRight = -directionLeft;
 
 
 		/*
@@ -102,8 +105,8 @@ namespace Planet
 		glEnd();
 		*/
 		
-		Vec3f p = position - direction / 2.0f;
-		Vec3f pTips = p - normal / 8.0f;
+		Vec p = position - direction / 2.0f;
+		Vec pTips = p - normal / 8.0f;
 
 		glPushMatrix();
 			glTranslatef(position.x, position.y, position.z);

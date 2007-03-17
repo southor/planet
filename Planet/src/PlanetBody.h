@@ -15,7 +15,7 @@ namespace Planet
 	class PlanetBody
 	{
 	public:
-		PlanetBody(float radius);
+		PlanetBody(float radius, std::string map);
 	
 		void render();
 		

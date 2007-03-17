@@ -24,18 +24,20 @@ namespace Planet
 				rotateForwardSmooth(0.0f),
 				rotateLeftSmooth(0.0f)
 		{
-			reference = (position + Vec3f(0.0f, 2.0f, 0.0f)) - position;
+			setStartPosition(position);
 		}
 	
+		void setStartPosition(Pos pos);
+			
 		void setPlanet(PlanetBody *planetBody) { this->planetBody = planetBody; }
 	
-		// Used by server
-		void logic();
-		void lookAt(Vec3f &lookAt);
+		// Used by server/client
+		void logic(Pos &lookAt);
 		
 		// Used by client
-		void setState(Vec3f &pos, Vec3f &dir);
+		void setState(Pos &pos, Vec &dir);
 		
+		// Used by client
 		void render();
 		
 	
@@ -44,17 +46,18 @@ namespace Planet
 		bool moveLeft;
 		bool moveRight;
 			
-		Vec3f position;
-		Vec3f direction;
-		Vec3f reference;
+		Pos position;
+		Vec direction;
+		Vec reference;
 		
-		Vec3f prevPosition;
+		Pos prevPosition;
 		
 	private:
 		void updateRotation();
 	
 		PlanetBody *planetBody;
 
+		// Used for visual rotation during redering
 		float rotateForward;
 		float rotateLeft;
 

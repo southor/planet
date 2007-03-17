@@ -12,7 +12,7 @@ namespace Planet
 		SkyBox() {}
 		
 		void init();		
-		void render();
+		void render(Vec3f &position);
 	
 	private:
 		uint textures[6];

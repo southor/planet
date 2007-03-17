@@ -1,8 +1,10 @@
 #include "PlanetBody.h"
 
+#include <string>
+
 namespace Planet
 {
-	PlanetBody::PlanetBody(float radius) 
+	PlanetBody::PlanetBody(float radius, std::string map) 
 		:	r(radius),
 
 			// the corners of the cube, clockwise.
@@ -16,12 +18,12 @@ namespace Planet
 			c8(-r, -r, r),
 
 			// the faces of the cube
-			xFront(r, c1, c2, c3, c4, "ht.png", "grass_texture.png"),
-			xBack(r, c6, c5, c8, c7, "ht.png", "grass_snow_texture.jpg"),
-			yFront(r, c5, c6, c2, c1, "ht.png", "grass_texture.png"),
-			yBack(r, c4, c3, c7, c8, "ht.png", "grass_texture.png"),
-			zFront(r, c5, c1, c4, c8, "ht.png", "grass_texture.png"),
-			zBack(r, c2, c6, c7, c3, "ht.png", "grass_texture.png")
+			xFront(r, c1, c2, c3, c4, map + "heightmap_xfront.png", map + "texture_xfront.png"),
+			xBack(r, c6, c5, c8, c7, map + "heightmap_xback.png", map + "texture_xback.png"),
+			yFront(r, c5, c6, c2, c1, map + "heightmap_yfront.png", map + "texture_yfront.png"),
+			yBack(r, c4, c3, c7, c8, map + "heightmap_yback.png", map + "texture_yback.png"),
+			zFront(r, c5, c1, c4, c8, map + "heightmap_zfront.png", map + "texture_zfront.png"),
+			zBack(r, c2, c6, c7, c3, map + "heightmap_zback.png", map + "texture_zback.png")
 	{
 		faces.push_back(&xFront);
 		faces.push_back(&xBack);

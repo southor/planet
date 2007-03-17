@@ -12,7 +12,7 @@ namespace Planet
 	public:
 		static GLuint loadTexture(const std::string &file)
 		{
-			SDL_Surface* tmp = IMG_Load(("images/" + file).c_str());
+			SDL_Surface* tmp = IMG_Load(file.c_str());
 
 			if (tmp == NULL)
 			{
