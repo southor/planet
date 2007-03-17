@@ -11,10 +11,22 @@ namespace Planet
 	public:
 		void loadFile(std::string filename);
 		
-		float getValue(std::string option);
+
+
+		double getDoubleValue(std::string option);
+		
+		inline float getFloatValue(std::string option)
+		{
+			return static_cast<float>(getDoubleValue(option));
+		}
+			
+		inline int getIntValue(std::string option)
+		{
+			return static_cast<int>(getDoubleValue(option) + 0.5);
+		}
 		
 	private:	
-		std::map<std::string, float> configMap;
+		std::map<std::string, double> configMap;
 	
 	};
 };
