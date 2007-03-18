@@ -124,6 +124,7 @@ namespace Planet
 		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 
 		Pos getPos() const									{ return Pos(); }
+		Pos getAimPos() const								{ return Pos(); }
 		//inline Angle getAngle()							{ return userCmd.aimAngle; }
 		//inline void setAngle(Angle angle)					{ userCmd.aimAngle = angle; }
 		//void getRectangle(Rectangle &rectangle) const;

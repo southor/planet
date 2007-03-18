@@ -5,7 +5,7 @@
 
 //#include "messages.h"
 #include "ServerPlayers.h"
-//#include "ServerPlanet.h"
+#include "ServerPlanet.h"
 #include "ServerTimeHandler.h"
 #include "IdGenerator.h"
 #include "StateCmds.h"
@@ -13,6 +13,7 @@
 #include "MessageSender.h"
 #include "MessageReciever.h"
 #include "Link.h"
+#include "ServerGlobalAccess.h"
 
 namespace Planet
 {
@@ -35,7 +36,12 @@ namespace Planet
 
 		bool clientConnected(MessageSender *messageSender, MessageReciever *messageReciever);
 
+		ServerTimeHandler* getTimeHandler() { return getTimeHandler(); }
+		ServerIdGenerator* getIdGenerator() { return getIdGenerator(); }
+
 	private:
+		static const double PREDICTION_AMOUNT_MODIFIER;
+		static const int PREDICTION_AMOUNT_ADD_TIME;
 		
 		// @return The PlayerId that the new player got
 		PlayerId addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever);
@@ -46,22 +52,6 @@ namespace Planet
 		ServerGlobalObj serverGlobalObj;
 		ServerPlanet planet;
 		int lastUpdateTime;
-
-
-	public:
-
-
-		ServerTimeHandler* getTimeHandler() { return &timeHandler; }
-		ServerIdGenerator* getIdGenerator() { return &idGenerator; }
-
-
-		ServerPlayers players;
-
-
-	
-
-		//ServerTimeHandler timeHandler;
-		//ServerIdGenerator idGenerator;
 	};
 };
 

@@ -55,7 +55,11 @@ namespace Planet
 		bool playerTryShoot(PlayerId playerId, int currentTick, int shotN, GameObjId projectileId);
 
 		// TODO
+		void updatePlayerObjMovements()
+		{}
 		void updatePlayerObjMovement(PlayerId playerId)
+		{}
+		void updateProjectileMovements()
 		{}
 		
 		void init(const std::string &map)			{ planetBody.init(map); }

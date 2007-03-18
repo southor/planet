@@ -110,7 +110,7 @@ namespace Planet
 		GameObjId projectileId;
 		int type;
 		Pos pos;
-		Vec direction
+		Vec direction;
 		GameObjId shooterId;
 		Tickf shootTick;
 		int objLag;

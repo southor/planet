@@ -8,16 +8,13 @@
 
 namespace Planet
 {
+	const double Server::PREDICTION_AMOUNT_MODIFIER = 1.1;
+	const int Server::PREDICTION_AMOUNT_ADD_TIME = 10;
 
-	Server::Server() : ServerGlobalAccess(serverGlobalObj), lastUpdateTime(0), planet(serverGlobalObj)
+	Server::Server() : ServerGlobalAccess(&serverGlobalObj), lastUpdateTime(0), planet(&serverGlobalObj)
 	{}
 
-
-
-
 	Server::~Server() {}
-
-
 
 	void Server::run(bool &runningServer, int numberOfClients)
 	{
@@ -193,7 +190,7 @@ namespace Planet
 
 			lastUpdateTime = time;
 
-			worldModel.isConsistent();
+			planet.isConsistent();
 
 			// Read messages from clients
 			//ServerPlayers::Iterator playersIt;
@@ -241,7 +238,7 @@ namespace Planet
 					//}
 				}
 
-				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+				PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
 				playerObj->updateToTickData(getTimeHandler()->getTick());
 				UserCmd userCmd;
 				player->getUserCmd(userCmd, getTimeHandler()->getTick());
@@ -254,7 +251,7 @@ namespace Planet
 				//	std::cout << getTimeHandler()->getTick() << "  server: nShots: " << userCmd.nShots << std::endl;
 				//}
 				//std::vector<GameObjId> shots;
-				worldModel.handlePlayerShooting(playerId, players);
+				planet.handlePlayerShooting(playerId, players);
 				//for(size_t i=0; i<shots.size(); ++i)
 				//{
 				//	GameObjId projectileId = shots[i];
@@ -268,15 +265,15 @@ namespace Planet
 			}		
 
 			// handle projectile hits
-			worldModel.performProjectileHits(players);
+			planet.performProjectileHits(players);
 			
 			// update movements of objects, from currentTick to currentTick + 1
-			worldModel.updateProjectileMovements();
-			worldModel.updatePlayerObjMovements();
+			planet.updateProjectileMovements();
+			planet.updatePlayerObjMovements();
 			
 			// Update next shoot tick for currentTick + 1
-			WorldModel::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
-			WorldModel::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+			Planet::PlayerObjs::Iterator playerObjsIt = planet.getPlayerObjs().begin();
+			Planet::PlayerObjs::Iterator playerObjsEnd = planet.getPlayerObjs().end();
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{				
 				playerObjsIt->second->updateNextShootTick(getTimeHandler()->getTick());
@@ -287,18 +284,16 @@ namespace Planet
 			lastUpdateTime = time;
 
 			// Send playerObj updates and store state to history, also send tick0Time
-			/*WorldModel::PlayerObjs::Iterator*/ playerObjsIt = worldModel.getPlayerObjs().begin();
-			/*WorldModel::PlayerObjs::Iterator*/ playerObjsEnd = worldModel.getPlayerObjs().end();
+			playerObjsIt = planet.getPlayerObjs().begin();
+			playerObjsEnd = planet.getPlayerObjs().end();
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{
-				
-
 				//GameObjId playerObjId = playerObjsIt->first;
 				PlayerId playerId = playerObjsIt->first;
 				PlayerObj *playerObj = playerObjsIt->second;
 				
 				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
-				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
+				UpdatePlayerObj updatePlayerObj(playerId, playerObj->getPos(), playerObj->getAimPos(), playerObj->getNextShootTick(), playerObj->getAmmo());
 
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 
@@ -316,8 +311,8 @@ namespace Planet
 			}
 
 			// Send projectile updates
-			WorldModel::Projectiles::Iterator projectilesIt = worldModel.getProjectiles().begin();
-			WorldModel::Projectiles::Iterator projectilesEnd = worldModel.getProjectiles().end();
+			Planet::Projectiles::Iterator projectilesIt = planet.getProjectiles().begin();
+			Planet::Projectiles::Iterator projectilesEnd = planet.getProjectiles().end();
 			for(; projectilesIt != projectilesEnd; ++projectilesIt)
 			{			
 				Projectile *projectile = projectilesIt->second;
@@ -329,11 +324,7 @@ namespace Planet
 				//projectile->storeToTickData(getTimeHandler()->getTick());
 			}
 
-			
-
 			transmitAll(players);
-			
-			requestRender = true;			
 		}
 	}
 	

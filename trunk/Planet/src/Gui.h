@@ -64,13 +64,16 @@ namespace Planet
 		/*
 		 * Guichan stuff we need
 		 */
-		gcn::Gui* gui;            // A Gui object - binds it all together
-		gcn::ImageFont* font;     // A font
+		gcn::Gui* gui;
+		gcn::ImageFont* font;
+		gcn::ImageFont* bigFont;
 
 		/*
 		 * All of the default widgets
 		 */
 		gcn::Container* top;
+
+		gcn::Label* labelHeader;
 
 		gcn::Label* labelNumberOfPlayers;
 		gcn::Label* labelHost;
