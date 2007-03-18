@@ -42,7 +42,7 @@ namespace Planet
 					
 					if (playerId == updatePlayerObj->playerId)
 					{
-						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle, updatePlayerObj->nextShootTick);
+						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj);
 						if (differ)
 						{
 							//std::cout << "old prediction differ!" << std::endl;
@@ -55,7 +55,7 @@ namespace Planet
 					}
 					else
 					{
-						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle, updatePlayerObj->nextShootTick);
+						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj);
 					}
 				}
 				break;
@@ -68,6 +68,7 @@ namespace Planet
 						connectionPhase++;
 				}
 				break;
+			/*
 			case ADD_OBSTACLE:
 				{
 					AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
@@ -77,6 +78,7 @@ namespace Planet
 						connectionPhase++; 
 				}
 				break;
+			*/
 			case ADD_PROJECTILE:
 				{
 					//printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
@@ -85,11 +87,11 @@ namespace Planet
 					bool projectileAlreadyCreated = false;
 					if (static_cast<PlayerId>(addProjectile->shooterId) == playerId)
 					{
-						projectileAlreadyCreated = worldModel.getProjectiles().exists(addProjectile->projectileId);
+						projectileAlreadyCreated = planet.getProjectiles().exists(addProjectile->projectileId);
 					}
 					if (!projectileAlreadyCreated)
 					{
-						worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId, link.getPoppedTick(), addProjectile->objLag);
+						planet.addProjectile(addProjectile->projectileId, addProjectile);
 					}
 				}
 				break;
@@ -98,7 +100,7 @@ namespace Planet
 					//printf("CLIENT: handling update_projectile @ %d\n", timeHandler.getTime());
 					
 					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
-					Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
+					Projectile *projectile = (planet.getProjectiles())[updateProjectile->projectileId];
 					projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
 					//std::cout << "client projectile:  pos.x = " << projectile->getPos().x << "  pos.y = " << projectile->getPos().y << std::endl;
 				}
@@ -109,7 +111,7 @@ namespace Planet
 					
 					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
 					//worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
-					worldModel.getProjectiles().remove(removeProjectile->projectileId);
+					planet.getProjectiles().remove(removeProjectile->projectileId);
 				}
 				break;
 			case PROJECTILE_HIT:
@@ -117,8 +119,8 @@ namespace Planet
 					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
 					
 					ProjectileHit *projectileHit = link.getPoppedData<ProjectileHit>();
-					worldRenderer.projectileHit((worldModel.getProjectiles())[projectileHit->projectileId], projectileHit->hitPosition);
-					worldModel.getProjectiles().remove(projectileHit->projectileId);
+					planetRenderer.projectileHit((planet.getProjectiles())[projectileHit->projectileId], projectileHit->hitPosition);
+					planet.getProjectiles().remove(projectileHit->projectileId);
 				}
 				break;
 			case START_GAME:
@@ -167,10 +169,10 @@ namespace Planet
 				link.transmit();
 
 				//perform shooting
-				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+				PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
 				playerObj->updateToTickData(currentTick);
 				playerObj->setUserCmd(&userCmd);
-				worldModel.handlePlayerShooting(playerId);
+				planet.handlePlayerShooting(playerId);
 
 				// perform prediction
 				predictionHandler.predict(playerId, currentTick + 1);

@@ -3,6 +3,7 @@
 
 #include "Planet.h"
 #include "ClientGlobalAccess.h"
+#include "messages.h"
 
 namespace Planet
 {
@@ -11,6 +12,9 @@ namespace Planet
 	public:
 		ClientPlanet(ClientGlobalObj *clientGlobalObj) : ClientGlobalAccess(clientGlobalObj)
 		{}
+
+		void addProjectile(GameObjId projectileId, AddProjectile *addProjectile);
+
 	};
 };
 
