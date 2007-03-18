@@ -7,6 +7,7 @@
 #include "basic.h"
 
 #include "PlanetFace.h"
+#include "ConfigHandler.h"
 
 namespace Planet
 {
@@ -15,7 +16,8 @@ namespace Planet
 	class PlanetBody
 	{
 	public:
-		PlanetBody(float radius, std::string map);
+		PlanetBody(std::string map);
+		~PlanetBody();
 	
 		void render();
 		
@@ -30,30 +32,29 @@ namespace Planet
 		float getHeight(float phi, float theta);
 	
 	private:
-		// planet radius
-		float r;
-	
 		// the corners of the cube, clockwise.
-		Vec3f c1;
-		Vec3f c2;
-		Vec3f c3;
-		Vec3f c4;
-		Vec3f c5;
-		Vec3f c6;
-		Vec3f c7;
-		Vec3f c8;
+		Pos c1;
+		Pos c2;
+		Pos c3;
+		Pos c4;
+		Pos c5;
+		Pos c6;
+		Pos c7;
+		Pos c8;
 	
 		// the faces of the cube
-		PlanetFace xFront;
-		PlanetFace xBack;
+		PlanetFace *xFront;
+		PlanetFace *xBack;
 
-		PlanetFace yFront;
-		PlanetFace yBack;
+		PlanetFace *yFront;
+		PlanetFace *yBack;
 
-		PlanetFace zFront;
-		PlanetFace zBack;
+		PlanetFace *zFront;
+		PlanetFace *zBack;
 		
 		Faces faces;
+		
+		ConfigHandler mapConfig;
 	};
 };
 

@@ -1,49 +1,62 @@
 #include "PlanetBody.h"
 
+#include "ConfigHandler.h"
+
 #include <string>
 
 namespace Planet
 {
-	PlanetBody::PlanetBody(float radius, std::string map) 
-		:	r(radius),
-
-			// the corners of the cube, clockwise.
-			c1(r, r, r),
-			c2(r, r, -r),
-			c3(r, -r, -r),
-			c4(r, -r, r),
-			c5(-r, r, r),
-			c6(-r, r, -r),
-			c7(-r, -r, -r),
-			c8(-r, -r, r),
-
-			// the faces of the cube
-			xFront(r, c1, c2, c3, c4, map + "heightmap_xfront.png", map + "texture_xfront.png"),
-			xBack(r, c6, c5, c8, c7, map + "heightmap_xback.png", map + "texture_xback.png"),
-			yFront(r, c5, c6, c2, c1, map + "heightmap_yfront.png", map + "texture_yfront.png"),
-			yBack(r, c4, c3, c7, c8, map + "heightmap_yback.png", map + "texture_yback.png"),
-			zFront(r, c5, c1, c4, c8, map + "heightmap_zfront.png", map + "texture_zfront.png"),
-			zBack(r, c2, c6, c7, c3, map + "heightmap_zback.png", map + "texture_zback.png")
+	PlanetBody::PlanetBody(std::string map) 
 	{
-		faces.push_back(&xFront);
-		faces.push_back(&xBack);
-		faces.push_back(&yFront);
-		faces.push_back(&yBack);
-		faces.push_back(&zFront);
-		faces.push_back(&zBack);
+		// Read map config file
+		mapConfig.loadFile(map + "config.txt");
+
+		float r = mapConfig.getFloatValue("radius");
+		float detailScale = mapConfig.getFloatValue("detailScale");
+
+		// the corners of the cube, clockwise.
+		c1 = Pos(r, r, r),
+		c2 = Pos(r, r, -r),
+		c3 = Pos(r, -r, -r),
+		c4 = Pos(r, -r, r),
+		c5 = Pos(-r, r, r),
+		c6 = Pos(-r, r, -r),
+		c7 = Pos(-r, -r, -r),
+		c8 = Pos(-r, -r, r),
+
+		// the faces of the cube
+		xFront = new PlanetFace(r, detailScale, c1, c2, c3, c4, map + "heightmap_xfront.png", map + "texture_xfront.png", map + "detail.png");
+		xBack = new PlanetFace(r, detailScale, c6, c5, c8, c7, map + "heightmap_xback.png", map + "texture_xback.png", map + "detail.png");
+		yFront = new PlanetFace(r, detailScale, c5, c6, c2, c1, map + "heightmap_yfront.png", map + "texture_yfront.png", map + "detail.png");
+		yBack = new PlanetFace(r, detailScale, c4, c3, c7, c8, map + "heightmap_yback.png", map + "texture_yback.png", map + "detail.png");
+		zFront = new PlanetFace(r, detailScale, c5, c1, c4, c8, map + "heightmap_zfront.png", map + "texture_zfront.png", map + "detail.png");
+		zBack = new PlanetFace(r, detailScale, c2, c6, c7, c3, map + "heightmap_zback.png", map + "texture_zback.png", map + "detail.png");
+
+		faces.push_back(xFront);
+		faces.push_back(xBack);
+		faces.push_back(yFront);
+		faces.push_back(yBack);
+		faces.push_back(zFront);
+		faces.push_back(zBack);
 	}
 
+	PlanetBody::~PlanetBody()
+	{
+		delete xFront; delete xBack;
+		delete yFront; delete yBack;
+		delete zFront; delete zBack;
+	}
 
 	void PlanetBody::init()
 	{
-		xFront.init();
-		xBack.init();
+		xFront->init();
+		xBack->init();
 
-		yFront.init();
-		yBack.init();
+		yFront->init();
+		yBack->init();
 
-		zFront.init();
-		zBack.init();
+		zFront->init();
+		zBack->init();
 	}
 		
 	void PlanetBody::render()
@@ -76,14 +89,14 @@ namespace Planet
 		*/
 
 		
-		xFront.draw();
-		xBack.draw();
+		xFront->render();
+		xBack->render();
 
-		yFront.draw();
-		yBack.draw();
+		yFront->render();
+		yBack->render();
 
-		zFront.draw();
-		zBack.draw();
+		zFront->render();
+		zBack->render();
 		
 	}
 	

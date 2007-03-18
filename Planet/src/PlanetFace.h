@@ -10,7 +10,13 @@ namespace Planet
 	class PlanetFace
 	{
 	public:
-		PlanetFace(float r, Vec3f v1, Vec3f v2, Vec3f v3, Vec3f v4, const std::string &heightmapFile, const std::string &textureFile);
+		PlanetFace() {}
+		PlanetFace(	float radius, 
+					float detailScale, 
+					Pos v1, Pos v2, Pos v3, Pos v4, 
+					const std::string &heightmapFile, 
+					const std::string &textureFile, 
+					const std::string &detailTextureFile);
 
 		~PlanetFace()
 		{
@@ -22,7 +28,7 @@ namespace Planet
 
 		void init();
 
-		void draw();
+		void render();
 
 		float getHeight(float s, float t);
 
@@ -40,13 +46,13 @@ namespace Planet
 
 	private:
 		// Vertexes (corners) in clockwise order
-		Vec3f v1;
-		Vec3f v2;
-		Vec3f v3;
-		Vec3f v4;
+		Pos v1;
+		Pos v2;
+		Pos v3;
+		Pos v4;
 
 		// Normal of this Face/Plane
-		Vec3f N;
+		Vec N;
 
 		SpherePoint sp1;
 		SpherePoint sp2;
@@ -54,6 +60,7 @@ namespace Planet
 		SpherePoint sp4;
 		
 		float radius;
+		float detailScale;
 
 		int resolution;
 		
@@ -78,9 +85,11 @@ namespace Planet
 		HeightMap heightMap;
 		
 		uint texture;
+		uint detailTexture;
 		
 		std::string heightmapFile;
 		std::string textureFile;
+		std::string detailTextureFile;
 	};
 };
 

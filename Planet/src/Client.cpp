@@ -6,7 +6,7 @@
 namespace Planet
 {
 
-	Client::Client() : ClientGlobalAccess(&clientGlobalObj), planetBody(5.0f, "maps/test/"), connectionPhase(0) {}
+	Client::Client() : ClientGlobalAccess(&clientGlobalObj), planetBody("maps/test/"), connectionPhase(0) {}
 
 	void Client::init()
 	{

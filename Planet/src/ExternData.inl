@@ -7,7 +7,7 @@
 namespace Planet
 {
 	template <typename T1, typename T2>
-	Extern2Data<T1, T2>::Extern2Data(size_t initCapacity, float growFactor = DEFAULT_GROW_FACTOR) : ExpandableArr(tmax(initCapacity, static_cast<uint>(1)), growFactor)
+	Extern2Data<T1, T2>::Extern2Data(size_t initCapacity, float growFactor) : ExpandableArr(tmax(initCapacity, static_cast<size_t>(1)), growFactor)
 	{
 		data1Arr = allocData1Arr(capacity);
 		data2Arr = allocData2Arr(capacity);
@@ -89,7 +89,7 @@ namespace Planet
 
 
 	template <typename T1, typename T2>
-	void Extern2Data<T1, T2>::moveContents(uint fromArrPos, uint toArrPos)
+	void Extern2Data<T1, T2>::moveContents(size_t fromArrPos, size_t toArrPos)
 	{
 		data1Arr[toArrPos] = data1Arr[fromArrPos];
 		data2Arr[toArrPos] = data2Arr[fromArrPos];
