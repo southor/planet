@@ -109,6 +109,8 @@ namespace Planet
 		 */
 		//Angle calcPlayerObjAngle(Vec2<int> mouseScreenPos);
 
+		std::string currentMap;
+
 	public:
 		//PlanetBody planetBody;
 		Ship ship;

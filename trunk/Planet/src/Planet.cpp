@@ -4,7 +4,7 @@
 namespace Planet
 {
 
-	Planet::Planet() : planetBody("maps/test/")
+	Planet::Planet()
 	{}
 
 	void Planet::updatePlayerObjsToTickData(Tickf tick)

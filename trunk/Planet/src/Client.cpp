@@ -10,7 +10,7 @@ namespace Planet
 
 	void Client::init()
 	{
-		planet.init();		
+		planet.init(currentMap);
 		ship.setPlanetBody(planet.getPlanetBody());
 		sight.setCamera(&camera);
 		sight.setPlanetBody(planet.getPlanetBody());
@@ -59,6 +59,7 @@ namespace Planet
 					WelcomeClient *welcomeClient = link.getPoppedData<WelcomeClient>();
 				
 					setPlayerId(welcomeClient->playerId);
+					currentMap = "maps/test/";
 
 					connectionPhase++;
 				}

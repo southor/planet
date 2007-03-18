@@ -6,7 +6,18 @@
 
 namespace Planet
 {
-	PlanetBody::PlanetBody(std::string map) 
+	PlanetBody::PlanetBody() : xFront(0), xBack(0), yFront(0), yBack(0), zFront(0), zBack(0)
+	{
+	}
+
+	PlanetBody::~PlanetBody()
+	{
+		delete xFront; delete xBack;
+		delete yFront; delete yBack;
+		delete zFront; delete zBack;
+	}
+
+	void PlanetBody::init(const std::string &map)
 	{
 		// Read map config file
 		mapConfig.loadFile(map + "config.txt");
@@ -38,17 +49,7 @@ namespace Planet
 		faces.push_back(yBack);
 		faces.push_back(zFront);
 		faces.push_back(zBack);
-	}
 
-	PlanetBody::~PlanetBody()
-	{
-		delete xFront; delete xBack;
-		delete yFront; delete yBack;
-		delete zFront; delete zBack;
-	}
-
-	void PlanetBody::init()
-	{
 		xFront->init();
 		xBack->init();
 
