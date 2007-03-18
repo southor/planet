@@ -87,7 +87,13 @@ namespace Planet
 			return true;
 		}
 
-		int operator [](Projectile::Type type) const
+		const short& operator [](Projectile::Type type) const
+		{
+			assert((type >= 0) && (type < N_WEAPONS));
+			return ammo[type];
+		}
+
+		short& operator [](Projectile::Type type)
 		{
 			assert((type >= 0) && (type < N_WEAPONS));
 			return ammo[type];
