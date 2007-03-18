@@ -145,7 +145,7 @@ namespace Planet
 	{
 		if (!initialized)
 			init();
-
+		/*
 		bool useDetail = true;
 
 
@@ -194,8 +194,8 @@ namespace Planet
 			glActiveTextureARB(GL_TEXTURE0_ARB);
 			glClientActiveTextureARB(GL_TEXTURE0_ARB);
 		}
+		*/
 		
-		/*
 		// OLD - without multitexturing/detail
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -207,7 +207,7 @@ namespace Planet
 		glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
 		
 		glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
-		*/
+		
 	}
 
 	bool PlanetFace::findIntersection(SpherePoint &sp, float &s, float &t)
