@@ -9,8 +9,6 @@
 
 namespace Planet
 {
-
-
 	LaserBeamRenderHandler::LaserBeamRenderHandler(size_t initCapacity, float growFactor) : externLB(initCapacity, growFactor)
 	{
 	}

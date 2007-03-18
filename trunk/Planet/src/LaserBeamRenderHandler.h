@@ -19,7 +19,7 @@ namespace Planet
 
 	public:
 		
-		LaserBeamRenderHandler(uint initCapacity = 0, float growFactor = ExternLB::DEFAULT_GROW_FACTOR);		
+		LaserBeamRenderHandler(size_t initCapacity = 0, float growFactor = ExternLB::DEFAULT_GROW_FACTOR);		
 
 		virtual ~LaserBeamRenderHandler();
 

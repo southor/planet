@@ -74,7 +74,7 @@ namespace Planet
 				else return true;				
 			}
 
-			friend Extern2Data<T1, T2>;
+			friend class Extern2Data<T1, T2>;
 
 		};
 

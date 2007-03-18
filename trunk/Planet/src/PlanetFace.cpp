@@ -3,8 +3,14 @@
 
 namespace Planet
 {
-	PlanetFace::PlanetFace(float r, Vec3f v1, Vec3f v2, Vec3f v3, Vec3f v4, const std::string &heightmapFile, const std::string &textureFile) 
-		:	radius(r),
+	PlanetFace::PlanetFace(	float radius, 
+							float detailScale, 
+							Pos v1, Pos v2, Pos v3, Pos v4, 
+							const std::string &heightmapFile, 
+							const std::string &textureFile, 
+							const std::string &detailTextureFile) 
+		:	radius(radius),
+			detailScale(detailScale),
 			resolution(40),
 			initialized(false),
 			v1(v1), 
@@ -20,7 +26,8 @@ namespace Planet
 			normals(0),
 			indices(0),
 			heightmapFile(heightmapFile),
-			textureFile(textureFile)
+			textureFile(textureFile),
+			detailTextureFile(detailTextureFile)
 	{
 	}
 
@@ -32,6 +39,7 @@ namespace Planet
 
 		heightMap.init(heightmapFile);
 		texture = TextureHandler::loadTexture(textureFile);
+		detailTexture = TextureHandler::loadTexture(detailTextureFile);
 
 		// create arrays
 		numIndices = (resolution * resolution * 2) - (2 * resolution);
@@ -133,11 +141,62 @@ namespace Planet
 		initialized = true;
 	}
 
-	void PlanetFace::draw()
+	void PlanetFace::render()
 	{
 		if (!initialized)
 			init();
 
+		bool useDetail = true;
+
+
+		glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), vertices);
+		glNormalPointer(GL_FLOAT, sizeof(Vec3f), normals);
+
+		
+		glActiveTextureARB(GL_TEXTURE0_ARB);
+		glClientActiveTextureARB(GL_TEXTURE0_ARB);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
+		glBindTexture(GL_TEXTURE_2D, detailTexture);
+		
+		glEnable(GL_TEXTURE_2D); 
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		if (useDetail)
+		{
+			glActiveTextureARB(GL_TEXTURE1_ARB);
+			glEnable(GL_TEXTURE_2D);
+			glClientActiveTextureARB(GL_TEXTURE1_ARB);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
+
+			glMatrixMode(GL_TEXTURE);
+
+			glLoadIdentity();
+			glScalef(detailScale, detailScale, 1.0f);
+
+			glMatrixMode(GL_MODELVIEW);
+
+			glBindTexture(GL_TEXTURE_2D, detailTexture);
+
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
+			glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE_ARB, 2);
+		}
+		
+		glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
+		
+		// Disable
+		if (useDetail)
+		{
+			glActiveTextureARB(GL_TEXTURE1_ARB);
+			glDisable(GL_TEXTURE_2D);
+
+			glActiveTextureARB(GL_TEXTURE0_ARB);
+			glClientActiveTextureARB(GL_TEXTURE0_ARB);
+		}
+		
+		/*
+		// OLD - without multitexturing/detail
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -148,67 +207,6 @@ namespace Planet
 		glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
 		
 		glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
-	
-	
-	
-		/*
-		
-		Vec3f v1v2 = v2 - v1;
-		Vec3f v1v4 = v4 - v1;
-
-		const int DOTS = 4;
-
-		for (int i = 0; i < DOTS; i++)
-		{
-			//glBegin(GL_TRIANGLE_STRIP);
-
-			for (int j = 0; j < DOTS; j++)
-			{
-				float s = i/static_cast<float>(DOTS-1);
-				float t = j/static_cast<float>(DOTS-1);
-	
-				float ss = (i+1)/static_cast<float>(DOTS-1);
-				float tt = j/static_cast<float>(DOTS-1);
-	
-				Vec3f v = v1 + v1v2*s + v1v4*t;
-				Vec3f vv = v1 + v1v2*ss + v1v4*tt;
-				
-				SpherePoint sp = v.toSpherePoint();
-				sp.p = getHeight(s, t);
-				Vec3f vSphere = sp.toVector();
-
-				SpherePoint spp = vv.toSpherePoint();
-				spp.p = getHeight(ss, tt);
-				Vec3f vSpheree = spp.toVector();
-
-
-
-				glColor3f(0.8f, 0.8f, 0.8f);
-				//glVertex3f(v.x, v.y, v.z);
-
-				glNormal3f(N.x, N.y, N.z);
-
-				//glColor3f(0.0f, (sp.p-4.0f)/3.0f, 0.0f);
-				//glVertex3f(vSphere.x, vSphere.y, vSphere.z);
-
-				//glColor3f(0.0f, (spp.p-4.0f)/3.0f, 0.0f);
-				//glVertex3f(vSpheree.x, vSpheree.y, vSpheree.z);
-
-				//glVertex3f(v.x, v.y, v.z);
-				//glVertex3f(vv.x, vv.y, vv.z);
-
-				
-				glBegin(GL_POINTS);
-					glColor3f(0.8f, 0.8f, 0.8f);
-					//glVertex3f(v.x, v.y, v.z);
-					glVertex3f(vSphere.x, vSphere.y, vSphere.z);
-				glEnd();
-				
-			
-			}
-			
-			//glEnd();
-		}
 		*/
 	}
 

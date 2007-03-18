@@ -29,7 +29,6 @@ namespace Planet
 		reference.normalize();
 
 		Vec direction = reference;
-		//direction = direction * 3.0f;
 		Vec directionLeft = Mat3f::rotateArbitrary(position, PI_F/2) * direction;
 		Vec directionRight = -directionLeft;
 
