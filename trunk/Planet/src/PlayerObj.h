@@ -150,7 +150,7 @@ namespace Planet
 		
 
 		//PlayerObj(size_t playerId, const Pos &pos);
-		PlayerObj(const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick);
+		PlayerObj(const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick, PlanetBody *planetBody);
 
 		~PlayerObj()										{}
 

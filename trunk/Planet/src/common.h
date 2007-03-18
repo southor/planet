@@ -35,14 +35,5 @@
 //#include "SDL_mixer.h"
 //#include <GL/glu.h>
 
-//#define GL_GLEXT_PROTOTYPES 1
-//#include "GL/glext.h"
-/*
-typedef void (*GL_ActiveTextureARB_Func)(unsigned int);
-GL_ActiveTextureARB_Func glActiveTextureARB = (GL_ActiveTextureARB_Func)SDL_GL_GetProcAddress("glActiveTextureARB");
-
-typedef void (*GL_ClientActiveTextureARB_Func)(unsigned int);
-GL_ClientActiveTextureARB_Func glClientActiveTextureARB = (GL_ClientActiveTextureARB_Func)SDL_GL_GetProcAddress("glClientActiveTextureARB");
-*/
 #endif
 
