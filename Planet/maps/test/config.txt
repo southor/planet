@@ -1,2 +1,3 @@
 radius 5.0
 detailScale 1.0
+heightMapMulti 1.0

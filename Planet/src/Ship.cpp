@@ -7,18 +7,12 @@ namespace Planet
 		reference = (position + position.getOrtoganal()) - position;
 	}
 
-	void Ship::logic(Pos &lookAt)
+	void Ship::logic(Pos &aimPos)
 	{
-		Vec normal = position;
-		normal.normalize();
+		Vec normal = getNormal();
 		
 		// Set look direction 
-		direction = lookAt - position;
-
-		Vec dn = direction.dot(normal) * normal;
-		
-		direction = direction - dn;
-
+		updateDirection(aimPos);
 
 		// Update direction and position
 		SpherePoint sp = position.toSpherePoint();
@@ -48,14 +42,26 @@ namespace Planet
 			position += directionRight / 10.0f;
 	}
 	
-	void Ship::setState(Pos &pos, Vec &dir)
+	void Ship::setState(Pos &pos, Pos &aimPos)
 	{
 		// Update position
 		prevPosition = position;
 		position = pos;		
 
 		// Update direction
-		direction = dir;
+		updateDirection(aimPos);
+
+	}
+
+	void Ship::updateDirection(Pos &aimPos)
+	{
+		Vec normal = getNormal();
+
+		direction = aimPos - position;
+
+		Vec dn = direction.dot(normal) * normal;
+		
+		direction = direction - dn;
 	}
 
 	void Ship::updateRotation()
@@ -86,8 +92,7 @@ namespace Planet
 	{
 		updateRotation();
 	
-		Vec normal = position;
-		normal.normalize();
+		Vec normal = getNormal();
 
 		direction.normalize();
 		direction = direction / 2.0f;
@@ -140,5 +145,12 @@ namespace Planet
 			glEnd();
 
 		glPopMatrix();
+	}
+
+	Vec Ship::getNormal() 
+	{ 
+		Vec normal = position; 
+		normal.normalize(); 
+		return normal; 
 	}
 };

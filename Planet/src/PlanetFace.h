@@ -12,7 +12,8 @@ namespace Planet
 	public:
 		PlanetFace() : vertices(0), colors(0), normals(0), indices(0) {}
 		PlanetFace(	float radius, 
-					float detailScale, 
+					float detailScale,
+					float heightMapMulti,
 					Pos v1, Pos v2, Pos v3, Pos v4, 
 					const std::string &heightmapFile, 
 					const std::string &textureFile, 
@@ -62,6 +63,7 @@ namespace Planet
 		
 		float radius;
 		float detailScale;
+		float heightMapMulti;
 
 		int resolution;
 		

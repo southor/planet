@@ -24,6 +24,7 @@ namespace Planet
 
 		float r = mapConfig.getFloatValue("radius");
 		float detailScale = mapConfig.getFloatValue("detailScale");
+		float heightMapMulti = mapConfig.getFloatValue("heightMapMulti");
 
 		// the corners of the cube, clockwise.
 		c1 = Pos(r, r, r),
@@ -36,12 +37,12 @@ namespace Planet
 		c8 = Pos(-r, -r, r),
 
 		// the faces of the cube
-		xFront = new PlanetFace(r, detailScale, c1, c2, c3, c4, map + "heightmap_xfront.png", map + "texture_xfront.png", map + "detail.png");
-		xBack = new PlanetFace(r, detailScale, c6, c5, c8, c7, map + "heightmap_xback.png", map + "texture_xback.png", map + "detail.png");
-		yFront = new PlanetFace(r, detailScale, c5, c6, c2, c1, map + "heightmap_yfront.png", map + "texture_yfront.png", map + "detail.png");
-		yBack = new PlanetFace(r, detailScale, c4, c3, c7, c8, map + "heightmap_yback.png", map + "texture_yback.png", map + "detail.png");
-		zFront = new PlanetFace(r, detailScale, c5, c1, c4, c8, map + "heightmap_zfront.png", map + "texture_zfront.png", map + "detail.png");
-		zBack = new PlanetFace(r, detailScale, c2, c6, c7, c3, map + "heightmap_zback.png", map + "texture_zback.png", map + "detail.png");
+		xFront = new PlanetFace(r, detailScale, heightMapMulti, c1, c2, c3, c4, map + "heightmap_xfront.png", map + "texture_xfront.png", map + "detail.png");
+		xBack = new PlanetFace(r, detailScale, heightMapMulti, c6, c5, c8, c7, map + "heightmap_xback.png", map + "texture_xback.png", map + "detail.png");
+		yFront = new PlanetFace(r, detailScale, heightMapMulti, c5, c6, c2, c1, map + "heightmap_yfront.png", map + "texture_yfront.png", map + "detail.png");
+		yBack = new PlanetFace(r, detailScale, heightMapMulti, c4, c3, c7, c8, map + "heightmap_yback.png", map + "texture_yback.png", map + "detail.png");
+		zFront = new PlanetFace(r, detailScale, heightMapMulti, c5, c1, c4, c8, map + "heightmap_zfront.png", map + "texture_zfront.png", map + "detail.png");
+		zBack = new PlanetFace(r, detailScale, heightMapMulti, c2, c6, c7, c3, map + "heightmap_zback.png", map + "texture_zback.png", map + "detail.png");
 
 		faces.push_back(xFront);
 		faces.push_back(xBack);

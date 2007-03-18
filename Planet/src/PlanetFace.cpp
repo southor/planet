@@ -5,12 +5,14 @@ namespace Planet
 {
 	PlanetFace::PlanetFace(	float radius, 
 							float detailScale, 
+							float heightMapMulti,
 							Pos v1, Pos v2, Pos v3, Pos v4, 
 							const std::string &heightmapFile, 
 							const std::string &textureFile, 
 							const std::string &detailTextureFile) 
 		:	radius(radius),
 			detailScale(detailScale),
+			heightMapMulti(heightMapMulti),
 			resolution(40),
 			initialized(false),
 			v1(v1), 
@@ -145,13 +147,11 @@ namespace Planet
 	{
 		if (!initialized)
 			init();
-		/*
 		bool useDetail = true;
 
-
+		/*
 		glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), vertices);
 		glNormalPointer(GL_FLOAT, sizeof(Vec3f), normals);
-
 		
 		glActiveTextureARB(GL_TEXTURE0_ARB);
 		glClientActiveTextureARB(GL_TEXTURE0_ARB);
@@ -316,8 +316,8 @@ namespace Planet
 		*/
 		
 
-		return radius + heightMap.getHeight(s, t) * 3.0f;
-
+		return radius + heightMap.getHeight(s, t) * 3.0f * heightMapMulti;
+	
 
 		//return radius + sin(s*20.0f)/8.0f + cos(t*20.0f)/8.0f;
 		//return radius + sin(s*5.0f + SDL_GetTicks()/400.0f)/2.0f;

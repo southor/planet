@@ -32,14 +32,16 @@ namespace Planet
 		void setPlanetBody(PlanetBody *planetBody) { this->planetBody = planetBody; }
 	
 		// Used by server/client
-		void logic(Pos &lookAt);
+		void logic(Pos &aimPos);
 		
 		// Used by client
-		void setState(Pos &pos, Vec &dir);
+		void setState(Pos &pos, Pos &aimPos);
 		
 		// Used by client
 		void render();
 		
+		Vec getNormal();
+
 	
 		bool moveUp;
 		bool moveDown;
@@ -54,6 +56,7 @@ namespace Planet
 		
 	private:
 		void updateRotation();
+		void updateDirection(Pos &aimPos);
 	
 		PlanetBody *planetBody;
 
