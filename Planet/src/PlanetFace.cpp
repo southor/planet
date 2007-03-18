@@ -3,7 +3,7 @@
 
 #include "GL/glext.h"
 
-#define DISABLE_MULTITEXTURE_ARB false
+#define ENABLE_MULTITEXTURE_ARB
 
 namespace Planet
 {
@@ -153,14 +153,14 @@ namespace Planet
 			init();
 		bool useDetail = true;
 
-		if (!DISABLE_MULTITEXTURE_ARB)
-		{
-			PFNGLACTIVETEXTUREARBPROC glActiveTextureARB = 0;
-			glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress( "glActiveTextureARB" ) ;
+		#ifdef ENABLE_MULTITEXTURE_ARB
+			#ifdef _WIN32
+				PFNGLACTIVETEXTUREARBPROC glActiveTextureARB = 0;
+				glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress( "glActiveTextureARB" ) ;
 
-			PFNGLCLIENTACTIVETEXTUREARBPROC glClientActiveTextureARB = 0;
-			glClientActiveTextureARB = (PFNGLCLIENTACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress( "glClientActiveTextureARB" ) ;
-
+				PFNGLCLIENTACTIVETEXTUREARBPROC glClientActiveTextureARB = 0;
+				glClientActiveTextureARB = (PFNGLCLIENTACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress( "glClientActiveTextureARB" ) ;
+			#endif
 			/*		
 			typedef void (*GL_ActiveTextureARB_Func)(unsigned int);
 			GL_ActiveTextureARB_Func glActiveTextureARB_ptr = (GL_ActiveTextureARB_Func)SDL_GL_GetProcAddress("glActiveTextureARB");
@@ -213,9 +213,9 @@ namespace Planet
 				glActiveTextureARB(GL_TEXTURE0_ARB);
 				glClientActiveTextureARB(GL_TEXTURE0_ARB);
 			}
-		}
-		else
-		{
+		#endif
+
+		#ifndef ENABLE_MULTITEXTURE_ARB
 			// OLD - without multitexturing/detail
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -227,7 +227,7 @@ namespace Planet
 			glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
 			
 			glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
-		}
+		#endif
 	}
 
 	bool PlanetFace::findIntersection(SpherePoint &sp, float &s, float &t)
