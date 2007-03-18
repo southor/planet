@@ -12,6 +12,9 @@ namespace Planet
 	{
 		standardInterExtraPolate(tick1, data1, tick2, data2, resultTick, resultData);
 		resultData.nextShootTick = resultTick;
+
+		if (resultTick >= tick2) resultData.ammoSupply = data2.ammoSupply;
+		else resultData.ammoSupply = data1.ammoSupply;
 	}
 
 

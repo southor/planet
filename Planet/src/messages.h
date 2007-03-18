@@ -37,6 +37,63 @@ namespace Planet
 	// --------------------------------- server messages ------------------------------
 	// --------------------------------------------------------------------------------
 
+	static const int N_WEAPONS = Projectile::N_TYPES;
+
+	class AmmoSupply
+	{
+	public:
+		short ammo[N_WEAPONS];
+
+		//AmmoSupply operator +(const AmmoSupply &rh) const
+		//{
+		//	AmmoSupply result;
+		//	for(int i=0; i<Projectile::N_TYPES; ++i)
+		//	{
+		//		result.ammo[i] = this->ammo[i] + rh.ammo[i];
+		//	}
+		//	
+		//	return result;
+		//}
+
+		//AmmoSupply operator -(const AmmoSupply &rh) const
+		//{
+		//	AmmoSupply result;
+		//	for(int i=0; i<Projectile::N_TYPES; ++i)
+		//	{
+		//		result.ammo[i] = this->ammo[i] - rh.ammo[i];
+		//	}
+		//	
+		//	return result;
+		//}
+
+		//AmmoSupply operator *(float f) const
+		//{
+		//	AmmoSupply result;
+		//	for(int i=0; i<Projectile::N_TYPES; ++i)
+		//	{
+		//		result.ammo[i] = static_cast<short>(static_cast<float>(this->ammo[i]) * f);
+		//	}
+		//	
+		//	return result;
+		//}
+
+		bool operator !=(const AmmoSupply &rh) const
+		{
+			for(int i=0; i<Projectile::N_TYPES; ++i)
+			{
+				if (this->ammo[i] != rh.ammo[i]) return false;
+			}
+			
+			return true;
+		}
+
+		int operator [](Projectile::Type type) const
+		{
+			assert((type >= 0) && (type < N_WEAPONS));
+			return ammo[type];
+		}
+	};
+
 	struct UpdatePlayerObj
 	{
 		static const size_t messageType = UPDATE_PLAYER_OBJ;
