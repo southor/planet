@@ -68,7 +68,7 @@ namespace Planet
 			}
 		}
 		*/
-
+ 
 		while (lagQueue.size() > 0 && (lagTimeHandler.getTime() >= (lagQueue.front().time + simulatedLag)))
 		{
 			Message message = lagQueue.front();

@@ -25,7 +25,7 @@ namespace Planet
 			SYNC_SEND_PING,
 			SYNC_GET_PONG,
 			GET_ADDPLAYEROBJ,
-			GET_ADDOBSTACLE,
+			//GET_ADDOBSTACLE,
 			RUNNING
 		};
 	};

@@ -9,7 +9,7 @@ namespace Planet
 	const int Client::OBJECT_LAG_ADD_TIME = 18;
 	const int Client::OBJECT_LAG_ADD_TICK = 1;
 
-	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0), planet(&clientGlobalObj)
+	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0), planet(&clientGlobalObj), requestRender(false)
 	{
 		predictionHandler.setPlanet(&planet);
 		assert(predictionHandler.isConsistent());
@@ -20,8 +20,6 @@ namespace Planet
 		planet.init(currentMap);
 		sight.setCamera(&camera);
 		sight.setPlanetBody(planet.getPlanetBody());
-		
-		getTimeHandler()->reset();
 	}
 
 	Client::~Client()
@@ -68,7 +66,9 @@ namespace Planet
 			case ADD_PLAYER_OBJ:
 				{
 					AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
-					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, addPlayerObj->aimPos, link.getPoppedTick());				
+					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, addPlayerObj->aimPos, link.getPoppedTick());
+
+					printf("adding client object: %d\n", addPlayerObj->playerId);
 
 					if (connectionPhase == ClientPhase::GET_ADDPLAYEROBJ)
 						connectionPhase++;
@@ -170,26 +170,8 @@ namespace Planet
 		// get stateCmds
 		StateCmds stateCmds = userInputHandler.getCurrentStates();
 
-		//// get angle
-		//Angle aimAngle(0.0f);
-		//if (worldModel.getPlayerObjs().exists(playerId))
-		//{
-		//	if (userInputHandler.aimMode == UserInputHandler::MOUSE)
-		//	{
-		//		aimAngle = calcPlayerObjAngle(userInputHandler.getMouseScreenPos());
-		//	}
-		//	else
-		//	{
-		//		assert(userInputHandler.aimMode == UserInputHandler::KEYBOARD);
-		//		//playerAngle = (worldModel.getPlayerObjs())[playerId]->angle;				
-		//		Angle preAngle(preUserCmd.aimAngle);
-		//		aimAngle = calcPlayerObjAngle(preUserCmd.aimAngle, stateCmds);
-		//	}
-		//}
-
-		// set stateCmds, aimAngle and firstProjectileId
+		// set stateCmds, aimPos and firstProjectileId
 		userCmd.stateCmds = stateCmds;
-		//userCmd.aimAngle = aimAngle;
 		userCmd.aimPos = sight.position;
 		userCmd.firstProjectileId = getIdGenerator()->getNextId();
 
@@ -245,10 +227,6 @@ namespace Planet
 					userCmd.weapon = nextWeapon;
 				}
 			}
-			else
-			{
-				assert(false);
-			}
 		}
 		if ((userCmd.isShooting() || (userCmd.nShots > 0)) && DEBUG_SHOOTING)
 		{			
@@ -263,6 +241,8 @@ namespace Planet
 
 	void Client::runStep()
 	{
+		//printf("Client::runStep(), phase: %d\n", connectionPhase);
+	
 		assert(isConsistent());
 		
 		getTimeHandler()->nextStep();
@@ -321,9 +301,13 @@ namespace Planet
 		//// Logic
 		//ship.logic(sight.position);
 
-		//camera.update(ship.position, ship.reference);
 
-		//sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
+		PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
+
+		Ship *ship = playerObj->getShip();
+		camera.update(ship->position, ship->reference);
+
+		sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
 	}
 
 	bool Client::initConnection()
@@ -422,9 +406,7 @@ namespace Planet
 		playerObj->getShip()->render();
 		sight.render();
 
-		
-
-		//% planetRenderer.render(ship.position, ship.getDirection());
+		//planetRenderer.render(ship.position, ship.getDirection());
 
 		requestRender = false;
 
@@ -444,12 +426,10 @@ namespace Planet
 		// if this is me
 		bool isMe = (playerId == this->playerId);
 
-		planet.addPlayerObj(playerId, playerPos, playerAimPos, isMe, tick);
-		
+		planet.addPlayerObj(playerId, playerColor, playerPos, playerAimPos, isMe, tick);
 		
 		if (isMe)
 		{
-			
 			// set ammo supply			
 			(planet.getPlayerObjs())[playerId]->setAmmoSupply(static_cast<int>(playerPos.x + playerPos.y));
 		}

@@ -29,7 +29,8 @@ namespace Planet
 		inline Iterator find(Id id)			{ return map.find(id); }
 		inline bool exists(Id id) const		{ return map.find(id) != map.end(); }
 
-		void add(Id id, T item)				{ bool result = (map.insert(Pair(id, item))).second;
+		void add(Id id, T item)				{ Pair pair(id, item);
+											  bool result = (map.insert(pair)).second;
 											  assert(result); }
 		bool remove(Id id)					{ bool removed = (map.erase(id) > 0);
 											 // assert(removed);

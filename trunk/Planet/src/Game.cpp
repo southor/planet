@@ -52,6 +52,7 @@ namespace Planet
 	{
 		std::string host("localhost");
 		std::string map("test");
+		Color color = Color::RED;
 
 		while (running) 
 		{
@@ -61,25 +62,26 @@ namespace Planet
 			if (connectedToServer)
 				client.runStep();
 
-			if (client.getRequestRender() || debugRenderPlanet)
-				render(0);
+			render(0);
 
 			if (client.getUserInputHandler()->hasActionCmdOnQueue())
 			{
 				int actionCmd = client.getUserInputHandler()->popActionCmd();
 				if (actionCmd == Cmds::TOGGLE_MENU) toggleMenu();
 				else if (actionCmd == Cmds::START_SERVER) startServer(1, map);
-				else if (actionCmd == Cmds::CONNECT_TO_SERVER) connectToServer(host);
+				else if (actionCmd == Cmds::CONNECT_TO_SERVER) connectToServer(host, color);
 				else if (actionCmd == Cmds::TEST) { client.currentMap = "maps/test/"; client.init(); }
 				else if (actionCmd == Cmds::TEST2) { debugRenderPlanet = true; }
 				else client.getUserInputHandler()->pushActionCmd(actionCmd);
 			}
 			
 			// Debug
+			/*
 			if (client.getUserInputHandler()->getCurrentState(Cmds::LEFT)) viewAngle += 3.0f;
 			if (client.getUserInputHandler()->getCurrentState(Cmds::RIGHT)) viewAngle -= 3.0f;
 			if (client.getUserInputHandler()->getCurrentState(Cmds::FORWARD)) viewAngle2 += 3.0f;
 			if (client.getUserInputHandler()->getCurrentState(Cmds::BACKWARD)) viewAngle2 -= 3.0f;
+			*/
 			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_IN)) client.camera.zoom += 0.05f;
 			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_OUT)) client.camera.zoom -= 0.05f;
 
@@ -116,7 +118,7 @@ namespace Planet
 
 			glEnable(GL_LIGHT0);
 				
-			if (connectedToServer)
+			if (connectedToServer || client.getRequestRender())
 				client.renderAndUpdate();			
 
 			if (debugRenderPlanet)
@@ -218,8 +220,8 @@ namespace Planet
 
 		client.getUserInputHandler()->setActionCmdKey(Cmds::START_SERVER, SDLK_F2);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::CONNECT_TO_SERVER, SDLK_F3);
-		client.getUserInputHandler()->setActionCmdKey(Cmds::TEST, SDLK_F8);
-		client.getUserInputHandler()->setActionCmdKey(Cmds::TEST2, SDLK_F9);
+		client.getUserInputHandler()->setActionCmdKey(Cmds::TEST, SDLK_F4);
+		client.getUserInputHandler()->setActionCmdKey(Cmds::TEST2, SDLK_F5);
 
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_LEFT, SDLK_LEFT);
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_RIGHT, SDLK_RIGHT);
@@ -252,7 +254,7 @@ namespace Planet
 		}
 	}
 
-	bool Game::connectToServer(std::string &host)
+	bool Game::connectToServer(std::string &host, const Color &color)
 	{
 		if (connectedToServer)
 			return false;		// already connected to server
@@ -268,7 +270,7 @@ namespace Planet
 		sender = networkClient.getMessageSender();
 		reciever = networkClient.getMessageReciever();
 		client.setConnection(sender, reciever);
-		client.setColor(Color(0.0f, 1.0f, 0.0f));
+		client.setColor(color);
 		
 		// Initialize
 		while (running && connected)

@@ -22,6 +22,7 @@ namespace Planet
 		delete labelNumberOfPlayers;
 		delete labelMap;
 		delete labelHost;
+		delete labelColor;
 
 		delete buttonStartServer;
 		delete buttonConnectToServer;
@@ -29,6 +30,7 @@ namespace Planet
 		delete textFieldHost;
 		delete dropDownNumberOfPlayers;
 		delete dropDownMaps;
+		delete dropDownColors;
 
 		delete checkBox1;
 
@@ -69,6 +71,9 @@ namespace Planet
 
 	void Gui::initWidgets()
 	{
+		gcn::Color widgetColor(80, 80, 80, 100);
+		gcn::Color widgetColor2(80, 80, 80, 200);
+	
 		labelHeader = new gcn::Label("PLaneT");
 		labelHeader->setFont(bigFont);
 		labelHeader->setHeight(20);
@@ -77,27 +82,36 @@ namespace Planet
 		labelNumberOfPlayers = new gcn::Label("Number of players");
 		labelMap = new gcn::Label("Map");
 		labelHost = new gcn::Label("Host");
+		labelColor = new gcn::Label("Color");
 
 		buttonStartServer = new gcn::Button("Start server");
 		buttonStartServer->setActionEventId("START_SERVER");
 		buttonStartServer->addActionListener(this);
+		buttonStartServer->setBaseColor(widgetColor);
 
 		buttonConnectToServer = new gcn::Button("Connect to server");
 		buttonConnectToServer->setActionEventId("CONNECT_TO_SERVER");
 		buttonConnectToServer->addActionListener(this);
+		buttonConnectToServer->setBaseColor(widgetColor);
 
 		textFieldHost = new gcn::TextField("localhost");
 		textFieldHost->setWidth(100);
 
 		dropDownNumberOfPlayers = new gcn::DropDown(&numberOfPlayersListModel);
+		dropDownNumberOfPlayers->setBaseColor(widgetColor2);
+		
 		dropDownMaps = new gcn::DropDown(&mapListModel);
+		dropDownMaps->setBaseColor(widgetColor2);
+
+		dropDownColors = new gcn::DropDown(&colorListModel);
+		dropDownColors->setBaseColor(widgetColor2);
 
 		checkBox1 = new gcn::CheckBox("Checkbox 1");
 		window = new gcn::Window("Window");
 		window->setBaseColor(gcn::Color(255, 150, 200, 190));
 		window->resizeToContent();
 
-		top->setBaseColor(gcn::Color(80, 80, 80, 100));
+		top->setBaseColor(widgetColor);
 
 		// Add widgets to container
 		top->add(labelHeader, 10, 10);
@@ -110,7 +124,9 @@ namespace Planet
 
 		top->add(labelHost, 10, 150);
 		top->add(textFieldHost, 200, 150);
-		top->add(buttonConnectToServer, 200, 175);
+		top->add(labelColor, 10, 175);
+		top->add(dropDownColors, 200, 175);
+		top->add(buttonConnectToServer, 200, 200);
 
 		//top->add(checkBox1, 500, 130);
 		//top->add(window, 100, 350);
@@ -136,6 +152,7 @@ namespace Planet
 		std::string host = textFieldHost->getText();
 		int numberOfPlayers = dropDownNumberOfPlayers->getSelected() + 1;
 		std::string map = mapListModel.getElementAt(dropDownMaps->getSelected());
+		Color color = colorListModel.getColorAt(dropDownColors->getSelected());
 
 		if (actionEvent.getId() == "START_SERVER")
 		{
@@ -146,7 +163,7 @@ namespace Planet
 		
 		if (actionEvent.getId() == "CONNECT_TO_SERVER")
 		{
-			bool connected = game->connectToServer(host);
+			bool connected = game->connectToServer(host, color);
 			
 			if (connected)
 				game->toggleMenu();

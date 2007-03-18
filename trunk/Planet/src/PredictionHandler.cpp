@@ -24,7 +24,6 @@ namespace Planet
 		PlayerObj *playerObj = getPlayerObj(playerId);
 		
 		assert(playerObj);
-		//assert(worldModel);
 		assert(planet);
 		//assert(getlastTick(playerId) >= fromTick);
 		
@@ -34,7 +33,7 @@ namespace Planet
 		assert(isTick0UserCmdConsistent());
 
 		playerObj->updateToTickData(fromTick);
-		for(int tick = fromTick; tick < toTick; ++tick)
+		for (int tick = fromTick; tick < toTick; ++tick)
 		{
 			UserCmd userCmd;
 			userCmdHistoryList.getData(tick, userCmd);

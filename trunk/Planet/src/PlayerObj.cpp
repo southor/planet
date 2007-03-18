@@ -29,9 +29,9 @@ namespace Planet
 	//	 strafingLeft(false), strafingRight(false)
 	//{}
 
-	PlayerObj::PlayerObj(const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick, PlanetBody *planetBody)
+	PlayerObj::PlayerObj(const Color &playerColor, const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick, PlanetBody *planetBody)
 		: historyList(nHistoryTicks, UpdateData::interExtraPolate), 
-			ship(pos, aimPos, planetBody), //pos(pos), angle(Angle::PI/2.0f),
+			ship(playerColor, pos, aimPos, planetBody), //pos(pos), angle(Angle::PI/2.0f),
 			health(100),
 		 //movingForward(false), movingBackward(false),
 		 //strafingLeft(false), strafingRight(false),
