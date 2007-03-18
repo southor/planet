@@ -53,41 +53,23 @@ namespace Planet
 
 			render(0);
 
-
-			if (client.getUserInputHandler()->getCurrentState(Cmds::START_SERVER))
-				startServer(1);
-
-			if (client.getUserInputHandler()->getCurrentState(Cmds::CONNECT_TO_SERVER))
-				connectToServer(host);
-
 			if (client.getUserInputHandler()->hasActionCmdOnQueue())
 			{
 				//pushActionCmd(int actionCmd)
 				int actionCmd = client.getUserInputHandler()->popActionCmd();
 				if (actionCmd == Cmds::TOGGLE_MENU) toggleMenu();
+				else if (actionCmd == Cmds::START_SERVER) startServer(1);
+				else if (actionCmd == Cmds::CONNECT_TO_SERVER) connectToServer(host);
 				else client.getUserInputHandler()->pushActionCmd(actionCmd);
 			}
-			//// Workaround using both state and action cmd
-			//if (client.getUserInputHandler()->getCurrentState(Cmds::TOGGLE_MENU))
-			//	if (client.getUserInputHandler()->hasActionCmdOnQueue())
-			//		if (client.getUserInputHandler()->popActionCmd() == Cmds::TOGGLE_MENU)
-			//			toggleMenu();
-
 			
-			if (client.getUserInputHandler()->getCurrentState(Cmds::LEFT))
-				viewAngle += 3.0f;
-			if (client.getUserInputHandler()->getCurrentState(Cmds::RIGHT))
-				viewAngle -= 3.0f;
-
-			if (client.getUserInputHandler()->getCurrentState(Cmds::FORWARD))
-				viewAngle2 += 3.0f;
-			if (client.getUserInputHandler()->getCurrentState(Cmds::BACKWARD))
-				viewAngle2 -= 3.0f;
-
-			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_IN))
-				client.camera.zoom += 0.05f;
-			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_OUT))
-				client.camera.zoom -= 0.05f;
+			// Debug
+			if (client.getUserInputHandler()->getCurrentState(Cmds::LEFT)) viewAngle += 3.0f;
+			if (client.getUserInputHandler()->getCurrentState(Cmds::RIGHT)) viewAngle -= 3.0f;
+			if (client.getUserInputHandler()->getCurrentState(Cmds::FORWARD)) viewAngle2 += 3.0f;
+			if (client.getUserInputHandler()->getCurrentState(Cmds::BACKWARD)) viewAngle2 -= 3.0f;
+			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_IN)) client.camera.zoom += 0.05f;
+			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_OUT)) client.camera.zoom -= 0.05f;
 
 			SDL_Delay(10);
 		}
@@ -228,8 +210,8 @@ namespace Planet
 
 		client.getUserInputHandler()->setActionCmdKey(Cmds::TOGGLE_MENU, SDLK_F1);
 
-		client.getUserInputHandler()->setStateCmdKey(Cmds::START_SERVER, SDLK_F2);
-		client.getUserInputHandler()->setStateCmdKey(Cmds::CONNECT_TO_SERVER, SDLK_F3);
+		client.getUserInputHandler()->setActionCmdKey(Cmds::START_SERVER, SDLK_F2);
+		client.getUserInputHandler()->setActionCmdKey(Cmds::CONNECT_TO_SERVER, SDLK_F3);
 
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_LEFT, SDLK_LEFT);
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_RIGHT, SDLK_RIGHT);

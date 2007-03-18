@@ -79,8 +79,9 @@ namespace Planet
 
 		while (runningServer)
 		{
-			printf("Running Server.\n");
-			SDL_Delay(1000);
+			//printf("Running Server.\n");
+			SDL_Delay(TimeHandler::TICK_DELTA_TIME / 4);
+			logic();
 		}
 	}
 
