@@ -25,7 +25,7 @@ namespace Planet
 
 	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(800, 600);
 	
-	Game::Game() : viewAngle(0.0f), viewAngle2(0.0f), serverThread(0), connectedToServer(false), running(true), showMenu(false)
+	Game::Game() : viewAngle(0.0f), viewAngle2(0.0f), serverThread(0), connectedToServer(false), running(true), showMenu(true)
 	{
 		init();
 	}
@@ -327,6 +327,7 @@ namespace Planet
 		
 			case SDL_QUIT:
 				running = false;
+				runningServer = false;
 				break;
 			}
 
