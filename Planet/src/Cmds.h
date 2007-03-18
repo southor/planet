@@ -40,7 +40,8 @@ namespace Planet
 			// other commands
 			TOGGLE_MENU,
 			START_SERVER,
-			CONNECT_TO_SERVER
+			CONNECT_TO_SERVER,
+			TEST
 		};
 
 

@@ -12,9 +12,10 @@ namespace Planet
 	class Ship
 	{
 	public:
-		Ship(const Pos &pos, const Pos &aimPos) 
+		Ship(const Pos &pos, const Pos &aimPos, PlanetBody *planetBody) 
 			:	position(pos),
 				aimPos(aimPos),
+				planetBody(planetBody),
 				moveUp(false),
 				moveDown(false),
 				moveLeft(false),

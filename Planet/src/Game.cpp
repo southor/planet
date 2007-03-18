@@ -63,6 +63,7 @@ namespace Planet
 				if (actionCmd == Cmds::TOGGLE_MENU) toggleMenu();
 				else if (actionCmd == Cmds::START_SERVER) startServer(1, map);
 				else if (actionCmd == Cmds::CONNECT_TO_SERVER) connectToServer(host);
+				else if (actionCmd == Cmds::TEST) { client.currentMap = "test"; client.init(); }
 				else client.getUserInputHandler()->pushActionCmd(actionCmd);
 			}
 			
@@ -206,6 +207,7 @@ namespace Planet
 
 		client.getUserInputHandler()->setActionCmdKey(Cmds::START_SERVER, SDLK_F2);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::CONNECT_TO_SERVER, SDLK_F3);
+		client.getUserInputHandler()->setActionCmdKey(Cmds::TEST, SDLK_F8);
 
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_LEFT, SDLK_LEFT);
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_RIGHT, SDLK_RIGHT);

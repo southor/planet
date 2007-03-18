@@ -5,13 +5,16 @@
 
 namespace Planet
 {
+	const double Client::OBJECT_LAG_MODIFIER = 1.2;
+	const int Client::OBJECT_LAG_ADD_TIME = 18;
+	const int Client::OBJECT_LAG_ADD_TICK = 1;
+
 	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0), planet(&clientGlobalObj)
 	{}
 
 	void Client::init()
 	{
 		planet.init(currentMap);
-		//ship.setPlanetBody(planet.getPlanetBody());
 		sight.setCamera(&camera);
 		sight.setPlanetBody(planet.getPlanetBody());
 		
@@ -172,7 +175,7 @@ namespace Planet
 				PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
 				playerObj->updateToTickData(currentTick);
 				playerObj->setUserCmd(&userCmd);
-				planet.handlePlayerShooting(playerId);
+//				planet.handlePlayerShooting(playerId);
 
 				// perform prediction
 				predictionHandler.predict(playerId, currentTick + 1);
