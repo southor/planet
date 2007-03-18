@@ -51,6 +51,8 @@ namespace Planet
 
 		void addPlayerObj(PlayerId playerId, const Pos &playerPos);
 
+		void startGame();
+
 		void logic();
 
 		ServerPlayers players;
