@@ -9,7 +9,8 @@
 namespace Planet
 {
 
-	Server::Server() {}
+	Server::Server() : ServerGlobalAccess(serverGlobalObj), lastUpdateTime(0), planet(serverGlobalObj)
+	{}
 
 
 
@@ -80,8 +81,8 @@ namespace Planet
 		while (runningServer)
 		{
 			//printf("Running Server.\n");
-			SDL_Delay(TimeHandler::TICK_DELTA_TIME / 4);
 			logic();
+			SDL_Delay(TimeHandler::TICK_DELTA_TIME / 8);			
 		}
 	}
 
@@ -142,6 +143,198 @@ namespace Planet
 		PlayerId playerId = getIdGenerator()->generatePlayerId();
 		players.add(playerId, new ServerPlayer(color, messageSender, messageReciever));
 		return playerId;
+	}
+
+	void Server::logic()
+	{
+		const int tick = getTimeHandler()->getTick();
+		const int time = getTimeHandler()->getTime();
+			
+		if (tick == 0)
+		{
+			int tickFromTime = 10 + getTimeHandler()->getTickFromTime();
+			getTimeHandler()->setTick(tickFromTime);
+			printf("start tick: %d, time: %d\n", tickFromTime, getTimeHandler()->getTime());
+		}
+
+		bool waitingForClients = false;
+		int latestTick = 10000000; // used for debugging
+
+		// check if current tick is recieved from all clients, otherwise set waitingForClients to true
+		ServerPlayers::Iterator playersIt;
+		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
+		{
+			PlayerId playerId = playersIt->first;
+			ServerPlayer *player(playersIt->second);
+			
+			player->link.retrieve(getTimeHandler()->getTime());
+
+			// set waitingForClients to true if player doesn't have current tick
+			waitingForClients = waitingForClients || (player->link.getLatestTick() < tick);
+
+			//printf("playerId: %d, latestTick: %d\n", playerId, player.link.getLatestTick());
+
+			if (player->link.getLatestTick() < latestTick) // used for debugging
+				latestTick = player->link.getLatestTick(); // used for debugging
+
+			// Check tick timeout
+			if (getTimeHandler()->getTickFromTimeWithTimeout() >= tick)      //if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
+			{
+				if (SERVER_PRINT_NETWORK_DEBUG) printf("#################### TIMEOUT ######################\n");
+				waitingForClients = false;
+				break; // exit for loop
+			}
+		}
+
+		if (!waitingForClients)
+		{
+			if (SERVER_PRINT_NETWORK_DEBUG) printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
+
+
+			lastUpdateTime = time;
+
+			worldModel.isConsistent();
+
+			// Read messages from clients
+			//ServerPlayers::Iterator playersIt;
+			for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
+			{
+				PlayerId playerId = playersIt->first;
+				ServerPlayer *player(playersIt->second);
+
+				player->link.retrieve(getTimeHandler()->getTime());
+
+				while (player->link.hasMessageOnQueueWithTick(tick))
+				{
+					int messageType = player->link.popMessage();
+					if (messageType == USER_CMD)
+					{
+						UserCmd *userCmd = player->link.getPoppedData<UserCmd>();
+						
+						//if (userCmd->shootAction == UserCmd::CONTINUE_SHOOTING)
+						//{
+						//	// check that privious really is START_SHOOTING or CONTINUE_SHOOTING
+						//	UserCmd preUserCmd;
+						//	player.getUserCmd(preUserCmd, getTimeHandler()->getTick() - 1);
+						//	if (preUserCmd.shootAction == UserCmd::NOT_SHOOTING)
+						//	{
+						//		userCmd->shootAction = UserCmd::START_SHOOTING;
+						//	}
+						//}
+						
+						player->setUserCmd(*userCmd, player->link.getPoppedTick());
+						
+					}
+					//else if (messageType == SHOOT_CMD)
+					//{
+					//	printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
+
+					//	// player shoots
+					//	ShootCmd *shootCmd = player.link.getPoppedData<ShootCmd>();					
+					//	GameObjId projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
+					//	Projectile *projectile = (worldModel.getProjectiles())[projectileId];
+					//	
+					//	// send projectile to all clients
+					//	AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
+					//								projectile->getAngle().getFloat(), projectile->getShooterId());
+					//	pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+					//}
+				}
+
+				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+				playerObj->updateToTickData(getTimeHandler()->getTick());
+				UserCmd userCmd;
+				player->getUserCmd(userCmd, getTimeHandler()->getTick());
+				userCmd.isConsistent(getTimeHandler()->getTick());
+				playerObj->setUserCmd(&userCmd);
+
+				// shooting
+				//if (userCmd.nShots > 0)
+				//{
+				//	std::cout << getTimeHandler()->getTick() << "  server: nShots: " << userCmd.nShots << std::endl;
+				//}
+				//std::vector<GameObjId> shots;
+				worldModel.handlePlayerShooting(playerId, players);
+				//for(size_t i=0; i<shots.size(); ++i)
+				//{
+				//	GameObjId projectileId = shots[i];
+ 				//	Projectile *projectile = (worldModel.getProjectiles())[projectileId];
+				//	
+				//	// send projectile to all clients
+				//	AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
+				//								projectile->getAngle().getFloat(), projectile->getShooterId(), projectile->getShootTick(), projectile->getObjLag());
+				//	pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				//}
+			}		
+
+			// handle projectile hits
+			worldModel.performProjectileHits(players);
+			
+			// update movements of objects, from currentTick to currentTick + 1
+			worldModel.updateProjectileMovements();
+			worldModel.updatePlayerObjMovements();
+			
+			// Update next shoot tick for currentTick + 1
+			WorldModel::PlayerObjs::Iterator playerObjsIt = worldModel.getPlayerObjs().begin();
+			WorldModel::PlayerObjs::Iterator playerObjsEnd = worldModel.getPlayerObjs().end();
+			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
+			{				
+				playerObjsIt->second->updateNextShootTick(getTimeHandler()->getTick());
+			}
+			
+			// next tick!!
+			getTimeHandler()->nextTick();
+			lastUpdateTime = time;
+
+			// Send playerObj updates and store state to history, also send tick0Time
+			/*WorldModel::PlayerObjs::Iterator*/ playerObjsIt = worldModel.getPlayerObjs().begin();
+			/*WorldModel::PlayerObjs::Iterator*/ playerObjsEnd = worldModel.getPlayerObjs().end();
+			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
+			{
+				
+
+				//GameObjId playerObjId = playerObjsIt->first;
+				PlayerId playerId = playerObjsIt->first;
+				PlayerObj *playerObj = playerObjsIt->second;
+				
+				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
+				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
+
+				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+
+				//playerObj->isConsistent();
+				playerObj->storeToTickData(getTimeHandler()->getTick());
+
+				// Send tick0Time to client
+				{
+					Link &link = players[playerId]->link;
+					double lag = static_cast<double>(link.getCurrentLag());
+					int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
+					SetTick0Time tick0Time(-extraPredictionTime);
+					link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				}
+			}
+
+			// Send projectile updates
+			WorldModel::Projectiles::Iterator projectilesIt = worldModel.getProjectiles().begin();
+			WorldModel::Projectiles::Iterator projectilesEnd = worldModel.getProjectiles().end();
+			for(; projectilesIt != projectilesEnd; ++projectilesIt)
+			{			
+				Projectile *projectile = projectilesIt->second;
+				
+				UpdateProjectile updateProjectile(projectilesIt->first, projectile->getPos());
+				
+				pushMessageToAll(players, updateProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+
+				//projectile->storeToTickData(getTimeHandler()->getTick());
+			}
+
+			
+
+			transmitAll(players);
+			
+			requestRender = true;			
+		}
 	}
 	
 };

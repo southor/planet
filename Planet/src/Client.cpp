@@ -6,7 +6,11 @@
 namespace Planet
 {
 
-	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0) {}
+	const double Client::PREDICTION_AMOUNT_MODIFIER = 1.1;
+	const int Client::PREDICTION_AMOUNT_ADD_TIME = 10;
+	
+	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0), planet(clientGlobalObj)
+	{}
 
 	void Client::init()
 	{

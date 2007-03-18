@@ -25,7 +25,7 @@ namespace Planet
 		};
 	};
 
-	class Server //: public ServerGlobalAccess
+	class Server : public ServerGlobalAccess
 	{
 	public:
 		Server();
@@ -33,11 +33,19 @@ namespace Planet
 
 		void run(bool &runningServer, int numberOfClients);
 
-	bool clientConnected(MessageSender *messageSender, MessageReciever *messageReciever);
+		bool clientConnected(MessageSender *messageSender, MessageReciever *messageReciever);
 
 	private:
-	// @return The PlayerId that the new player got
-	PlayerId addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever);
+		
+		// @return The PlayerId that the new player got
+		PlayerId addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever);
+
+		void logic();
+
+		ServerPlayers players;
+		ServerGlobalObj serverGlobalObj;
+		ServerPlanet planet;
+		int lastUpdateTime;
 
 
 	public:
@@ -52,8 +60,8 @@ namespace Planet
 
 	
 
-		ServerTimeHandler timeHandler;
-		ServerIdGenerator idGenerator;
+		//ServerTimeHandler timeHandler;
+		//ServerIdGenerator idGenerator;
 	};
 };
 

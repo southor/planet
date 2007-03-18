@@ -51,7 +51,8 @@ namespace Planet
 			if (connectedToServer)
 				client.runStep();
 
-			render(0);
+			if (client.getRequestRender())
+				render(0);
 
 			if (client.getUserInputHandler()->hasActionCmdOnQueue())
 			{
@@ -70,7 +71,7 @@ namespace Planet
 			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_IN)) client.camera.zoom += 0.05f;
 			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_OUT)) client.camera.zoom -= 0.05f;
 
-			SDL_Delay(10);
+			SDL_Delay(TimeHandler::TICK_DELTA_TIME / 8);
 		}
 	}
 
