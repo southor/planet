@@ -46,7 +46,7 @@ namespace Planet
 		void init();
 
 			
-		//void getCurrentUserCmd(UserCmd &userCmd);
+		void getCurrentUserCmd(UserCmd &userCmd);
 		void handleServerMessages();
 		void runStep();
 

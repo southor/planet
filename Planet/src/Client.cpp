@@ -119,7 +119,7 @@ namespace Planet
 					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
 					
 					ProjectileHit *projectileHit = link.getPoppedData<ProjectileHit>();
-					planetRenderer.projectileHit((planet.getProjectiles())[projectileHit->projectileId], projectileHit->hitPosition);
+					//planetRenderer.projectileHit((planet.getProjectiles())[projectileHit->projectileId], projectileHit->hitPosition);
 					planet.getProjectiles().remove(projectileHit->projectileId);
 				}
 				break;

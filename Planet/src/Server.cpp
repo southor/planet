@@ -297,7 +297,7 @@ namespace Planet
 				PlayerObj *playerObj = playerObjsIt->second;
 				
 				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
-				UpdatePlayerObj updatePlayerObj(playerId, playerObj->getPos(), playerObj->getAimPos(), playerObj->getNextShootTick(), playerObj->getAmmo());
+				UpdatePlayerObj updatePlayerObj(playerId, playerObj->getPos(), playerObj->getAimPos(), playerObj->getNextShootTick(), playerObj->getAmmoSupply());
 
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 
