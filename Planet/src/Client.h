@@ -4,7 +4,7 @@
 #include "common.h"
 #include "Link.h"
 #include "UserInputHandler.h"
-#include "PlanetBody.h"
+#include "Planet.h"
 #include "Ship.h"
 #include "Camera.h"
 #include "Sight.h"
@@ -86,6 +86,7 @@ namespace Planet
 
 		UserInputHandler userInputHandler;
 
+		Planet planet;
 		PlanetRenderer planetRenderer;
 
 
@@ -109,7 +110,7 @@ namespace Planet
 		//Angle calcPlayerObjAngle(Vec2<int> mouseScreenPos);
 
 	public:
-		PlanetBody planetBody;
+		//PlanetBody planetBody;
 		Ship ship;
 		Camera camera;
 		Sight sight;

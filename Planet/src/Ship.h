@@ -29,7 +29,7 @@ namespace Planet
 	
 		void setStartPosition(Pos pos);
 			
-		void setPlanet(PlanetBody *planetBody) { this->planetBody = planetBody; }
+		void setPlanetBody(PlanetBody *planetBody) { this->planetBody = planetBody; }
 	
 		// Used by server/client
 		void logic(Pos &lookAt);

@@ -3,27 +3,9 @@
 
 namespace Planet
 {
-	//const Vec Planet::WORLD_SIZE = Vec(800.0f / 2.0f, 600.0f * (3.0f / 4.0f));
 
-	//void WorldModel::storeToTickData(int tick)
-	//{
-	//	PlayerObjs::Iterator it = getPlayerObjs().begin();
-	//	PlayerObjs::Iterator end = getPlayerObjs().end();
-	//	for(; it != end; ++it)
-	//	{
-	//		it->second->storeToTickData(tick);
-	//	}
-	//}
-
-	//void WorldModel::updatePlayerObjsToTickData(int tick)
-	//{
-	//	PlayerObjs::Iterator it = getPlayerObjs().begin();
-	//	PlayerObjs::Iterator end = getPlayerObjs().end();
-	//	for(; it != end; ++it)
-	//	{
-	//		it->second->updateToTickData(tick);
-	//	}
-	//}
+	Planet::Planet() : planetBody("maps/test/")
+	{}
 
 	void Planet::updatePlayerObjsToTickData(Tickf tick)
 	{
@@ -77,10 +59,9 @@ namespace Planet
 
 	void Planet::deleteAllObjs()
 	{
-		//Delete del;
 		//DeleteObstacle deleteObstacle;
-		DeletePlayerObj deletePlayerObj;
-		DeleteProjectile deleteProjectile;
+		DeleteSecond<PlayerObjs::Pair> deletePlayerObj;
+		DeleteSecond<Projectiles::Pair> deleteProjectile;
 		//ForEach(getObstacles().begin(), getObstacles().end(), deleteObstacle);
 		ForEach(getPlayerObjs().begin(), getPlayerObjs().end(), deletePlayerObj);
 		ForEach(getProjectiles().begin(), getProjectiles().end(), deleteProjectile);

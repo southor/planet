@@ -4,6 +4,7 @@
 //#include "Obstacle.h"
 #include "PlayerObj.h"
 #include "Projectile.h"
+#include "PlanetBody.h"
 
 #include "IdMap.h"
 #include "GameObjId.h"
@@ -16,9 +17,6 @@ namespace Planet
 	class Planet
 	{
 	public:
-
-		static const bool MOVE_ALIGNED_TO_ANGLE_DEFAULT = false;
-		bool moveAlignedToAngle;
 		
 
 		static const Vec WORLD_SIZE;		
@@ -28,24 +26,21 @@ namespace Planet
 		typedef IdMap<GameObjId, Projectile*> Projectiles;
 
 
-		Planet() : moveAlignedToAngle(MOVE_ALIGNED_TO_ANGLE_DEFAULT)
-		{}
+		Planet();
 
 		virtual ~Planet()		{}
 
 		void deleteAllObjs();
 		
 		//virtual Obstacles& getObstacles() = 0;
-		virtual PlayerObjs& getPlayerObjs() = 0;
-		virtual Projectiles& getProjectiles() = 0;
+		inline PlayerObjs& getPlayerObjs()						{ return playerObjs; }
+		inline Projectiles& getProjectiles()					{ return projectiles; }
 
 		//virtual const Obstacles& getObstacles() const = 0;
-		virtual const PlayerObjs& getPlayerObjs() const = 0;
-		virtual const Projectiles& getProjectiles() const = 0;
+		inline const PlayerObjs& getPlayerObjs() const			{ return playerObjs; }
+		inline const Projectiles& getProjectiles() const		{ return projectiles; }
 
 		// history functions
-		//void storeToTickData(int tick);
-		//void updatePlayerObjsToTickData(int tick);
 		void updatePlayerObjsToTickData(Tickf tick);
 
 		/**
@@ -63,36 +58,20 @@ namespace Planet
 		void updatePlayerObjMovement(PlayerId playerId)
 		{}
 		
+		void init()			{ planetBody.init(); }
+
+		inline PlanetBody* getPlanetBody()					{ return &planetBody; }
+		
+		
 
 		bool isConsistent();
 
 	protected:
 
-		//class Delete
-		//{
-		//public:
-		//	void operator ()(const Obstacles::Pair &obstaclePair)		{ delete obstaclePair.second; }
-		//	void operator ()(const PlayerObjs::Pair &playerObjPair)		{ delete playerObjPair.second; }
-		//	void operator ()(const Projectiles::Pair &projectilePair)	{ delete projectilePair.second; }
-		//};
+		PlanetBody planetBody;
 
-		//class DeleteObstacle
-		//{
-		//public:
-		//	void operator ()(const Obstacles::Pair &obstaclePair)		{ delete obstaclePair.second; }
-		//};
-
-		class DeletePlayerObj
-		{
-		public:
-			void operator ()(const PlayerObjs::Pair &playerObjPair)		{ delete playerObjPair.second; }
-		};
-
-		class DeleteProjectile
-		{
-		public:
-			void operator ()(const Projectiles::Pair &projectilePair)	{ delete projectilePair.second; }
-		};
+		PlayerObjs playerObjs;
+		Projectiles projectiles;
 
 
 		//class Move
