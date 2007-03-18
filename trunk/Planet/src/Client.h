@@ -77,6 +77,9 @@ namespace Planet
 		static const double OBJECT_LAG_MODIFIER;
 		static const int OBJECT_LAG_ADD_TIME;
 		static const int OBJECT_LAG_ADD_TICK;
+
+		static const double PREDICTION_AMOUNT_MODIFIER;
+		static const int PREDICTION_AMOUNT_ADD_TIME;
 		
 		ClientGlobalObj clientGlobalObj;
 
@@ -86,15 +89,15 @@ namespace Planet
 
 		UserInputHandler userInputHandler;
 
-		Planet planet;
+		ClientPlanet planet;
 		PlanetRenderer planetRenderer;
 
 
 		//ClientWorldModel worldModel;
 		//WorldRenderer worldRenderer;
-		//ClientPlayers players;
-		//PredictionHandler predictionHandler;
-		//int currentObjLag; // controls the interpolation of objects
+		ClientPlayers players;
+		PredictionHandler predictionHandler;
+		int currentObjLag; // controls the interpolation of objects
 
 		PlayerId playerId;
 		Color color;	// should this exist or should the client have an Player object before we connect to server?
@@ -119,11 +122,11 @@ namespace Planet
 		//Angle calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds);
 
 		//debug
-		//bool isConsistent()
-		//{
-		//	//just test one thing for now
-		//	return predictionHandler.isConsistent();
-		//}
+		bool isConsistent()
+		{
+			//just test one thing for now
+			return predictionHandler.isConsistent();
+		}
 
 	};
 };
