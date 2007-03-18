@@ -76,7 +76,7 @@ namespace Planet
 		inline Pos getPos() const								{ return pos; }
 		inline void setPos(const Pos &pos)						{ this->pos = pos; }
 		inline Type getType() const								{ return type; }
-		//inline Angle getAngle() const							{ return angle; }
+		inline Vec getExt() const								{ return ext; }
 		inline Tickf getShootTick() const						{ return shootTick; }
 
 		//Line getLine() const;

@@ -78,9 +78,6 @@ namespace Planet
 		static const int OBJECT_LAG_ADD_TIME;
 		static const int OBJECT_LAG_ADD_TICK;
 
-		static const double PREDICTION_AMOUNT_MODIFIER;
-		static const int PREDICTION_AMOUNT_ADD_TIME;
-		
 		ClientGlobalObj clientGlobalObj;
 
 		Link link;

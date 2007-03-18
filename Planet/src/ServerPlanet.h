@@ -3,12 +3,18 @@
 
 #include "Planet.h"
 #include "ServerGlobalAccess.h"
+#include "ServerPlayers.h"
 
 namespace Planet
 {
 	class ServerPlanet : public Planet, public ServerGlobalAccess
 	{
 	public:
+		ServerPlanet(ServerGlobalObj *serverGlobalObj) : ServerGlobalAccess(serverGlobalObj) {}
+
+		void performProjectileHits(ServerPlayers &players);
+
+		void handlePlayerShooting(PlayerId playerId, ServerPlayers &players);
 	};
 };
 
