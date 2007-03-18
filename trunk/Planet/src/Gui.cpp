@@ -20,6 +20,7 @@ namespace Planet
 
 		delete labelHeader;
 		delete labelNumberOfPlayers;
+		delete labelMap;
 		delete labelHost;
 
 		delete buttonStartServer;
@@ -27,6 +28,7 @@ namespace Planet
 		
 		delete textFieldHost;
 		delete dropDownNumberOfPlayers;
+		delete dropDownMaps;
 
 		delete checkBox1;
 
@@ -72,6 +74,7 @@ namespace Planet
 		labelHeader->setFont(bigFont);
 
 		labelNumberOfPlayers = new gcn::Label("Number of players");
+		labelMap = new gcn::Label("Map");
 		labelHost = new gcn::Label("Host");
 
 		buttonStartServer = new gcn::Button("Start server");
@@ -86,6 +89,7 @@ namespace Planet
 		textFieldHost->setWidth(100);
 
 		dropDownNumberOfPlayers = new gcn::DropDown(&numberOfPlayersListModel);
+		dropDownMaps = new gcn::DropDown(&mapListModel);
 
 		checkBox1 = new gcn::CheckBox("Checkbox 1");
 		window = new gcn::Window("Window");
@@ -98,7 +102,9 @@ namespace Planet
 		top->add(labelHeader, 10, 10);
 	
 		top->add(labelNumberOfPlayers, 10, 60);
+		//top->add(labelMap, 10, 60);
 		top->add(dropDownNumberOfPlayers, 200, 60);
+		//top->add(dropDownMaps, 200, 60);
 		top->add(buttonStartServer, 200, 85);
 
 		top->add(labelHost, 10, 130);
@@ -128,10 +134,11 @@ namespace Planet
 	{
 		std::string host = textFieldHost->getText();
 		int numberOfPlayers = dropDownNumberOfPlayers->getSelected() + 1;
-	
+		std::string map = mapListModel.getElementAt(dropDownMaps->getSelected());
+
 		if (actionEvent.getId() == "START_SERVER")
 		{
-			game->startServer(numberOfPlayers);
+			game->startServer(numberOfPlayers, map);
 			buttonStartServer->setEnabled(false);
 			buttonStartServer->setCaption("Waiting");
 		}

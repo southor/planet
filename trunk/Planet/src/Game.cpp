@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <string>
 
 #include "SDL_endian.h"
 
@@ -11,6 +12,7 @@ namespace Planet
 {
 	bool runningServer = false;
 	int numberOfClients = 0;
+	std::string currentMap;
 
 	int runServer(void *unused)
 	{
@@ -42,6 +44,7 @@ namespace Planet
 	void Game::run()
 	{
 		std::string host("localhost");
+		std::string map("test");
 
 		while (running) 
 		{
@@ -58,7 +61,7 @@ namespace Planet
 			{
 				int actionCmd = client.getUserInputHandler()->popActionCmd();
 				if (actionCmd == Cmds::TOGGLE_MENU) toggleMenu();
-				else if (actionCmd == Cmds::START_SERVER) startServer(1);
+				else if (actionCmd == Cmds::START_SERVER) startServer(1, map);
 				else if (actionCmd == Cmds::CONNECT_TO_SERVER) connectToServer(host);
 				else client.getUserInputHandler()->pushActionCmd(actionCmd);
 			}
@@ -218,13 +221,14 @@ namespace Planet
 		gui.init(this);
 	}
 
-	void Game::startServer(int clients)
+	void Game::startServer(int clients, const std::string &map)
 	{
 		if (runningServer)
 			return;		// Server already started
 		
 		runningServer = true;
 		numberOfClients = clients;
+		currentMap = "maps/" + map + "/";
 		serverThread = SDL_CreateThread(runServer, 0);
 
 		if (serverThread == 0)

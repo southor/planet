@@ -2,6 +2,7 @@
 #define __Server_h__
 
 #include <vector>
+#include <string>
 
 //#include "messages.h"
 #include "ServerPlayers.h"
@@ -39,6 +40,8 @@ namespace Planet
 		ServerTimeHandler* getTimeHandler() { return getTimeHandler(); }
 		ServerIdGenerator* getIdGenerator() { return getIdGenerator(); }
 
+		void setMap(const std::string &map) { currentMap = map; }
+
 	private:
 		static const double PREDICTION_AMOUNT_MODIFIER;
 		static const int PREDICTION_AMOUNT_ADD_TIME;
@@ -52,6 +55,8 @@ namespace Planet
 		ServerGlobalObj serverGlobalObj;
 		ServerPlanet planet;
 		int lastUpdateTime;
+
+		std::string currentMap;
 	};
 };
 

@@ -8,6 +8,7 @@
 //#include "Angle.h"
 #include "messages.h"
 //#include "UpdateData2.h"
+#include "Ship.h"
 
 namespace Planet
 {
@@ -132,9 +133,7 @@ namespace Planet
 		}
 
 	public:
-
-
-
+		Ship ship;
 		
 		static const float RECTANGLE_SIZE;
 		//Pos pos;
@@ -155,12 +154,14 @@ namespace Planet
 
 		~PlayerObj()										{}
 
+		Ship* getShip()										{ return &ship; }
+
 		static float getForwardBackwardSpeed()				{ return FORWARD_BACKWARD_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 		static float getRotateSpeed()						{ return ROTATE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 
-		inline Pos getPos() const							{ return Pos(); }
-		inline Pos getAimPos() const						{ return Pos(); }
+		Pos getPos() const									{ return ship.position; }
+		Pos getAimPos() const								{ return ship.aimPos; }
 
 		//inline Angle getAngle()							{ return userCmd.aimAngle; }
 		//inline void setAngle(Angle angle)					{ userCmd.aimAngle = angle; }

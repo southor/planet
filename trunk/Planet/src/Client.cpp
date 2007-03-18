@@ -11,7 +11,7 @@ namespace Planet
 	void Client::init()
 	{
 		planet.init(currentMap);
-		ship.setPlanetBody(planet.getPlanetBody());
+		//ship.setPlanetBody(planet.getPlanetBody());
 		sight.setCamera(&camera);
 		sight.setPlanetBody(planet.getPlanetBody());
 		
@@ -288,10 +288,15 @@ namespace Planet
 		glDisable(GL_LIGHTING);
 		glDisable(GL_DEPTH_TEST);
 
-		ship.render();
+
+		PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
+
+		playerObj->getShip()->render();
 		sight.render();
 
-		planetRenderer.render(ship.position, ship.direction);
+		
+
+		//% planetRenderer.render(ship.position, ship.getDirection());
 
 		requestRender = false;
 
