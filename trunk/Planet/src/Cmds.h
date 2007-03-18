@@ -41,7 +41,8 @@ namespace Planet
 			TOGGLE_MENU,
 			START_SERVER,
 			CONNECT_TO_SERVER,
-			TEST
+			TEST,
+			TEST2
 		};
 
 

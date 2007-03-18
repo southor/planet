@@ -87,10 +87,10 @@ namespace Planet
 
 
 		UserInputHandler userInputHandler;
-
+	public:
 		ClientPlanet planet;
 		PlanetRenderer planetRenderer;
-
+	private:
 
 		//ClientWorldModel worldModel;
 		//WorldRenderer worldRenderer;
