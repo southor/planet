@@ -54,7 +54,7 @@ namespace Planet
 		void renderAndUpdate();
 		
 		
-		void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, int tick);
+		void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, const Pos &playerAimPos, int tick);
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		//KeyHandler* getKeyHandler();
