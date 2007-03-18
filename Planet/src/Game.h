@@ -53,6 +53,8 @@ namespace Planet
 		// TMP / DEBUG
 		float viewAngle;
 		float viewAngle2;
+
+		bool debugRenderPlanet;
 	};
 };
 

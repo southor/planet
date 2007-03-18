@@ -27,7 +27,14 @@ namespace Planet
 
 	const Vec2<int> Game::WINDOW_SIZE = Vec2<int>(800, 600);
 	
-	Game::Game() : viewAngle(0.0f), viewAngle2(0.0f), serverThread(0), connectedToServer(false), running(true), showMenu(true)
+	Game::Game() : 
+			viewAngle(0.0f), 
+			viewAngle2(0.0f), 
+			serverThread(0), 
+			connectedToServer(false), 
+			running(true), 
+			showMenu(true),
+			debugRenderPlanet(false)
 	{
 		init();
 	}
@@ -54,7 +61,7 @@ namespace Planet
 			if (connectedToServer)
 				client.runStep();
 
-			if (client.getRequestRender())
+			if (client.getRequestRender() || debugRenderPlanet)
 				render(0);
 
 			if (client.getUserInputHandler()->hasActionCmdOnQueue())
@@ -63,7 +70,8 @@ namespace Planet
 				if (actionCmd == Cmds::TOGGLE_MENU) toggleMenu();
 				else if (actionCmd == Cmds::START_SERVER) startServer(1, map);
 				else if (actionCmd == Cmds::CONNECT_TO_SERVER) connectToServer(host);
-				else if (actionCmd == Cmds::TEST) { client.currentMap = "test"; client.init(); }
+				else if (actionCmd == Cmds::TEST) { client.currentMap = "maps/test/"; client.init(); }
+				else if (actionCmd == Cmds::TEST2) { debugRenderPlanet = true; }
 				else client.getUserInputHandler()->pushActionCmd(actionCmd);
 			}
 			
@@ -110,6 +118,9 @@ namespace Planet
 				
 			if (connectedToServer)
 				client.renderAndUpdate();			
+
+			if (debugRenderPlanet)
+				client.planetRenderer.render(client.planet);
 
 		glPopMatrix();
 			
@@ -208,6 +219,7 @@ namespace Planet
 		client.getUserInputHandler()->setActionCmdKey(Cmds::START_SERVER, SDLK_F2);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::CONNECT_TO_SERVER, SDLK_F3);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::TEST, SDLK_F8);
+		client.getUserInputHandler()->setActionCmdKey(Cmds::TEST2, SDLK_F9);
 
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_LEFT, SDLK_LEFT);
 		client.getUserInputHandler()->setStateCmdKey(Cmds::TMP_RIGHT, SDLK_RIGHT);
