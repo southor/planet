@@ -123,7 +123,7 @@ namespace Planet
 		{
 			game->startServer(numberOfPlayers);
 			buttonStartServer->setEnabled(false);
-			buttonStartServer->setCaption("Waiting for players..");
+			buttonStartServer->setCaption("Waiting");
 		}
 		
 		if (actionEvent.getId() == "CONNECT_TO_SERVER")
