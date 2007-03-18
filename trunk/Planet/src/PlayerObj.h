@@ -126,6 +126,11 @@ namespace Planet
 		static const float ROTATE_SPEED; // speed in angle-units per millisecond
 		static const float STRAFE_SPEED; // speed in distance-units per millisecond
 
+		inline void setTickData(int tick, const UpdateData &data)
+		{
+			historyList.setData(tick, data);
+		}
+
 	public:
 
 
@@ -154,7 +159,9 @@ namespace Planet
 		static float getRotateSpeed()						{ return ROTATE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 
-		Pos getPos() const									{ return Pos(); }
+		inline Pos getPos() const							{ return Pos(); }
+		inline Pos getAimPos() const						{ return Pos(); }
+
 		//inline Angle getAngle()							{ return userCmd.aimAngle; }
 		//inline void setAngle(Angle angle)					{ userCmd.aimAngle = angle; }
 		//void getRectangle(Rectangle &rectangle) const;
@@ -186,16 +193,18 @@ namespace Planet
 							//angle,
 							updatePlayerObj->aimPos,
 							updatePlayerObj->nextShootTick, updatePlayerObj->ammoSupply);
-							historyList.setData(tick, data);
+							setTickData(tick, data);
 		}
 
 		// @return true if there was a differ
 		bool setTickDataAndCompare(int tick, const UpdatePlayerObj *updatePlayerObj);
 
-		inline void storeToTickData(int tick)				{ assert(nextShootTick >= tick);
-															  setTickData(tick, getPos(), //angle,
-																			getAimPos(),
-																			nextShootTick); }
+		inline void storeToTickData(int tick)
+		{
+			assert(nextShootTick >= tick);				  
+			UpdateData data(getPos(), getAimPos(), nextShootTick, ammoSupply);
+			setTickData(tick, data);
+		}
 
 		void updateToTickData(int tick);
 

@@ -40,7 +40,7 @@ namespace Planet
 		assert(isConsistent());
 		
 		setAmmoSupply(0);
-		if (N_WEAPONS >= 2) ammo[1] = 10;
+		if (N_WEAPONS >= 2) ammoSupply[1] = 10;
 
 		// insert data into history list
 		UpdateData firstTickData(pos, //angle,
@@ -122,7 +122,7 @@ namespace Planet
 		UpdateData storedData;
 		historyList.getData(tick, storedData);
 		
-		UpdateData data(updatePlayerObj->pos, updatePlayerObj->aimPos, updatePlayerObj->nextShootTick, updatePlayerObj->ammo);
+		UpdateData data(updatePlayerObj->pos, updatePlayerObj->aimPos, updatePlayerObj->nextShootTick, updatePlayerObj->ammoSupply);
 		historyList.setData(tick, data);
 
 		return data != storedData;
@@ -133,16 +133,17 @@ namespace Planet
 		UpdateData data;
 		historyList.getData(tick, data);
 
-		//TODO
-		//this->pos = data.pos;		
-		//this->angle = data.angle;
+
+		setPos(data->pos);
+		setAimPos(data->aimpos);
 
 		this->nextShootTick = data.nextShootTick;
 		
-		for(int i=0; i<Projectile::N_TYPES; ++i)
-		{
-			this->ammo[i] = data.ammo[i];
-		}
+		ammoSuply = data->ammoSupply;
+		//for(int i=0; i<Projectile::N_TYPES; ++i)
+		//{
+		//	this->ammoSupply[i] = data.ammoSupply[i];
+		//}
 		
 		assert(data.nextShootTick >= tick);
 	}
