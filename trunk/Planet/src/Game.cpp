@@ -55,7 +55,6 @@ namespace Planet
 
 			if (client.getUserInputHandler()->hasActionCmdOnQueue())
 			{
-				//pushActionCmd(int actionCmd)
 				int actionCmd = client.getUserInputHandler()->popActionCmd();
 				if (actionCmd == Cmds::TOGGLE_MENU) toggleMenu();
 				else if (actionCmd == Cmds::START_SERVER) startServer(1);
@@ -79,7 +78,6 @@ namespace Planet
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		//glViewport(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); 
 		glViewport(0, 0, WINDOW_SIZE.x, WINDOW_SIZE.y); 
 
 		client.getCamera()->useCamera();
@@ -89,18 +87,11 @@ namespace Planet
 
 
 		glPushMatrix();
-
 			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
 			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
 
-			float redAmbient = 0.2f;
-
-			if (!connectedToServer)
-				redAmbient = 0.8f;
-
-
 			// Setup lights
-			float light_ambient[] = {redAmbient, 0.2f, 0.2f, 1.0f};
+			float light_ambient[] = {0.2, 0.2f, 0.2f, 1.0f};
 			float light_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
 			float light_specular[] = {1.0f, 0.0f, 0.0f, 1.0f};
 			float light_position[] = {0.0f, 10.0f, 0.0f, 0.0f};
@@ -115,14 +106,10 @@ namespace Planet
 			if (connectedToServer)
 				client.renderAndUpdate();			
 
-
-
-
 		glPopMatrix();
 			
 		if (showMenu)
 			gui.render();
-
 			
 		glFlush();
 		SDL_GL_SwapBuffers();
@@ -168,6 +155,9 @@ namespace Planet
 		}
 
 		SDL_ShowCursor(SDL_ENABLE);
+		SDL_WM_SetCaption("Planet", "planet");
+		//SDL_WM_SetIcon(IMG_Load("planet.bmp"), 0);
+
 		glViewport(0, 0, w, h);
 		
 		SDL_EnableUNICODE(1);
@@ -299,10 +289,6 @@ namespace Planet
 					running = false;
 					runningServer = false;
 					break;				   
-				case SDLK_f:					
-					if (event.key.keysym.mod & KMOD_CTRL)
-						SDL_WM_ToggleFullScreen(screen);
-					break;
 				}
 				break;
 			}

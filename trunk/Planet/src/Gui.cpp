@@ -56,7 +56,8 @@ namespace Planet
 		gui->setInput(input);
 		gui->setTop(top);
 
-		font = new gcn::ImageFont("images/fixedfont.bmp", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+		//font = new gcn::ImageFont("images/fixedfont.bmp", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+		font = new gcn::ImageFont("images/rpgfont.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`'*#=[]\""); 	
 		gcn::Widget::setGlobalFont(font);
 
 		initWidgets();
@@ -81,19 +82,20 @@ namespace Planet
 		dropDownNumberOfPlayers = new gcn::DropDown(&numberOfPlayersListModel);
 
 		checkBox1 = new gcn::CheckBox("Checkbox 1");
-		window = new gcn::Window("I am a window  Drag me");
+		window = new gcn::Window("Window");
 		window->setBaseColor(gcn::Color(255, 150, 200, 190));
 		window->resizeToContent();
 
+		top->setBaseColor(gcn::Color(80, 80, 80, 100));
 
 		// Add widgets to container
 		top->add(labelNumberOfPlayers, 10, 10);
-		top->add(dropDownNumberOfPlayers, 150, 10);
-		top->add(buttonStartServer, 150, 35);
+		top->add(dropDownNumberOfPlayers, 200, 10);
+		top->add(buttonStartServer, 200, 35);
 
 		top->add(labelHost, 10, 80);
-		top->add(textFieldHost, 150, 80);
-		top->add(buttonConnectToServer, 150, 105);
+		top->add(textFieldHost, 200, 80);
+		top->add(buttonConnectToServer, 200, 105);
 
 		//top->add(checkBox1, 500, 130);
 		//top->add(window, 100, 350);

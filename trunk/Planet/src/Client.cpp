@@ -18,8 +18,116 @@ namespace Planet
 		getTimeHandler()->reset();
 	}
 
-
 	Client::~Client()	{}
+
+	void Client::handleServerMessages()
+	{
+		link.retrieve(getTimeHandler()->getTime());
+		
+		while(link.hasMessageOnQueue())
+		{
+			int messageType = link.popMessage();
+			switch(messageType)
+			{
+			case UPDATE_PLAYER_OBJ:
+				{
+					UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
+					
+					PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
+					//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
+					
+					if (playerId == updatePlayerObj->playerId)
+					{
+						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle, updatePlayerObj->nextShootTick);
+						if (differ)
+						{
+							//std::cout << "old prediction differ!" << std::endl;
+							predictionHandler.serverInput(playerId, link.getPoppedTick());						
+						}
+						else
+						{
+							//std::cout << "old prediction ok!" << std::endl;
+						}
+					}
+					else
+					{
+						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle, updatePlayerObj->nextShootTick);
+					}
+				}
+				break;
+			case ADD_PLAYER_OBJ:
+				{
+					AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
+					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, link.getPoppedTick());				
+
+					if (connectionPhase == ClientPhase::GET_ADDPLAYEROBJ)
+						connectionPhase++;
+				}
+				break;
+			case ADD_OBSTACLE:
+				{
+					AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
+					worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
+					
+					if (connectionPhase == ClientPhase::GET_ADDOBSTACLE)
+						connectionPhase++; 
+				}
+				break;
+			case ADD_PROJECTILE:
+				{
+					//printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
+
+					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();					
+					bool projectileAlreadyCreated = false;
+					if (static_cast<PlayerId>(addProjectile->shooterId) == playerId)
+					{
+						projectileAlreadyCreated = worldModel.getProjectiles().exists(addProjectile->projectileId);
+					}
+					if (!projectileAlreadyCreated)
+					{
+						worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId, link.getPoppedTick(), addProjectile->objLag);
+					}
+				}
+				break;
+			case UPDATE_PROJECTILE:
+				{
+					//printf("CLIENT: handling update_projectile @ %d\n", timeHandler.getTime());
+					
+					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
+					Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
+					projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
+					//std::cout << "client projectile:  pos.x = " << projectile->getPos().x << "  pos.y = " << projectile->getPos().y << std::endl;
+				}
+				break;
+			case REMOVE_PROJECTILE:
+				{
+					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
+					
+					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
+					//worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
+					worldModel.getProjectiles().remove(removeProjectile->projectileId);
+				}
+				break;
+			case PROJECTILE_HIT:
+				{
+					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
+					
+					ProjectileHit *projectileHit = link.getPoppedData<ProjectileHit>();
+					worldRenderer.projectileHit((worldModel.getProjectiles())[projectileHit->projectileId], projectileHit->hitPosition);
+					worldModel.getProjectiles().remove(projectileHit->projectileId);
+				}
+				break;
+			case START_GAME:
+				break;
+			case SET_TICK_0_TIME:
+				getTimeHandler()->enterTick0Time(*(link.getPoppedData<SetTick0Time>()));
+				//std::cout << "tick0Time: " << timeHandler.getTick0Time() << std::endl;
+				break;
+			default:
+				break;
+			};
+		}
+	}
 
 	void Client::runStep()
 	{
