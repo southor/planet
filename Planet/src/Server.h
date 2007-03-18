@@ -49,6 +49,8 @@ namespace Planet
 		// @return The PlayerId that the new player got
 		PlayerId addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever);
 
+		void addPlayerObj(PlayerId playerId, const Pos &playerPos);
+
 		void logic();
 
 		ServerPlayers players;
