@@ -36,27 +36,27 @@ namespace Planet
 	// --------------------------------- server messages ------------------------------
 	// --------------------------------------------------------------------------------
 
-	//struct UpdatePlayerObj
-	//{
-	//	static const size_t messageType = UPDATE_PLAYER_OBJ;
+	struct UpdatePlayerObj
+	{
+		static const size_t messageType = UPDATE_PLAYER_OBJ;
 
-	//	//size_t playerObjId;
-	//	PlayerId playerId;
-	//	Pos pos;
-	//	Angle angle;
-	//	Tickf nextShootTick;
-	//	int ammo[Projectile::N_TYPES];
+		//size_t playerObjId;
+		PlayerId playerId;
+		Pos pos;
+		Vec direction;
+		Tickf nextShootTick;
+		int ammo[Projectile::N_TYPES];
 
-	//	UpdatePlayerObj()		{}
-	//	UpdatePlayerObj(PlayerId playerId, const Pos &pos, Angle angle, Tickf nextShootTick, const int ammo[Projectile::N_TYPES])
-	//		: playerId(playerId), pos(pos), angle(angle), nextShootTick(nextShootTick)
-	//	{
-	//		for(int i=0; i<Projectile::N_TYPES; ++i)
-	//		{
-	//			this->ammo[i] = ammo[i];
-	//		}
-	//	}
-	//};
+		UpdatePlayerObj()		{}
+		UpdatePlayerObj(PlayerId playerId, const Pos &pos, Vec direction, Tickf nextShootTick, const int ammo[Projectile::N_TYPES])
+			: playerId(playerId), pos(pos), direction(direction), nextShootTick(nextShootTick)
+		{
+			for(int i=0; i<Projectile::N_TYPES; ++i)
+			{
+				this->ammo[i] = ammo[i];
+			}
+		}
+	};
 	
 	struct AddPlayerObj
 	{
@@ -103,70 +103,70 @@ namespace Planet
 			: playerId(playerId), color(color), startPos(startPos) {}
 	};
 
-	//struct AddProjectile
-	//{
-	//	static const size_t messageType = ADD_PROJECTILE;
+	struct AddProjectile
+	{
+		static const size_t messageType = ADD_PROJECTILE;
 
-	//	GameObjId projectileId;
-	//	int type;
-	//	Pos pos;
-	//	float angle;
-	//	GameObjId shooterId;
-	//	Tickf shootTick;
-	//	int objLag;
+		GameObjId projectileId;
+		int type;
+		Pos pos;
+		Vec direction
+		GameObjId shooterId;
+		Tickf shootTick;
+		int objLag;
 
-	//	AddProjectile(GameObjId projectileId, int type, Pos pos, float angle, GameObjId shooterId, Tickf shootTick, int objLag)
-	//		: projectileId(projectileId), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
-	//	{}
-	//};
+		AddProjectile(GameObjId projectileId, int type, Pos pos, Vec direction, GameObjId shooterId, Tickf shootTick, int objLag)
+			: projectileId(projectileId), type(type), pos(pos), direction(direction), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
+		{}
+	};
 
-	//struct UpdateProjectile
-	//{
-	//	static const size_t messageType = UPDATE_PROJECTILE;
+	struct UpdateProjectile
+	{
+		static const size_t messageType = UPDATE_PROJECTILE;
 
-	//	GameObjId projectileId;
-	//	Pos pos;
+		GameObjId projectileId;
+		Pos pos;
 
-	//	UpdateProjectile(GameObjId projectileId, Pos pos)
-	//		: projectileId(projectileId), pos(pos)
-	//	{}
-	//};
+		UpdateProjectile(GameObjId projectileId, Pos pos)
+			: projectileId(projectileId), pos(pos)
+		{}
+	};
 
-	//struct RemoveProjectile
-	//{
-	//	static const size_t messageType = REMOVE_PROJECTILE;
+	struct RemoveProjectile
+	{
+		static const size_t messageType = REMOVE_PROJECTILE;
 
-	//	GameObjId projectileId;
+		GameObjId projectileId;
 
-	//	RemoveProjectile(GameObjId projectileId)
-	//		: projectileId(projectileId)
-	//	{}
-	//};
+		RemoveProjectile(GameObjId projectileId)
+			: projectileId(projectileId)
+		{}
+	};
 
-	//struct ProjectileHit
-	//{
-	//	static const size_t messageType = PROJECTILE_HIT;
+	struct ProjectileHit
+	{
+		static const size_t messageType = PROJECTILE_HIT;
 
-	//	GameObjId projectileId;
-	//	Pos hitPosition;
+		GameObjId projectileId;
+		Pos hitPosition;
 
-	//	ProjectileHit(GameObjId projectileId, Pos hitPosition)
-	//		: projectileId(projectileId), hitPosition(hitPosition)
-	//	{}
-	//};
+		ProjectileHit(GameObjId projectileId, Pos hitPosition)
+			: projectileId(projectileId), hitPosition(hitPosition)
+		{}
+	};
 
-	//struct Kill
-	//{
-	//	static const size_t messageType = KILL;
+	struct Kill
+	{
+		static const size_t messageType = KILL;
 
-	//	PlayerId killerId;
-	//	PlayerId killedId;
-	//	Pos respawnPos;
+		PlayerId killerId;
+		PlayerId killedId;
+		Pos respawnPos;
 
-	//	Kill(PlayerId killerId, PlayerId killedId, Pos respawnPos)
-	//		: killerId(killerId), killedId(killedId), respawnPos(respawnPos)
-	//	{}
-	//};
+		Kill(PlayerId killerId, PlayerId killedId, Pos respawnPos)
+			: killerId(killerId), killedId(killedId), respawnPos(respawnPos)
+		{}
+	};
 	
 	struct StartGame
 	{
@@ -223,7 +223,7 @@ namespace Planet
 		static const size_t messageType = USER_CMD;
 
 		StateCmds stateCmds;
-		//Angle aimAngle;
+		Pos aimPos;
 		
 		Projectile::Type weapon;
 		int nShots;
@@ -233,18 +233,12 @@ namespace Planet
 		int objLag; // The object lag the client uses this tick
 		GameObjId firstProjectileId; // the id of the first projectile shot during this tick
 		
-
-
-		
-
 		UserCmd()
 		{}
 
-		UserCmd(StateCmds stateCmds, //Angle aimAngle,
-				Projectile::Type weapon, int nShots,
+		UserCmd(StateCmds stateCmds, Pos aimPos, Projectile::Type weapon, int nShots,
 				bool shooting, Tickf firstShotTick, GameObjId firstProjectileId, int objLag)
-			: stateCmds(stateCmds), //aimAngle(aimAngle),
-				weapon(weapon), nShots(nShots), shooting(shooting),
+			: stateCmds(stateCmds), aimPos(aimPos), weapon(weapon), nShots(nShots), shooting(shooting),
 			  firstShotTick(firstShotTick), firstProjectileId(firstProjectileId), objLag(objLag)
 		{}
 
@@ -252,22 +246,18 @@ namespace Planet
 		void clear();
 
 		inline bool isShooting() const					{ return shooting; }
-
-
+		
 		static void interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData);
-
 
 		// Produces the next legal UserCmd from this one.
 		void assumeNext(UserCmd &resultData) const;
 
-
-		//inline static const UserCmd& getDefaultUserCmd()		{ return defaultUserCmd; }
 		static const UserCmd DEFAULT_USER_CMD;
 
 		// debug
 		bool isConsistent(int currentTick) const;
 
-	};
+	};	
 
 };
 
