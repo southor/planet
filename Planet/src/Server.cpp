@@ -82,7 +82,7 @@ namespace Planet
 			SDL_Delay(5);
 		}
 
-		// server.startGame();
+		startGame();
 
 		while (runningServer)
 		{
@@ -90,6 +90,48 @@ namespace Planet
 			logic();
 			SDL_Delay(TimeHandler::TICK_DELTA_TIME / 8);			
 		}
+	}
+
+	void Server::startGame()
+	{
+		//getTimeHandler()->reset();
+		
+		Planet::PlayerObjs::Iterator playerObjsIt = planet.getPlayerObjs().begin();
+		Planet::PlayerObjs::Iterator playerObjsEnd = planet.getPlayerObjs().end();
+		for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
+		{
+			PlayerId playerId = playerObjsIt->first;
+			PlayerObj *playerObj = playerObjsIt->second;
+
+			//Color color(static_cast<float>(playerId % 2), 1.0f-static_cast<float>(playerId % 2), 0.0f); // the correct color should be retrieved from Player
+
+			AddPlayerObj addPlayerObj(playerId, players[playerId]->color, playerObj->getPos(), playerObj->getAimPos());
+
+			pushMessageToAll(players, addPlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+		}
+
+		transmitAll(players);
+		
+	
+		//// TODO Send the hole worldmodel to clients, all players and everything
+		//ServerPlayers::Iterator playersIt;
+		//for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
+		//{			
+		//	const ServerPlayer *player = playersIt->second;
+
+		//	WorldModel::Obstacles::Iterator obstaclesIt = worldModel.getObstacles().begin();
+		//	WorldModel::Obstacles::Iterator obstaclesEnd = worldModel.getObstacles().end();
+		//	for(; obstaclesIt != obstaclesEnd; ++obstaclesIt)
+		//	{
+		//		GameObjId obstacleId = obstaclesIt->first;
+		//		Obstacle *obstacle = obstaclesIt->second;
+		//		
+		//		AddObstacle addObstacle(obstacleId, *obstacle);
+		//		player->link.pushMessage(addObstacle, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+		//	}
+
+		//	player->link.transmit();
+		//}
 	}
 
 

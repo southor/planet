@@ -10,7 +10,10 @@ namespace Planet
 	const int Client::OBJECT_LAG_ADD_TICK = 1;
 
 	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0), planet(&clientGlobalObj)
-	{}
+	{
+		predictionHandler.setPlanet(&planet);
+		assert(predictionHandler.isConsistent());
+	}
 
 	void Client::init()
 	{

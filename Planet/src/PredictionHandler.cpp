@@ -7,7 +7,7 @@ namespace Planet
 	PredictionHandler::PredictionHandler() :
 		userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS, UserCmd::interExtraPolate),
 		//userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS),
-		planet(NULL), latestServerInputTick(0)
+		planet(0), latestServerInputTick(0)
 	{
 		userCmdHistoryList.setDefaultData(UserCmd::DEFAULT_USER_CMD);
 		assert(isTick0UserCmdConsistent());
