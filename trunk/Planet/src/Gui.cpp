@@ -61,8 +61,7 @@ namespace Planet
 
 		//font = new gcn::ImageFont("images/fixedfont.bmp", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 		font = new gcn::ImageFont("images/rpgfont.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`'*#=[]\""); 	
-		bigFont = new gcn::ImageFont("images/rpgfont.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`'*#=[]\""); 	
-		//bigFont = new gcn::ImageFont("images/techyfontbig.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`'*#=[]\""); 	
+		bigFont = new gcn::ImageFont("images/techyfontbig.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`'*#=[]\""); 	
 		gcn::Widget::setGlobalFont(font);
 
 		initWidgets();
@@ -70,9 +69,11 @@ namespace Planet
 
 	void Gui::initWidgets()
 	{
-		labelHeader = new gcn::Label("Planet");
+		labelHeader = new gcn::Label("PLaneT");
 		labelHeader->setFont(bigFont);
-
+		labelHeader->setHeight(20);
+		labelHeader->setWidth(150);
+			
 		labelNumberOfPlayers = new gcn::Label("Number of players");
 		labelMap = new gcn::Label("Map");
 		labelHost = new gcn::Label("Host");
@@ -102,14 +103,14 @@ namespace Planet
 		top->add(labelHeader, 10, 10);
 	
 		top->add(labelNumberOfPlayers, 10, 60);
-		//top->add(labelMap, 10, 60);
+		top->add(labelMap, 10, 85);
 		top->add(dropDownNumberOfPlayers, 200, 60);
-		//top->add(dropDownMaps, 200, 60);
-		top->add(buttonStartServer, 200, 85);
+		top->add(dropDownMaps, 200, 85);
+		top->add(buttonStartServer, 200, 110);
 
-		top->add(labelHost, 10, 130);
-		top->add(textFieldHost, 200, 130);
-		top->add(buttonConnectToServer, 200, 155);
+		top->add(labelHost, 10, 150);
+		top->add(textFieldHost, 200, 150);
+		top->add(buttonConnectToServer, 200, 175);
 
 		//top->add(checkBox1, 500, 130);
 		//top->add(window, 100, 350);
