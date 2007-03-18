@@ -14,7 +14,11 @@ namespace Planet
 	Server::Server() : ServerGlobalAccess(&serverGlobalObj), lastUpdateTime(0), planet(&serverGlobalObj)
 	{}
 
-	Server::~Server() {}
+	Server::~Server()
+	{
+		DeleteSecond<ClientPlayers::Pair> deleteSecond;
+		ForEach(players.begin(), players.end(), deleteSecond);
+	}
 
 	void Server::run(bool &runningServer, int numberOfClients)
 	{

@@ -114,16 +114,16 @@ namespace Planet
 	//	//if (ammo[currentWeapon] == 0) switchWeapon();		
 	//}
 
-	//bool PlayerObj::setTickDataAndCompare(int tick, const Pos &pos, Angle angle, Tickf nextShootTick)
-	//{
-	//	UpdateData storedData;
-	//	historyList.getData(tick, storedData);
-	//	
-	//	UpdateData data(pos, angle, nextShootTick);			
-	//	historyList.setData(tick, data);
+	bool PlayerObj::setTickDataAndCompare(int tick, const UpdatePlayerObj *updatePlayerObj)
+	{
+		UpdateData storedData;
+		historyList.getData(tick, storedData);
+		
+		UpdateData data(updatePlayerObj->pos, updatePlayerObj->aimPos, updatePlayerObj->nextShootTick, updatePlayerObj->ammo);
+		historyList.setData(tick, data);
 
-	//	return data != storedData;
-	//}
+		return data != storedData;
+	}
 
 	void PlayerObj::updateToTickData(int tick)
 	{
@@ -135,6 +135,12 @@ namespace Planet
 		//this->angle = data.angle;
 
 		this->nextShootTick = data.nextShootTick;
+		
+		for(int i=0; i<Projectile::N_TYPES; ++i)
+		{
+			this->ammo[i] = data.ammo[i];
+		}
+		
 		assert(data.nextShootTick >= tick);
 	}
 
@@ -148,6 +154,11 @@ namespace Planet
 		//this->angle = data.angle;
 
 		this->nextShootTick = data.nextShootTick;
+
+		for(int i=0; i<Projectile::N_TYPES; ++i)
+		{
+			this->ammo[i] = data.ammo[i];
+		}
 	}
 
 	void PlayerObj::setUserCmd(const UserCmd *userCmd)

@@ -4,13 +4,15 @@
 #include "common.h"
 #include "Link.h"
 #include "UserInputHandler.h"
-#include "Planet.h"
+#include "ClientPlanet.h"
 #include "Ship.h"
 #include "Camera.h"
 #include "Sight.h"
 #include "ClientTimeHandler.h"
 #include "ClientGlobalAccess.h"
 #include "PlanetRenderer.h"
+#include "ClientPlayer.h"
+#include "PredictionHandler.h"
 
 namespace Planet
 {

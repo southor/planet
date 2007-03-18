@@ -4,6 +4,7 @@
 #include "Color.h"
 #include "basic.h"
 #include "Projectile.h"
+#include "GameObjId.h"
 #include "StateCmds.h"
 
 namespace Planet
@@ -43,18 +44,24 @@ namespace Planet
 		//size_t playerObjId;
 		PlayerId playerId;
 		Pos pos;
-		Vec direction;
+		//Vec direction;
+		Pos aimPos;
 		Tickf nextShootTick;
-		int ammo[Projectile::N_TYPES];
+		AmmoSupply ammoSupply;
+		//short ammo[Projectile::N_TYPES];
 
 		UpdatePlayerObj()		{}
-		UpdatePlayerObj(PlayerId playerId, const Pos &pos, Vec direction, Tickf nextShootTick, const int ammo[Projectile::N_TYPES])
-			: playerId(playerId), pos(pos), direction(direction), nextShootTick(nextShootTick)
+		UpdatePlayerObj(PlayerId playerId, const Pos &pos,
+			//Vec direction,
+			Pos aimPos,
+			Tickf nextShootTick, const AmmoSupply &ammoSupply)
+			: playerId(playerId), pos(pos), aimPos(aimPos), nextShootTick(nextShootTick),
+			  ammoSupply(ammoSupply)
 		{
-			for(int i=0; i<Projectile::N_TYPES; ++i)
-			{
-				this->ammo[i] = ammo[i];
-			}
+			//for(int i=0; i<Projectile::N_TYPES; ++i)
+			//{
+			//	this->ammo[i] = ammo[i];
+			//}
 		}
 	};
 	

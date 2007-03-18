@@ -13,13 +13,24 @@ namespace Planet
 {
 	class PlayerObj
 	{
+	public:
+
+		static const int N_WEAPONS = Projectile::N_TYPES;
+
+		class AmmoSupply
+		{
+		public:
+			short ammo[N_WEAPONS];
+		};
+
 	private:
 		//size_t playerId;
 		
-		static const int N_WEAPONS = Projectile::N_TYPES;
+		
 
 		//Projectile::Type currentWeapon;
-		int ammo[N_WEAPONS];
+		//int ammo[N_WEAPONS];
+		AmmoSupply ammoSupply;
 		Tickf nextShootTick;
 
 		//struct UpdateData : public UpdateData2<Pos, Angle>
@@ -37,15 +48,27 @@ namespace Planet
 
 			Pos pos;
 			//Angle angle;
+			Pos aimPos;
 			Tickf nextShootTick;
+			//short ammo[Projectile::N_TYPES];
+			AmmoSupply ammoSupply;
 
 			inline UpdateData()			{}
 			inline UpdateData(const Pos &pos,
 				//Angle angle,
-				Tickf nextShootTick)
+				const Pos &aimPos,
+				Tickf nextShootTick, const AmmoSupply &ammoSupply
+				)
 				: pos(pos), //angle(angle),
-				nextShootTick(nextShootTick)
-			{}
+				  aimPos(aimPos),
+				nextShootTick(nextShootTick),
+				ammoSupply(ammoSupply)
+			{
+				//for(int i=0; i<Projectile::N_TYPES; ++i)
+				//{
+				//	this->ammo[i] = ammo[i];
+				//}
+			}
 			//inline UpdateData(Tickf nextShootTick)
 			//	: nextShootTick(nextShootTick)
 			//{}
@@ -54,14 +77,16 @@ namespace Planet
 			{
 				UpdateData result(pos + rh.pos,
 									//angle + rh.angle,
-									nextShootTick + rh.nextShootTick);
+									aimPos + rh.aimPos,
+									nextShootTick + rh.nextShootTick,
+									ammoSupply + rh.ammoSupply);
 				return result;
 			}
 
 			UpdateData operator -(const UpdateData &rh) const
 			{
 				UpdateData result(pos - rh.pos, //angle - rh.angle,
-									nextShootTick - rh.nextShootTick);
+									nextShootTick - rh.nextShootTick,);
 				return result;
 			}
 
@@ -124,7 +149,6 @@ namespace Planet
 		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 
 		Pos getPos() const									{ return Pos(); }
-		Pos getAimPos() const								{ return Pos(); }
 		//inline Angle getAngle()							{ return userCmd.aimAngle; }
 		//inline void setAngle(Angle angle)					{ userCmd.aimAngle = angle; }
 		//void getRectangle(Rectangle &rectangle) const;
@@ -149,18 +173,17 @@ namespace Planet
 		//inline bool canShoot(int time) const				{ return (getAmmoCurrentWeapon() > 0) && (nextShootTick <= time); }
 		//void shoot(int time);
 
-		inline void setTickData(int tick, const Pos &pos,
-			//Angle angle,
-			Tickf nextShootTick)
+		inline void setTickData(int tick, const UpdatePlayerObj *updatePlayerObj)			
 		{
-			UpdateData data(pos,
+			UpdateData data(updatePlayerObj->pos, 
 				//angle,
-				nextShootTick);
+				updatePlayerObj->aimPos,
+				updatePlayerObj->nextShootTick, updatePlayerObj->ammo);
 			historyList.setData(tick, data);
 		}
 
 		// @return true if there was a differ
-		//bool setTickDataAndCompare(int tick, const Pos &pos, Angle angle, Tickf nextShootTick);
+		bool setTickDataAndCompare(int tick, const UpdatePlayerObj *updatePlayerObj);
 
 		inline void storeToTickData(int tick)				{ assert(nextShootTick >= tick);
 															  setTickData(tick, getPos(), //angle,
