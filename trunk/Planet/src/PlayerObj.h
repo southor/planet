@@ -15,13 +15,7 @@ namespace Planet
 	{
 	public:
 
-		static const int N_WEAPONS = Projectile::N_TYPES;
 
-		class AmmoSupply
-		{
-		public:
-			short ammo[N_WEAPONS];
-		};
 
 	private:
 		//size_t playerId;
@@ -79,21 +73,31 @@ namespace Planet
 									//angle + rh.angle,
 									aimPos + rh.aimPos,
 									nextShootTick + rh.nextShootTick,
-									ammoSupply + rh.ammoSupply);
+									// ammoSupply + rh.ammoSupply
+									ammoSupply
+									);
 				return result;
 			}
 
 			UpdateData operator -(const UpdateData &rh) const
 			{
 				UpdateData result(pos - rh.pos, //angle - rh.angle,
-									nextShootTick - rh.nextShootTick,);
+									aimPos - rh.aimPos,
+									nextShootTick - rh.nextShootTick,
+									//ammoSupply - rh.ammoSupply,
+									ammoSupply
+									);
 				return result;
 			}
 
 			UpdateData operator *(float rh) const
 			{
 				UpdateData result(pos * rh, //angle * rh,
-									nextShootTick * rh);
+									aimPos * rh,
+									nextShootTick * rh,
+									//ammoSupply * rh,
+									ammoSupply
+									);
 				return result;
 			}
 
@@ -101,7 +105,9 @@ namespace Planet
 			{				
 				return (pos != rh.pos) ||
 						//(angle != rh.angle) ||
-						(nextShootTick != rh.nextShootTick);
+						(aimPos != aimPos) ||
+						(nextShootTick != rh.nextShootTick) || 
+						(ammoSupply != ammoSupply);
 			}
 
 			static void interExtraPolate(int tick1, const UpdateData &data1, int tick2, const UpdateData &data2, Tickf resultTick, UpdateData &resultData);
@@ -168,18 +174,19 @@ namespace Planet
 		//void switchWeapon();
 		Projectile::Type getNextWeapon(Projectile::Type weapon);
 
-		const int* getAmmo() const							{ return ammo; }
-		int getAmmoCurrentWeapon() const					{ return ammo[getCurrentWeapon()]; }
+		//const int* getAmmo() const						{ return ammo; }
+		const AmmoSupply& getAmmoSupply() const				{ return ammoSupply; }
+		int getAmmoCurrentWeapon() const					{ return ammoSupply[getCurrentWeapon()]; }
 		//inline bool canShoot(int time) const				{ return (getAmmoCurrentWeapon() > 0) && (nextShootTick <= time); }
 		//void shoot(int time);
 
 		inline void setTickData(int tick, const UpdatePlayerObj *updatePlayerObj)			
 		{
 			UpdateData data(updatePlayerObj->pos, 
-				//angle,
-				updatePlayerObj->aimPos,
-				updatePlayerObj->nextShootTick, updatePlayerObj->ammo);
-			historyList.setData(tick, data);
+							//angle,
+							updatePlayerObj->aimPos,
+							updatePlayerObj->nextShootTick, updatePlayerObj->ammoSupply);
+							historyList.setData(tick, data);
 		}
 
 		// @return true if there was a differ
@@ -187,6 +194,7 @@ namespace Planet
 
 		inline void storeToTickData(int tick)				{ assert(nextShootTick >= tick);
 															  setTickData(tick, getPos(), //angle,
+																			getAimPos(),
 																			nextShootTick); }
 
 		void updateToTickData(int tick);
