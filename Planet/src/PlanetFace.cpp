@@ -1,16 +1,9 @@
 #include "PlanetFace.h"
 #include "TextureHandler.h"
 
-//#define GL_GLEXT_PROTOTYPES 1
-//#include "GL/glext.h"
-/*
-typedef void (*GL_ActiveTextureARB_Func)(unsigned int);
-GL_ActiveTextureARB_Func glActiveTextureARB = (GL_ActiveTextureARB_Func)SDL_GL_GetProcAddress("glActiveTextureARB");
+#include "GL/glext.h"
 
-typedef void (*GL_ClientActiveTextureARB_Func)(unsigned int);
-GL_ClientActiveTextureARB_Func glClientActiveTextureARB = (GL_ClientActiveTextureARB_Func)SDL_GL_GetProcAddress("glClientActiveTextureARB");
-*/
-
+#define DISABLE_MULTITEXTURE_ARB false
 
 namespace Planet
 {
@@ -160,65 +153,81 @@ namespace Planet
 			init();
 		bool useDetail = true;
 
-		/*
-		glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), vertices);
-		glNormalPointer(GL_FLOAT, sizeof(Vec3f), normals);
-		
-		glActiveTextureARB(GL_TEXTURE0_ARB);
-		glClientActiveTextureARB(GL_TEXTURE0_ARB);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
-		glBindTexture(GL_TEXTURE_2D, detailTexture);
-		
-		glEnable(GL_TEXTURE_2D); 
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		if (useDetail)
+		if (!DISABLE_MULTITEXTURE_ARB)
 		{
-			glActiveTextureARB(GL_TEXTURE1_ARB);
-			glEnable(GL_TEXTURE_2D);
-			glClientActiveTextureARB(GL_TEXTURE1_ARB);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
+			PFNGLACTIVETEXTUREARBPROC glActiveTextureARB = 0;
+			glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress( "glActiveTextureARB" ) ;
 
-			glMatrixMode(GL_TEXTURE);
+			PFNGLCLIENTACTIVETEXTUREARBPROC glClientActiveTextureARB = 0;
+			glClientActiveTextureARB = (PFNGLCLIENTACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress( "glClientActiveTextureARB" ) ;
 
-			glLoadIdentity();
-			glScalef(detailScale, detailScale, 1.0f);
+			/*		
+			typedef void (*GL_ActiveTextureARB_Func)(unsigned int);
+			GL_ActiveTextureARB_Func glActiveTextureARB_ptr = (GL_ActiveTextureARB_Func)SDL_GL_GetProcAddress("glActiveTextureARB");
 
-			glMatrixMode(GL_MODELVIEW);
+			typedef void (*GL_ClientActiveTextureARB_Func)(unsigned int);
+			GL_ClientActiveTextureARB_Func glClientActiveTextureARB_ptr = (GL_ClientActiveTextureARB_Func)SDL_GL_GetProcAddress("glClientActiveTextureARB");
+			*/
 
-			glBindTexture(GL_TEXTURE_2D, detailTexture);
-
-			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
-			glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE_ARB, 2);
-		}
-		
-		glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
-		
-		// Disable
-		if (useDetail)
-		{
-			glActiveTextureARB(GL_TEXTURE1_ARB);
-			glDisable(GL_TEXTURE_2D);
-
+			glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), vertices);
+			glNormalPointer(GL_FLOAT, sizeof(Vec3f), normals);
+			
 			glActiveTextureARB(GL_TEXTURE0_ARB);
 			glClientActiveTextureARB(GL_TEXTURE0_ARB);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
+			glBindTexture(GL_TEXTURE_2D, detailTexture);
+			
+			glEnable(GL_TEXTURE_2D); 
+			glBindTexture(GL_TEXTURE_2D, texture);
+
+			if (useDetail)
+			{
+				glActiveTextureARB(GL_TEXTURE1_ARB);
+				glEnable(GL_TEXTURE_2D);
+				glClientActiveTextureARB(GL_TEXTURE1_ARB);
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
+
+				glMatrixMode(GL_TEXTURE);
+
+				glLoadIdentity();
+				glScalef(detailScale, detailScale, 1.0f);
+
+				glMatrixMode(GL_MODELVIEW);
+
+				glBindTexture(GL_TEXTURE_2D, detailTexture);
+
+				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
+				glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE_ARB, 2);
+			}
+			
+			glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
+			
+			// Disable
+			if (useDetail)
+			{
+				glActiveTextureARB(GL_TEXTURE1_ARB);
+				glDisable(GL_TEXTURE_2D);
+
+				glActiveTextureARB(GL_TEXTURE0_ARB);
+				glClientActiveTextureARB(GL_TEXTURE0_ARB);
+			}
 		}
-		*/
-		
-		// OLD - without multitexturing/detail
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		else
+		{
+			// OLD - without multitexturing/detail
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 
-		glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), vertices);
-		glNormalPointer(GL_FLOAT, sizeof(Vec3f), normals);
-		glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
-		
-		glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
-		
+			glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), vertices);
+			glNormalPointer(GL_FLOAT, sizeof(Vec3f), normals);
+			glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
+			
+			glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
+		}
 	}
 
 	bool PlanetFace::findIntersection(SpherePoint &sp, float &s, float &t)
