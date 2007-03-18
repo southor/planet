@@ -10,7 +10,7 @@ namespace Planet
 	class PlanetFace
 	{
 	public:
-		PlanetFace() {}
+		PlanetFace() : vertices(0), colors(0), normals(0), indices(0) {}
 		PlanetFace(	float radius, 
 					float detailScale, 
 					Pos v1, Pos v2, Pos v3, Pos v4, 
@@ -24,6 +24,7 @@ namespace Planet
 			delete [] colors;
 			delete [] normals;
 			delete [] indices;
+			delete [] textureCoords;
 		}
 
 		void init();

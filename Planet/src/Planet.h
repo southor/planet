@@ -58,7 +58,7 @@ namespace Planet
 		void updatePlayerObjMovement(PlayerId playerId)
 		{}
 		
-		void init()			{ planetBody.init(); }
+		void init(const std::string &map)			{ planetBody.init(map); }
 
 		inline PlanetBody* getPlanetBody()					{ return &planetBody; }
 		

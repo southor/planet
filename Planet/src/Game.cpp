@@ -47,7 +47,9 @@ namespace Planet
 		{
 			pollEvents();
 			gui.logic();
-			client.runStep();
+
+			if (connectedToServer)
+				client.runStep();
 
 			render(0);
 
@@ -128,7 +130,8 @@ namespace Planet
 
 			glEnable(GL_LIGHT0);
 				
-			client.renderAndUpdate();			
+			if (connectedToServer)
+				client.renderAndUpdate();			
 
 
 
@@ -239,7 +242,6 @@ namespace Planet
 		client.getUserInputHandler()->aimMode = UserInputHandler::KEYBOARD;
 	
 		skyBox.init();
-		client.init();
 		gui.init(this);
 	}
 
@@ -288,6 +290,7 @@ namespace Planet
 
 			if (initialized)
 			{
+				client.init();
 				connectedToServer = true;
 				break;
 			}
