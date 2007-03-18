@@ -15,7 +15,7 @@ namespace Planet
 		Sight() : camera(0) {}
 	
 		void setCamera(Camera *camera) { this->camera = camera; }
-		void setPlanet(PlanetBody *planetBody) { this->planetBody = planetBody; }
+		void setPlanetBody(PlanetBody *planetBody) { this->planetBody = planetBody; }
 	
 		void update(Vec2i &mouseScreenPos, int w, int h);
 

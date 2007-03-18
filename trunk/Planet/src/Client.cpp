@@ -6,14 +6,14 @@
 namespace Planet
 {
 
-	Client::Client() : ClientGlobalAccess(&clientGlobalObj), planetBody("maps/test/"), connectionPhase(0) {}
+	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0) {}
 
 	void Client::init()
 	{
-		planetBody.init();
-		ship.setPlanet(&planetBody);
+		planet.init();		
+		ship.setPlanetBody(planet.getPlanetBody());
 		sight.setCamera(&camera);
-		sight.setPlanet(&planetBody);
+		sight.setPlanetBody(planet.getPlanetBody());
 		
 		getTimeHandler()->reset();
 	}
@@ -118,7 +118,7 @@ namespace Planet
 	void Client::renderAndUpdate()
 	{
 		//render
-		planetBody.render();
+		planet.getPlanetBody()->render();
 
 		// Disable lights for ship and sight rendering
 		glDisable(GL_LIGHTING);
