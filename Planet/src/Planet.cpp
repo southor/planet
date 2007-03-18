@@ -54,8 +54,14 @@ namespace Planet
 		return false;
 	}
 
-
-
+	void Planet::updatePlayerObjMovement(PlayerId playerId)
+	{
+		PlayerObj *playerObj = getPlayerObjs()[playerId];		
+		
+		UserCmd userCmd = playerObj->getUserCmd();
+		
+		playerObj->ship.logic(userCmd);
+	}
 
 	void Planet::deleteAllObjs()
 	{

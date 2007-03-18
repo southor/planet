@@ -4,6 +4,8 @@
 #include "common.h"
 #include "basic.h"
 #include "PlanetBody.h"
+#include "messages.h"
+#include "Cmds.h"
 
 #define SHIP_ROTATE_LIMIT 40
 
@@ -12,14 +14,11 @@ namespace Planet
 	class Ship
 	{
 	public:
-		Ship(const Pos &pos, const Pos &aimPos, PlanetBody *planetBody) 
-			:	position(pos),
+		Ship(const Color &color, const Pos &pos, const Pos &aimPos, PlanetBody *planetBody) 
+			:	color(color),
+				position(pos),
 				aimPos(aimPos),
 				planetBody(planetBody),
-				moveUp(false),
-				moveDown(false),
-				moveLeft(false),
-				moveRight(false),
 				rotateForward(0.0f),
 				rotateLeft(0.0f),
 				rotateForwardSmooth(0.0f),
@@ -32,7 +31,7 @@ namespace Planet
 		void setPlanetBody(PlanetBody *planetBody) { this->planetBody = planetBody; }
 	
 		// Used by server/client
-		void logic(Pos &aimPos);
+		void logic(UserCmd &userCmd);
 		
 		// Used by client
 		void setState(Pos &pos, Pos &aimPos);
@@ -42,12 +41,6 @@ namespace Planet
 		
 		Vec getNormal();
 		Vec getDirection();
-		
-	
-		bool moveUp;
-		bool moveDown;
-		bool moveLeft;
-		bool moveRight;
 			
 		Pos position;
 		Pos aimPos;
@@ -61,6 +54,8 @@ namespace Planet
 		void updateRotation();
 	
 		PlanetBody *planetBody;
+		
+		Color color;
 
 		// Used for visual rotation during redering
 		float rotateForward;

@@ -2,9 +2,9 @@
 
 namespace Planet
 {
-	void ClientPlanet::addPlayerObj(PlayerId playerId, const Pos &playerPos, const Pos &playerAimPos, bool isMe, int tick)
+	void ClientPlanet::addPlayerObj(PlayerId playerId, const Color &playerColor, const Pos &playerPos, const Pos &playerAimPos, bool isMe, int tick)
 	{		
-		playerObjs.add(playerId, new PlayerObj(playerPos, playerAimPos, (isMe ? CLIENT_PREDICTION_N_HISTORY_TICKS : CLIENT_INTERPOOLATION_N_HISTORY_TICKS), tick, &planetBody));
+		playerObjs.add(playerId, new PlayerObj(playerColor, playerPos, playerAimPos, (isMe ? CLIENT_PREDICTION_N_HISTORY_TICKS : CLIENT_INTERPOOLATION_N_HISTORY_TICKS), tick, &planetBody));
 	}
 	
 	void ClientPlanet::addProjectile(GameObjId projectileId, AddProjectile *addProjectile)

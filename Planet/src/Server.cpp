@@ -86,8 +86,9 @@ namespace Planet
 
 		while (runningServer)
 		{
-			//printf("Running Server.\n");
-			logic();
+			for (int i = 0; i < 3; i++)
+				logic();
+				
 			SDL_Delay(TimeHandler::TICK_DELTA_TIME / 8);			
 		}
 	}
@@ -154,7 +155,7 @@ namespace Planet
 				// add player to server
 				PlayerId playerId = addClient(color, messageSender, messageReciever);
 
-				Pos startPos(200.0f + playerId * 50.0f, 200.0f, 0.0f);
+				Pos startPos(0.0f, 0.0f, 6.0f);
 				addPlayerObj(playerId, startPos);
 
 				// send WelcomeClient with playerId to client
@@ -189,6 +190,7 @@ namespace Planet
 	PlayerId Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 	{
 		PlayerId playerId = getIdGenerator()->generatePlayerId();
+		printf("generated id: %d\n", playerId);
 		players.add(playerId, new ServerPlayer(color, messageSender, messageReciever));
 		return playerId;
 	}
@@ -269,10 +271,10 @@ namespace Planet
 						//		userCmd->shootAction = UserCmd::START_SHOOTING;
 						//	}
 						//}
-						
+
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
-						
 					}
+
 					//else if (messageType == SHOOT_CMD)
 					//{
 					//	printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
@@ -356,7 +358,8 @@ namespace Planet
 					Link &link = players[playerId]->link;
 					double lag = static_cast<double>(link.getCurrentLag());
 					int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
-					SetTick0Time tick0Time(-extraPredictionTime);
+					SetTick0Time tick0Time(extraPredictionTime);
+					
 					link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				}
 			}

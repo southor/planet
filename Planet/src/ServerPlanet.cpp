@@ -1,4 +1,5 @@
 #include "ServerPlanet.h"
+#include "Color.h"
 
 namespace Planet
 {
@@ -9,8 +10,11 @@ namespace Planet
 
 	void ServerPlanet::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
+		Color color = Color::RED; 
 		Pos aimPos(playerPos + playerPos.getOrtoganal());
-		PlayerObj *playerObj = new PlayerObj(playerPos, aimPos, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick(), &planetBody);
+		PlayerObj *playerObj = new PlayerObj(color, playerPos, aimPos, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick(), &planetBody);
+		
+		printf("adding player object with playerId: %d\n", playerId);
 
 		playerObjs.add(playerId, playerObj);
 	}

@@ -7,12 +7,17 @@ namespace Planet
 		reference = (pos + pos.getOrtoganal()) - pos;
 	}
 
-	void Ship::logic(Pos &aimPos)
+	void Ship::logic(UserCmd &userCmd)
 	{
+		bool moveLeft = userCmd.stateCmds.getCurrentState(Cmds::LEFT);
+		bool moveRight = userCmd.stateCmds.getCurrentState(Cmds::RIGHT);
+		bool moveForward = userCmd.stateCmds.getCurrentState(Cmds::FORWARD);
+		bool moveBackward = userCmd.stateCmds.getCurrentState(Cmds::BACKWARD);
+
 		Vec normal = getNormal();
 		
 		// Set look direction 
-		this->aimPos = aimPos;
+		this->aimPos = userCmd.aimPos;
 
 		// Update direction and position
 		SpherePoint sp = position.toSpherePoint();
@@ -29,17 +34,17 @@ namespace Planet
 		prevPosition = position;
 
 
-		if (moveUp)
-			position += direction / 10.0f;
+		if (moveForward)
+			position += direction / 5.0f;
 
-		if (moveDown)
-			position -= direction / 10.0f;
+		if (moveBackward)
+			position -= direction / 5.0f;
 
 		if (moveLeft)
-			position += directionLeft / 10.0f;
+			position += directionLeft / 5.0f;
 			
 		if (moveRight)
-			position += directionRight / 10.0f;
+			position += directionRight / 5.0f;
 	}
 	
 	void Ship::setState(Pos &pos, Pos &aimPos)
@@ -113,19 +118,19 @@ namespace Planet
 
 			// Left side
 			glBegin(GL_TRIANGLES);
-				glColor3f(1.0f, 0.0f, 0.0f);
+				glColor3f(color.r, color.g, color.b);
 				glVertex3f(p.x + direction.x, p.y + direction.y, p.z + direction.z);
 				glColor3f(0.1f, 0.1f, 0.1f);
 				glVertex3f(pTips.x + directionLeft.x, pTips.y + directionLeft.y, pTips.z + directionLeft.z);
-				glColor3f(0.8f, 0.1f, 0.0f);
+				glColor3f(color.r - 0.5f, color.g - 0.5f, color.b - 0.5f);
 				glVertex3f(p.x, p.y, p.z);
 			glEnd();
 			
 			// Right side
 			glBegin(GL_TRIANGLES);
-				glColor3f(1.0f, 0.0f, 0.0f);
+				glColor3f(color.r, color.g, color.b);
 				glVertex3f(p.x + direction.x, p.y + direction.y, p.z + direction.z);
-				glColor3f(0.8f, 0.1f, 0.0f);
+				glColor3f(color.r - 0.5f, color.g - 0.5f, color.b - 0.5f);
 				glVertex3f(p.x, p.y, p.z);
 				glColor3f(0.1f, 0.1f, 0.1f);
 				glVertex3f(pTips.x + directionRight.x, pTips.y + directionRight.y, pTips.z + directionRight.z);

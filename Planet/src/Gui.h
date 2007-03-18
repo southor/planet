@@ -6,7 +6,7 @@
 #include <guichan/opengl.hpp>
 // A class used to load images for OpenGL using SDL
 #include <guichan/opengl/openglsdlimageloader.hpp>
-
+#include "Color.h"
 
 namespace Planet
 {
@@ -34,6 +34,45 @@ namespace Planet
 		}
 	};
 
+	class ColorListModel : public gcn::ListModel
+	{
+	public:
+		int getNumberOfElements()
+		{
+			return 3;
+		}
+
+		std::string getElementAt(int i)
+		{
+			switch(i)
+			{
+				case 0:
+					return std::string("Red");
+				case 1:
+					return std::string("Black");
+				case 2:
+					return std::string("Yellow");
+				default:
+					return std::string("");
+			}
+		}
+		
+		Color getColorAt(int i)
+		{
+			switch (i)
+			{
+				case 0:
+					return Color::RED;
+				case 1:
+					return Color::BLACK;
+				case 2:
+					return Color::YELLOW;
+				default:
+					return Color(0.5f, 0.5f, 0.5f);
+			}
+		}
+		
+	};
 
 	class NumberOfPlayersListModel : public gcn::ListModel
 	{
@@ -109,7 +148,8 @@ namespace Planet
 		gcn::Label* labelNumberOfPlayers;
 		gcn::Label* labelMap;
 		gcn::Label* labelHost;
-
+		gcn::Label* labelColor;
+		
 		gcn::Button* buttonStartServer;
 		gcn::Button* buttonConnectToServer;
 		
@@ -117,12 +157,14 @@ namespace Planet
 
 		gcn::DropDown* dropDownNumberOfPlayers;
 		gcn::DropDown* dropDownMaps;
-
+		gcn::DropDown* dropDownColors;
+		
 		gcn::CheckBox* checkBox1;
 		gcn::Window *window;
 		
 		NumberOfPlayersListModel numberOfPlayersListModel;
-		MapListModel mapListModel;		
+		MapListModel mapListModel;
+		ColorListModel colorListModel;
 		Game *game;
 
 	};

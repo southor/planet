@@ -57,8 +57,7 @@ namespace Planet
 		// TODO
 		void updatePlayerObjMovements()
 		{}
-		void updatePlayerObjMovement(PlayerId playerId)
-		{}
+		void updatePlayerObjMovement(PlayerId playerId);
 		void updateProjectileMovements()
 		{}
 		
