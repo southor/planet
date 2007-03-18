@@ -4,7 +4,7 @@
 namespace Planet
 {
 	
-	const UserCmd UserCmd::DEFAULT_USER_CMD = UserCmd(0, //0.0f,
+	const UserCmd UserCmd::DEFAULT_USER_CMD = UserCmd(0, Pos(0.0f, 0.0f, 0.0f),
 														Projectile::DEFAULT_TYPE, 0, false, 0, GameObjId(), 0);
 	
 	void UserCmd::interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData)
@@ -14,7 +14,7 @@ namespace Planet
 		else data1.assumeNext(resultData);
 
 		//// calculate aimAngle, assume continues rotation
-		//standardInterExtraPolate(tick1, data1.aimAngle, tick2, data2.aimAngle, resultTick, resultData.aimAngle);
+		standardInterExtraPolate(tick1, data1.aimPos, tick2, data2.aimPos, resultTick, resultData.aimPos);
 		
 		// calculate objLag
 		standardInterExtraPolate(tick1, data1.objLag, tick2, data2.objLag, resultTick, resultData.objLag);

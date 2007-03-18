@@ -5,7 +5,7 @@
 
 namespace Planet
 {
-	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0), planet(clientGlobalObj)
+	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0), planet(&clientGlobalObj)
 	{}
 
 	void Client::init()
@@ -18,7 +18,11 @@ namespace Planet
 		getTimeHandler()->reset();
 	}
 
-	Client::~Client()	{}
+	Client::~Client()
+	{
+		DeleteSecond<ClientPlayers::Pair> deleteSecond;
+		ForEach(players.begin(), players.end(), deleteSecond);
+	}
 
 	void Client::handleServerMessages()
 	{
@@ -33,7 +37,7 @@ namespace Planet
 				{
 					UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
 					
-					PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
+					PlayerObj *playerObj = (planet.getPlayerObjs())[updatePlayerObj->playerId];
 					//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
 					
 					if (playerId == updatePlayerObj->playerId)
