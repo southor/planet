@@ -12,9 +12,9 @@ namespace Planet
 	class Ship
 	{
 	public:
-		Ship() 
-			:	position(0.0f, 0.0f, 6.29f),
-				aimPos(0.0f, 0.0f, 0.0f),
+		Ship(const Pos &pos, const Pos &aimPos) 
+			:	position(pos),
+				aimPos(aimPos),
 				moveUp(false),
 				moveDown(false),
 				moveLeft(false),
@@ -24,10 +24,9 @@ namespace Planet
 				rotateForwardSmooth(0.0f),
 				rotateLeftSmooth(0.0f)
 		{
-			setStartPosition(position);
+			setReference(position);
 		}
-	
-		void setStartPosition(Pos pos);
+		
 			
 		void setPlanetBody(PlanetBody *planetBody) { this->planetBody = planetBody; }
 	
@@ -57,6 +56,7 @@ namespace Planet
 		Pos prevPosition;
 		
 	private:
+		void setReference(Pos pos);
 		void updateRotation();
 	
 		PlanetBody *planetBody;

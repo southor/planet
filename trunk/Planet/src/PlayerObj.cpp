@@ -29,8 +29,9 @@ namespace Planet
 	//	 strafingLeft(false), strafingRight(false)
 	//{}
 
-	PlayerObj::PlayerObj(const Pos &pos, size_t nHistoryTicks, int tick)
-		: historyList(nHistoryTicks, UpdateData::interExtraPolate), //pos(pos), angle(Angle::PI/2.0f),
+	PlayerObj::PlayerObj(const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick)
+		: historyList(nHistoryTicks, UpdateData::interExtraPolate), 
+			ship(pos, aimPos), //pos(pos), angle(Angle::PI/2.0f),
 			health(100),
 		 //movingForward(false), movingBackward(false),
 		 //strafingLeft(false), strafingRight(false),
@@ -43,8 +44,11 @@ namespace Planet
 		if (N_WEAPONS >= 2) ammoSupply[1] = 10;
 
 		// insert data into history list
-		UpdateData firstTickData(pos, //angle,
-									nextShootTick);
+		UpdateData firstTickData(getPos(), //angle,
+									getAimPos(),
+									nextShootTick,
+									ammoSupply
+									);
 		historyList.setDefaultData(firstTickData);
 		historyList.setData(tick, firstTickData);
 
@@ -57,14 +61,14 @@ namespace Planet
 		{			
 			if (((seed % N_WEAPONS) == 0) || ((seed % (N_WEAPONS + 2)) == 0))
 			{
-				ammo[i] = 200 * ((seed % 4)+1) / Projectile::getDirectDamage(i);
+				ammoSupply[i] = 200 * ((seed % 4)+1) / Projectile::getDirectDamage(i);
 			}
 			else
 			{
-				ammo[i] = 0;
+				ammoSupply[i] = 0;
 			}
 		}
-		ammo[0] = 10000;
+		ammoSupply[0] = 10000;
 		//ammo[1] = 10000;
 	}
 
@@ -103,7 +107,7 @@ namespace Planet
 		for(int i=1; i<=N_WEAPONS; ++i)
 		{
 			weapon = (weapon + 1) % N_WEAPONS;
-			if (ammo[weapon] > 0) break;
+			if (ammoSupply[weapon] > 0) break;
 		}
 		return weapon;
 	}
@@ -134,12 +138,13 @@ namespace Planet
 		historyList.getData(tick, data);
 
 
-		setPos(data->pos);
-		setAimPos(data->aimpos);
+		//setPos(data.pos);
+		//setAimPos(data.aimPos);
+		ship.setState(data.pos, data.aimPos);
 
 		this->nextShootTick = data.nextShootTick;
 		
-		ammoSuply = data->ammoSupply;
+		ammoSupply = data.ammoSupply;
 		//for(int i=0; i<Projectile::N_TYPES; ++i)
 		//{
 		//	this->ammoSupply[i] = data.ammoSupply[i];
@@ -161,7 +166,7 @@ namespace Planet
 
 		for(int i=0; i<Projectile::N_TYPES; ++i)
 		{
-			this->ammo[i] = data.ammo[i];
+			this->ammoSupply[i] = data.ammoSupply[i];
 		}
 	}
 
