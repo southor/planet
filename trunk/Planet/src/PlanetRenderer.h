@@ -22,6 +22,11 @@ namespace Planet
 			laserBeamRenderHandler.addLaserBeam(&laserBeam);
 			*/
 		}
+
+		void render(Planet &planet)
+		{
+			planet.getPlanetBody()->render();
+		}
 		
 		void render(Pos pos, Vec direction)
 		{

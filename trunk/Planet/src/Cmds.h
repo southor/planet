@@ -22,9 +22,6 @@ namespace Planet
 			ROTATE_LEFT,
 			ROTATE_RIGHT,
 			
-			START_SERVER,
-			CONNECT_TO_SERVER,
-			
 			TMP_LEFT,
 			TMP_RIGHT,
 			TMP_UP,
@@ -41,7 +38,9 @@ namespace Planet
 			STOP_SHOOTING,
 
 			// other commands
-			TOGGLE_MENU
+			TOGGLE_MENU,
+			START_SERVER,
+			CONNECT_TO_SERVER
 		};
 
 

@@ -23,17 +23,67 @@ namespace Planet
 
 	void Client::runStep()
 	{
-		ship.moveUp = userInputHandler.getCurrentState(Cmds::TMP_UP);
-		ship.moveDown = userInputHandler.getCurrentState(Cmds::TMP_DOWN);
-		ship.moveLeft = userInputHandler.getCurrentState(Cmds::TMP_LEFT);
-		ship.moveRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
-			
-		// Logic
-		ship.logic(sight.position);
+		assert(isConsistent());
+		
+		getTimeHandler()->nextStep();
+		if (connectionPhase == ClientPhase::RUNNING)
+		{
+			if (getTimeHandler()->isNewTick())
+			{
+				assert(predictionHandler.isConsistent());
+				
+				int currentTick = static_cast<int>(getStepTick());
+				
 
-		camera.update(ship.position, ship.reference);
+				// calculate current objectLag				
+				double tmp = static_cast<double>(link.getCurrentLag() - getTimeHandler()->getTick0Time());
+				this->currentObjLag = static_cast<int>(tmp * OBJECT_LAG_MODIFIER + OBJECT_LAG_ADD_TIME)
+													/ TimeHandler::TICK_DELTA_TIME + OBJECT_LAG_ADD_TICK;
 
-		sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
+				// get userCmd
+				UserCmd userCmd;
+				getCurrentUserCmd(userCmd);
+				userCmd.objLag = this->currentObjLag; // send currentObjLag to server
+				
+				// store userCmd
+				predictionHandler.setUserCmd(userCmd, currentTick);
+				
+				// push userCmd to serverlink
+				link.pushMessage(userCmd, getTimeHandler()->getTime(), currentTick);
+
+				// transmit messages
+				link.transmit();
+
+				//perform shooting
+				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
+				playerObj->updateToTickData(currentTick);
+				playerObj->setUserCmd(&userCmd);
+				worldModel.handlePlayerShooting(playerId);
+
+				// perform prediction
+				predictionHandler.predict(playerId, currentTick + 1);
+			}
+			else
+			{
+				requestRender = true;
+			}
+		}
+		else
+		{
+			handleServerMessages();
+		}
+
+		//ship.moveUp = userInputHandler.getCurrentState(Cmds::TMP_UP);
+		//ship.moveDown = userInputHandler.getCurrentState(Cmds::TMP_DOWN);
+		//ship.moveLeft = userInputHandler.getCurrentState(Cmds::TMP_LEFT);
+		//ship.moveRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
+		//	
+		//// Logic
+		//ship.logic(sight.position);
+
+		//camera.update(ship.position, ship.reference);
+
+		//sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
 	}
 
 	bool Client::initConnection()
@@ -119,7 +169,8 @@ namespace Planet
 	void Client::renderAndUpdate()
 	{
 		//render
-		planet.getPlanetBody()->render();
+		//planet.getPlanetBody()->render();
+		planetRenderer.render(planet);
 
 		// Disable lights for ship and sight rendering
 		glDisable(GL_LIGHTING);
