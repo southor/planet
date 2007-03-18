@@ -14,7 +14,7 @@ namespace Planet
 	public:
 		Ship() 
 			:	position(0.0f, 0.0f, 6.29f),
-				direction(0.0f, 0.0f, 0.0f),
+				aimPos(0.0f, 0.0f, 0.0f),
 				moveUp(false),
 				moveDown(false),
 				moveLeft(false),
@@ -41,7 +41,8 @@ namespace Planet
 		void render();
 		
 		Vec getNormal();
-
+		Vec getDirection();
+		
 	
 		bool moveUp;
 		bool moveDown;
@@ -49,14 +50,14 @@ namespace Planet
 		bool moveRight;
 			
 		Pos position;
-		Vec direction;
+		Pos aimPos;
+
 		Vec reference;
 		
 		Pos prevPosition;
 		
 	private:
 		void updateRotation();
-		void updateDirection(Pos &aimPos);
 	
 		PlanetBody *planetBody;
 

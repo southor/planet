@@ -12,7 +12,7 @@ namespace Planet
 		Vec normal = getNormal();
 		
 		// Set look direction 
-		updateDirection(aimPos);
+		this->aimPos = aimPos;
 
 		// Update direction and position
 		SpherePoint sp = position.toSpherePoint();
@@ -45,27 +45,28 @@ namespace Planet
 	void Ship::setState(Pos &pos, Pos &aimPos)
 	{
 		// Update position
-		prevPosition = position;
-		position = pos;		
+		this->prevPosition = this->position;
+		this->position = pos;		
 
 		// Update direction
-		updateDirection(aimPos);
-
+		this->aimPos = aimPos;
 	}
 
-	void Ship::updateDirection(Pos &aimPos)
+	Vec Ship::getDirection()
 	{
 		Vec normal = getNormal();
-
-		direction = aimPos - position;
+		Vec direction = aimPos - position;
 
 		Vec dn = direction.dot(normal) * normal;
-		
 		direction = direction - dn;
+
+		return direction;
 	}
 
 	void Ship::updateRotation()
 	{
+		Vec direction = getDirection();
+
 		if (direction.length() != 0.0f)
 			direction.normalize();
 
@@ -93,21 +94,13 @@ namespace Planet
 		updateRotation();
 	
 		Vec normal = getNormal();
+		Vec direction = getDirection();
 
 		direction.normalize();
 		direction = direction / 2.0f;
 		
 		Vec directionLeft = Mat3f::rotateArbitrary(position, PI_F/2) * direction * 0.8f;
 		Vec directionRight = -directionLeft;
-
-
-		/*
-		glBegin(GL_LINES);
-			glColor3f(0.5f, 0.5f, 0.5f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(position.x, position.y, position.z);
-		glEnd();
-		*/
 		
 		Vec p = position - direction / 2.0f;
 		Vec pTips = p - normal / 8.0f;

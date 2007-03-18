@@ -61,7 +61,7 @@ namespace Planet
 		Camera* getCamera() { return &camera; }	
 		inline UserInputHandler* getUserInputHandler()	{ return &userInputHandler; }
 		inline bool getRequestRender()					{ return requestRender; }
-		
+
 		void setPlayerId(PlayerId playerId)				{ this->playerId = playerId; }
 		void setColor(Color color)						{ this->color = color; }
 		//inline void setViewport(int x, int y, int w, int h)
@@ -115,7 +115,6 @@ namespace Planet
 
 	public:
 		//PlanetBody planetBody;
-		Ship ship;
 		Camera camera;
 		Sight sight;
 		//Angle calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds);

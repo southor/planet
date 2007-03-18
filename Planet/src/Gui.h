@@ -12,12 +12,35 @@ namespace Planet
 {
 	class Game;
 
+	class MapListModel : public gcn::ListModel
+	{
+	public:
+		int getNumberOfElements()
+		{
+			return 2;
+		}
+
+		std::string getElementAt(int i)
+		{
+			switch(i)
+			{
+				case 0:
+					return std::string("test");
+				case 1:
+					return std::string("snow");
+				default:
+					return std::string("");
+			}
+		}
+	};
+
+
 	class NumberOfPlayersListModel : public gcn::ListModel
 	{
 	public:
 		int getNumberOfElements()
 		{
-			return 4;
+			return 8;
 		}
 
 		std::string getElementAt(int i)
@@ -32,6 +55,14 @@ namespace Planet
 					return std::string("3");
 				case 3:
 					return std::string("4");
+				case 4:
+					return std::string("5");
+				case 5:
+					return std::string("6");
+				case 6:
+					return std::string("7");
+				case 7:
+					return std::string("8");
 				default:
 					return std::string("");
 			}
@@ -76,6 +107,7 @@ namespace Planet
 		gcn::Label* labelHeader;
 
 		gcn::Label* labelNumberOfPlayers;
+		gcn::Label* labelMap;
 		gcn::Label* labelHost;
 
 		gcn::Button* buttonStartServer;
@@ -84,12 +116,13 @@ namespace Planet
 		gcn::TextField* textFieldHost;
 
 		gcn::DropDown* dropDownNumberOfPlayers;
+		gcn::DropDown* dropDownMaps;
 
 		gcn::CheckBox* checkBox1;
 		gcn::Window *window;
 		
 		NumberOfPlayersListModel numberOfPlayersListModel;
-		
+		MapListModel mapListModel;		
 		Game *game;
 
 	};
