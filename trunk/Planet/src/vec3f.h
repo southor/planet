@@ -139,7 +139,7 @@ namespace Planet
 			return sp;
 		}
 
-		Vec3f getOrtoganal()
+		Vec3f getOrtoganal() const
 		{
 			Vec3f v = *this;
 			Vec3f yAxis(0.0f, 1.0f, 0.0f);

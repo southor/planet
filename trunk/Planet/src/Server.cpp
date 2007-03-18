@@ -20,6 +20,11 @@ namespace Planet
 		ForEach(players.begin(), players.end(), deleteSecond);
 	}
 
+	void Server::addPlayerObj(PlayerId playerId, const Pos &playerPos)
+	{
+		planet.addPlayerObj(playerId, playerPos);
+	}
+
 	void Server::run(bool &runningServer, int numberOfClients)
 	{
 		getTimeHandler()->reset();
@@ -108,7 +113,7 @@ namespace Planet
 				PlayerId playerId = addClient(color, messageSender, messageReciever);
 
 				Pos startPos(200.0f + playerId * 50.0f, 200.0f, 0.0f);
-//%				addPlayerObj(playerId, startPos);
+				addPlayerObj(playerId, startPos);
 
 				// send WelcomeClient with playerId to client
 				WelcomeClient welcomeClient = WelcomeClient(playerId);

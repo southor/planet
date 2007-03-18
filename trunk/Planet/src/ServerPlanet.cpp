@@ -7,6 +7,14 @@ namespace Planet
 		// TODO: add collision code
 	}
 
+	void ServerPlanet::addPlayerObj(PlayerId playerId, const Pos &playerPos)
+	{
+		Pos aimPos(playerPos + playerPos.getOrtoganal());
+		PlayerObj *playerObj = new PlayerObj(playerPos, aimPos, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick(), &planetBody);
+
+		playerObjs.add(playerId, playerObj);
+	}
+
 	void ServerPlanet::handlePlayerShooting(PlayerId playerId, ServerPlayers &players)
 	{	
 		int currentTick = getTimeHandler()->getTick();
