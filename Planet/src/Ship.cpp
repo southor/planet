@@ -2,9 +2,9 @@
 
 namespace Planet
 {
-	void Ship::setStartPosition(Pos pos)
+	void Ship::setReference(Pos pos)
 	{
-		reference = (position + position.getOrtoganal()) - position;
+		reference = (pos + pos.getOrtoganal()) - pos;
 	}
 
 	void Ship::logic(Pos &aimPos)

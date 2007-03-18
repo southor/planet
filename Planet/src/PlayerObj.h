@@ -150,7 +150,7 @@ namespace Planet
 		
 
 		//PlayerObj(size_t playerId, const Pos &pos);
-		PlayerObj(const Pos &pos, size_t nHistoryTicks, int tick);
+		PlayerObj(const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick);
 
 		~PlayerObj()										{}
 
@@ -162,6 +162,8 @@ namespace Planet
 
 		Pos getPos() const									{ return ship.position; }
 		Pos getAimPos() const								{ return ship.aimPos; }
+
+
 
 		//inline Angle getAngle()							{ return userCmd.aimAngle; }
 		//inline void setAngle(Angle angle)					{ userCmd.aimAngle = angle; }
