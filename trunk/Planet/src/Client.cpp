@@ -65,7 +65,7 @@ namespace Planet
 			case ADD_PLAYER_OBJ:
 				{
 					AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
-					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, link.getPoppedTick());				
+					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, addPlayerObj->aimPos, link.getPoppedTick());				
 
 					if (connectionPhase == ClientPhase::GET_ADDPLAYEROBJ)
 						connectionPhase++;
@@ -136,6 +136,126 @@ namespace Planet
 				break;
 			};
 		}
+	}
+
+	void Client::getCurrentUserCmd(UserCmd &userCmd)
+	{
+		//static int lastTick = -100;
+		//assert(timeHandler.getStepTick() >= (lastTick +1));
+		//lastTick = timeHandler.getStepTick();
+
+		// get current tick
+		int currentTick = static_cast<int>(getStepTick());
+		
+		// get playerobj
+		PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
+		playerObj->updateToTickData(currentTick);
+		if (!playerObj)
+		{
+			userCmd.clear();
+			return;
+		}
+
+		// get previous user command
+		UserCmd preUserCmd;
+		predictionHandler.getUserCmd(preUserCmd, currentTick - 1);
+
+		// get userCmd to start with (could contain postponed actionCmds from previous tick)
+		predictionHandler.getUserCmd(userCmd, currentTick);		
+
+		
+		// get stateCmds
+		StateCmds stateCmds = userInputHandler.getCurrentStates();
+
+		//// get angle
+		//Angle aimAngle(0.0f);
+		//if (worldModel.getPlayerObjs().exists(playerId))
+		//{
+		//	if (userInputHandler.aimMode == UserInputHandler::MOUSE)
+		//	{
+		//		aimAngle = calcPlayerObjAngle(userInputHandler.getMouseScreenPos());
+		//	}
+		//	else
+		//	{
+		//		assert(userInputHandler.aimMode == UserInputHandler::KEYBOARD);
+		//		//playerAngle = (worldModel.getPlayerObjs())[playerId]->angle;				
+		//		Angle preAngle(preUserCmd.aimAngle);
+		//		aimAngle = calcPlayerObjAngle(preUserCmd.aimAngle, stateCmds);
+		//	}
+		//}
+
+		// set stateCmds, aimAngle and firstProjectileId
+		userCmd.stateCmds = stateCmds;
+		//userCmd.aimAngle = aimAngle;
+		userCmd.aimPos = sight.position;
+		userCmd.firstProjectileId = getIdGenerator()->getNextId();
+
+		// set shooting action and nShots
+		assert(userCmd.nShots == 0);
+		userCmd.firstShotTick = playerObj->getNextShootTick();
+		//if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING)		
+		if (userCmd.isShooting())
+		{			
+			assert(userCmd.firstShotTick >= static_cast<Tickf>(currentTick));
+			userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);
+		}
+		//else
+		//{
+		//	assert(userCmd.shootAction == UserCmd::NOT_SHOOTING);
+		//}
+		bool startShootingThisTick = false;
+		while(userInputHandler.hasActionCmdOnQueue())
+		{
+			int actionCmd = userInputHandler.popActionCmd();
+
+			if (actionCmd == Cmds::START_SHOOTING)
+			{
+				if (DEBUG_SHOOTING) std::cout << "    -- start shooting" << std::endl;
+				
+				userCmd.shooting = true;
+				startShootingThisTick = true;
+				userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);				
+			}
+			else if (actionCmd == Cmds::STOP_SHOOTING)
+			{
+				if (DEBUG_SHOOTING) std::cout << "    -- stop shooting" << std::endl;
+				
+				userCmd.shooting = false;
+				if (startShootingThisTick && (userCmd.nShots >= 1)) userCmd.nShots = 1;
+				else userCmd.nShots = 0;				
+			}
+			else if (actionCmd == Cmds::SWITCH_WEAPON)
+			{
+				if (DEBUG_SHOOTING) std::cout << "    -- switch weapon" << std::endl;
+
+				Projectile::Type nextWeapon = playerObj->getNextWeapon(userCmd.weapon);
+				if (userCmd.nShots > 0)
+				{
+					UserCmd nextUserCmd;
+					userCmd.assumeNext(nextUserCmd);
+					nextUserCmd.weapon = nextWeapon;
+					predictionHandler.setUserCmd(nextUserCmd, currentTick + 1);
+					break;
+				}
+				else
+				{
+					userCmd.weapon = nextWeapon;
+				}
+			}
+			else
+			{
+				assert(false);
+			}
+		}
+		if ((userCmd.isShooting() || (userCmd.nShots > 0)) && DEBUG_SHOOTING)
+		{			
+			//userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING);
+			std::cout << "-- " << currentTick << " shooting, nShots = " << userCmd.nShots;
+			std::cout << "   playerObj.nextShootTick  = " << playerObj->getNextShootTick() << std::endl;
+		}
+
+		
+		assert(userCmd.isConsistent(currentTick));
 	}
 
 	void Client::runStep()
@@ -306,6 +426,30 @@ namespace Planet
 		requestRender = false;
 
 
+	}
+
+	void Client::addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, const Pos &playerAimPos, int tick)
+	{
+		
+		//size_t playerId = players.getSize();
+		//size_t playerObjId = playerId; // for now
+		
+		players.add(playerId, new Player(playerColor));
+		//players[playerId].playerObjId = playerObjId;
+		//worldModel.addPlayerObj(playerId, playerObjId, playerPos);
+		
+		// if this is me
+		bool isMe = (playerId == this->playerId);
+
+		planet.addPlayerObj(playerId, playerPos, playerAimPos, isMe, tick);
+		
+		
+		if (isMe)
+		{
+			
+			// set ammo supply			
+			(planet.getPlayerObjs())[playerId]->setAmmoSupply(static_cast<int>(playerPos.x + playerPos.y));
+		}
 	}
 
 	void Client::setConnection(MessageSender *messageSender, MessageReciever *messageReciever)

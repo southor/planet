@@ -134,10 +134,12 @@ namespace Planet
 
 		Color color;
 		Pos pos;
+		Pos aimPos;
 		PlayerId playerId;
 	
-		AddPlayerObj(PlayerId playerId, const Color &color, const Pos &pos)
-			: playerId(playerId), color(color), pos(pos) {}
+		AddPlayerObj(PlayerId playerId, const Color &color, const Pos &pos, const Pos &aimPos)
+			: playerId(playerId), color(color), pos(pos), aimPos(aimPos)
+		{}
 	};
 
 	//struct AddObstacle
