@@ -66,6 +66,10 @@ namespace Prototype
 
 	bool UserCmd::isConsistent() const
 	{
+		if ((weapon < 0) || (weapon >= Projectile::N_TYPES)) return false;
+		if (nShots < 0) return false;
+		if (objLag < 0) return false;
+		if (!firstProjectileId.isConsistent()) return false;
 		return firstShotTick >= 0.0;
 	}
 };
