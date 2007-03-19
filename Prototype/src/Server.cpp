@@ -228,6 +228,8 @@ namespace Prototype
 						//	}
 						//}
 						
+						int currentTick = getTimeHandler()->getTick();
+						//assert(userCmd->isConsistent(currentTick));
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
 						
 					}

@@ -147,6 +147,8 @@ namespace Prototype
 			//z = z * tmp;
 		}
 
+		bool isConsistent() const			{ return true; }
+
 	};
 
 

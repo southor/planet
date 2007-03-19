@@ -67,6 +67,8 @@ namespace Prototype
 			}
 
 			static void interExtraPolate(int tick1, const UpdateData &data1, int tick2, const UpdateData &data2, Tickf resultTick, UpdateData &resultData);
+
+			bool isConsistent()	const		{ return true; }
 		};
 		
 		HistoryList<UpdateData> historyList;

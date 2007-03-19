@@ -30,7 +30,8 @@ namespace Prototype
 		assert(size >= 1);
 		data = new Data[size];
 		Data defaultData;
-		setDefaultData(defaultData);		
+		//setDefaultData(defaultData, false);
+		tickToDataRef(0) = defaultData;
 
 		//assert(isConsistent());
 	}
@@ -193,7 +194,11 @@ namespace Prototype
 		if (tick <= nextTick)
 		{
 			if (tick == nextTick) ++nextTick;
-			else if (tick < firstTick()) return; // log when this happends for debugging?
+			else if (tick < firstTick())
+			{
+				std::cout << "Ignored storing update data because history list was too small" << std::endl;
+				return; // log when this happends for debugging?
+			}
 			
 			tickToDataRef(tick) = data;
 		}
