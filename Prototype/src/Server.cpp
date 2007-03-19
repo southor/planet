@@ -227,9 +227,8 @@ namespace Prototype
 						//		userCmd->shootAction = UserCmd::START_SHOOTING;
 						//	}
 						//}
-						
-						int currentTick = getTimeHandler()->getTick();
-						//assert(userCmd->isConsistent(currentTick));
+												
+						assert(userCmd->isConsistent(player->link.getPoppedTick()));
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
 						
 					}

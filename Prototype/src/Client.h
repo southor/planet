@@ -12,6 +12,7 @@
 #include "ViewportHandler.h"
 #include "PredictionHandler.h"
 #include "ClientGlobalAccess.h"
+#include "ConfigHandler.h"
 
 namespace Prototype
 {
@@ -35,7 +36,7 @@ namespace Prototype
 
 		static const bool DEBUG_SHOOTING = true;
 
-		static const int MAX_N_PLAYERS = 2;
+		//static const int MAX_N_PLAYERS = 2;
 
 
 
@@ -105,6 +106,8 @@ namespace Prototype
 		// stores viewport parameters
 		ViewportHandler viewportHandler;
 		bool requestRender;
+
+		ConfigHandler configHandler;
 
 		///**
 		// * will set player object angle if player aiming is mouse controlled

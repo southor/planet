@@ -13,6 +13,8 @@
 #include "ViewportHandler.h"
 #include "WorldRenderer.h"
 
+#include "ConfigHandler.h"
+
 namespace Prototype
 {
 	namespace ServerPhase
@@ -89,6 +91,8 @@ namespace Prototype
 		// worldrenderer (server debug rendering)
 		WorldRenderer worldRenderer;
 		bool requestRender;
+
+		ConfigHandler configHandler;
 
 	};
 };
