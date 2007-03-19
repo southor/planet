@@ -24,16 +24,22 @@ namespace Prototype
 		//void ignoreHostInterExtraPolate(int tick1, const Data& data1, int tick2, const Data& data2, Tickf resultTick, Data& resultData, Host *hostObj);
 		
 
+	public:
 		Data *data; // data array
 		size_t size;
-		
 		int nextTick;
-		
-
+	public:
 		int firstTick();
+	private:		
 		//inline int lastTick()					{ return nextTick-1; }
 
-		inline Data& tickToDataRef(int tick)	{ return data[tick % size]; }
+		inline Data& tickToDataRef(int tick)
+		{ 
+			int i = tick % size; 
+			Data d(data[i]);
+
+			return data[i];
+		}
 
 		
 		// Helper function, uses 2 datas from different ticks to calculate a resulting data for any tick.
@@ -73,6 +79,7 @@ namespace Prototype
 		int getLastTick()									{ return nextTick - 1; }
 
 		bool isConsistent();
+		bool isConsistentRec();
 
 	};
 };

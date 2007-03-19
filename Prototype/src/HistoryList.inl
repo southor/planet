@@ -92,7 +92,9 @@ namespace Prototype
 	void HistoryList<Data, Host>::getData(int tick, Data &data)
 	{
 		int firstTickTmp = firstTick();
-		
+
+		isConsistentRec();
+
 		if (tick >= nextTick)
 		{
 			// extrapolate
@@ -135,10 +137,9 @@ namespace Prototype
 		{
 			if (interExtraPolate) // no host
 			{
-			
 				// use first stored value
 				data = tickToDataRef(firstTickTmp);
-			
+
 				if (tick != 0) std::cout << "first stored history data was used, diff: " << firstTickTmp - tick << std::endl;
 			}
 			else
@@ -154,6 +155,9 @@ namespace Prototype
 			data = tickToDataRef(tick);
 			//return tickToDataRef(tick);
 		}
+
+		isConsistentRec();
+
 	}
 
 	template <typename Data, typename Host>
@@ -190,7 +194,14 @@ namespace Prototype
 	void HistoryList<Data, Host>::setData(int tick, const Data &data)
 	{		
 		assert(isConsistent());
-		
+
+		bool consistent = data.isConsistent();
+		assert(consistent);
+
+		isConsistentRec();
+
+		printf("tick: %d, nextTick: %d\n", tick, nextTick);
+
 		if (tick <= nextTick)
 		{
 			if (tick == nextTick) ++nextTick;
@@ -199,8 +210,11 @@ namespace Prototype
 				std::cout << "Ignored storing update data because history list was too small" << std::endl;
 				return; // log when this happends for debugging?
 			}
+		isConsistentRec();
 			
 			tickToDataRef(tick) = data;
+		isConsistentRec();
+
 		}
 		else // tick > nextTick
 		{
@@ -212,12 +226,15 @@ namespace Prototype
 
 			// calculate the start of the filling process
 			int startFillTick = tmax(firstTick(), tmpDataTick) + 1;
+		isConsistentRec();
 			
 			// Fill in the missing datas
 			if (interExtraPolate) // no host, normal interpolation
 			{
+		isConsistentRec();
 				// store the current last data in case we overwrite it
 				Data tmpData(tickToDataRef(tmpDataTick));
+		isConsistentRec();
 				
 				// fill in all missing datas by interpolating
 				for(int fillTick = startFillTick; fillTick < tick; ++fillTick)
@@ -236,9 +253,11 @@ namespace Prototype
 					hostInterExtraPolate(tick, data, static_cast<Tickf>(fillTick), tickToDataRef(fillTick), hostObj);
 				}
 			}
+		isConsistentRec();
 
 			// write new data
 			tickToDataRef(tick) = data;
+		isConsistentRec();
 
 
 
@@ -248,13 +267,37 @@ namespace Prototype
 			//	localInterExtraPolate(tmpDataTick, tmpData, tick, data, static_cast<Tickf>(fillTick), tickToDataRef(fillTick));
 			//}
 		}
+		isConsistentRec();
 	}
 
 	template <typename Data, typename Host>
 	bool HistoryList<Data, Host>::isConsistent()
 	{
+		if (nextTick > size)
+		{
+			int fTick = firstTick();
+			int a = nextTick % size;
+			int b = fTick % size;
+			assert(a == b);
+		}
 		//Data testData;
 		//localInterExtraPolate(nextTick-2, tickToDataRef(nextTick-2), nextTick-1, tickToDataRef(nextTick-1), nextTick, testData);
+		return true;
+	}
+
+	template <typename Data, typename Host>
+	bool HistoryList<Data, Host>::isConsistentRec()
+	{
+		assert(isConsistent());
+
+		if (nextTick > size)
+		{
+			for (int i = 0; i < size; i++)
+			{
+				int fTick = firstTick();
+				assert(data[i].isConsistent());
+			}
+		}
 		return true;
 	}
 };

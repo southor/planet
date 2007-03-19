@@ -50,9 +50,21 @@ namespace Prototype
 	// debug
 	bool PredictionHandler::isTick0UserCmdConsistent()
 	{
+		if (userCmdHistoryList.nextTick > userCmdHistoryList.size)
+		{
+			for (int i = 0; i < userCmdHistoryList.size; i++)
+			{
+				int firstTick = userCmdHistoryList.firstTick();
+//				printf("i: %d, weapon: %d\n", i, userCmdHistoryList.data[i].weapon);
+				assert(userCmdHistoryList.data[i].isConsistent());
+			}
+		}
 		UserCmd testUserCmd;
 		userCmdHistoryList.getData(0, testUserCmd);
-		return testUserCmd.isConsistent(0);
+		bool consistent = testUserCmd.isConsistent(0);
+//		printf("isTick0UserCmdConsistent() weapon: %d\n", testUserCmd.weapon);
+		assert(consistent);
+		return consistent;
 	}
 
 	//debug
