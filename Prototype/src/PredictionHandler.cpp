@@ -50,15 +50,15 @@ namespace Prototype
 	// debug
 	bool PredictionHandler::isTick0UserCmdConsistent()
 	{
-		if (userCmdHistoryList.nextTick > userCmdHistoryList.size)
-		{
-			for (int i = 0; i < userCmdHistoryList.size; i++)
-			{
-				int firstTick = userCmdHistoryList.firstTick();
-//				printf("i: %d, weapon: %d\n", i, userCmdHistoryList.data[i].weapon);
-				assert(userCmdHistoryList.data[i].isConsistent());
-			}
-		}
+		//if (userCmdHistoryList.nextTick > userCmdHistoryList.size)
+		//{
+		//	for (int i = 0; i < userCmdHistoryList.size; i++)
+		//	{
+		//		int firstTick = userCmdHistoryList.firstTick();
+		//		printf("i: %d, weapon: %d\n", i, userCmdHistoryList.data[i].weapon);
+		//		assert(userCmdHistoryList.data[i].isConsistent());
+		//	}
+		//}
 		UserCmd testUserCmd;
 		userCmdHistoryList.getData(0, testUserCmd);
 		bool consistent = testUserCmd.isConsistent(0);
