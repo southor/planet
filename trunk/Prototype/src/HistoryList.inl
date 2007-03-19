@@ -66,7 +66,7 @@ namespace Prototype
 	{
 		int tmp = nextTick - static_cast<int>(size);
 		if (tmp > 0) return tmp % static_cast<int>(size);
-		else return 0;		
+		else return 0;
 	}
 
 	//template <typename Data, typename Host>
