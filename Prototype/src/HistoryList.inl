@@ -210,31 +210,27 @@ namespace Prototype
 				std::cout << "Ignored storing update data because history list was too small" << std::endl;
 				return; // log when this happends for debugging?
 			}
-		isConsistentRec();
 			
 			tickToDataRef(tick) = data;
-		isConsistentRec();
-
 		}
 		else // tick > nextTick
 		{
 			// current last tick
 			int tmpDataTick = nextTick-1; 
+		isConsistentRec();
 
 			// update nextTick
 			nextTick = tick + 1;
+		isConsistentRec();
 
 			// calculate the start of the filling process
 			int startFillTick = tmax(firstTick(), tmpDataTick) + 1;
-		isConsistentRec();
 			
 			// Fill in the missing datas
 			if (interExtraPolate) // no host, normal interpolation
 			{
-		isConsistentRec();
 				// store the current last data in case we overwrite it
 				Data tmpData(tickToDataRef(tmpDataTick));
-		isConsistentRec();
 				
 				// fill in all missing datas by interpolating
 				for(int fillTick = startFillTick; fillTick < tick; ++fillTick)
@@ -253,13 +249,9 @@ namespace Prototype
 					hostInterExtraPolate(tick, data, static_cast<Tickf>(fillTick), tickToDataRef(fillTick), hostObj);
 				}
 			}
-		isConsistentRec();
 
 			// write new data
 			tickToDataRef(tick) = data;
-		isConsistentRec();
-
-
 
 			//for(int fillTick = startFillTick; fillTick < tick; ++fillTick)
 			//{
