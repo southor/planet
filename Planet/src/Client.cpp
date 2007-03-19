@@ -9,7 +9,8 @@ namespace Planet
 	const int Client::OBJECT_LAG_ADD_TIME = 18;
 	const int Client::OBJECT_LAG_ADD_TICK = 1;
 
-	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0), planet(&clientGlobalObj), requestRender(false)
+	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0),
+						planet(&clientGlobalObj), requestRender(false), currentObjLag(0)
 	{
 		predictionHandler.setPlanet(&planet);
 		assert(predictionHandler.isConsistent());
@@ -141,7 +142,7 @@ namespace Planet
 			case START_GAME:
 				break;
 			case SET_TICK_0_TIME:
-				getTimeHandler()->enterTick0Time(*(link.getPoppedData<SetTick0Time>()));
+				getTimeHandler()->enterTick0Time((link.getPoppedData<SetTick0Time>())->tick0Time);
 				//std::cout << "tick0Time: " << timeHandler.getTick0Time() << std::endl;
 				break;
 			default:
@@ -264,10 +265,13 @@ namespace Planet
 				int currentTick = static_cast<int>(getStepTick());
 				
 
-				// calculate current objectLag				
-				double tmp = static_cast<double>(link.getCurrentLag() - getTimeHandler()->getTick0Time());
+				// calculate current objectLag
+				int tick0Time = getTimeHandler()->getTick0Time();
+				//std::cout << "tick0Time: " << tick0Time << std::endl;
+				double tmp = static_cast<double>(link.getCurrentLag() - tick0Time);
 				this->currentObjLag = static_cast<int>(tmp * OBJECT_LAG_MODIFIER + OBJECT_LAG_ADD_TIME)
 													/ TimeHandler::TICK_DELTA_TIME + OBJECT_LAG_ADD_TICK;
+				assert(this->currentObjLag >= 0);
 
 				// get userCmd
 				UserCmd userCmd;

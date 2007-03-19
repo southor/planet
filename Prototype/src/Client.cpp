@@ -485,7 +485,7 @@ namespace Prototype
 				}
 				break;
 			case SET_TICK_0_TIME:
-				getTimeHandler()->enterTick0Time(*(link.getPoppedData<SetTick0Time>()));
+				getTimeHandler()->enterTick0Time((link.getPoppedData<SetTick0Time>())->tick0Time);
 				//std::cout << "tick0Time: " << timeHandler.getTick0Time() << std::endl;
 				break;
 			default:

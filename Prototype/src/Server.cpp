@@ -315,7 +315,7 @@ namespace Prototype
 				// Send tick0Time to client
 				{
 					Link &link = players[playerId]->link;
-					double lag = static_cast<double>(link.getCurrentLag());
+					double lag = tmax(static_cast<double>(link.getCurrentLag()), 0.0);
 					int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
 					SetTick0Time tick0Time(-extraPredictionTime);
 					link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
