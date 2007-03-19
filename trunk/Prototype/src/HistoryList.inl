@@ -194,13 +194,10 @@ namespace Prototype
 	void HistoryList<Data, Host>::setData(int tick, const Data &data)
 	{		
 		assert(isConsistent());
+		assert(data.isConsistent());
 
-		bool consistent = data.isConsistent();
-		assert(consistent);
-
-		isConsistentRec();
-
-		printf("tick: %d, nextTick: %d\n", tick, nextTick);
+		//isConsistentRec();
+		//printf("tick: %d, nextTick: %d\n", tick, nextTick);
 
 		if (tick <= nextTick)
 		{
@@ -217,14 +214,12 @@ namespace Prototype
 		{
 			// current last tick
 			int tmpDataTick = nextTick-1; 
-		isConsistentRec();
 
 			// update nextTick
 			nextTick = tick + 1;
-		isConsistentRec();
 
 			// calculate the start of the filling process
-			int startFillTick = tmax(firstTick(), tmpDataTick) + 1;
+			int startFillTick = tmax(firstTick(), tmpDataTick + 1);
 			
 			// Fill in the missing datas
 			if (interExtraPolate) // no host, normal interpolation
@@ -259,17 +254,18 @@ namespace Prototype
 			//	localInterExtraPolate(tmpDataTick, tmpData, tick, data, static_cast<Tickf>(fillTick), tickToDataRef(fillTick));
 			//}
 		}
-		isConsistentRec();
+		
+		//isConsistentRec();
 	}
 
 	template <typename Data, typename Host>
 	bool HistoryList<Data, Host>::isConsistent()
 	{
-		if (nextTick > size)
+		if (nextTick > static_cast<int>(size))
 		{
 			int fTick = firstTick();
-			int a = nextTick % size;
-			int b = fTick % size;
+			int a = nextTick % static_cast<int>(size);
+			int b = fTick % static_cast<int>(size);
 			assert(a == b);
 		}
 		//Data testData;
@@ -282,12 +278,12 @@ namespace Prototype
 	{
 		assert(isConsistent());
 
-		if (nextTick > size)
+		if (nextTick > static_cast<int>(size))
 		{
-			for (int i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 			{
 				int fTick = firstTick();
-				//assert(data[i].isConsistent());
+				assert(data[i].isConsistent());
 			}
 		}
 		return true;

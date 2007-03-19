@@ -34,11 +34,8 @@ namespace Prototype
 		//inline int lastTick()					{ return nextTick-1; }
 
 		inline Data& tickToDataRef(int tick)
-		{ 
-			int i = tick % size; 
-			Data d(data[i]);
-
-			return data[i];
+		{
+			return data[tick % size];
 		}
 
 		
