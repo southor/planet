@@ -9,6 +9,9 @@ namespace Planet
 	
 	void UserCmd::interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData)
 	{
+		assert(data1.isConsistent(tick1));
+		assert(data2.isConsistent(tick2));
+		
 		// set by assumtion
 		if (resultTick >= tick2) data2.assumeNext(resultData);
 		else data1.assumeNext(resultData);
@@ -17,10 +20,12 @@ namespace Planet
 		standardInterExtraPolate(tick1, data1.aimPos, tick2, data2.aimPos, resultTick, resultData.aimPos);
 		
 		// calculate objLag
-		standardInterExtraPolate(tick1, data1.objLag, tick2, data2.objLag, resultTick, resultData.objLag);
+		//standardInterExtraPolate(tick1, data1.objLag, tick2, data2.objLag, resultTick, resultData.objLag);
 
 		// set first shoot tick data
 		resultData.firstShotTick = resultTick;
+
+		assert(resultData.isConsistent(resultTick));
 	}
 
 	void UserCmd::clear()

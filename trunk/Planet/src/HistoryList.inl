@@ -206,7 +206,7 @@ namespace Planet
 			nextTick = tick + 1;
 
 			// calculate the start of the filling process
-			int startFillTick = tmax(firstTick(), tmpDataTick) + 1;
+			int startFillTick = tmax(firstTick(), tmpDataTick + 1);
 			
 			// Fill in the missing datas
 			if (interExtraPolate) // no host, normal interpolation
