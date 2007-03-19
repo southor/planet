@@ -5,7 +5,7 @@ namespace Planet
 {
 	
 	const UserCmd UserCmd::DEFAULT_USER_CMD = UserCmd(0, Pos(0.0f, 0.0f, 0.0f),
-														Projectile::DEFAULT_TYPE, 0, false, 0, GameObjId(), 0);
+														Projectile::DEFAULT_TYPE, 0, false, 0, GameObjId(0, 1), 0);
 	
 	void UserCmd::interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData)
 	{
@@ -13,7 +13,7 @@ namespace Planet
 		if (resultTick >= tick2) data2.assumeNext(resultData);
 		else data1.assumeNext(resultData);
 
-		//// calculate aimAngle, assume continues rotation
+		//// calculate aimPos, assume continues rotation
 		standardInterExtraPolate(tick1, data1.aimPos, tick2, data2.aimPos, resultTick, resultData.aimPos);
 		
 		// calculate objLag
@@ -43,6 +43,13 @@ namespace Planet
 	{
 		if ((weapon < 0) || (weapon >= Projectile::N_TYPES)) return false;
 		if (nShots < 0) return false;
+		if (objLag < 0) return false;
+		if (!firstProjectileId.isConsistent()) return false;
 		return firstShotTick >= static_cast<Tickf>(currentTick);
 	}
+
+	//bool UserCmd::isConsistent(int currentTick) const
+	//{
+
+	//}
 };

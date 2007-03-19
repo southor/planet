@@ -23,6 +23,7 @@ namespace Planet
 
 		inline GameObjId getNextId()
 		{
+			assert(creatorId != INVALID_CREATOR_ID); // creator Id must be correct!
 			return GameObjId(creatorId, nextId);
 		}
 
@@ -39,7 +40,10 @@ namespace Planet
 	public:
 		
 		// This function must be called before generateId is called!
-		inline void setPlayerId(PlayerId playerId)		{ this->creatorId = playerId; }
+		inline void setPlayerId(PlayerId playerId)
+		{
+			this->creatorId = playerId;
+		}
 		
 	};
 

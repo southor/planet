@@ -40,12 +40,14 @@ namespace Planet
 			case UPDATE_PLAYER_OBJ:
 				{
 					UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
+					assert(updatePlayerObj->isConsistent());
 					
 					PlayerObj *playerObj = (planet.getPlayerObjs())[updatePlayerObj->playerId];
 					//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
 					
+					
 					if (playerId == updatePlayerObj->playerId)
-					{
+					{						
 						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj);
 						if (differ)
 						{
@@ -66,6 +68,7 @@ namespace Planet
 			case ADD_PLAYER_OBJ:
 				{
 					AddPlayerObj *addPlayerObj = link.getPoppedData<AddPlayerObj>();
+					assert(addPlayerObj->isConsistent());
 					addPlayer(addPlayerObj->playerId, addPlayerObj->color, addPlayerObj->pos, addPlayerObj->aimPos, link.getPoppedTick());
 
 					printf("adding client object: %d\n", addPlayerObj->playerId);
@@ -89,7 +92,9 @@ namespace Planet
 				{
 					//printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
 
-					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();					
+					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
+					assert(addProjectile->isConsistent());
+
 					bool projectileAlreadyCreated = false;
 					if (static_cast<PlayerId>(addProjectile->shooterId) == playerId)
 					{
@@ -106,6 +111,8 @@ namespace Planet
 					//printf("CLIENT: handling update_projectile @ %d\n", timeHandler.getTime());
 					
 					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
+					assert(updateProjectile->isConsistent());
+
 					Projectile *projectile = (planet.getProjectiles())[updateProjectile->projectileId];
 					projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
 					//std::cout << "client projectile:  pos.x = " << projectile->getPos().x << "  pos.y = " << projectile->getPos().y << std::endl;
@@ -116,6 +123,7 @@ namespace Planet
 					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
 					
 					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
+					assert(removeProjectile->isConsistent());
 					//worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
 					planet.getProjectiles().remove(removeProjectile->projectileId);
 				}
@@ -125,6 +133,7 @@ namespace Planet
 					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
 					
 					ProjectileHit *projectileHit = link.getPoppedData<ProjectileHit>();
+					assert(projectileHit->isConsistent());
 					//planetRenderer.projectileHit((planet.getProjectiles())[projectileHit->projectileId], projectileHit->hitPosition);
 					planet.getProjectiles().remove(projectileHit->projectileId);
 				}
@@ -333,6 +342,7 @@ namespace Planet
 					WelcomeClient *welcomeClient = link.getPoppedData<WelcomeClient>();
 				
 					setPlayerId(welcomeClient->playerId);
+					getIdGenerator()->setPlayerId(welcomeClient->playerId);
 					currentMap = "maps/test/";
 
 					connectionPhase++;

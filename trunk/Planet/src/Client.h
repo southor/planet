@@ -36,7 +36,7 @@ namespace Planet
 
 		static const bool DEBUG_SHOOTING = true;
 
-		static const int MAX_N_PLAYERS = 2;
+		//static const int MAX_N_PLAYERS = 2;
 
 
 

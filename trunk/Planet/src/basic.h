@@ -17,6 +17,7 @@ namespace Planet
 {
 	const bool SERVER_PRINT_NETWORK_DEBUG = true;
 	const bool CLIENT_PRINT_NETWORK_DEBUG = true;
+	const int MAX_N_PLAYERS = 128;
 
 	typedef unsigned char uchar;
 	typedef unsigned char ushort;
