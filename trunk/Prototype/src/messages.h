@@ -315,6 +315,8 @@ namespace Prototype
 		//inline bool isConsistent() const						{ return isConsistent(0); }
 		bool isConsistent(int currentTick) const;
 
+		bool isConsistent() const;
+
 	};	
 
 	//struct ShootCmd

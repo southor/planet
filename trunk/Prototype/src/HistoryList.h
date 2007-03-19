@@ -62,7 +62,12 @@ namespace Prototype
 		void getData(Tickf tick, Data &data);
 		
 
-		void setDefaultData(const Data &defaultData)		{ tickToDataRef(0) = defaultData; }
+		void setDefaultData(const Data &defaultData)
+		{
+			assert(defaultData.isConsistent());
+			tickToDataRef(0) = defaultData;
+		}
+
 		void setData(int tick, const Data &data);
 
 		int getLastTick()									{ return nextTick - 1; }

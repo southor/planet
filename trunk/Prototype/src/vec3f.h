@@ -132,6 +132,8 @@ namespace Prototype
 			} 
 		}
 */
+
+		bool isConsistent() const			{ return true; }
 	};
 
 
