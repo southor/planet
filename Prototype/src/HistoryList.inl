@@ -287,7 +287,7 @@ namespace Prototype
 			for (int i = 0; i < size; i++)
 			{
 				int fTick = firstTick();
-				assert(data[i].isConsistent());
+				//assert(data[i].isConsistent());
 			}
 		}
 		return true;

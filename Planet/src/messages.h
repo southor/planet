@@ -98,6 +98,15 @@ namespace Planet
 			assert((type >= 0) && (type < N_WEAPONS));
 			return ammo[type];
 		}
+
+		bool isConsistent()
+		{
+			for(int i=0; i<Projectile::N_TYPES; ++i)
+			{
+				if (ammo[i] < 0) return false;
+			}
+			return true;
+		}
 	};
 
 	struct UpdatePlayerObj
@@ -126,6 +135,13 @@ namespace Planet
 			//	this->ammo[i] = ammo[i];
 			//}
 		}
+
+		bool isConsistent()
+		{
+			if (playerId < 0) return false;
+			if (nextShootTick < 0.0) return false;
+			return ammoSupply.isConsistent();
+		}
 	};
 	
 	struct AddPlayerObj
@@ -140,6 +156,11 @@ namespace Planet
 		AddPlayerObj(PlayerId playerId, const Color &color, const Pos &pos, const Pos &aimPos)
 			: playerId(playerId), color(color), pos(pos), aimPos(aimPos)
 		{}
+
+		bool isConsistent()
+		{
+			return playerIdIsConsistent(playerId);
+		}
 	};
 
 	//struct AddObstacle
@@ -161,6 +182,11 @@ namespace Planet
 
 		WelcomeClient(PlayerId playerId) 
 			: playerId(playerId) {}
+
+		bool isConsistent()
+		{
+			return playerIdIsConsistent(playerId);
+		}
 	};
 
 	struct AddPlayer
@@ -169,10 +195,18 @@ namespace Planet
 
 		PlayerId playerId;
 		Color color;
-		Pos startPos;
+		//Pos startPos;
 		
-		AddPlayer(PlayerId playerId, Color color, Pos startPos) 
-			: playerId(playerId), color(color), startPos(startPos) {}
+		//AddPlayer(PlayerId playerId, Color color, Pos startPos) 
+		//	: playerId(playerId), color(color), startPos(startPos) {}
+		AddPlayer(PlayerId playerId, Color color) 
+			: playerId(playerId), color(color)
+		{}
+
+		bool isConsistent()
+		{
+			return playerIdIsConsistent(playerId);
+		}
 	};
 
 	struct AddProjectile
@@ -182,14 +216,24 @@ namespace Planet
 		GameObjId projectileId;
 		int type;
 		Pos pos;
-		Vec direction;
+		Vec ext;
 		GameObjId shooterId;
 		Tickf shootTick;
 		int objLag;
 
-		AddProjectile(GameObjId projectileId, int type, Pos pos, Vec direction, GameObjId shooterId, Tickf shootTick, int objLag)
-			: projectileId(projectileId), type(type), pos(pos), direction(direction), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
+		AddProjectile(GameObjId projectileId, int type, Pos pos, Vec ext, GameObjId shooterId, Tickf shootTick, int objLag)
+			: projectileId(projectileId), type(type), pos(pos), ext(ext), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
 		{}
+
+		bool isConsistent()
+		{
+			if (!projectileId.isConsistent()) return false;
+			if ((type < 0) || (type >= Projectile::N_TYPES)) return false;
+			if (!shooterId.isConsistent()) return false;
+			if (shootTick < 0.0) return false;
+			if (objLag < 0) return false;
+			return true;
+		}
 	};
 
 	struct UpdateProjectile
@@ -202,6 +246,11 @@ namespace Planet
 		UpdateProjectile(GameObjId projectileId, Pos pos)
 			: projectileId(projectileId), pos(pos)
 		{}
+
+		bool isConsistent()
+		{
+			return projectileId.isConsistent();
+		}
 	};
 
 	struct RemoveProjectile
@@ -213,6 +262,11 @@ namespace Planet
 		RemoveProjectile(GameObjId projectileId)
 			: projectileId(projectileId)
 		{}
+
+		bool isConsistent()
+		{
+			return projectileId.isConsistent();
+		}
 	};
 
 	struct ProjectileHit
@@ -225,6 +279,11 @@ namespace Planet
 		ProjectileHit(GameObjId projectileId, Pos hitPosition)
 			: projectileId(projectileId), hitPosition(hitPosition)
 		{}
+
+		bool isConsistent()
+		{
+			return projectileId.isConsistent();
+		}
 	};
 
 	struct Kill
@@ -238,6 +297,13 @@ namespace Planet
 		Kill(PlayerId killerId, PlayerId killedId, Pos respawnPos)
 			: killerId(killerId), killedId(killedId), respawnPos(respawnPos)
 		{}
+
+		bool isConsistent()
+		{
+			if (!playerIdIsConsistent(killerId)) return false;
+			if (!playerIdIsConsistent(killedId)) return false;
+			return true;
+		}
 	};
 	
 	struct StartGame
@@ -252,7 +318,9 @@ namespace Planet
 		int time;
 		int pingSendTime;
 
-		SyncPong(int time, int pingSendTime) : time(time), pingSendTime(pingSendTime) {}
+		SyncPong(int time, int pingSendTime)
+			: time(time), pingSendTime(pingSendTime)
+		{}
 	};
 
 	struct SetTick0Time

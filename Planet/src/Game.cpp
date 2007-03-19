@@ -320,7 +320,8 @@ namespace Planet
 				break;
 			}
 
-			client.getUserInputHandler()->pushInput(event);
+			if (connectedToServer)
+				client.getUserInputHandler()->pushInput(event);
 			gui.pushInput(event);
 		}		
 	}

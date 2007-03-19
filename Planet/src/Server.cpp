@@ -272,6 +272,7 @@ namespace Planet
 						//	}
 						//}
 
+						assert(userCmd->isConsistent(player->link.getPoppedTick()));
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
 					}
 
