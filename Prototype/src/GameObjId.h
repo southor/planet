@@ -116,6 +116,13 @@ namespace Prototype
 			return *this;
 		}
 
+		bool isConsistent() const
+		{
+			if ((playerId < 0) || (playerId >= MAX_N_PLAYERS)) return false;			
+			//return generatedId < static_cast<uint>(std::numeric_limits<int>::max());
+			return generatedId < INT_MAX;
+		}
+
 	};
 
 };
