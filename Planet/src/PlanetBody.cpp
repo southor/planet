@@ -6,6 +6,11 @@
 
 namespace Planet
 {
+
+	const float PlanetBody::DEFAULT_RADIUS = 10.0f;
+	const float PlanetBody::DEFAULT_DETAIL_SCALE = 1.0f;
+	const float PlanetBody::DEFAULT_HEIGHT_MAP_MULTI = 1.0f;
+
 	PlanetBody::PlanetBody() : xFront(0), xBack(0), yFront(0), yBack(0), zFront(0), zBack(0)
 	{
 	}
@@ -22,9 +27,9 @@ namespace Planet
 		// Read map config file
 		mapConfig.loadFile(map + "config.txt");
 
-		float r = mapConfig.getFloatValue("radius");
-		float detailScale = mapConfig.getFloatValue("detailScale");
-		float heightMapMulti = mapConfig.getFloatValue("heightMapMulti");
+		float r = mapConfig.getFloatValue("radius", DEFAULT_RADIUS);
+		float detailScale = mapConfig.getFloatValue("detailScale", DEFAULT_DETAIL_SCALE);
+		float heightMapMulti = mapConfig.getFloatValue("heightMapMulti", DEFAULT_HEIGHT_MAP_MULTI);
 
 		// the corners of the cube, clockwise.
 		c1 = Pos(r, r, r),
