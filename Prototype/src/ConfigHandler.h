@@ -11,23 +11,47 @@ namespace Prototype
 	public:
 		void loadFile(std::string filename);
 
+		
 		double getDoubleValue(std::string option, double defaultValue)
 		{
 			double value;
 			return getValue(option, value) ? value : defaultValue;
 		}
 		
-		inline float getFloatValue(std::string option, float defaultValue)
+		float getFloatValue(std::string option, float defaultValue)
 		{
 			double value;
 			return getValue(option, value) ? static_cast<float>(value) : defaultValue;
 		}
 			
-		inline int getIntValue(std::string option, int defaultValue)
+		int getIntValue(std::string option, int defaultValue)
 		{
 			double value;
 			return getValue(option, value) ? static_cast<int>(value + 0.5) : defaultValue;
 		}
+
+		
+		inline double getDoubleValue(std::string option)
+		{
+			double value = 0.0;
+			if(!getValue(option, value)) assert(false); // TODO: in release mode: throw exception ?
+			return value;
+		}
+
+		inline float getFloatValue(std::string option)
+		{
+			double value = 0.0;
+			if(!getValue(option, value)) assert(false); // TODO: in release mode: throw exception ?
+			return static_cast<float>(value);
+		}
+
+		inline int getIntValue(std::string option)
+		{
+			double value = 0.0;
+			if(!getValue(option, value)) assert(false); // TODO: in release mode: throw exception ?
+			return static_cast<int>(value);
+		}
+
 		
 	private:
 
