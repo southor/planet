@@ -56,9 +56,9 @@ namespace Planet
 		
 		ConfigHandler mapConfig;
 
-		static const float DEFAULT_RADIUS;
-		static const float DEFAULT_DETAIL_SCALE;
-		static const float DEFAULT_HEIGHT_MAP_MULTI;
+		//static const float DEFAULT_RADIUS;
+		//static const float DEFAULT_DETAIL_SCALE;
+		//static const float DEFAULT_HEIGHT_MAP_MULTI;
 	};
 };
 
