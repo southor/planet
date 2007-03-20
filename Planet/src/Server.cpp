@@ -272,7 +272,7 @@ namespace Planet
 						//	}
 						//}
 
-						std::cout << "diff = " << getTimeHandler()->getTick() - player->link.getPoppedTick() << std::endl;
+						//std::cout << "diff = " << getTimeHandler()->getTick() - player->link.getPoppedTick() << std::endl;
 						assert(userCmd->isConsistent(player->link.getPoppedTick()));
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
 					}

@@ -1,1 +1,2 @@
 Tickf, create a class for it instead of using double, otherwise may not work after playing for a while.
+really do update only when we render?
