@@ -56,4 +56,11 @@ namespace Prototype
 			return false;
 		}
 	}
+
+	double ConfigHandler::getDoubleValue(std::string option)
+	{
+		double value = 0.0;
+		if(!getValue(option, value)) assert(false); // TODO: in release mode: throw exception ?
+		return value;
+	}
 };

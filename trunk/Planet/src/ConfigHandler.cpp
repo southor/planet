@@ -6,7 +6,7 @@
 
 #include "assert.h"
 
-namespace Prototype
+namespace Planet
 {
 	void ConfigHandler::loadFile(std::string fileName)
 	{
@@ -55,5 +55,12 @@ namespace Prototype
 			std::cout << "config option " << option << " missing in file, using default value." << std::endl; 
 			return false;
 		}
+	}
+
+	double ConfigHandler::getDoubleValue(std::string option)
+	{
+		double value = 0.0;
+		if(!getValue(option, value)) assert(false); // TODO: in release mode: throw exception ?
+		return value;
 	}
 };

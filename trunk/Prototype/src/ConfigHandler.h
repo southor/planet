@@ -31,25 +31,16 @@ namespace Prototype
 		}
 
 		
-		inline double getDoubleValue(std::string option)
-		{
-			double value = 0.0;
-			if(!getValue(option, value)) assert(false); // TODO: in release mode: throw exception ?
-			return value;
-		}
+		double getDoubleValue(std::string option);
 
 		inline float getFloatValue(std::string option)
 		{
-			double value = 0.0;
-			if(!getValue(option, value)) assert(false); // TODO: in release mode: throw exception ?
-			return static_cast<float>(value);
+			return static_cast<float>(getDoubleValue(option));
 		}
 
 		inline int getIntValue(std::string option)
 		{
-			double value = 0.0;
-			if(!getValue(option, value)) assert(false); // TODO: in release mode: throw exception ?
-			return static_cast<int>(value);
+			return static_cast<int>(getDoubleValue(option));
 		}
 
 		
