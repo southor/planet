@@ -10,22 +10,33 @@ namespace Prototype
 	{
 	public:
 		void loadFile(std::string filename);
-		
 
-
-		double getDoubleValue(std::string option);
-		
-		inline float getFloatValue(std::string option)
+		double getDoubleValue(std::string option, double defaultValue)
 		{
-			return static_cast<float>(getDoubleValue(option));
+			double value;
+			return getValue(option, value) ? value : defaultValue;
+		}
+		
+		inline float getFloatValue(std::string option, float defaultValue)
+		{
+			double value;
+			return getValue(option, value) ? static_cast<float>(value) : defaultValue;
 		}
 			
-		inline int getIntValue(std::string option)
+		inline int getIntValue(std::string option, int defaultValue)
 		{
-			return static_cast<int>(getDoubleValue(option) + 0.5);
+			double value;
+			return getValue(option, value) ? static_cast<int>(value + 0.5) : defaultValue;
 		}
 		
-	private:	
+	private:
+
+		/**
+		 * If option has a value, the value will be written to result.
+		 * @return true if option has a value.
+		 */
+		bool getValue(std::string option, double &result);
+
 		std::map<std::string, double> configMap;
 	
 	};
