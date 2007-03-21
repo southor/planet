@@ -161,6 +161,7 @@ namespace Planet
 		//TODO
 		//this->pos = data.pos;
 		//this->angle = data.angle;
+		ship.setState(data.pos, data.aimPos);
 
 		this->nextShootTick = data.nextShootTick;
 
@@ -174,6 +175,8 @@ namespace Planet
 	{
 		this->userCmd = *userCmd;
 		//angle = userCmd->aimAngle;
+		ship.aimPos = userCmd->aimPos;
+
 	}
 
 	int PlayerObj::getNTickShots(Projectile::Type weapon, int currentTick)
