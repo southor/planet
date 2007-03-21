@@ -412,14 +412,14 @@ namespace Planet
 		//planet.getPlanetBody()->render();
 		planetRenderer.render(planet);
 
-		// Disable lights for ship and sight rendering
-		glDisable(GL_LIGHTING);
-		glDisable(GL_DEPTH_TEST);
+		//// Disable lights for ship and sight rendering
+		//glDisable(GL_LIGHTING);
+		//glDisable(GL_DEPTH_TEST);
 
 
 		PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
 
-		playerObj->getShip()->render();
+		//playerObj->getShip()->render();
 		sight.render();
 
 		//planetRenderer.render(ship.position, ship.getDirection());

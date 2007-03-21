@@ -214,7 +214,7 @@ namespace Planet
 
 		inline int getLastStoredTick()					{ return historyList.getLastTick(); }
 
-		const UserCmd& getUserCmd()							{ return userCmd; }
+		const UserCmd& getUserCmd()						{ return userCmd; }
 		void setUserCmd(const UserCmd *userCmd);
 
 		int getNTickShots(Projectile::Type weapon, int currentTick);
@@ -226,6 +226,8 @@ namespace Planet
 
 		Tickf getShotTick(int currentTick, int shotN);
 
+		//inline Ship& getShip()							{ return ship; }
+			
 		bool isConsistent();
 
 	};
