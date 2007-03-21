@@ -274,15 +274,29 @@ namespace Prototype
 			pollEvents();
 
 			if (SHOW_CLIENT_1)
+			{
+				nowRunning = "client1 logic: ";
+				std::cout << nowRunning;
 				client1.runStep();
+				std::cout << std::endl;
+			}
 				
 			if (SHOW_CLIENT_2)
+			{
+				nowRunning = "client2 logic: ";
+				std::cout << nowRunning;
 				client2.runStep();
+				std::cout << std::endl;
+				
+			}
 
 			if (SHOW_SERVER)
 			{
+				nowRunning = "server logic: ";
+				std::cout << nowRunning;
 				for (int i = 0; i < 3; i++)
 					server.logic();
+				std::cout << std::endl;
 			}
 			// guichan
 			//gui.gui->logic();
@@ -313,20 +327,26 @@ namespace Prototype
 
 		if (SHOW_CLIENT_1)
 		{
+			nowRunning = "client1 render: ";
 			client1.useViewport();
 			client1.renderAndUpdate();
+			std::cout << std::endl;
 		}
 
 		if (SHOW_CLIENT_2)
 		{
+			nowRunning = "client2 render: ";
 			client2.useViewport();
 			client2.renderAndUpdate();
+			std::cout << std::endl;
 		}
 
 		if (SHOW_SERVER)
 		{
+			nowRunning = "server render: ";
 			server.useViewport();
 			server.render();
+			std::cout << std::endl;
 		}
 		
 		// guichan

@@ -8,12 +8,17 @@
 #include "vec3f.h"
 #include "mat3f.h"
 
+#include <string>
+
 #define PI_F 3.141592654f
 #define TWO_PI_F 6.283185308f
 
 namespace Prototype
 {
-	
+	//debug
+	static std::string nowRunning;
+
+
 	const int MAX_N_PLAYERS = 128;
 	
 	typedef unsigned char uchar;

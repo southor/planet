@@ -23,6 +23,8 @@ namespace Prototype
 		
 		while (!sendDeque.empty())
 		{
+			//std::cout << "tl1 ";
+			
 			// Retrieve message from queue
 			Message message = sendDeque.front();
 			sendDeque.pop_front();
@@ -31,6 +33,8 @@ namespace Prototype
 			
 			//type = SDL_SwapBE32(type);
 			
+
+			//std::cout << "tl2 ";
 			// Send message on socket
 			result = SDLNet_TCP_Send(socket, &(message.type), sizeof(message.type));
 			if (result < sizeof(message.type))
@@ -38,6 +42,7 @@ namespace Prototype
 				printf("SDLNet_TCP_Send: %s (sending message.typec)\n", SDLNet_GetError());
 				return; 
 			}
+			//std::cout << "tl3 ";
 			
 			// Send time on socket
 			result = SDLNet_TCP_Send(socket, &(message.time), sizeof(message.time));
@@ -46,14 +51,18 @@ namespace Prototype
 				printf("SDLNet_TCP_Send: %s (sending message.time)\n", SDLNet_GetError());
 				return; 
 			}
+			//std::cout << "tl4 (message.tick)" << (message.tick) << " " << sizeof(message.tick) << "  " << SDLNet_GetError() << std::endl;
+
 
 			// Send tick on socket
 			result = SDLNet_TCP_Send(socket, &(message.tick), sizeof(message.tick));
+			//std::cout << "tl4.5 ";
 			if (result < sizeof(message.tick))
 			{ 
 				printf("SDLNet_TCP_Send: %s (sending message.tick)\n", SDLNet_GetError());
 				return; 
 			}
+			//std::cout << "tl5 ";
 			
 			
 			//len = SDL_SwapBE32(len);
@@ -65,6 +74,7 @@ namespace Prototype
 				printf("SDLNet_TCP_Send: %s (sending message.size)\n", SDLNet_GetError());
 				return; 
 			}
+			//std::cout << "tl6 ";
 
 			//len = SDL_SwapBE32(len);
 
@@ -75,8 +85,11 @@ namespace Prototype
 				printf("SDLNet_TCP_Send: %s (sending message.data)\n", SDLNet_GetError());
 				return; 
 			}
+			//std::cout << "tl7 ";
 			
 			delete message.data;
+
+			//std::cout << "tl8 ";
 
 			//if (result < len)
 			//	printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
