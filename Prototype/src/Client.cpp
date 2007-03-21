@@ -552,7 +552,7 @@ namespace Prototype
 			else
 			{
 				requestRender = true;
-				std::cout << "wants to render" << std::endl;
+				//std::cout << "wants to render" << std::endl;
 			}
 		}
 		else

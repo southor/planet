@@ -262,6 +262,23 @@ namespace Prototype
 				userCmd.isConsistent(getTimeHandler()->getTick());
 				playerObj->setUserCmd(&userCmd);
 
+				// All player object data for this tick has been set, send and store to history!
+				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
+				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				playerObj->storeToTickData(getTimeHandler()->getTick());
+
+				// Send tick0Time to client
+				{
+					Link &link = players[playerId]->link;
+					double lag = tmax(static_cast<double>(link.getCurrentLag()), 0.0);
+					int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
+					SetTick0Time tick0Time(-extraPredictionTime);
+					link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				}
+
+
+
+
 				// shooting
 				//if (userCmd.nShots > 0)
 				//{
@@ -300,34 +317,34 @@ namespace Prototype
 			getTimeHandler()->nextTick();
 			lastUpdateTime = time;
 
-			// Send playerObj updates and store state to history, also send tick0Time
-			/*WorldModel::PlayerObjs::Iterator*/ playerObjsIt = worldModel.getPlayerObjs().begin();
-			/*WorldModel::PlayerObjs::Iterator*/ playerObjsEnd = worldModel.getPlayerObjs().end();
-			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
-			{
-				
+			//// Send playerObj updates and store state to history, also send tick0Time
+			///*WorldModel::PlayerObjs::Iterator*/ playerObjsIt = worldModel.getPlayerObjs().begin();
+			///*WorldModel::PlayerObjs::Iterator*/ playerObjsEnd = worldModel.getPlayerObjs().end();
+			//for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
+			//{
+			//	
 
-				//GameObjId playerObjId = playerObjsIt->first;
-				PlayerId playerId = playerObjsIt->first;
-				PlayerObj *playerObj = playerObjsIt->second;
-				
-				//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
-				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
+			//	//GameObjId playerObjId = playerObjsIt->first;
+			//	PlayerId playerId = playerObjsIt->first;
+			//	PlayerObj *playerObj = playerObjsIt->second;
+			//	
+			//	//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
+			//	UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
 
-				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+			//	pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 
-				//playerObj->isConsistent();
-				playerObj->storeToTickData(getTimeHandler()->getTick());
+			//	//playerObj->isConsistent();
+			//	playerObj->storeToTickData(getTimeHandler()->getTick());
 
-				// Send tick0Time to client
-				{
-					Link &link = players[playerId]->link;
-					double lag = tmax(static_cast<double>(link.getCurrentLag()), 0.0);
-					int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
-					SetTick0Time tick0Time(-extraPredictionTime);
-					link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-				}
-			}
+			//	// Send tick0Time to client
+			//	{
+			//		Link &link = players[playerId]->link;
+			//		double lag = tmax(static_cast<double>(link.getCurrentLag()), 0.0);
+			//		int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
+			//		SetTick0Time tick0Time(-extraPredictionTime);
+			//		link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+			//	}
+			//}
 
 			//std::cout << "40 ";
 
