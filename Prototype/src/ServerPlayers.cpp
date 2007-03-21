@@ -8,7 +8,9 @@ namespace Prototype
 		ServerPlayers::Iterator end = serverPlayers.end();
 		for(; it != end; ++it)
 		{
+			//std::cout << "50.1 ";
 			it->second->link.transmit();
+			//std::cout << "50.2 ";
 		}
 	}
 

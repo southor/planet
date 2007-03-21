@@ -507,6 +507,8 @@ namespace Prototype
 	{
 		assert(isConsistent());
 		
+		link.retrieve(getTimeHandler()->getTime());
+
 		getTimeHandler()->nextStep();
 		if (connectionPhase == ClientPhase::RUNNING)
 		{
@@ -544,10 +546,13 @@ namespace Prototype
 
 				// perform prediction
 				predictionHandler.predict(playerId, currentTick + 1);
+
+				//std::cout << nowRunning << " runstep: " << currentTick << std::endl;
 			}
 			else
 			{
 				requestRender = true;
+				std::cout << "wants to render" << std::endl;
 			}
 		}
 		else

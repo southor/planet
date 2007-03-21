@@ -166,6 +166,8 @@ namespace Prototype
 		bool waitingForClients = false;
 		int latestTick = 10000000; // used for debugging
 
+		//std::cout << "10 ";
+
 		// check if current tick is recieved from all clients, otherwise set waitingForClients to true
 		ServerPlayers::Iterator playersIt;
 		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
@@ -192,6 +194,7 @@ namespace Prototype
 			}
 		}
 
+		//std::cout << "20 ";
 		if (!waitingForClients)
 		{
 			if (SERVER_PRINT_NETWORK_DEBUG) printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
@@ -209,6 +212,8 @@ namespace Prototype
 				ServerPlayer *player(playersIt->second);
 
 				player->link.retrieve(getTimeHandler()->getTime());
+
+				//std::cout << "30.1 ";
 
 				while (player->link.hasMessageOnQueueWithTick(tick))
 				{
@@ -247,6 +252,8 @@ namespace Prototype
 					//	pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 					//}
 				}
+
+				//std::cout << "30.2 ";
 
 				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 				playerObj->updateToTickData(getTimeHandler()->getTick());
@@ -322,6 +329,8 @@ namespace Prototype
 				}
 			}
 
+			//std::cout << "40 ";
+
 			// Send projectile updates
 			WorldModel::Projectiles::Iterator projectilesIt = worldModel.getProjectiles().begin();
 			WorldModel::Projectiles::Iterator projectilesEnd = worldModel.getProjectiles().end();
@@ -336,10 +345,12 @@ namespace Prototype
 				//projectile->storeToTickData(getTimeHandler()->getTick());
 			}
 
-			
+			//std::cout << "50 ";
 
 			transmitAll(players);
 			
+			//std::cout << "60 ";
+
 			requestRender = true;			
 		}
 	}
