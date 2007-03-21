@@ -254,6 +254,8 @@ namespace Planet
 		//printf("Client::runStep(), phase: %d\n", connectionPhase);
 	
 		assert(isConsistent());
+
+		link.retrieve(getTimeHandler()->getTime());
 		
 		getTimeHandler()->nextStep();
 		if (connectionPhase == ClientPhase::RUNNING)
