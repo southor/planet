@@ -2,7 +2,7 @@
 #define __gameobjid_h__
 
 #include "basic.h"
-#include <limits>
+//#include <limits>
 //#include "PlayerId.h"
 //#define max(x) max(x)
 
@@ -116,12 +116,7 @@ namespace Planet
 
 
 
-		bool isConsistent() const
-		{
-			if ((playerId < 0) || (playerId >= MAX_N_PLAYERS)) return false;			
-			//return generatedId < static_cast<uint>(std::numeric_limits<int>::max());
-			return generatedId < INT_MAX;
-		}
+		bool isConsistent() const;
 
 	};
 
