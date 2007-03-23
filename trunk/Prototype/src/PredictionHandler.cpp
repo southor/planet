@@ -62,7 +62,7 @@ namespace Prototype
 		UserCmd testUserCmd;
 		userCmdHistoryList.getData(0, testUserCmd);
 		bool consistent = testUserCmd.isConsistent(0);
-//		printf("isTick0UserCmdConsistent() weapon: %d\n", testUserCmd.weapon);
+		//printf("isTick0UserCmdConsistent() weapon: %d\n", testUserCmd.weapon);
 		assert(consistent);
 		return consistent;
 	}
