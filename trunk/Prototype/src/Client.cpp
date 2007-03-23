@@ -546,7 +546,7 @@ namespace Prototype
 
 				// perform prediction
 				predictionHandler.predict(playerId, currentTick + 1);
-
+				//requestRender = true;
 				//std::cout << nowRunning << " runstep: " << currentTick << std::endl;
 			}
 			else

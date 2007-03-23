@@ -287,7 +287,7 @@ namespace Prototype
 			if(!serverClientSocket)
 			{ // no connection accepted
 				printf("SDLNet_TCP_Accept: %s\n",SDLNet_GetError());
-				SDL_Delay(100); //sleep 1/10th of a second
+				SDL_Delay(20); //sleep 1/10th of a second
 				return 0;
 			}
 			
