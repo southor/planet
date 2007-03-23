@@ -192,18 +192,19 @@ namespace Prototype
 		// Initialize virtual connections
 		sender1 = virtualConnection1.getMessageSender();
 		reciever2 = virtualConnection1.getMessageReciever();
-		//reciever2->setSimulatedLag(50);
+		reciever2->setSimulatedLag(CLIENT_1_TO_SERVER_SIMULATED_LAG);
 
 		sender2 = virtualConnection2.getMessageSender();
 		reciever1 = virtualConnection2.getMessageReciever();
+		reciever1->setSimulatedLag(SERVER_TO_CLIENT_1_SIMULATED_LAG);
 
 		sender3 = virtualConnection3.getMessageSender();
 		reciever4 = virtualConnection3.getMessageReciever();
-		//reciever4->setSimulatedLag(50);
+		reciever4->setSimulatedLag(CLIENT_2_TO_SERVER_SIMULATED_LAG);
 
 		sender4 = virtualConnection4.getMessageSender();
 		reciever3 = virtualConnection4.getMessageReciever();
-		//reciever3->setSimulatedLag(50);
+		reciever3->setSimulatedLag(SERVER_TO_CLIENT_2_SIMULATED_LAG);
 		
 
 		if (SHOW_CLIENT_1)
