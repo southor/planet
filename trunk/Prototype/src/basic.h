@@ -18,6 +18,8 @@ namespace Prototype
 	//debug
 	static std::string nowRunning;
 
+	static const bool USE_DELAY = true;
+
 
 	const int MAX_N_PLAYERS = 128;
 	
