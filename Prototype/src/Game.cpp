@@ -81,15 +81,15 @@ namespace Prototype
 		//SHOW_SERVER = true;
 		//SHOW_CLIENT_1 = true;
 		//SHOW_CLIENT_2 = true;
-		
+		/*@
 		NetworkServer networkServer;
 		NetworkClient networkClient1;
 		NetworkClient networkClient2;
-		
+		*/
 		size_t clientsConnected = 0;
 		bool client1Connected = false;
 		bool client2Connected = false;
-		
+		/*@
 		if (SHOW_SERVER)
 			networkServer.start();
 		
@@ -141,7 +141,7 @@ namespace Prototype
 				
 			SDL_Delay(20);
 		}
-		
+		*/
 
 		MessageSender *sender1;
 		MessageReciever *reciever1;
@@ -152,7 +152,7 @@ namespace Prototype
 		MessageSender *sender4;
 		MessageReciever *reciever4;
 
-		
+		/*@
 		if (SHOW_CLIENT_1)
 		{
 			sender1 = networkClient1.getMessageSender();
@@ -183,12 +183,12 @@ namespace Prototype
 			sender4->v = 4;
 			reciever4->v = 4;
 		}
-		
+		*/
 		
 		//timeHandler.reset();
 
 
-		/*
+		
 		// Initialize virtual connections
 		sender1 = virtualConnection1.getMessageSender();
 		reciever2 = virtualConnection1.getMessageReciever();
@@ -204,7 +204,7 @@ namespace Prototype
 		sender4 = virtualConnection4.getMessageSender();
 		reciever3 = virtualConnection4.getMessageReciever();
 		//reciever3->setSimulatedLag(50);
-		*/
+		
 
 		if (SHOW_CLIENT_1)
 		{
@@ -312,11 +312,11 @@ namespace Prototype
 
 			SDL_Delay(1);
 		}
-		
+		/*@
 		networkServer.close();
 		networkClient1.close();
 		networkClient2.close();
-		
+		*/
 	}
 
 	void Game::render(Uint32 time)

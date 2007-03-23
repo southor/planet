@@ -36,15 +36,18 @@ namespace Planet
 		
 		int clientsConnected = 0;
 
+		if (SERVER_PRINT_NETWORK_DEBUG) printf("SERVER: Waiting for clients to connect...\n");
+
 		// Wait for clients to connect
 		while (runningServer)
 		{
-			if (SERVER_PRINT_NETWORK_DEBUG) printf("SERVER: Waiting for clients to connect (clientsConnected = %d)\n", clientsConnected);
-		
 			serverClient = networkServer.checkForNewClient();
 
 			if (serverClient != 0)
+			{
 				clientsConnected++;
+				if (SERVER_PRINT_NETWORK_DEBUG) printf("SERVER: clientsConnected = %d\n", clientsConnected);
+			}
 				
 			if (clientsConnected == numberOfClients)
 				break;
@@ -53,12 +56,12 @@ namespace Planet
 		}
 		
 		int clientsInitialized = 0;
+
+		if (SERVER_PRINT_NETWORK_DEBUG) printf("SERVER: Waiting for clients to initialize..\n");
 		
 		// Initialize clients
 		while (runningServer)
 		{
-			if (SERVER_PRINT_NETWORK_DEBUG) printf("SERVER: Waiting for clients to initialize, clientsInitialized: %d\n", clientsInitialized);
-
 			Clients clients = networkServer.getClients();
 		
 			for (Clients::iterator it = clients.begin() ; it != clients.end(); ++it)
@@ -72,6 +75,7 @@ namespace Planet
 				{
 					serverClient->connected = true;
 					clientsInitialized++;
+					if (SERVER_PRINT_NETWORK_DEBUG) printf("SERVER: clientsInitialized: %d\n", clientsInitialized);
 				}
 			}
 			
