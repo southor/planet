@@ -136,7 +136,7 @@ namespace Planet
 			return false;
 		}
 		
-		if (heightDiff >= 0 &&  scalar < 0)
+		if (heightDiff >= 0 && scalar < 0)
 			return checkCollision(vTest, endPos, collisionPos);
 		else
 			return checkCollision(startPos, vTest, collisionPos);		

@@ -14,7 +14,7 @@ namespace Planet
 		Pos aimPos(playerPos + playerPos.getOrtoganal());
 		PlayerObj *playerObj = new PlayerObj(color, playerPos, aimPos, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick(), &planetBody);
 		
-		printf("adding player object with playerId: %d\n", playerId);
+		printf("adding player object with playerId: %d (tick: %d, nextShootTick: %d)\n", playerId, getTimeHandler()->getTick(), playerObj->getNextShootTick());
 
 		playerObjs.add(playerId, playerObj);
 	}
