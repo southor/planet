@@ -93,7 +93,7 @@ namespace Prototype
 	{
 		int firstTickTmp = firstTick();
 
-		isConsistentRec();
+		//isConsistentRec();
 
 		if (tick >= nextTick)
 		{
@@ -156,7 +156,7 @@ namespace Prototype
 			//return tickToDataRef(tick);
 		}
 
-		isConsistentRec();
+		//isConsistentRec();
 
 	}
 
