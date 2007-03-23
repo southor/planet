@@ -30,7 +30,7 @@ namespace Prototype
 	typedef Vec2f Vec;
 	typedef Vec Pos;
 
-	typedef double Tickf;
+	typedef float Tickf;
 
 	//template <typename T>
 	inline float radianToDegree(float angle)

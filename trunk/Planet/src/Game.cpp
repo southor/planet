@@ -271,11 +271,12 @@ namespace Planet
 		reciever = networkClient.getMessageReciever();
 		client.setConnection(sender, reciever);
 		client.setColor(color);
+
+		if (CLIENT_PRINT_NETWORK_DEBUG) printf("CLIENT: Trying to initialize\n");
 		
 		// Initialize
 		while (running && connected)
 		{
-			if (CLIENT_PRINT_NETWORK_DEBUG) printf("CLIENT: Initializing\n");
 
 			pollEvents();
 		
@@ -285,6 +286,7 @@ namespace Planet
 			{
 				client.init();
 				connectedToServer = true;
+				if (CLIENT_PRINT_NETWORK_DEBUG) printf("CLIENT: Initialization complete, connected to server.\n");
 				break;
 			}
 				
