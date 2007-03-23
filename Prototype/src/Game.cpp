@@ -262,7 +262,7 @@ namespace Prototype
 				&& (!SHOW_SERVER || clientsConnected == 2))
 				break;
 
-			SDL_Delay(1);
+			if (USE_DELAY) SDL_Delay(1);
 		}
 		printf("TIME AFTER SYNC serverT: %d, client1T: %d\n", server.getTimeHandler()->getTime(), client1.getTimeHandler()->getTime());
 		
@@ -311,7 +311,7 @@ namespace Prototype
 			}
 			//render(0);
 
-			SDL_Delay(1);
+			if (USE_DELAY) SDL_Delay(1);
 		}
 		/*@
 		networkServer.close();
