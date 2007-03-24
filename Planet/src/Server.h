@@ -32,8 +32,10 @@ namespace Planet
 	public:
 		Server();
 		~Server();
+		
+		void init();
 
-		void run(bool &runningServer, int numberOfClients);
+		void run(bool &runningServer, int numberOfClients, std::string map);
 
 		bool clientConnected(MessageSender *messageSender, MessageReciever *messageReciever);
 

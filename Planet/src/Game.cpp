@@ -19,7 +19,7 @@ namespace Planet
 		printf("Starting server...\n");
 
 		Server server;
-		server.run(runningServer, numberOfClients);
+		server.run(runningServer, numberOfClients, currentMap);
 
 		return 0;
 	}
@@ -97,13 +97,15 @@ namespace Planet
 
 		client.getCamera()->useCamera();
 
+		if (!connectedToServer)
+			glRotatef(client.getTimeHandler()->getTime()/100.0f, 1.0f, 1.0f, 0.0f);
 
 		skyBox.render(client.getCamera()->position);
 
 
 		glPushMatrix();
-			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
-			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
+			// glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
+			// glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
 
 			// Setup lights
 			float light_ambient[] = {0.2, 0.2f, 0.2f, 1.0f};

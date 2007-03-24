@@ -179,9 +179,10 @@ namespace Planet
 		static const size_t messageType = WELCOME_CLIENT;
 
 		PlayerId playerId;
+		std::string map;
 
-		WelcomeClient(PlayerId playerId) 
-			: playerId(playerId) {}
+		WelcomeClient(PlayerId playerId, std::string map) 
+			: playerId(playerId), map(map) {}
 
 		bool isConsistent()
 		{

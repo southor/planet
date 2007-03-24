@@ -349,7 +349,7 @@ namespace Planet
 				
 					setPlayerId(welcomeClient->playerId);
 					getIdGenerator()->setPlayerId(welcomeClient->playerId);
-					currentMap = "maps/test/";
+					currentMap = welcomeClient->map;
 
 					connectionPhase++;
 				}
