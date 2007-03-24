@@ -95,7 +95,6 @@ namespace Planet
 		glEnable(GL_LIGHTING);
 		*/
 
-		
 		xFront->render();
 		xBack->render();
 
@@ -104,7 +103,6 @@ namespace Planet
 
 		zFront->render();
 		zBack->render();
-		
 	}
 	
 	bool PlanetBody::checkCollision(Vec3f startPos, Vec3f endPos, Vec3f *collisionPos)
@@ -160,5 +158,24 @@ namespace Planet
 		
 		assert(true);
 		return 0.0f;
+	}	
+
+	VertData PlanetBody::getVertexData(float phi, float theta)
+	{
+		float s, t;
+		SpherePoint sp(1.0f, phi, theta);
+
+		for (Faces::iterator it = faces.begin(); it < faces.end(); it++)
+		{
+			PlanetFace *face = *it;
+			
+			if (face->findIntersection(sp, s, t))
+			{
+				return face->getVertexData(s, t);
+			}
+		}
+		
+		assert(true);
+		return VertData(); // removes warning
 	}	
 };

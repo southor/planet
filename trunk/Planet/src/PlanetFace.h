@@ -7,10 +7,18 @@
 
 namespace Planet
 {
+	struct VertData
+	{
+		Vec vertex;
+		Vec normal;
+		Vec planeNormal;
+		Vec2f textureCoords;
+	};
+
 	class PlanetFace
 	{
 	public:
-		PlanetFace() : vertices(0), colors(0), normals(0), indices(0) {}
+		PlanetFace() : vertices(0), indices(0) {}
 		PlanetFace(	float radius, 
 					float detailScale,
 					float heightMapMulti,
@@ -22,29 +30,27 @@ namespace Planet
 		~PlanetFace()
 		{
 			delete [] vertices;
-			delete [] colors;
-			delete [] normals;
 			delete [] indices;
-			delete [] textureCoords;
 		}
 
 		void init();
 
 		void render();
 
-		float getHeight(float s, float t);
-
 		// Checks intersection between the line sp-(0,0,0) and this planet face/side
 		bool findIntersection(SpherePoint &sp, float &s, float &t);
 
 		// Checks intersection between the line p2-(0,0,0) and this planet face/side
-		bool findIntersection(Vec3f &p2, float &s, float &t);
+		bool findIntersection(Vec &p2, float &s, float &t);
 
 		// Checks intersection between the line p2-p1 and this planet face/side
-		bool findIntersection(Vec3f &p1, Vec3f &p2, float &s, float &t);
+		bool findIntersection(Vec &p1, Vec3f &p2, float &s, float &t);
 
+		float getHeight(float s, float t);
 
-		Vec3f getVertex(int row, int col);
+		VertData getVertexData(float s, float t);
+
+		Vec getVertex(int row, int col);
 
 	private:
 		// Vertexes (corners) in clockwise order
@@ -71,19 +77,10 @@ namespace Planet
 		
 		bool initialized;
 		
-		// vertex array
-		Vec3f *vertices;
-		
-		// color array
-		Vec3f *colors;
+		VertData *vertices;
 
 		// index array
 		uint *indices;
-		
-		// normal array
-		Vec3f *normals;
-		
-		Vec2f *textureCoords;
 		
 		HeightMap heightMap;
 		

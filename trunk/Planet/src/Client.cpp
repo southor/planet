@@ -19,6 +19,7 @@ namespace Planet
 	void Client::init()
 	{
 		planet.init(currentMap);
+		sight.init();
 		sight.setCamera(&camera);
 		sight.setPlanetBody(planet.getPlanetBody());
 	}
