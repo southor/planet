@@ -12,7 +12,9 @@ namespace Planet
 	class Sight
 	{
 	public:
-		Sight() : camera(0) {}
+		Sight();
+
+		void init();
 	
 		void setCamera(Camera *camera) { this->camera = camera; }
 		void setPlanetBody(PlanetBody *planetBody) { this->planetBody = planetBody; }
@@ -27,6 +29,8 @@ namespace Planet
 	private:
 		Camera *camera;
 		PlanetBody *planetBody;
+		
+		uint texture;
 	};
 };
 

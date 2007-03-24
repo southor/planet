@@ -76,12 +76,12 @@ namespace Planet
 			}
 			
 			// Debug
-			/*
-			if (client.getUserInputHandler()->getCurrentState(Cmds::LEFT)) viewAngle += 3.0f;
-			if (client.getUserInputHandler()->getCurrentState(Cmds::RIGHT)) viewAngle -= 3.0f;
-			if (client.getUserInputHandler()->getCurrentState(Cmds::FORWARD)) viewAngle2 += 3.0f;
-			if (client.getUserInputHandler()->getCurrentState(Cmds::BACKWARD)) viewAngle2 -= 3.0f;
-			*/
+			
+			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_LEFT)) viewAngle += 3.0f;
+			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_RIGHT)) viewAngle -= 3.0f;
+			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_UP)) viewAngle2 += 3.0f;
+			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_DOWN)) viewAngle2 -= 3.0f;
+			
 			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_IN)) client.camera.zoom += 0.05f;
 			if (client.getUserInputHandler()->getCurrentState(Cmds::TMP_ZOOM_OUT)) client.camera.zoom -= 0.05f;
 
@@ -104,8 +104,8 @@ namespace Planet
 
 
 		glPushMatrix();
-			// glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
-			// glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
+			glRotatef(viewAngle, 0.0f, 1.0f, 0.0f);
+			glRotatef(viewAngle2, 1.0f, 0.0f, 0.0f);
 
 			// Setup lights
 			float light_ambient[] = {0.2, 0.2f, 0.2f, 1.0f};

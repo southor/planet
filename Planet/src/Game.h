@@ -25,7 +25,7 @@ namespace Planet
 		void startServer(int clients, const std::string &map);
 		bool connectToServer(std::string &host, const Color &color);
 
-		void toggleMenu() {	showMenu = showMenu ^ 1; }
+		void toggleMenu() {	showMenu = showMenu ^ 1; SDL_ShowCursor(showMenu); }
 
 	private:
 		void init();

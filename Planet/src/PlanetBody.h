@@ -31,6 +31,8 @@ namespace Planet
 		// Returns the planet height at given angles.
 		float getHeight(float phi, float theta);
 	
+		VertData getVertexData(float phi, float theta);
+	
 	private:
 		// the corners of the cube, clockwise.
 		Pos c1;

@@ -28,8 +28,6 @@ namespace Planet
 			sp3(v3), 
 			sp4(v4),
 			vertices(0),
-			colors(0),
-			normals(0),
 			indices(0),
 			heightmapFile(heightmapFile),
 			textureFile(textureFile),
@@ -50,17 +48,14 @@ namespace Planet
 		// create arrays
 		numIndices = (resolution * resolution * 2) - (2 * resolution);
 		
-		vertices = new Vec3f[resolution * resolution];
-		colors = new Vec3f[resolution * resolution];
-		normals = new Vec3f[resolution * resolution];
-		textureCoords = new Vec2f[resolution * resolution];
+		vertices = new VertData[resolution * resolution];
 		indices = new uint[numIndices];
 	
-		Vec3f v1v2 = v2 - v1;
-		Vec3f v1v4 = v4 - v1;
+		Vec v1v2 = v2 - v1;
+		Vec v1v4 = v4 - v1;
 		N = v1v2.cross(v1v4);
 
-		// Fill up vertices and colors arrays
+		// Fill up vertices and texture arrays
 		for (int i = 0; i < resolution; i++)
 		{
 			for (int j = 0; j < resolution; j++)
@@ -71,16 +66,15 @@ namespace Planet
 				float s = j/static_cast<float>(resolution-1);
 				float t = i/static_cast<float>(resolution-1);
 	
-				Vec3f v = v1 + v1v2*s + v1v4*t;
+				Vec v = v1 + v1v2*s + v1v4*t;
 				
 				// Convert to spherepoint, set height and then back
 				SpherePoint sp = v.toSpherePoint();
 				sp.p = getHeight(s, t);
-				Vec3f vSphere = sp.toVector();
+				Vec vSphere = sp.toVector();
 	
-				vertices[index] = vSphere;
-				colors[index] = Vec3f(0.0, (sp.p-5.0f)/4.0f, 0.0);
-				textureCoords[index] = Vec2f(s*1.0f, t*1.0f);
+				vertices[index].vertex = vSphere;
+				vertices[index].textureCoords = Vec2f(s*1.0f, t*1.0f);
 			}
 		}
 		
@@ -91,28 +85,30 @@ namespace Planet
 			{
 				int index = i * resolution + j;
 				
-				Vec3f p = getVertex(i, j);
+				Vec p = getVertex(i, j);
 				
-				Vec3f pUp = getVertex(i - 1, j);
-				Vec3f pLeft = getVertex(i, j - 1);
-				Vec3f pDown = getVertex(i + 1, j);
-				Vec3f pRight = getVertex(i, j + 1);
+				Vec pUp = getVertex(i - 1, j);
+				Vec pLeft = getVertex(i, j - 1);
+				Vec pDown = getVertex(i + 1, j);
+				Vec pRight = getVertex(i, j + 1);
 				
-				Vec3f u1 = pRight - p;
-				Vec3f u2 = pUp - p;
-				Vec3f u3 = pLeft - p;
-				Vec3f u4 = pDown - p;
+				Vec u1 = pRight - p;
+				Vec u2 = pUp - p;
+				Vec u3 = pLeft - p;
+				Vec u4 = pDown - p;
 
-				Vec3f n1 = u1.cross(u2);
-				Vec3f n2 = u2.cross(u3);
-				Vec3f n3 = u3.cross(u4);
-				Vec3f n4 = u4.cross(u1);
+				Vec n1 = u1.cross(u2);
+				Vec n2 = u2.cross(u3);
+				Vec n3 = u3.cross(u4);
+				Vec n4 = u4.cross(u1);
 
-				Vec3f normal = n1 + n2 + n3 + n4;
+				Vec normal = n1 + n2 + n3 + n4;
 	
 				normal.normalize();
+				n4.normalize();
 				
-				normals[i * resolution + j] = normal;
+				vertices[i * resolution + j].normal = normal;
+				vertices[i * resolution + j].planeNormal = n4;
 			}
 		}		
 		
@@ -151,7 +147,7 @@ namespace Planet
 	{
 		if (!initialized)
 			init();
-		bool useDetail = true;
+		bool useDetail = false;
 
 		#ifdef ENABLE_MULTITEXTURE_ARB
 			#ifdef _WIN32
@@ -169,13 +165,13 @@ namespace Planet
 			GL_ClientActiveTextureARB_Func glClientActiveTextureARB_ptr = (GL_ClientActiveTextureARB_Func)SDL_GL_GetProcAddress("glClientActiveTextureARB");
 			*/
 
-			glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), vertices);
-			glNormalPointer(GL_FLOAT, sizeof(Vec3f), normals);
+			glVertexPointer(3, GL_FLOAT, sizeof(VertData), vertices);
+			glNormalPointer(GL_FLOAT, sizeof(VertData), &(vertices[0].normal));
 			
 			glActiveTextureARB(GL_TEXTURE0_ARB);
 			glClientActiveTextureARB(GL_TEXTURE0_ARB);
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
+			glTexCoordPointer(2, GL_FLOAT, sizeof(VertData), &(vertices[0].textureCoords));
 			glBindTexture(GL_TEXTURE_2D, detailTexture);
 			
 			glEnable(GL_TEXTURE_2D); 
@@ -187,7 +183,7 @@ namespace Planet
 				glEnable(GL_TEXTURE_2D);
 				glClientActiveTextureARB(GL_TEXTURE1_ARB);
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-				glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
+				glTexCoordPointer(2, GL_FLOAT, sizeof(VertData), &(vertices[0].textureCoords));
 
 				glMatrixMode(GL_TEXTURE);
 
@@ -221,13 +217,38 @@ namespace Planet
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+			glVertexPointer(3, GL_FLOAT, sizeof(VertData), vertices);
+			glNormalPointer(GL_FLOAT, sizeof(VertData), &(vertices[0].normal));
+			glTexCoordPointer(2, GL_FLOAT, sizeof(VertData), &(vertices[0].textureCoords));
 
-			glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), vertices);
-			glNormalPointer(GL_FLOAT, sizeof(Vec3f), normals);
-			glTexCoordPointer(2, GL_FLOAT, sizeof(Vec2f), textureCoords);
-			
 			glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
 		#endif
+		
+		
+		// DEBUG - render normals and planenormals
+		/*	
+		glDisable(GL_LIGHTING);
+		for (int i = 0; i < (resolution * resolution); i++)
+		{
+			VertData data = vertices[i];
+			Vec v = data.vertex;
+			Vec v2 = v + data.normal;
+			Vec v3 = v + data.planeNormal;
+			
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glBegin(GL_LINES);
+				glVertex3f(v.x, v.y, v.z);
+				glVertex3f(v2.x, v2.y, v2.z);
+			glEnd();
+
+			glColor3f(1.0f, 1.0f, 1.0f);
+		 	glBegin(GL_LINES);
+				glVertex3f(v.x, v.y, v.z);
+				glVertex3f(v3.x, v3.y, v3.z);
+			glEnd();
+		}
+		glEnable(GL_LIGHTING);
+		*/		
 	}
 
 	bool PlanetFace::findIntersection(SpherePoint &sp, float &s, float &t)
@@ -287,13 +308,13 @@ namespace Planet
 	
 	float PlanetFace::getHeight(float s, float t)
 	{
-		float height;
-		float res = static_cast<float>(resolution - 1);
-
 		if (s == 1.0f) s -= 0.0001;
 		if (t == 1.0f) t -= 0.0001;
 
 		/*
+		float height;
+		float res = static_cast<float>(resolution - 1);
+
 		// Get s,t representing top/left vertex (0.44 with resolution 10 becomes 0.4)
 		float s0 = static_cast<float>(static_cast<int>(s * res) / res);
 		float t0 = static_cast<float>(static_cast<int>(t * res) / res);
@@ -343,6 +364,14 @@ namespace Planet
 		//return radius + sin(s*5.0f + SDL_GetTicks()/400.0f)/2.0f;
 	}
 	
+	VertData PlanetFace::getVertexData(float s, float t)
+	{
+		int row = static_cast<int>(t * (resolution - 1));
+		int col = static_cast<int>(s * (resolution - 1));
+
+		return vertices[row * resolution + col];
+	}
+	
 	Vec3f PlanetFace::getVertex(int row, int col)
 	{
 		if (row < 0) row = 0;
@@ -351,7 +380,7 @@ namespace Planet
 		if (col < 0) col = 0;
 		if (col >= resolution) col = resolution - 1;
 		
-		return vertices[row * resolution + col];
+		return vertices[row * resolution + col].vertex;
 	}
 
 };
