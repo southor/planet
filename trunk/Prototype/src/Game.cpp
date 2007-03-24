@@ -303,9 +303,9 @@ namespace Prototype
 			//gui.gui->logic();
 
 			// RENDER			
-			if (client1.getRequestRender() &&
-				client2.getRequestRender() &&
-				server.getRequestRender())
+			if ((client1.getRequestRender() || !SHOW_CLIENT_1) &&
+				(client2.getRequestRender() || !SHOW_CLIENT_2) &&
+				(server.getRequestRender() || !SHOW_SERVER))
 			{
 				render(0);
 			}
