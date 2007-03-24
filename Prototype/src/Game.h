@@ -28,7 +28,6 @@ namespace Prototype
 		static const int SERVER_TO_CLIENT_2_SIMULATED_LAG = 0;		
 		static const int CLIENT_2_TO_SERVER_SIMULATED_LAG = 0;
 		
-
 	private:
 		void init();
 		void initWidgets();
