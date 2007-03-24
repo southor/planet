@@ -99,7 +99,7 @@ namespace Prototype
 	{
 		//PlayerId playerId = players.findFreeId();
 		PlayerId playerId = getIdGenerator()->generatePlayerId();
-		players.add(playerId, new ServerPlayer(color, messageSender, messageReciever));
+		players.add(playerId, new ServerPlayer(playerId, color, messageSender, messageReciever));
 		return playerId;
 		
 		//ServerClient client(messageSender, messageReciever);
@@ -199,6 +199,10 @@ namespace Prototype
 		{
 			if (SERVER_PRINT_NETWORK_DEBUG) printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
 
+			if ((static_cast<int>(getTimeHandler()->getTick()) % (2000/TimeHandler::TICK_DELTA_TIME)) == 0)
+			{
+				debugPrintState();
+			}
 
 			lastUpdateTime = time;
 
@@ -233,7 +237,7 @@ namespace Prototype
 						//	}
 						//}
 												
-						assert(userCmd->isConsistent(player->link.getPoppedTick()));
+						assert(userCmd->isConsistent(playerId, player->link.getPoppedTick()));
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
 						
 					}
@@ -363,6 +367,12 @@ namespace Prototype
 			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerIdFollow]); //, static_cast<Tickf>(getTimeHandler()->getTick()));
 		}
 		requestRender = false;
+	}
+
+	void Server::debugPrintState()
+	{
+		std::cout << "Server tick: " << static_cast<int>(getTimeHandler()->getTick());
+		std::cout << "     Number of projectiles: " << worldModel.getProjectiles().getSize() << std::endl;
 	}
 	
 };

@@ -15,10 +15,10 @@ namespace Prototype
 	const int Client::OBJECT_LAG_ADD_TICK = 1;
 
 	Client::Client() : ClientGlobalAccess(&clientGlobalObj), worldModel(&clientGlobalObj), worldRenderer(WorldRenderer::FOLLOW_PLAYER),
-						connectionPhase(0), requestRender(false), currentObjLag(0)
+						connectionPhase(0), requestRender(false), currentObjLag(0), predictionHandler(0)
 	{
-		predictionHandler.setWorldModel(&worldModel);
-		assert(predictionHandler.isConsistent());
+		//predictionHandler->setWorldModel(&worldModel);
+		//assert(predictionHandler.isConsistent());
 	}
 
 	Client::~Client()
@@ -29,6 +29,8 @@ namespace Prototype
 		{
 			delete it->second;
 		}
+
+		delete predictionHandler;
 	}
 
 	//void Client::handleEvents()
@@ -243,6 +245,7 @@ namespace Prototype
 
 	void Client::getCurrentUserCmd(UserCmd &userCmd)
 	{
+		assert(predictionHandler);
 		//static int lastTick = -100;
 		//assert(timeHandler.getStepTick() >= (lastTick +1));
 		//lastTick = timeHandler.getStepTick();
@@ -260,11 +263,11 @@ namespace Prototype
 		}
 
 		// get previous user command
-		UserCmd preUserCmd;
-		predictionHandler.getUserCmd(preUserCmd, currentTick - 1);
+		UserCmd preUserCmd;		
+		predictionHandler->getUserCmd(preUserCmd, currentTick - 1);
 
 		// get userCmd to start with (could contain postponed actionCmds from previous tick)
-		predictionHandler.getUserCmd(userCmd, currentTick);		
+		predictionHandler->getUserCmd(userCmd, currentTick);		
 
 		
 		// get stateCmds
@@ -336,7 +339,7 @@ namespace Prototype
 					UserCmd nextUserCmd;
 					userCmd.assumeNext(nextUserCmd);
 					nextUserCmd.weapon = nextWeapon;
-					predictionHandler.setUserCmd(nextUserCmd, currentTick + 1);
+					predictionHandler->setUserCmd(nextUserCmd, currentTick + 1);
 					break;
 				}
 				else
@@ -357,7 +360,7 @@ namespace Prototype
 		}
 
 		
-		assert(userCmd.isConsistent(currentTick));
+		assert(userCmd.isConsistent(playerId, currentTick));
 	}
 
 	void Client::handleServerMessages()
@@ -389,7 +392,9 @@ namespace Prototype
 						if (differ)
 						{
 							//std::cout << "old prediction differ!" << std::endl;
-							predictionHandler.serverInput(playerId, link.getPoppedTick());						
+							//predictionHandler.serverInput(playerId, link.getPoppedTick());
+							assert(predictionHandler);
+							predictionHandler->serverInput(link.getPoppedTick());
 						}
 						else
 						{
@@ -493,6 +498,8 @@ namespace Prototype
 			};
 		}
 
+		predictionHandler->rePredictIfNeeded();
+
 		//if (connectionPhase == ClientPhase::RUNNING)
 		//{
 		//	// start
@@ -514,7 +521,13 @@ namespace Prototype
 		{
 			if (getTimeHandler()->isNewTick())
 			{
-				assert(predictionHandler.isConsistent());
+				if ((static_cast<int>(getTimeHandler()->getStepTick()) % (2000/TimeHandler::TICK_DELTA_TIME)) == 0)
+				{
+					debugPrintState();
+				}
+				
+				//assert(predictionHandler.isConsistent());
+				assert(predictionHandler->isConsistent());
 				
 				int currentTick = static_cast<int>(getStepTick());
 				
@@ -530,7 +543,7 @@ namespace Prototype
 				userCmd.objLag = this->currentObjLag; // send currentObjLag to server
 				
 				// store userCmd
-				predictionHandler.setUserCmd(userCmd, currentTick);
+				predictionHandler->setUserCmd(userCmd, currentTick);
 				
 				// push userCmd to serverlink
 				link.pushMessage(userCmd, getTimeHandler()->getTime(), currentTick);
@@ -545,7 +558,8 @@ namespace Prototype
 				worldModel.handlePlayerShooting(playerId);
 
 				// perform prediction
-				predictionHandler.predict(playerId, currentTick + 1);
+				//predictionHandler.predict(playerId, currentTick + 1);
+				predictionHandler->predict(currentTick + 1);
 				//requestRender = true;
 				//std::cout << nowRunning << " runstep: " << currentTick << std::endl;
 			}
@@ -585,6 +599,8 @@ namespace Prototype
 				
 					setPlayerId(welcomeClient->playerId);
 					getIdGenerator()->setPlayerId(welcomeClient->playerId);
+					predictionHandler = new PredictionHandler(welcomeClient->playerId, &worldModel);
+					assert(predictionHandler->isConsistent());
 
 					connectionPhase++;
 				}
@@ -820,6 +836,12 @@ namespace Prototype
 		float rotateAmount(PlayerObj::getRotateSpeed());
 		Angle deltaAngle((left ? rotateAmount : 0.0f) + (right ? -rotateAmount : 0.0f));
 		return preAngle + deltaAngle;		
+	}
+
+	void Client::debugPrintState()
+	{
+		std::cout << "Client tick: " << static_cast<int>(getTimeHandler()->getStepTick());
+		std::cout << "     Number of projectiles: " << worldModel.getProjectiles().getSize() << std::endl;
 	}
 
 };

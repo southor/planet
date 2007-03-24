@@ -201,7 +201,7 @@ namespace Planet
 	{
 		PlayerId playerId = getIdGenerator()->generatePlayerId();
 		printf("generated id: %d\n", playerId);
-		players.add(playerId, new ServerPlayer(color, messageSender, messageReciever));
+		players.add(playerId, new ServerPlayer(playerId, color, messageSender, messageReciever));
 		return playerId;
 	}
 
@@ -250,6 +250,10 @@ namespace Planet
 		{
 			if (SERVER_PRINT_NETWORK_DEBUG) printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
 
+			if ((static_cast<int>(getTimeHandler()->getTick()) % (2000/TimeHandler::TICK_DELTA_TIME)) == 0)
+			{
+				debugPrintState();
+			}
 
 			lastUpdateTime = time;
 
@@ -283,7 +287,7 @@ namespace Planet
 						//}
 
 						//std::cout << "diff = " << getTimeHandler()->getTick() - player->link.getPoppedTick() << std::endl;
-						assert(userCmd->isConsistent(player->link.getPoppedTick()));
+						assert(userCmd->isConsistent(playerId, player->link.getPoppedTick()));
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
 					}
 
@@ -412,6 +416,12 @@ namespace Planet
 
 			transmitAll(players);
 		}
+	}
+
+	void Server::debugPrintState()
+	{
+		std::cout << "Server tick: " << static_cast<int>(getTimeHandler()->getTick());
+		std::cout << "     Number of projectiles: " << planet.getProjectiles().getSize() << std::endl;
 	}
 	
 };

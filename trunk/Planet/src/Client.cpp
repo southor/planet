@@ -10,10 +10,10 @@ namespace Planet
 	const int Client::OBJECT_LAG_ADD_TICK = 1;
 
 	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0),
-						planet(&clientGlobalObj), requestRender(false), currentObjLag(0)
+						planet(&clientGlobalObj), requestRender(false), currentObjLag(0), predictionHandler(0)
 	{
-		predictionHandler.setPlanet(&planet);
-		assert(predictionHandler.isConsistent());
+		//predictionHandler.setPlanet(&planet);
+		//assert(predictionHandler.isConsistent());
 	}
 
 	void Client::init()
@@ -27,6 +27,8 @@ namespace Planet
 	{
 		DeleteSecond<ClientPlayers::Pair> deleteSecond;
 		ForEach(players.begin(), players.end(), deleteSecond);
+
+		delete predictionHandler;
 	}
 
 	void Client::handleServerMessages()
@@ -53,7 +55,9 @@ namespace Planet
 						if (differ)
 						{
 							//std::cout << "old prediction differ!" << std::endl;
-							predictionHandler.serverInput(playerId, link.getPoppedTick());						
+							//predictionHandler.serverInput(playerId, link.getPoppedTick());
+							assert(predictionHandler);
+							predictionHandler->serverInput(link.getPoppedTick());
 						}
 						else
 						{
@@ -149,10 +153,13 @@ namespace Planet
 				break;
 			};
 		}
+
+		predictionHandler->rePredictIfNeeded();
 	}
 
 	void Client::getCurrentUserCmd(UserCmd &userCmd)
 	{
+		assert(predictionHandler);
 		//static int lastTick = -100;
 		//assert(timeHandler.getStepTick() >= (lastTick +1));
 		//lastTick = timeHandler.getStepTick();
@@ -171,10 +178,10 @@ namespace Planet
 
 		// get previous user command
 		UserCmd preUserCmd;
-		predictionHandler.getUserCmd(preUserCmd, currentTick - 1);
+		predictionHandler->getUserCmd(preUserCmd, currentTick - 1);
 
 		// get userCmd to start with (could contain postponed actionCmds from previous tick)
-		predictionHandler.getUserCmd(userCmd, currentTick);		
+		predictionHandler->getUserCmd(userCmd, currentTick);		
 
 		
 		// get stateCmds
@@ -229,7 +236,7 @@ namespace Planet
 					UserCmd nextUserCmd;
 					userCmd.assumeNext(nextUserCmd);
 					nextUserCmd.weapon = nextWeapon;
-					predictionHandler.setUserCmd(nextUserCmd, currentTick + 1);
+					predictionHandler->setUserCmd(nextUserCmd, currentTick + 1);
 					break;
 				}
 				else
@@ -246,7 +253,7 @@ namespace Planet
 		}
 
 		
-		assert(userCmd.isConsistent(currentTick));
+		assert(userCmd.isConsistent(playerId, currentTick));
 	}
 
 	void Client::runStep()
@@ -262,7 +269,13 @@ namespace Planet
 		{
 			if (getTimeHandler()->isNewTick())
 			{
-				assert(predictionHandler.isConsistent());
+				if ((static_cast<int>(getTimeHandler()->getStepTick()) % (2000/TimeHandler::TICK_DELTA_TIME)) == 0)
+				{
+					debugPrintState();
+				}
+				
+				//assert(predictionHandler.isConsistent());
+				assert(predictionHandler->isConsistent());
 				
 				int currentTick = static_cast<int>(getStepTick());
 				
@@ -281,7 +294,7 @@ namespace Planet
 				userCmd.objLag = this->currentObjLag; // send currentObjLag to server
 				
 				// store userCmd
-				predictionHandler.setUserCmd(userCmd, currentTick);
+				predictionHandler->setUserCmd(userCmd, currentTick);
 				
 				// push userCmd to serverlink
 				link.pushMessage(userCmd, getTimeHandler()->getTime(), currentTick);
@@ -293,10 +306,11 @@ namespace Planet
 				PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
 				playerObj->updateToTickData(currentTick);
 				playerObj->setUserCmd(&userCmd);
-//				planet.handlePlayerShooting(playerId);
+				// planet.handlePlayerShooting(playerId);
 
 				// perform prediction
-				predictionHandler.predict(playerId, currentTick + 1);
+				//predictionHandler.predict(playerId, currentTick + 1);
+				predictionHandler->predict(currentTick + 1);
 			}
 			else
 			{
@@ -350,6 +364,9 @@ namespace Planet
 					setPlayerId(welcomeClient->playerId);
 					getIdGenerator()->setPlayerId(welcomeClient->playerId);
 					currentMap = welcomeClient->map;
+
+					predictionHandler = new PredictionHandler(welcomeClient->playerId, &planet);
+					assert(predictionHandler->isConsistent());
 
 					connectionPhase++;
 				}
@@ -455,6 +472,12 @@ namespace Planet
 	{
 		link.setMessageSender(messageSender);
 		link.setMessageReciever(messageReciever);
+	}
+
+	void Client::debugPrintState()
+	{
+		std::cout << "Client tick: " << static_cast<int>(getTimeHandler()->getStepTick());
+		std::cout << "     Number of projectiles: " << planet.getProjectiles().getSize() << std::endl;
 	}
 
 };

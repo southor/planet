@@ -62,8 +62,13 @@ namespace Prototype
 			viewportHandler.screenRenderSize.x = w;
 			viewportHandler.screenRenderSize.y = h;
 		}
-		inline void useViewport()			 { viewportHandler.useViewport(); }
+		inline void useViewport()					{ viewportHandler.useViewport(); }
 		void render();
+
+		inline bool getRequestRender()				{ return requestRender; }
+
+		//debug
+		void debugPrintState();
 
 	private:
 

@@ -4,22 +4,23 @@
 namespace Planet
 {
 
-	PredictionHandler::PredictionHandler() :
+	PredictionHandler::PredictionHandler(PlayerId playerId, ClientPlanet *planet) :
 		userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS, UserCmd::interExtraPolate),
 		//userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS),
-		planet(0), latestServerInputTick(0)
-	{
-		userCmdHistoryList.setDefaultData(UserCmd::DEFAULT_USER_CMD);
+		planet(planet), latestServerInputTick(0), playerId(playerId), rePredictNeeded(false)
+	{		
+		userCmdHistoryList.setDefaultData(UserCmd::getDefaultUserCmd(playerId));
 		assert(isTick0UserCmdConsistent());
-
 	}
 
-	int PredictionHandler::getlastTick(PlayerId playerId)
+	//int PredictionHandler::getlastTick(PlayerId playerId)
+	int PredictionHandler::getlastTick()
 	{
 		return getPlayerObj(playerId)->getLastStoredTick();
 	}
 
-	void PredictionHandler::predict(PlayerId playerId, int fromTick, int toTick)
+	//void PredictionHandler::predict(PlayerId playerId, int fromTick, int toTick)
+	void PredictionHandler::predict(int fromTick, int toTick)
 	{
 		PlayerObj *playerObj = getPlayerObj(playerId);
 		
@@ -51,7 +52,9 @@ namespace Planet
 	{
 		UserCmd testUserCmd;
 		userCmdHistoryList.getData(0, testUserCmd);
-		return testUserCmd.isConsistent(0);
+		bool consistent = testUserCmd.isConsistent(playerId, 0);
+		assert(consistent);
+		return consistent;
 	}
 
 	//debug

@@ -76,6 +76,8 @@ namespace Prototype
 		//void setCurrentMousePos(Vec2<int> mouseScreenPos);
 		//inline void setAimMode(UserInputHandler::AimMode aimMode)				{ userInputHandler. }
 		
+		//debug
+		void debugPrintState();
 
 	private:
 
@@ -97,7 +99,7 @@ namespace Prototype
 		ClientWorldModel worldModel;
 		WorldRenderer worldRenderer;
 		ClientPlayers players;
-		PredictionHandler predictionHandler;
+		PredictionHandler *predictionHandler;
 		int currentObjLag; // controls the interpolation of objects
 
 		PlayerId playerId;
@@ -127,7 +129,11 @@ namespace Prototype
 		bool isConsistent()
 		{
 			//just test one thing for now
-			return predictionHandler.isConsistent();
+			if (predictionHandler)
+			{
+				if (!predictionHandler->isConsistent()) return false;
+			}
+			return true;
 		}
 
 	};

@@ -33,6 +33,12 @@ namespace Planet
 			return GameObjId(creatorId, nextId++);
 		}
 
+		static GameObjId getFirstGameObjId(PlayerId creatorId)
+		{
+			return GameObjId(creatorId, 1);
+		}
+		
+
 	};
 
 	class ClientIdGenerator : public IdGenerator

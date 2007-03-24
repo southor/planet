@@ -95,7 +95,7 @@ namespace Planet
 		//ClientWorldModel worldModel;
 		//WorldRenderer worldRenderer;
 		ClientPlayers players;
-		PredictionHandler predictionHandler;
+		PredictionHandler *predictionHandler;
 		int currentObjLag; // controls the interpolation of objects
 
 		PlayerId playerId;
@@ -122,8 +122,14 @@ namespace Planet
 		bool isConsistent()
 		{
 			//just test one thing for now
-			return predictionHandler.isConsistent();
+			if (predictionHandler)
+			{
+				if (!predictionHandler->isConsistent()) return false;
+			}
+			return true;
 		}
+
+		void debugPrintState();
 
 	};
 };

@@ -4,22 +4,23 @@
 namespace Prototype
 {
 
-	PredictionHandler::PredictionHandler() :
+	PredictionHandler::PredictionHandler(PlayerId playerId, ClientWorldModel *worldModel) :
 		userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS, UserCmd::interExtraPolate),
 		//userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS),
-		worldModel(NULL), latestServerInputTick(0)
-	{
-		userCmdHistoryList.setDefaultData(UserCmd::DEFAULT_USER_CMD);
+		worldModel(worldModel), latestServerInputTick(0), playerId(playerId), rePredictNeeded(false)
+	{		
+		userCmdHistoryList.setDefaultData(UserCmd::getDefaultUserCmd(playerId));
 		assert(isTick0UserCmdConsistent());
-
 	}
 
-	int PredictionHandler::getlastTick(PlayerId playerId)
+	//int PredictionHandler::getlastTick(PlayerId playerId)
+	int PredictionHandler::getlastTick()
 	{
 		return getPlayerObj(playerId)->getLastStoredTick();
 	}
 
-	void PredictionHandler::predict(PlayerId playerId, int fromTick, int toTick)
+	//void PredictionHandler::predict(PlayerId playerId, int fromTick, int toTick)
+	void PredictionHandler::predict(int fromTick, int toTick)
 	{
 		PlayerObj *playerObj = getPlayerObj(playerId);
 		
@@ -61,7 +62,7 @@ namespace Prototype
 		//}
 		UserCmd testUserCmd;
 		userCmdHistoryList.getData(0, testUserCmd);
-		bool consistent = testUserCmd.isConsistent(0);
+		bool consistent = testUserCmd.isConsistent(playerId, 0);
 		//printf("isTick0UserCmdConsistent() weapon: %d\n", testUserCmd.weapon);
 		assert(consistent);
 		return consistent;

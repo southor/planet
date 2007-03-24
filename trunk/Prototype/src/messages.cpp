@@ -1,5 +1,7 @@
 #include "messages.h"
 #include "StandardInterExtraPolate.h"
+#include "IdGenerator.h"
+
 
 namespace Prototype
 {
@@ -63,6 +65,20 @@ namespace Prototype
 		//}
 	}
 
+	UserCmd UserCmd::getDefaultUserCmd(PlayerId playerId)
+	{
+		UserCmd defaultUserCmd(DEFAULT_USER_CMD);
+		defaultUserCmd.firstProjectileId = IdGenerator::getFirstGameObjId(playerId);
+		return defaultUserCmd;
+	}
+
+	bool UserCmd::isConsistent(PlayerId playerId, int currentTick) const
+	{		
+		if (!isConsistent(currentTick)) return false;
+		if (firstProjectileId.getCreatorId() != playerId) return false;
+		return true;	
+	}
+
 	bool UserCmd::isConsistent(int currentTick) const
 	{
 		if (!isConsistent()) return false;
@@ -74,7 +90,8 @@ namespace Prototype
 		if ((weapon < 0) || (weapon >= Projectile::N_TYPES)) return false;
 		if (nShots < 0) return false;
 		if (objLag < 0) return false;
-		if (!firstProjectileId.isConsistent()) return false;
+		if (!firstProjectileId.isConsistent()) return false;		
+		if (firstProjectileId.isPlayerObjId()) return false;
 		return firstShotTick >= 0.0;
 	}
 };
