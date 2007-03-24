@@ -20,14 +20,20 @@ namespace Planet
 		ForEach(players.begin(), players.end(), deleteSecond);
 	}
 
+	void Server::init()
+	{
+		planet.init(currentMap);
+	}
+
 	void Server::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
 		planet.addPlayerObj(playerId, playerPos);
 	}
 
-	void Server::run(bool &runningServer, int numberOfClients)
+	void Server::run(bool &runningServer, int numberOfClients, std::string map)
 	{
 		getTimeHandler()->reset();
+		setMap(map);
 		
 		NetworkServer networkServer;
 		networkServer.start();
@@ -163,7 +169,7 @@ namespace Planet
 				addPlayerObj(playerId, startPos);
 
 				// send WelcomeClient with playerId to client
-				WelcomeClient welcomeClient = WelcomeClient(playerId);
+				WelcomeClient welcomeClient = WelcomeClient(playerId, currentMap);
 				link.pushMessage(welcomeClient, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				link.transmit();
 

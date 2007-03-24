@@ -23,7 +23,7 @@ namespace Planet
 	{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glFrustum(-1, 1, -1, 1, 1, 100);
+		glFrustum(-1, 1, -1, 1, 1, 200);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
