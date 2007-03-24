@@ -147,7 +147,7 @@ namespace Planet
 	{
 		if (!initialized)
 			init();
-		bool useDetail = false;
+		bool useDetail = true;
 
 		#ifdef ENABLE_MULTITEXTURE_ARB
 			#ifdef _WIN32
