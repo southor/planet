@@ -386,6 +386,8 @@ namespace Planet
 		
 		void clear();
 
+		static UserCmd getDefaultUserCmd(PlayerId playerId);
+
 		inline bool isShooting() const					{ return shooting; }
 		
 		static void interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData);
@@ -396,7 +398,9 @@ namespace Planet
 		static const UserCmd DEFAULT_USER_CMD;
 
 		// debug
+		bool isConsistent(PlayerId playerId, int currentTick) const;
 		bool isConsistent(int currentTick) const;
+		bool isConsistent() const;
 
 	};	
 

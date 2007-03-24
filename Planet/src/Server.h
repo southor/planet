@@ -63,6 +63,9 @@ namespace Planet
 		int lastUpdateTime;
 
 		std::string currentMap;
+
+		//debug
+		void debugPrintState();
 	};
 };
 

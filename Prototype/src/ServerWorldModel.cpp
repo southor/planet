@@ -281,11 +281,19 @@ namespace Prototype
 
 		PlayerObj *playerObj = getPlayerObjs()[playerId];
 		const UserCmd &userCmd(playerObj->getUserCmd());
+		ClientIdGenerator *clientIdGenerator = players[playerId]->getIdGenerator();
 		int nShots = userCmd.nShots;
-
-
+		
 		assert(userCmd.firstShotTick >= currentTickf);
 		assert(playerObj->getNextShootTick() >= currentTickf);
+
+		// remove projectiles if client created projectiles which we did't notice before
+		while (userCmd.firstProjectileId > clientIdGenerator->getNextId())
+		{
+			RemoveProjectile removeProjectile(clientIdGenerator->generateGameObjId());
+			players[playerId]->link.pushMessage(removeProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+		}
+		assert(userCmd.firstProjectileId == clientIdGenerator->getNextId());
 		
 		if (userCmd.nShots > 0)
 		{
@@ -301,7 +309,7 @@ namespace Prototype
 				//Projectile *projectile = (getProjectiles())[projectileId];
 				
 				//GameObjId projectileId = getIdGenerator()->generateGameObjId();
-				GameObjId projectileId = userCmd.firstProjectileId + i;
+				GameObjId projectileId = clientIdGenerator->generateGameObjId();
 				if (playerTryShoot(playerId, currentTick, i, projectileId))
 				{		
 					Projectile *projectile = (getProjectiles())[projectileId];
@@ -326,6 +334,7 @@ namespace Prototype
 				}
 			}
 		}
+
 	}
 };
 

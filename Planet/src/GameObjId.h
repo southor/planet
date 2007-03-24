@@ -42,6 +42,12 @@ namespace Planet
 			return (playerId != INVALID_PLAYER_ID);
 		}
 
+		PlayerId getCreatorId() const
+		{
+			assert(!isPlayerObjId());
+			return playerId;
+		}
+
 		// From PlayerObjId To PlayerId
 		operator PlayerId () const
 		{

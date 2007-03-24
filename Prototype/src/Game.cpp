@@ -305,7 +305,7 @@ namespace Prototype
 			// RENDER			
 			if (client1.getRequestRender() &&
 				client2.getRequestRender() &&
-				client2.getRequestRender())
+				server.getRequestRender())
 			{
 				render(0);
 			}

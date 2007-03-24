@@ -276,7 +276,7 @@ namespace Prototype
 		
 		void clear();
 
-		
+		static UserCmd getDefaultUserCmd(PlayerId playerId);
 
 		//inline bool isShooting() const				{ return (shootAction != NOT_SHOOTING); }
 		inline bool isShooting() const					{ return shooting; }
@@ -313,6 +313,9 @@ namespace Prototype
 
 		// debug
 		//inline bool isConsistent() const						{ return isConsistent(0); }
+
+		bool isConsistent(PlayerId playerId, int currentTick) const;
+
 		bool isConsistent(int currentTick) const;
 
 		bool isConsistent() const;
