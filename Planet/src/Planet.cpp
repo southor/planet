@@ -21,19 +21,13 @@ namespace Planet
 	{
 		PlayerObj *playerObj = getPlayerObjs()[playerId];
 		Pos pos(playerObj->getPos());
-		//Angle angle = playerObj->angle;
 
-		//GameObjId projectileId = getProjectiles().findFreeId();
-		//GameObjId projectileId = getIdGenerator()->generateGameObjId();
-		Projectile *projectile = new Projectile(weapon, pos, //angle,
-															 Vec(1.0f, 1.0f, 1.0f),
-														playerId, 1, shootTick, objLag);		
+
+		Projectile *projectile = new Projectile(weapon, pos, Vec(1.0f, 1.0f, 1.0f), playerId, 1, shootTick, objLag);		
 		getProjectiles().add(projectileId, projectile);
-
-		//return projectileId;
 	}
 
-	bool Planet::playerTryShoot(PlayerId playerId, int currentTick, int shotN, GameObjId projectileId)
+	bool Planet::playerTryShoot(PlayerId playerId, int currentTick, int shotN, GameObjId projectileId, Tickf &shotTick)
 	{
 		Tickf currentTickf = static_cast<Tickf>(currentTick);
 		
@@ -41,13 +35,13 @@ namespace Planet
 
 		//Projectile::Type weapon = userCmd.weapon;
 		
-		Tickf shootTick = playerObj->getShotTick(currentTick, shotN);
-		if ((shootTick >= currentTickf) && (playerObj->getAmmoCurrentWeapon() >= 0))
+		shotTick = playerObj->getShotTick(currentTick, shotN);
+		if ((shotTick >= currentTickf) && (playerObj->getAmmoCurrentWeapon() >= 0))
 		{
 			const UserCmd &userCmd(playerObj->getUserCmd());
 			assert((shotN < userCmd.nShots) && (shotN >= 0));
 
-			playerShoot(playerId, userCmd.weapon, shootTick, userCmd.objLag, projectileId);
+			playerShoot(playerId, userCmd.weapon, shotTick, userCmd.objLag, projectileId);
 			Projectile *projectile = (getProjectiles())[projectileId];
 			return true;
 		}

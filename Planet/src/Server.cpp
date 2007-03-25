@@ -210,10 +210,27 @@ namespace Planet
 		const int tick = getTimeHandler()->getTick();
 		const int time = getTimeHandler()->getTime();
 			
+
+		Planet::PlayerObjs::Iterator playerObjsIt;
+		Planet::PlayerObjs::Iterator playerObjsEnd;
+
 		if (tick == 0)
 		{
 			int tickFromTime = 10 + getTimeHandler()->getTickFromTime();
 			getTimeHandler()->setTick(tickFromTime);
+			
+			
+			// Update next shoot tick for currentTick
+			
+			playerObjsIt = planet.getPlayerObjs().begin();
+			playerObjsEnd = planet.getPlayerObjs().end();
+			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
+			{				
+				playerObjsIt->second->tickInit(playerObjsIt->first, getTimeHandler()->getTick());
+				//playerObjsIt->second->updateNextShootTick(getTimeHandler()->getTick() - 1);
+				assert(playerObjsIt->second->isConsistent(getTimeHandler()->getTick()));
+			}
+			
 			printf("start tick: %d, time: %d\n", tickFromTime, getTimeHandler()->getTime());
 		}
 
@@ -275,40 +292,14 @@ namespace Planet
 					{
 						UserCmd *userCmd = player->link.getPoppedData<UserCmd>();
 						
-						//if (userCmd->shootAction == UserCmd::CONTINUE_SHOOTING)
-						//{
-						//	// check that privious really is START_SHOOTING or CONTINUE_SHOOTING
-						//	UserCmd preUserCmd;
-						//	player.getUserCmd(preUserCmd, getTimeHandler()->getTick() - 1);
-						//	if (preUserCmd.shootAction == UserCmd::NOT_SHOOTING)
-						//	{
-						//		userCmd->shootAction = UserCmd::START_SHOOTING;
-						//	}
-						//}
-
-						//std::cout << "diff = " << getTimeHandler()->getTick() - player->link.getPoppedTick() << std::endl;
 						assert(userCmd->isConsistent(playerId, player->link.getPoppedTick()));
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
 					}
-
-					//else if (messageType == SHOOT_CMD)
-					//{
-					//	printf("SERVER: handling shoot_cmd @ %d\n", getTimeHandler()->getTime());
-
-					//	// player shoots
-					//	ShootCmd *shootCmd = player.link.getPoppedData<ShootCmd>();					
-					//	GameObjId projectileId = worldModel.playerShoot(shootCmd->playerId, shootCmd->weapon);
-					//	Projectile *projectile = (worldModel.getProjectiles())[projectileId];
-					//	
-					//	// send projectile to all clients
-					//	AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
-					//								projectile->getAngle().getFloat(), projectile->getShooterId());
-					//	pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-					//}
 				}
 
 				PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
-				playerObj->updateToTickData(getTimeHandler()->getTick());
+				assert(playerObj->isConsistent(getTimeHandler()->getTick()));
+				//playerObj->updateToTickData(getTimeHandler()->getTick());
 				UserCmd userCmd;
 				player->getUserCmd(userCmd, getTimeHandler()->getTick());
 				userCmd.isConsistent(getTimeHandler()->getTick());
@@ -318,6 +309,7 @@ namespace Planet
 				// All player object data for this tick has been set, send and store to history!
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->getPos(), playerObj->getAimPos(), playerObj->getNextShootTick(), playerObj->getAmmoSupply());
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				assert(playerObj->isConsistent(getTimeHandler()->getTick()));
 				playerObj->storeToTickData(getTimeHandler()->getTick());
 
 				// Send tick0Time to client
@@ -331,28 +323,14 @@ namespace Planet
 					link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				}
 
-
-
-				// shooting
-				//if (userCmd.nShots > 0)
-				//{
-				//	std::cout << getTimeHandler()->getTick() << "  server: nShots: " << userCmd.nShots << std::endl;
-				//}
-				//std::vector<GameObjId> shots;
 				planet.handlePlayerShooting(playerId, players);
-				//for(size_t i=0; i<shots.size(); ++i)
-				//{
-				//	GameObjId projectileId = shots[i];
- 				//	Projectile *projectile = (worldModel.getProjectiles())[projectileId];
-				//	
-				//	// send projectile to all clients
-				//	AddProjectile addProjectile(projectileId, projectile->getType(), projectile->getPos(),
-				//								projectile->getAngle().getFloat(), projectile->getShooterId(), projectile->getShootTick(), projectile->getObjLag());
-				//	pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-				//}
-			}		
 
-			// handle projectile hits
+			}
+
+			// transmit some messages
+			transmitAll(players);
+
+			// handle projectile hits, will update to history and back again without storing!!!
 			planet.performProjectileHits(players);
 			
 			// update movements of objects, from currentTick to currentTick + 1
@@ -360,45 +338,17 @@ namespace Planet
 			planet.updatePlayerObjMovements();
 			
 			// Update next shoot tick for currentTick + 1
-			Planet::PlayerObjs::Iterator playerObjsIt = planet.getPlayerObjs().begin();
-			Planet::PlayerObjs::Iterator playerObjsEnd = planet.getPlayerObjs().end();
+			playerObjsIt = planet.getPlayerObjs().begin();
+			playerObjsEnd = planet.getPlayerObjs().end();
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{				
 				playerObjsIt->second->updateNextShootTick(getTimeHandler()->getTick());
+				assert(playerObjsIt->second->isConsistent(getTimeHandler()->getTick() + 1));
 			}
 			
 			// next tick!!
 			getTimeHandler()->nextTick();
 			lastUpdateTime = time;
-
-			//// Send playerObj updates and store state to history, also send tick0Time
-			//playerObjsIt = planet.getPlayerObjs().begin();
-			//playerObjsEnd = planet.getPlayerObjs().end();
-			//for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
-			//{
-			//	//GameObjId playerObjId = playerObjsIt->first;
-			//	PlayerId playerId = playerObjsIt->first;
-			//	PlayerObj *playerObj = playerObjsIt->second;
-			//	
-			//	//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
-			//	UpdatePlayerObj updatePlayerObj(playerId, playerObj->getPos(), playerObj->getAimPos(), playerObj->getNextShootTick(), playerObj->getAmmoSupply());
-
-			//	pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-
-			//	//playerObj->isConsistent();
-			//	playerObj->storeToTickData(getTimeHandler()->getTick());
-
-			//	// Send tick0Time to client
-			//	{
-			//		Link &link = players[playerId]->link;
-			//		double lag = tmax(static_cast<double>(link.getCurrentLag()), 0.0);
-			//		int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
-			//		assert(extraPredictionTime >= 0);
-			//		SetTick0Time tick0Time(-extraPredictionTime);
-			//		
-			//		link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-			//	}
-			//}
 
 			// Send projectile updates
 			Planet::Projectiles::Iterator projectilesIt = planet.getProjectiles().begin();

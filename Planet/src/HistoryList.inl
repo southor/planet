@@ -248,6 +248,16 @@ namespace Planet
 	template <typename Data, typename Host>
 	bool HistoryList<Data, Host>::isConsistent()
 	{
+		if (nextTick > static_cast<int>(size))
+		{
+			int fTick = firstTick();
+			int a = nextTick % static_cast<int>(size);
+			int b = fTick % static_cast<int>(size);
+			bool tmp = (a == b);
+			assert(tmp);
+			if (!tmp) return false;
+		}
+		
 		//Data testData;
 		//localInterExtraPolate(nextTick-2, tickToDataRef(nextTick-2), nextTick-1, tickToDataRef(nextTick-1), nextTick, testData);
 		return true;

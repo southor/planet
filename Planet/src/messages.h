@@ -384,7 +384,7 @@ namespace Planet
 		{}
 
 		
-		void clear();
+		void clear(PlayerId playerId, int tick);
 
 		static UserCmd getDefaultUserCmd(PlayerId playerId);
 
