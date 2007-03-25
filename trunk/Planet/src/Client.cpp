@@ -39,6 +39,9 @@ namespace Planet
 		while(link.hasMessageOnQueue())
 		{
 			int messageType = link.popMessage();
+			
+			printf("CLIENT: got message with type: %d\n", messageType);
+			
 			switch(messageType)
 			{
 			case UPDATE_PLAYER_OBJ:
@@ -47,7 +50,7 @@ namespace Planet
 					assert(updatePlayerObj->isConsistent());
 					
 					PlayerObj *playerObj = (planet.getPlayerObjs())[updatePlayerObj->playerId];
-					//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
+					printf("CLIENT: updating client (%d) position to: (%f, %f, %f)\n", updatePlayerObj->playerId, playerObj->getPos().x, playerObj->getPos().y, playerObj->getPos().z);
 					
 					
 					if (playerId == updatePlayerObj->playerId)
