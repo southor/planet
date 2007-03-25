@@ -55,15 +55,13 @@ namespace Planet
 		bool playerTryShoot(PlayerId playerId, int currentTick, int shotN, GameObjId projectileId);
 
 		// TODO
-		void updatePlayerObjMovements()
-		{}
+		void updatePlayerObjMovements();
 		void updatePlayerObjMovement(PlayerId playerId);
-		void updateProjectileMovements()
-		{}
+		void updateProjectileMovements()						{ assert(true) ;}
 		
-		void init(const std::string &map)			{ planetBody.init(map); }
+		void init(const std::string &map)						{ planetBody.init(map); }
 
-		inline PlanetBody* getPlanetBody()					{ return &planetBody; }
+		inline PlanetBody* getPlanetBody()						{ return &planetBody; }
 		
 		
 

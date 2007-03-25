@@ -53,14 +53,26 @@ namespace Planet
 		}
 		return false;
 	}
+	
+	void Planet::updatePlayerObjMovements()
+	{
+		PlayerObjs::Iterator playerObjsIt = getPlayerObjs().begin();
+		PlayerObjs::Iterator playerObjsEnd = getPlayerObjs().end();
+		for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
+		{				
+			PlayerId playerId = playerObjsIt->first;
+			
+			updatePlayerObjMovement(playerId);
+		}
+	}
 
 	void Planet::updatePlayerObjMovement(PlayerId playerId)
 	{
 		PlayerObj *playerObj = getPlayerObjs()[playerId];		
 		
 		UserCmd userCmd = playerObj->getUserCmd();
-		
 		playerObj->ship.logic(userCmd);
+		printf("updatePlayerObjMovement(%d), pos: %f,%f,%f\n", playerId, playerObj->getPos().x, playerObj->getPos().y, playerObj->getPos().z);
 	}
 
 	void Planet::deleteAllObjs()

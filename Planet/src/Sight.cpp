@@ -48,7 +48,7 @@ namespace Planet
 	void Sight::render()
 	{
 		SpherePoint sp = position.toSpherePoint();
-	
+		
 		VertData vertexData = planetBody->getVertexData(sp.phi, sp.theta);
 
 		Vec normal = vertexData.planeNormal;
