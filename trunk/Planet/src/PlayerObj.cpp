@@ -29,16 +29,16 @@ namespace Planet
 	//	 strafingLeft(false), strafingRight(false)
 	//{}
 
-	PlayerObj::PlayerObj(const Color &playerColor, const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick, PlanetBody *planetBody)
+	PlayerObj::PlayerObj(PlayerId playerId, const Color &playerColor, const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick, PlanetBody *planetBody)
 		: historyList(nHistoryTicks, UpdateData::interExtraPolate), 
 			ship(playerColor, pos, aimPos, planetBody), //pos(pos), angle(Angle::PI/2.0f),
 			health(100),
 		 //movingForward(false), movingBackward(false),
 		 //strafingLeft(false), strafingRight(false),
 		 //currentWeapon(Projectile::DEFAULT_PROJECTILE),
-		 nextShootTick(tick+1)
+		 nextShootTick(static_cast<Tickf>(tick))
 	{
-		assert(isConsistent());
+		
 		
 		setAmmoSupply(0);
 		if (N_WEAPONS >= 2) ammoSupply[1] = 10;
@@ -52,7 +52,15 @@ namespace Planet
 		historyList.setDefaultData(firstTickData);
 		historyList.setData(tick, firstTickData);
 
-		userCmd.clear();
+		userCmd.clear(playerId, tick);
+
+		assert(isConsistent(tick));
+	}
+
+	void PlayerObj::tickInit(PlayerId playerId, int tick)
+	{
+		this->nextShootTick = static_cast<Tickf>(tick);
+		userCmd.clear(playerId, tick);
 	}
 
 	void PlayerObj::setAmmoSupply(int seed)
@@ -209,7 +217,8 @@ namespace Planet
 		//Tickf oldNextShootTick = nextShootTick;
 		Tickf currentTickf = static_cast<Tickf>(currentTick);
 		
-		assert(nextShootTick >= currentTickf);
+		//assert(nextShootTick >= currentTickf);
+		assert((nextShootTick >= currentTickf) || (userCmd.nShots == 0));
 		nextShootTick = getShotTick(currentTick, userCmd.nShots);
 		
 		// advance to next tick, and update nextShootTick according to that tick
@@ -239,15 +248,19 @@ namespace Planet
 		//}
 		//else
 		//{
-			startShootTick = nextShootTick;
+			//startShootTick = nextShootTick;
+			startShootTick = tmax(nextShootTick, userCmd.firstShotTick);
 		//}
 
 		return startShootTick + Projectile::getShootInterval(userCmd.weapon) * static_cast<Tickf>(shotN);
 	}
 
-	bool PlayerObj::isConsistent()
+	bool PlayerObj::isConsistent(int currentTick)
 	{
-		return historyList.isConsistent();
+		if (!historyList.isConsistent()) return false;
+		bool consistent = (this->nextShootTick >= static_cast<int>(currentTick));		
+		assert(consistent);
+		return consistent;
 	}
 
 }

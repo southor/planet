@@ -150,7 +150,9 @@ namespace Planet
 		
 
 		//PlayerObj(size_t playerId, const Pos &pos);
-		PlayerObj(const Color &playerColor, const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick, PlanetBody *planetBody);
+		PlayerObj(PlayerId playerId, const Color &playerColor, const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick, PlanetBody *planetBody);
+		
+		void tickInit(PlayerId playerId, int tick);
 
 		~PlayerObj()										{}
 
@@ -160,7 +162,16 @@ namespace Planet
 		static float getRotateSpeed()						{ return ROTATE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 
-		Pos getPos() const									{ return ship.position; }
+		Pos getPos() const
+		{
+			//std::cout << "ship pos: " <<
+			//			ship.position.x << " " <<
+			//			ship.position.y << " " <<
+			//			ship.position.z << " " <<
+			//			std::endl;
+			return ship.position;
+		}
+
 		Pos getAimPos() const								{ return ship.aimPos; }
 
 
@@ -228,7 +239,7 @@ namespace Planet
 
 		//inline Ship& getShip()							{ return ship; }
 			
-		bool isConsistent();
+		bool isConsistent(int currentTick);
 
 	};
 };

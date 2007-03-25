@@ -111,6 +111,7 @@ namespace Planet
 					}
 					if (!projectileAlreadyCreated)
 					{
+						assert(static_cast<int>(addProjectile->shootTick) == link.getPoppedTick());
 						planet.addProjectile(addProjectile->projectileId, addProjectile);
 					}
 				}
@@ -123,7 +124,10 @@ namespace Planet
 					assert(updateProjectile->isConsistent());
 
 					Projectile *projectile = (planet.getProjectiles())[updateProjectile->projectileId];
-					projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
+
+					assert(projectile);
+					if (projectile) projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
+
 					//std::cout << "client projectile:  pos.x = " << projectile->getPos().x << "  pos.y = " << projectile->getPos().y << std::endl;
 				}
 				break;
@@ -132,9 +136,9 @@ namespace Planet
 					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
 					
 					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
-					assert(removeProjectile->isConsistent());
-					//worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
-					planet.getProjectiles().remove(removeProjectile->projectileId);
+					assert(removeProjectile->isConsistent());					
+					bool removed = planet.getProjectiles().remove(removeProjectile->projectileId);
+					assert(removed);
 				}
 				break;
 			case PROJECTILE_HIT:
@@ -142,9 +146,10 @@ namespace Planet
 					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
 					
 					ProjectileHit *projectileHit = link.getPoppedData<ProjectileHit>();
-					assert(projectileHit->isConsistent());
-					//planetRenderer.projectileHit((planet.getProjectiles())[projectileHit->projectileId], projectileHit->hitPosition);
-					planet.getProjectiles().remove(projectileHit->projectileId);
+					assert(projectileHit->isConsistent());					
+					
+					bool removed = planet.getProjectiles().remove(projectileHit->projectileId);
+					assert(removed);
 				}
 				break;
 			case START_GAME:
@@ -176,7 +181,7 @@ namespace Planet
 		playerObj->updateToTickData(currentTick);
 		if (!playerObj)
 		{
-			userCmd.clear();
+			userCmd.clear(playerId, currentTick);
 			return;
 		}
 

@@ -3,13 +3,15 @@
 namespace Planet
 {
 	void ClientPlanet::addPlayerObj(PlayerId playerId, const Color &playerColor, const Pos &playerPos, const Pos &playerAimPos, bool isMe, int tick)
-	{		
-		playerObjs.add(playerId, new PlayerObj(playerColor, playerPos, playerAimPos, (isMe ? CLIENT_PREDICTION_N_HISTORY_TICKS : CLIENT_INTERPOOLATION_N_HISTORY_TICKS), tick, &planetBody));
+	{
+		playerObjs.add(playerId, new PlayerObj(playerId, playerColor, playerPos, playerAimPos, (isMe ? CLIENT_PREDICTION_N_HISTORY_TICKS : CLIENT_INTERPOOLATION_N_HISTORY_TICKS), tick, &planetBody));
 	}
 	
 	void ClientPlanet::addProjectile(GameObjId projectileId, AddProjectile *addProjectile)
 	{
-		projectiles.add(projectileId, new Projectile(addProjectile->type, addProjectile->pos, addProjectile->ext, addProjectile->shooterId, CLIENT_INTERPOOLATION_N_HISTORY_TICKS, addProjectile->shootTick, addProjectile->objLag));
+		Projectile *projectile = new Projectile(addProjectile->type, addProjectile->pos, addProjectile->ext, addProjectile->shooterId, CLIENT_INTERPOOLATION_N_HISTORY_TICKS, addProjectile->shootTick, addProjectile->objLag);
+		assert(projectile);
+		if (projectile) projectiles.add(projectileId, projectile);
 	}
 
 	void ClientPlanet::handlePlayerShooting(PlayerId playerId)

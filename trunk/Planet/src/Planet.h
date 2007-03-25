@@ -50,9 +50,16 @@ namespace Planet
 
 		/**
 		 * @param projectileId The id that the projectile should get
+		 * @param shotTick The tick that the shot will be shot
 		 * @return true if projectile was created		 
 		 */
-		bool playerTryShoot(PlayerId playerId, int currentTick, int shotN, GameObjId projectileId);
+		bool playerTryShoot(PlayerId playerId, int currentTick, int shotN, GameObjId projectileId, Tickf &shotTick);
+
+		inline bool playerTryShoot(PlayerId playerId, int currentTick, int shotN, GameObjId projectileId)
+		{
+			Tickf dummyTick;
+			return playerTryShoot(playerId, currentTick, shotN, projectileId, dummyTick);
+		}
 
 		// TODO
 		void updatePlayerObjMovements();

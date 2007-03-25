@@ -29,9 +29,11 @@ namespace Planet
 		assert(resultData.isConsistent(resultTick));
 	}
 
-	void UserCmd::clear()
+	void UserCmd::clear(PlayerId playerId, int tick)
 	{
-		*this = DEFAULT_USER_CMD;
+		*this = getDefaultUserCmd(playerId);
+		firstShotTick = static_cast<Tickf>(tick);
+		//*this = DEFAULT_USER_CMD;
 	}
 
 	void UserCmd::assumeNext(UserCmd &resultData) const

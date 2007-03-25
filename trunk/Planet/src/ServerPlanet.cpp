@@ -12,7 +12,7 @@ namespace Planet
 	{
 		Color color = Color::RED; 
 		Pos aimPos(playerPos + playerPos.getOrtoganal());
-		PlayerObj *playerObj = new PlayerObj(color, playerPos, aimPos, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick(), &planetBody);
+		PlayerObj *playerObj = new PlayerObj(playerId, color, playerPos, aimPos, SERVER_N_HISTORY_TICKS, getTimeHandler()->getTick(), &planetBody);
 		
 		printf("adding player object with playerId: %d (tick: %d, nextShootTick: %d)\n", playerId, getTimeHandler()->getTick(), playerObj->getNextShootTick());
 
@@ -25,8 +25,12 @@ namespace Planet
 		Tickf currentTickf = static_cast<Tickf>(currentTick);
 
 		PlayerObj *playerObj = getPlayerObjs()[playerId];
-		const UserCmd &userCmd(playerObj->getUserCmd());
+		
+		// Copy userCmd, we must have a seperate copy to alter while original is intact.
+		UserCmd userCmd(playerObj->getUserCmd());
+		
 		ClientIdGenerator *clientIdGenerator = players[playerId]->getIdGenerator();
+		int clientNShots = userCmd.nShots;
 		
 		assert(userCmd.firstShotTick >= currentTickf);
 		assert(playerObj->getNextShootTick() >= currentTickf);
@@ -39,25 +43,21 @@ namespace Planet
 		}
 		assert(userCmd.firstProjectileId == clientIdGenerator->getNextId());
 		
-		int nShots = userCmd.nShots;
-		if (userCmd.nShots > 0)
+		if (clientNShots > 0)
 		{
 			assert(userCmd.firstShotTick >= playerObj->getNextShootTick());
 		
 			// Do any shooting		
+			int serverNShots = 0;
+			Tickf shotTick;
 			Projectile::Type weapon = userCmd.weapon;
-			for(int i=0; i<nShots; ++i)
+			for(int i=0; i<clientNShots; ++i)
 			{
-				
-				//Tickf shootTick = playerObj->getShotTick(currentTick, i);
-				//GameObjId projectileId = playerShoot(playerId, weapon, shootTick, userCmd.objLag);
-				//Projectile *projectile = (getProjectiles())[projectileId];
-				
-				//GameObjId projectileId = getIdGenerator()->generateGameObjId();
-				//GameObjId projectileId = userCmd.firstProjectileId + i;
 				GameObjId projectileId = clientIdGenerator->generateGameObjId();
-				if (playerTryShoot(playerId, currentTick, i, projectileId))
+				if (playerTryShoot(playerId, currentTick, i, projectileId, shotTick))
 				{		
+					if (serverNShots == 0) userCmd.firstShotTick = shotTick;
+					
 					Projectile *projectile = (getProjectiles())[projectileId];
 					std::cout << "server tick: " << getTimeHandler()->getTick() << "    projectile shot, objLag =  " << projectile->getObjLag() << std::endl;
 					
@@ -66,12 +66,8 @@ namespace Planet
 												projectile->getExt(), projectile->getShooterId(),
 												projectile->getShootTick(), projectile->getObjLag());
 					pushMessageToAll(players, addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-					//ServerPlayers::Iterator it = players.begin();
-					//ServerPlayers::Iterator end = players.end();
-					//for(; it != end; ++it)
-					//{
-					//	if (it->first != playerId) it->second->link.pushMessage(addProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-					//}
+
+					++serverNShots;
 				}
 				else
 				{
@@ -79,6 +75,11 @@ namespace Planet
 					players[playerId]->link.pushMessage(removeProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				}
 			}
+
+			userCmd.nShots = serverNShots;
+			
+			// Safe to overwrite PlayerObj.userCmd now, write changes
+			playerObj->setUserCmd(&userCmd);
 		}
 	}
 };

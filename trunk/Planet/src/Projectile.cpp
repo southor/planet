@@ -19,7 +19,8 @@ namespace Planet
 																		shooterId(shooterId), shootTick(shootTick), objLag(objLag), render(true)
 	{
 		// Set position at currentTick, Projectiles current tick is actually shootTick before we set position
-		this->pos = getPosAtTick(shootTick, static_cast<int>(shootTick));
+		int tick = static_cast<int>(shootTick);
+		this->pos = getPosAtTick(shootTick, static_cast<Tickf>(tick));
 		
 		// insert data into history list
 		historyList.setDefaultData(this->pos);
