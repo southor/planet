@@ -21,7 +21,7 @@ namespace Planet
 	
 		void render();
 		
-		void init(const std::string &map);
+		void init(bool isClient, const std::string map);
 		
 		// Checks if line startPos - EndPos collides with planet
 		// collisionPoint is set to point of collision or the closest point

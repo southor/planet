@@ -33,7 +33,7 @@ namespace Planet
 			delete [] indices;
 		}
 
-		void init();
+		void init(bool isClient);
 
 		void render();
 

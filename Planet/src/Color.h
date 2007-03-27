@@ -15,6 +15,8 @@ namespace Planet
 		static const Color BLACK;
 		static const Color RED;
 		static const Color YELLOW;
+		static const Color ORANGE;
+		static const Color LIGHT_PURPLE;
 	};
 };
 

@@ -147,7 +147,7 @@ namespace Planet
 
 			glPointSize(3.0);
 			glBegin(GL_POINTS);
-				glColor3f(1.0f, 0.0f, 0.0f);
+				glColor3f(color.r, color.g, color.b);
 				glVertex3f(position.x, position.y, position.z);
 			glEnd();
 

@@ -331,8 +331,6 @@ namespace Planet
 
 				Ship *ship = playerObj->getShip();
 				camera.update(ship->position, ship->reference);
-
-				sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
 			}
 			else
 			{
@@ -344,15 +342,7 @@ namespace Planet
 			handleServerMessages();
 		}
 
-		//ship.moveUp = userInputHandler.getCurrentState(Cmds::TMP_UP);
-		//ship.moveDown = userInputHandler.getCurrentState(Cmds::TMP_DOWN);
-		//ship.moveLeft = userInputHandler.getCurrentState(Cmds::TMP_LEFT);
-		//ship.moveRight = userInputHandler.getCurrentState(Cmds::TMP_RIGHT);
-		//	
-		//// Logic
-		//ship.logic(sight.position);
-
-
+		sight.update(userInputHandler.getMouseScreenPos(), Game::WINDOW_SIZE.x, Game::WINDOW_SIZE.y);
 	}
 
 	bool Client::initConnection()
@@ -379,7 +369,7 @@ namespace Planet
 				
 					setPlayerId(welcomeClient->playerId);
 					getIdGenerator()->setPlayerId(welcomeClient->playerId);
-					currentMap = welcomeClient->map;
+					currentMap = "maps/test/"; //welcomeClient->map;
 
 					predictionHandler = new PredictionHandler(welcomeClient->playerId, &planet);
 					assert(predictionHandler->isConsistent());

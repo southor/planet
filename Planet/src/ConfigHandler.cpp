@@ -25,6 +25,8 @@ namespace Planet
 
 			configMap[token] = value;
 		}
+		
+		file.close();
 	}
 	
 	//double ConfigHandler::getDoubleValue(std::string option)
