@@ -76,14 +76,17 @@ namespace Prototype
 		//void setCurrentMousePos(Vec2<int> mouseScreenPos);
 		//inline void setAimMode(UserInputHandler::AimMode aimMode)				{ userInputHandler. }
 		
+		inline const ConfigHandler& getConfigHandler()	{ return configHandler; }
+
+
 		//debug
 		void debugPrintState();
 
 	private:
 
-		static const double OBJECT_LAG_MODIFIER;
-		static const int OBJECT_LAG_ADD_TIME;
-		static const int OBJECT_LAG_ADD_TICK;
+		static const double OBJECT_LAG_MODIFIER_DEFAULT;
+		static const int OBJECT_LAG_ADD_TIME_DEFAULT;
+		static const int OBJECT_LAG_ADD_TICK_DEFAULT;
 		
 		ClientGlobalObj clientGlobalObj;
 
@@ -124,6 +127,9 @@ namespace Prototype
 		Angle calcPlayerObjAngle(Vec2<int> mouseScreenPos);
 
 		Angle calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds);
+
+		int calcCurrentObjLag() const;
+
 
 		//debug
 		bool isConsistent()

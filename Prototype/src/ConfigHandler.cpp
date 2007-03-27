@@ -41,23 +41,24 @@ namespace Prototype
 	//	}
 	//}
 
-	bool ConfigHandler::getValue(std::string option, double &result)
+	bool ConfigHandler::getValue(std::string option, double &result) const
 	{
 		if (configMap.count(option) > 0)
 		{
-			result = configMap[option];
+			//result = configMap[option];
+			result = configMap.find(option)->second;
 			return true;
 		}
 		else
 		{
 			//assert(false);
 			//printf("Can't load option: %s\n", option.c_str());
-			std::cout << "config option " << option << " missing in file, using default value." << std::endl; 
+			//std::cout << "config option " << option << " missing in file, using default value." << std::endl; 
 			return false;
 		}
 	}
 
-	double ConfigHandler::getDoubleValue(std::string option)
+	double ConfigHandler::getDoubleValue(std::string option) const
 	{
 		double value = 0.0;
 		if(!getValue(option, value)) assert(false); // TODO: in release mode: throw exception ?

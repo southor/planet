@@ -7,8 +7,8 @@
 namespace Prototype
 {
 
-	const double Server::PREDICTION_AMOUNT_MODIFIER = 1.1;
-	const int Server::PREDICTION_AMOUNT_ADD_TIME = 10;
+	const double Server::PREDICTION_AMOUNT_MODIFIER_DEFAULT = 1.1;
+	const int Server::PREDICTION_AMOUNT_ADD_TIME_DEFAULT = 10;
 
 	Server::Server() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), lastUpdateTime(0),
 						ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj),
@@ -266,7 +266,8 @@ namespace Prototype
 				{
 					Link &link = players[playerId]->link;
 					double lag = tmax(static_cast<double>(link.getCurrentLag()), 0.0);
-					int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
+					int extraPredictionTime = static_cast<int>(lag * configHandler.getDoubleValue("prediction_amount_modifier", PREDICTION_AMOUNT_MODIFIER_DEFAULT)) +
+																		configHandler.getIntValue("prediction_amount_add_time", PREDICTION_AMOUNT_ADD_TIME_DEFAULT);
 					SetTick0Time tick0Time(-extraPredictionTime);
 					link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				}
