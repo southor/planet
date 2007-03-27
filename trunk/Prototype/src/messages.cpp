@@ -6,7 +6,7 @@
 namespace Prototype
 {
 	
-	const UserCmd UserCmd::DEFAULT_USER_CMD = UserCmd(0, 0.0f, Projectile::DEFAULT_TYPE, 0, false, 0, GameObjId(0, 1), 0);
+	const UserCmd UserCmd::DEFAULT_USER_CMD = UserCmd(0, 0.0f, Projectile::DEFAULT_TYPE, 0, false, 0.0, GameObjId(0, 1), 0);
 	
 	void UserCmd::interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData)
 	{
@@ -29,15 +29,15 @@ namespace Prototype
 		assert(resultData.isConsistent());
 	}
 
-	void UserCmd::clear()
+	void UserCmd::clear(PlayerId playerId, int tick)
 	{
 		//stateCmds = 0;
 		//aimAngle = 0.0f;
 		//weapon = Projectile::DEFAULT_PROJECTILE;
 		//nShots = 0;
 		//shootAction = NOT_SHOOTING;
-		*this = DEFAULT_USER_CMD;
-		//firstShootTick = currentTick;
+		*this = getDefaultUserCmd(playerId);
+		firstShotTick = static_cast<Tickf>(tick);
 	}
 
 	void UserCmd::assumeNext(UserCmd &resultData) const

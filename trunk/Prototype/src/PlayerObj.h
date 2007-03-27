@@ -99,16 +99,18 @@ namespace Prototype
 		
 
 		//PlayerObj(size_t playerId, const Pos &pos);
-		PlayerObj(const Pos &pos, size_t nHistoryTicks, int tick);
+		PlayerObj(PlayerId playerId, const Pos &pos, size_t nHistoryTicks, int tick);
 
 		~PlayerObj()										{}
+
+		void tickInit(PlayerId playerId, int tick);
 
 		static float getForwardBackwardSpeed()				{ return FORWARD_BACKWARD_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 		static float getRotateSpeed()						{ return ROTATE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 
 		Pos getPos() const									{ return pos; }
-		//inline Angle getAngle()								{ return userCmd.aimAngle; }
+		//inline Angle getAngle()							{ return userCmd.aimAngle; }
 		//inline void setAngle(Angle angle)					{ userCmd.aimAngle = angle; }
 		void getRectangle(Rectangle &rectangle) const;
 		//size_t getPlayerId() const						{ return playerId; }	
@@ -162,7 +164,7 @@ namespace Prototype
 
 		Tickf getShotTick(int currentTick, int shotN);
 
-		bool isConsistent();
+		bool isConsistent(int currentTick);
 
 	};
 };
