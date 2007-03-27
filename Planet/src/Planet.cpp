@@ -70,8 +70,8 @@ namespace Planet
 		
 		playerObj->ship.logic(userCmd);
 		
-		Pos tmpPos(playerObj->getPos());
-		printf("updatePlayerObjMovement(%d), pos: %f,%f,%f\n", playerId, tmpPos.x, tmpPos.y, tmpPos.z);
+//		Pos tmpPos(playerObj->getPos());
+//		printf("updatePlayerObjMovement(%d), pos: %f,%f,%f\n", playerId, tmpPos.x, tmpPos.y, tmpPos.z);
 	}
 
 	void Planet::deleteAllObjs()

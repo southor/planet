@@ -34,7 +34,9 @@ namespace Planet
 	{
 		getTimeHandler()->reset();
 		setMap(map);
-		
+
+		init();
+
 		NetworkServer networkServer;
 		networkServer.start();
 		
@@ -299,12 +301,10 @@ namespace Planet
 
 				PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
 				assert(playerObj->isConsistent(getTimeHandler()->getTick()));
-				//playerObj->updateToTickData(getTimeHandler()->getTick());
 				UserCmd userCmd;
 				player->getUserCmd(userCmd, getTimeHandler()->getTick());
 				userCmd.isConsistent(getTimeHandler()->getTick());
 				playerObj->setUserCmd(&userCmd);
-
 
 				// All player object data for this tick has been set, send and store to history!
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->getPos(), playerObj->getAimPos(), playerObj->getNextShootTick(), playerObj->getAmmoSupply());

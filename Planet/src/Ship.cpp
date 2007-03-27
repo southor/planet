@@ -2,6 +2,9 @@
 
 namespace Planet
 {
+	const float Ship::FORWARD_BACKWARD_SPEED = 5.0f / 1000.0f;
+	const float Ship::STRAFE_SPEED = 5.0f / 1000.0f;
+
 	void Ship::setReference(Pos pos)
 	{
 		reference = (pos + pos.getOrtoganal()) - pos;
@@ -9,6 +12,9 @@ namespace Planet
 
 	void Ship::logic(UserCmd &userCmd)
 	{
+		float fbMoveDistance = Ship::getForwardBackwardSpeed();
+		float strafeMoveDistance = Ship::getStrafeSpeed();
+
 		bool moveLeft = userCmd.stateCmds.getCurrentState(Cmds::LEFT);
 		bool moveRight = userCmd.stateCmds.getCurrentState(Cmds::RIGHT);
 		bool moveForward = userCmd.stateCmds.getCurrentState(Cmds::FORWARD);
@@ -28,6 +34,9 @@ namespace Planet
 		reference.normalize();
 
 		Vec direction = reference;
+		//Vec direction = aimPos - position;
+		//direction.normalize();
+
 		Vec directionLeft = Mat3f::rotateArbitrary(position, PI_F/2) * direction;
 		Vec directionRight = -directionLeft;
 
@@ -35,16 +44,16 @@ namespace Planet
 
 
 		if (moveForward)
-			position += direction / 5.0f;
+			position += direction * fbMoveDistance;
 
 		if (moveBackward)
-			position -= direction / 5.0f;
+			position -= direction * fbMoveDistance;
 
 		if (moveLeft)
-			position += directionLeft / 5.0f;
+			position += directionLeft * strafeMoveDistance;
 			
 		if (moveRight)
-			position += directionRight / 5.0f;
+			position += directionRight * strafeMoveDistance;
 	}
 	
 	void Ship::setState(Pos &pos, Pos &aimPos)

@@ -48,11 +48,17 @@ namespace Planet
 		Vec reference;
 		
 		Pos prevPosition;
+
+		static const float FORWARD_BACKWARD_SPEED; // speed in distance-units per millisecond
+		static const float STRAFE_SPEED; // speed in distance-units per millisecond
 		
 	private:
 		void setReference(Pos pos);
 		void updateRotation();
 	
+		static float getForwardBackwardSpeed()				{ return FORWARD_BACKWARD_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
+		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
+
 		PlanetBody *planetBody;
 		
 		Color color;
