@@ -15,7 +15,8 @@ namespace Planet
 		{
 			Tickf totalDiff = static_cast<Tickf>(tick2) - static_cast<Tickf>(tick1);
 			Tickf resultDiff = resultTick - static_cast<Tickf>(tick1);
-			double tValue = static_cast<double>(resultDiff) / static_cast<double>(totalDiff);
+			assert(static_cast<float>(totalDiff) != 0.0);
+			float tValue = static_cast<float>(resultDiff) / static_cast<float>(totalDiff);
 
 			resultData = data1 + (data2 - data1) * tValue;
 		}

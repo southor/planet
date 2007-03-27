@@ -162,8 +162,9 @@ namespace Planet
 		static float getRotateSpeed()						{ return ROTATE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 
-		Pos getPos() const
+		inline const Pos& getPos() const
 		{
+			assert(isConsistent());
 			//std::cout << "ship pos: " <<
 			//			ship.position.x << " " <<
 			//			ship.position.y << " " <<
@@ -172,7 +173,7 @@ namespace Planet
 			return ship.position;
 		}
 
-		Pos getAimPos() const								{ return ship.aimPos; }
+		inline const Pos& getAimPos() const						{ return ship.aimPos; }
 
 
 		//inline Angle getAngle()							{ return userCmd.aimAngle; }
@@ -238,8 +239,9 @@ namespace Planet
 		Tickf getShotTick(int currentTick, int shotN);
 
 		//inline Ship& getShip()							{ return ship; }
-			
-		bool isConsistent(int currentTick);
+		
+		bool isConsistent() const;
+		bool isConsistent(int currentTick) const;
 
 	};
 };
