@@ -22,9 +22,9 @@ namespace Planet
 		delete zFront; delete zBack;
 	}
 
-	void PlanetBody::init(const std::string &map)
+	void PlanetBody::init(bool isClient, const std::string map)
 	{
-		// Read map config file
+		// Read map config file 
 		mapConfig.loadFile(map + "config.txt");
 
 		float r = mapConfig.getFloatValue("radius");
@@ -56,14 +56,14 @@ namespace Planet
 		faces.push_back(zFront);
 		faces.push_back(zBack);
 
-		xFront->init();
-		xBack->init();
+		xFront->init(isClient);
+		xBack->init(isClient);
 
-		yFront->init();
-		yBack->init();
+		yFront->init(isClient);
+		yBack->init(isClient);
 
-		zFront->init();
-		zBack->init();
+		zFront->init(isClient);
+		zBack->init(isClient);
 	}
 		
 	void PlanetBody::render()

@@ -13,6 +13,8 @@ namespace Planet
 		ClientPlanet(ClientGlobalObj *clientGlobalObj) : ClientGlobalAccess(clientGlobalObj)
 		{}
 
+		void init(const std::string &map)						{ planetBody.init(true, map); }
+
 		void addPlayerObj(PlayerId playerId, const Color &playerColor, const Pos &playerPos, const Pos &playerAimPos, bool isMe, int tick);
 		void addProjectile(GameObjId projectileId, AddProjectile *addProjectile);
 

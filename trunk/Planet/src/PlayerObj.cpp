@@ -258,7 +258,7 @@ namespace Planet
 	bool PlayerObj::isConsistent() const
 	{
 		assert((ship.position.x > -1000000.0f) && (ship.position.x < 1000000.0f));
-		if (!historyList.isConsistent()) return false;
+		return historyList.isConsistent();
 	}
 
 	bool PlayerObj::isConsistent(int currentTick) const

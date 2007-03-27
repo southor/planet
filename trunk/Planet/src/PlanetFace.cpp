@@ -36,15 +36,19 @@ namespace Planet
 	}
 
 
-	void PlanetFace::init()
+	void PlanetFace::init(bool isClient)
 	{
 		if (initialized)
 			return;
 
-		heightMap.init(heightmapFile);
-		texture = TextureHandler::loadTexture(textureFile);
-		detailTexture = TextureHandler::loadTexture(detailTextureFile);
+		if (isClient)
+		{
+			texture = TextureHandler::loadTexture(textureFile);
+			detailTexture = TextureHandler::loadTexture(detailTextureFile);
+		}
 
+		heightMap.init(heightmapFile);
+		
 		// create arrays
 		numIndices = (resolution * resolution * 2) - (2 * resolution);
 		
@@ -145,8 +149,6 @@ namespace Planet
 
 	void PlanetFace::render()
 	{
-		if (!initialized)
-			init();
 		bool useDetail = true;
 
 		#ifdef ENABLE_MULTITEXTURE_ARB
@@ -259,7 +261,7 @@ namespace Planet
 	
 	bool PlanetFace::findIntersection(Vec3f &p2, float &s, float &t)
 	{
-		Vec3f p1;
+		Vec3f p1(0.0f, 0.0f, 0.0f);
 		return findIntersection(p1, p2, s, t); 
 	}
 

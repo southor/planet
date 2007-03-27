@@ -61,13 +61,12 @@ namespace Planet
 			return playerTryShoot(playerId, currentTick, shotN, projectileId, dummyTick);
 		}
 
-		// TODO
 		void updatePlayerObjMovements();
 		void updatePlayerObjMovement(PlayerId playerId);
+
+		// TODO
 		void updateProjectileMovements()						{ assert(true) ;}
 		
-		void init(const std::string &map)						{ planetBody.init(map); }
-
 		inline PlanetBody* getPlanetBody()						{ return &planetBody; }
 		
 		

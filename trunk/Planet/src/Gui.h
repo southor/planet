@@ -39,7 +39,7 @@ namespace Planet
 	public:
 		int getNumberOfElements()
 		{
-			return 3;
+			return 5;
 		}
 
 		std::string getElementAt(int i)
@@ -52,6 +52,10 @@ namespace Planet
 					return std::string("Black");
 				case 2:
 					return std::string("Yellow");
+				case 3:
+					return std::string("Orange");
+				case 4:
+					return std::string("Purple");
 				default:
 					return std::string("");
 			}
@@ -67,6 +71,10 @@ namespace Planet
 					return Color::BLACK;
 				case 2:
 					return Color::YELLOW;
+				case 3:
+					return Color::ORANGE;
+				case 4:
+					return Color::LIGHT_PURPLE;
 				default:
 					return Color(0.5f, 0.5f, 0.5f);
 			}

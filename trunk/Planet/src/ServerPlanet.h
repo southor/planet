@@ -12,6 +12,8 @@ namespace Planet
 	public:
 		ServerPlanet(ServerGlobalObj *serverGlobalObj) : ServerGlobalAccess(serverGlobalObj) {}
 
+		void init(const std::string &map)	{ planetBody.init(false, map); }
+
 		void performProjectileHits(ServerPlayers &players);
 		void addPlayerObj(PlayerId playerId, const Pos &playerPos);
 
