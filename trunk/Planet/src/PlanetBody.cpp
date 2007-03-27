@@ -107,6 +107,9 @@ namespace Planet
 	
 	bool PlanetBody::checkCollision(Vec3f startPos, Vec3f endPos, Vec3f *collisionPos)
 	{
+		assert(startPos.length() < 10000.0f);
+		assert(endPos.length() < 10000.0f);
+		
 		Vec3f direction = endPos - startPos;
 		
 		Vec3f vTest = startPos + direction / 2.0f;

@@ -154,7 +154,11 @@ namespace Planet
 
 			return ortogonal;
 		}
-
+		
+		bool isConsistent() const
+		{
+			return true;
+		}
 /*
 		static void transformVec(GLfloat *matrix, GLfloat *from, GLfloat *to) 
 		{

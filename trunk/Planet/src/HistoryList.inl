@@ -189,7 +189,8 @@ namespace Planet
 	void HistoryList<Data, Host>::setData(int tick, const Data &data)
 	{		
 		assert(isConsistent());
-		
+		assert(data.isConsistent());
+
 		if (tick <= nextTick)
 		{
 			if (tick == nextTick) ++nextTick;
