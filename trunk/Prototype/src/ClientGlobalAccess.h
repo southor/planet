@@ -10,7 +10,7 @@ namespace Prototype
 	{
 	public:
 		ClientTimeHandler timeHandler;
-		ClientIdGenerator idGenerator;
+		ClientIdGenerator idGenerator;		
 	};
 	
 	class ClientGlobalAccess
@@ -26,6 +26,12 @@ namespace Prototype
 		{}
 
 		inline ClientTimeHandler* getTimeHandler()
+		{
+			assert(clientGlobalObj);
+			return &(clientGlobalObj->timeHandler);
+		}
+
+		inline const ClientTimeHandler* getTimeHandler() const
 		{
 			assert(clientGlobalObj);
 			return &(clientGlobalObj->timeHandler);

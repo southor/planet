@@ -158,11 +158,15 @@ namespace Prototype
 		MessageReciever *reciever4;
 
 		#ifndef USE_VIRTUAL_CONNECTION
+		int simulatedLag = 0;
 		if (SHOW_CLIENT_1)
 		{
 			sender1 = networkClient1.getMessageSender();
 			reciever1 = networkClient1.getMessageReciever();
-			reciever1->setSimulatedLag(SERVER_TO_CLIENT_1_SIMULATED_LAG);
+			
+			simulatedLag = client1.getConfigHandler().getIntValue("server_to_client_1_simulated_lag",
+																	SERVER_TO_CLIENT_1_SIMULATED_LAG_DEFAULT);
+			reciever1->setSimulatedLag(simulatedLag);
 			sender1->v = 1;
 			reciever1->v = 1;
 		}
@@ -170,7 +174,11 @@ namespace Prototype
 		{
 			sender3 = networkClient2.getMessageSender();
 			reciever3 = networkClient2.getMessageReciever();
-			reciever3->setSimulatedLag(SERVER_TO_CLIENT_2_SIMULATED_LAG);
+
+			simulatedLag = client2.getConfigHandler().getIntValue("server_to_client_2_simulated_lag",
+																	SERVER_TO_CLIENT_2_SIMULATED_LAG_DEFAULT);
+			reciever3->setSimulatedLag(simulatedLag);
+
 			sender3->v = 3;
 			reciever3->v = 3;
 		}
@@ -178,13 +186,21 @@ namespace Prototype
 		{
 			sender2 = &(serverClient1->sender);
 			reciever2 = &(serverClient1->reciever);
-			reciever2->setSimulatedLag(CLIENT_1_TO_SERVER_SIMULATED_LAG);
+
+			simulatedLag = client1.getConfigHandler().getIntValue("client_1_to_server_simulated_lag",
+																	CLIENT_1_TO_SERVER_SIMULATED_LAG_DEFAULT);
+			reciever2->setSimulatedLag(simulatedLag);
+
 			sender2->v = 2;
 			reciever2->v = 2;
 
 			sender4 = &(serverClient2->sender);
 			reciever4 = &(serverClient2->reciever);
-			reciever4->setSimulatedLag(CLIENT_2_TO_SERVER_SIMULATED_LAG);
+
+			simulatedLag = client2.getConfigHandler().getIntValue("client_2_to_server_simulated_lag",
+																	CLIENT_2_TO_SERVER_SIMULATED_LAG_DEFAULT);
+			reciever4->setSimulatedLag(simulatedLag);
+
 			sender4->v = 4;
 			reciever4->v = 4;
 		}

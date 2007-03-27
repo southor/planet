@@ -19,3 +19,4 @@ In Client.cpp, maybe timeHandler.reset() should not be called at START_GAME.
 use less constants and use more static variabels that should be set to default variabels at start and then altered with configure files.
 Really use default contructor that assign all members for value-types like vec2 ??
 really do update only when we render?
+Rally use interger for objlag ?? why not use Tickf datatype?

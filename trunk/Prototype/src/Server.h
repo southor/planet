@@ -62,18 +62,18 @@ namespace Prototype
 			viewportHandler.screenRenderSize.x = w;
 			viewportHandler.screenRenderSize.y = h;
 		}
-		inline void useViewport()					{ viewportHandler.useViewport(); }
+		inline void useViewport()						{ viewportHandler.useViewport(); }
 		void render();
 
-		inline bool getRequestRender()				{ return requestRender; }
+		inline bool getRequestRender()					{ return requestRender; }
 
 		//debug
 		void debugPrintState();
 
 	private:
 
-		static const double PREDICTION_AMOUNT_MODIFIER;
-		static const int PREDICTION_AMOUNT_ADD_TIME;
+		static const double PREDICTION_AMOUNT_MODIFIER_DEFAULT;
+		static const int PREDICTION_AMOUNT_ADD_TIME_DEFAULT;
 		
 		
 		

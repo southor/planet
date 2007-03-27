@@ -10,9 +10,9 @@
 namespace Prototype
 {
 
-	const double Client::OBJECT_LAG_MODIFIER = 1.2;
-	const int Client::OBJECT_LAG_ADD_TIME = 18;
-	const int Client::OBJECT_LAG_ADD_TICK = 1;
+	const double Client::OBJECT_LAG_MODIFIER_DEFAULT = 1.2;
+	const int Client::OBJECT_LAG_ADD_TIME_DEFAULT = 18;
+	const int Client::OBJECT_LAG_ADD_TICK_DEFAULT = 1;
 
 	Client::Client() : ClientGlobalAccess(&clientGlobalObj), worldModel(&clientGlobalObj), worldRenderer(WorldRenderer::FOLLOW_PLAYER),
 						connectionPhase(0), requestRender(false), currentObjLag(0), predictionHandler(0)
@@ -333,10 +333,8 @@ namespace Prototype
 				int currentTick = static_cast<int>(getStepTick());
 				
 
-				// calculate current objectLag				
-				double tmp = static_cast<double>(link.getCurrentLag() - getTimeHandler()->getTick0Time());
-				this->currentObjLag = static_cast<int>(tmp * OBJECT_LAG_MODIFIER + OBJECT_LAG_ADD_TIME)
-													/ TimeHandler::TICK_DELTA_TIME + OBJECT_LAG_ADD_TICK;
+				// calculate current objectLag
+				this->currentObjLag = calcCurrentObjLag();
 
 				// get userCmd
 				UserCmd userCmd;
@@ -374,6 +372,28 @@ namespace Prototype
 		{
 			handleServerMessages();
 		}
+	}
+
+	int Client::calcCurrentObjLag() const
+	{
+		// get modifiying values
+		double objLagModifier = configHandler.getDoubleValue("object_lag_modifier", OBJECT_LAG_MODIFIER_DEFAULT);
+		int objLagAddTime = configHandler.getIntValue("object_lag_time", OBJECT_LAG_ADD_TIME_DEFAULT);
+		int objLagAddTick = configHandler.getIntValue("object_lag_tick", OBJECT_LAG_ADD_TICK_DEFAULT);
+		
+		// get base objLag (can in some cases be negative if the result of syncronise of clocks wasn't perfect)
+		double baseObjLagTime = static_cast<double>(link.getCurrentLag() - getTimeHandler()->getTick0Time());
+
+		// multiply depending on positive or negative
+		if (baseObjLagTime > 0.0) baseObjLagTime *= objLagModifier;
+		else baseObjLagTime /= objLagModifier;
+
+		// add extra modifiers and change to "ticks"
+		int currentObjLag = static_cast<int>(baseObjLagTime + objLagAddTime) /
+								TimeHandler::TICK_DELTA_TIME + objLagAddTick;
+		
+		// do not allow negative objLag
+		return tmax(currentObjLag, 0);
 	}
 
 	bool Client::initConnection()
