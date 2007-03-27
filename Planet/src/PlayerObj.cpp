@@ -255,10 +255,16 @@ namespace Planet
 		return startShootTick + Projectile::getShootInterval(userCmd.weapon) * static_cast<Tickf>(shotN);
 	}
 
-	bool PlayerObj::isConsistent(int currentTick)
+	bool PlayerObj::isConsistent() const
 	{
+		assert((ship.position.x > -1000000.0f) && (ship.position.x < 1000000.0f));
 		if (!historyList.isConsistent()) return false;
-		bool consistent = (this->nextShootTick >= static_cast<int>(currentTick));		
+	}
+
+	bool PlayerObj::isConsistent(int currentTick) const
+	{
+		if (!isConsistent()) return false;		
+		bool consistent = (this->nextShootTick >= static_cast<int>(currentTick));
 		assert(consistent);
 		return consistent;
 	}

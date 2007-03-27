@@ -30,7 +30,7 @@ namespace Planet
 		int nextTick;
 		
 
-		int firstTick();
+		int firstTick() const;
 		//inline int lastTick()					{ return nextTick-1; }
 
 		inline Data& tickToDataRef(int tick)	{ return data[tick % size]; }
@@ -67,7 +67,7 @@ namespace Planet
 
 		int getLastTick()									{ return nextTick - 1; }
 
-		bool isConsistent();
+		bool isConsistent() const;
 
 	};
 };

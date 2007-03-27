@@ -61,7 +61,7 @@ namespace Planet
 	}
 
 	template <typename Data, typename Host>
-	int HistoryList<Data, Host>::firstTick()
+	int HistoryList<Data, Host>::firstTick() const
 	{
 		int tmp = nextTick - static_cast<int>(size);
 		if (tmp > 0) return tmp % static_cast<int>(size);
@@ -246,7 +246,7 @@ namespace Planet
 	}
 
 	template <typename Data, typename Host>
-	bool HistoryList<Data, Host>::isConsistent()
+	bool HistoryList<Data, Host>::isConsistent() const
 	{
 		if (nextTick > static_cast<int>(size))
 		{

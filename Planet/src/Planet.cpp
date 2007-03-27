@@ -65,8 +65,13 @@ namespace Planet
 		PlayerObj *playerObj = getPlayerObjs()[playerId];		
 		
 		UserCmd userCmd = playerObj->getUserCmd();
+		
+		assert(playerObj->isConsistent());
+		
 		playerObj->ship.logic(userCmd);
-		printf("updatePlayerObjMovement(%d), pos: %f,%f,%f\n", playerId, playerObj->getPos().x, playerObj->getPos().y, playerObj->getPos().z);
+		
+		Pos tmpPos(playerObj->getPos());
+		printf("updatePlayerObjMovement(%d), pos: %f,%f,%f\n", playerId, tmpPos.x, tmpPos.y, tmpPos.z);
 	}
 
 	void Planet::deleteAllObjs()
