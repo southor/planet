@@ -17,7 +17,7 @@ namespace Prototype
 
 	void ClientWorldModel::addPlayerObj(PlayerId playerId, const Pos &playerPos, bool isMe, int tick)
 	{		
-		playerObjs.add(playerId, new PlayerObj(playerPos, (isMe ? CLIENT_PREDICTION_N_HISTORY_TICKS : CLIENT_INTERPOOLATION_N_HISTORY_TICKS), tick));
+		playerObjs.add(playerId, new PlayerObj(playerId, playerPos, (isMe ? CLIENT_PREDICTION_N_HISTORY_TICKS : CLIENT_INTERPOOLATION_N_HISTORY_TICKS), tick));
 	}
 
 	void ClientWorldModel::addObstacle(GameObjId obstacleId, const Rectangle &obstacleArea)
@@ -27,7 +27,9 @@ namespace Prototype
 
 	void ClientWorldModel::addProjectile(GameObjId projectileId, Projectile::Type type, const Pos &pos, float angle, PlayerId shooterId, Tickf shootTick, int objLag)
 	{
-		projectiles.add(projectileId, new Projectile(type, pos, angle, shooterId, CLIENT_INTERPOOLATION_N_HISTORY_TICKS, shootTick, objLag));
+		Projectile *projectile = new Projectile(type, pos, angle, shooterId, CLIENT_INTERPOOLATION_N_HISTORY_TICKS, shootTick, objLag);
+		assert(projectile);
+		if (projectile) projectiles.add(projectileId, projectile);
 	}
 
 	void ClientWorldModel::updatePlayerObjMovement(PlayerId playerId)

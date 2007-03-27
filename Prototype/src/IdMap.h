@@ -391,13 +391,20 @@ namespace Prototype
 		void add(Id id, T item)				{ bool result = (map.insert(Pair(id, item))).second;
 											  assert(result); }
 		bool remove(Id id)					{ bool removed = (map.erase(id) > 0);
-											 // assert(removed);
 											  return removed; }
 
 		T& operator[](Id id)
 		{
-			assert(exists(id));
-			return map[id];
+			std::map<Id, T>::iterator it = find(id);
+			if (it == map.end())
+			{
+				assert(false);
+				throw "error! in IdMap::operator[] ";
+			}
+			else
+			{
+				return it->second;
+			}
 		}
 
 		bool isConsistent()					{ return true; }

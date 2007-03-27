@@ -266,7 +266,9 @@ namespace Prototype
 			int fTick = firstTick();
 			int a = nextTick % static_cast<int>(size);
 			int b = fTick % static_cast<int>(size);
-			assert(a == b);
+			bool tmp = (a == b);
+			assert(tmp);
+			if (!tmp) return false;
 		}
 		//Data testData;
 		//localInterExtraPolate(nextTick-2, tickToDataRef(nextTick-2), nextTick-1, tickToDataRef(nextTick-1), nextTick, testData);
@@ -283,7 +285,9 @@ namespace Prototype
 			for (size_t i = 0; i < size; i++)
 			{
 				int fTick = firstTick();
-				assert(data[i].isConsistent());
+				bool tmp = data[i].isConsistent();
+				assert(tmp);
+				if (!tmp) return false;
 			}
 		}
 		return true;

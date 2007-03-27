@@ -9,7 +9,7 @@
 
 #include "SDL_endian.h"
 
-#define USE_VIRTUAL
+//#define USE_VIRTUAL_CONNECTION
 
 namespace Prototype
 {
@@ -84,7 +84,7 @@ namespace Prototype
 		//SHOW_CLIENT_1 = true;
 		//SHOW_CLIENT_2 = true;
 		
-		#ifndef USE_VIRTUAL
+		#ifndef USE_VIRTUAL_CONNECTION
 		NetworkServer networkServer;
 		NetworkClient networkClient1;
 		NetworkClient networkClient2;
@@ -94,7 +94,7 @@ namespace Prototype
 		bool client1Connected = false;
 		bool client2Connected = false;
 
-		#ifndef USE_VIRTUAL
+		#ifndef USE_VIRTUAL_CONNECTION
 		if (SHOW_SERVER)
 			networkServer.start();
 		
@@ -157,7 +157,7 @@ namespace Prototype
 		MessageSender *sender4;
 		MessageReciever *reciever4;
 
-		#ifndef USE_VIRTUAL
+		#ifndef USE_VIRTUAL_CONNECTION
 		if (SHOW_CLIENT_1)
 		{
 			sender1 = networkClient1.getMessageSender();
@@ -192,7 +192,7 @@ namespace Prototype
 		
 		//timeHandler.reset();
 
-		#ifdef USE_VIRTUAL
+		#ifdef USE_VIRTUAL_CONNECTION
 
 		// Initialize virtual connections
 		sender1 = virtualConnection1.getMessageSender();
@@ -319,7 +319,7 @@ namespace Prototype
 			if (USE_DELAY) SDL_Delay(1);
 		}
 
-		#ifndef USE_VIRTUAL
+		#ifndef USE_VIRTUAL_CONNECTION
 		networkServer.close();
 		networkClient1.close();
 		networkClient2.close();
