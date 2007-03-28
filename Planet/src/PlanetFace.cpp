@@ -151,6 +151,9 @@ namespace Planet
 	{
 		bool useDetail = true;
 
+		glEnable(GL_LIGHTING);
+
+
 		#ifdef ENABLE_MULTITEXTURE_ARB
 			#ifdef _WIN32
 				PFNGLACTIVETEXTUREARBPROC glActiveTextureARB = 0;
