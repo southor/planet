@@ -395,7 +395,7 @@ namespace Prototype
 
 		T& operator[](Id id)
 		{
-			std::map<Id, T>::iterator it = find(id);
+			class std::map<Id, T>::iterator it = find(id);
 			if (it == map.end())
 			{
 				assert(false);

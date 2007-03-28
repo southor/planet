@@ -331,6 +331,11 @@ namespace Planet
 
 				Ship *ship = playerObj->getShip();
 				camera.update(ship->position, ship->reference);
+				/*
+				Pos p(5.0f, 3.0f, 3.0f);
+				Pos r(0.0f, 1.0f, 0.0f);
+				camera.update(p, r);
+				*/
 			}
 			else
 			{
