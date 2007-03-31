@@ -1,3 +1,4 @@
+#include "basic.h"
 #include "Client.h"
 #include "Player.h"
 //#include <iostream>
@@ -19,6 +20,7 @@ namespace Prototype
 	{
 		//predictionHandler->setWorldModel(&worldModel);
 		//assert(predictionHandler.isConsistent());
+		configHandler.loadFile(CONFIG_FILENAME);
 	}
 
 	Client::~Client()
@@ -354,7 +356,7 @@ namespace Prototype
 				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 				playerObj->updateToTickData(currentTick);
 				playerObj->setUserCmd(&userCmd);
-				worldModel.handlePlayerShooting(playerId);
+				worldModel.handlePlayerShooting(playerId, configHandler.getIntValue("client_create_projectile", 1) == 1);
 
 				// perform prediction
 				//predictionHandler.predict(playerId, currentTick + 1);

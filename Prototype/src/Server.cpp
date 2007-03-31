@@ -14,6 +14,8 @@ namespace Prototype
 						ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj),
 						requestRender(false)
 	{
+		configHandler.loadFile(CONFIG_FILENAME);
+		
 		// outer walls
 		static const float WALL_THICKNESS = 500.0f;
 		Rectangle wall1(0.0f, -WALL_THICKNESS, WorldModel::WORLD_SIZE.x, WALL_THICKNESS);

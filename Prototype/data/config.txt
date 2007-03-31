@@ -1,0 +1,14 @@
+client_create_projectile 1
+
+object_lag_modifier 1.2
+object_lag_time 18
+object_lag_tick 1
+
+prediction_amount_modifier 1.1
+prediction_amount_add_time 10
+
+server_to_client_1_simulated_lag 0
+server_to_client_2_simulated_lag 0
+client_1_to_server_simulated_lag 0
+client_2_to_server_simulated_lag 0
+

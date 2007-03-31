@@ -8,22 +8,27 @@
 
 namespace Prototype
 {
+	//const std::string CONFIG_FILENAME = std::string("config.txt");
+	
 	void ConfigHandler::loadFile(std::string fileName)
 	{
 		std::ifstream file(fileName.c_str());
 
-		std::string line;
-		std::string token;
-
-		double value;
-
-		while (std::getline(file, line)) 
+		if (file.good()) // needed?, correct way?
 		{
-			std::istringstream lineStream(line);			
-			lineStream >> token;
-			lineStream >> value;
+			std::string line;
+			std::string token;
 
-			configMap[token] = value;
+			double value;
+
+			while (std::getline(file, line)) 
+			{
+				std::istringstream lineStream(line);			
+				lineStream >> token;
+				lineStream >> value;
+
+				configMap[token] = value;
+			}
 		}
 	}
 	
