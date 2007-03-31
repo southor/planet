@@ -20,6 +20,7 @@ namespace Prototype
 
 	static const bool USE_DELAY = true;
 
+	const static std::string CONFIG_FILENAME("config.txt");
 
 	const int MAX_N_PLAYERS = 128;
 	

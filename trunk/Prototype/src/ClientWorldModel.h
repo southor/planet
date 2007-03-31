@@ -43,7 +43,7 @@ namespace Prototype
 
 		void updatePlayerObjMovement(PlayerId playerId);
 
-		void handlePlayerShooting(PlayerId playerId);
+		void handlePlayerShooting(PlayerId playerId, bool createProjectile);
 
 	};
 };

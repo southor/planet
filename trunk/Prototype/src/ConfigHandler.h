@@ -6,6 +6,8 @@
 
 namespace Prototype
 {
+	//const std::string CONFIG_FILENAME;
+	
 	class ConfigHandler
 	{
 	public:
