@@ -20,7 +20,14 @@ namespace Prototype
 	{
 		//predictionHandler->setWorldModel(&worldModel);
 		//assert(predictionHandler.isConsistent());
-		configHandler.loadFile(CONFIG_FILENAME);
+		if (configHandler.loadFile(CONFIG_FILENAME))
+		{
+			std::cout << "Client: using config file for game parameters" << std::endl;
+		}
+		else
+		{
+			std::cout << "* * * Client: Config file not found, using default values!!! * * *" << std::endl;
+		}
 	}
 
 	Client::~Client()

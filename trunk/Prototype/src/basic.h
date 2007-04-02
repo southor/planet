@@ -6,6 +6,7 @@
 #include "vec2.h"
 #include "assert.h"
 #include "vec3f.h"
+#include "Tickf.h"
 #include "mat3f.h"
 
 #include <string>
@@ -20,7 +21,7 @@ namespace Prototype
 
 	static const bool USE_DELAY = true;
 
-	const static std::string CONFIG_FILENAME("config.txt");
+	const static std::string CONFIG_FILENAME("data/config.txt");
 
 	const int MAX_N_PLAYERS = 128;
 	
@@ -32,8 +33,6 @@ namespace Prototype
 	
 	typedef Vec2f Vec;
 	typedef Vec Pos;
-
-	typedef float Tickf;
 
 	//template <typename T>
 	inline float radianToDegree(float angle)

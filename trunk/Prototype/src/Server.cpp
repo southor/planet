@@ -14,7 +14,14 @@ namespace Prototype
 						ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj),
 						requestRender(false)
 	{
-		configHandler.loadFile(CONFIG_FILENAME);
+		if (configHandler.loadFile(CONFIG_FILENAME))
+		{
+			std::cout << "Server: using config file for game parameters" << std::endl;
+		}
+		else
+		{
+			std::cout << "* * * Server: Config file not found, using default values!!! * * *" << std::endl;
+		}
 		
 		// outer walls
 		static const float WALL_THICKNESS = 500.0f;
