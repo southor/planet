@@ -10,7 +10,7 @@ namespace Prototype
 {
 	//const std::string CONFIG_FILENAME = std::string("config.txt");
 	
-	void ConfigHandler::loadFile(std::string fileName)
+	bool ConfigHandler::loadFile(std::string fileName)
 	{
 		std::ifstream file(fileName.c_str());
 
@@ -29,7 +29,11 @@ namespace Prototype
 
 				configMap[token] = value;
 			}
+			
+			return true;
 		}
+		
+		return false;
 	}
 	
 	//double ConfigHandler::getDoubleValue(std::string option)

@@ -11,7 +11,7 @@ namespace Prototype
 	class ConfigHandler
 	{
 	public:
-		void loadFile(std::string filename);
+		bool loadFile(std::string filename);
 
 		
 		double getDoubleValue(std::string option, double defaultValue) const
