@@ -56,6 +56,13 @@ namespace Prototype
 				SHOW_CLIENT_2 = true;
 				break;
 			}
+		
+			if (client1.getKeyHandler()->isPressed(CMD_SHOOT))
+			{
+				SHOW_SERVER = true;
+				SHOW_CLIENT_1 = true;
+				break;
+			}
 			
 			if (client1.getKeyHandler()->isPressed(CMD_LEFT))
 			{
