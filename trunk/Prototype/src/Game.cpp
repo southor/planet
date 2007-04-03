@@ -61,12 +61,14 @@ namespace Prototype
 			{
 				SHOW_SERVER = true;
 				SHOW_CLIENT_1 = true;
+				client1.getUserInputHandler()->aimMode = UserInputHandler::MOUSE;
 				break;
 			}
 			
 			if (client1.getKeyHandler()->isPressed(CMD_LEFT))
 			{
 				SHOW_CLIENT_1 = true;
+				client1.getUserInputHandler()->aimMode = UserInputHandler::MOUSE;
 				break;
 			}
 
@@ -80,6 +82,7 @@ namespace Prototype
 			if (client1.getKeyHandler()->isPressed(CMD_RIGHT))
 			{
 				SHOW_CLIENT_2 = true;
+				client2.getUserInputHandler()->aimMode = UserInputHandler::MOUSE;
 				break;
 			}
 				
@@ -100,7 +103,6 @@ namespace Prototype
 		size_t clientsConnected = 0;
 		bool client1Connected = false;
 		bool client2Connected = false;
-
 		#ifndef USE_VIRTUAL_CONNECTION
 		if (SHOW_SERVER)
 			networkServer.start();
@@ -220,19 +222,19 @@ namespace Prototype
 		// Initialize virtual connections
 		sender1 = virtualConnection1.getMessageSender();
 		reciever2 = virtualConnection1.getMessageReciever();
-		reciever2->setSimulatedLag(CLIENT_1_TO_SERVER_SIMULATED_LAG);
+		reciever2->setSimulatedLag(CLIENT_1_TO_SERVER_SIMULATED_LAG_DEFAULT);
 
 		sender2 = virtualConnection2.getMessageSender();
 		reciever1 = virtualConnection2.getMessageReciever();
-		reciever1->setSimulatedLag(SERVER_TO_CLIENT_1_SIMULATED_LAG);
+		reciever1->setSimulatedLag(SERVER_TO_CLIENT_1_SIMULATED_LAG_DEFAULT);
 
 		sender3 = virtualConnection3.getMessageSender();
 		reciever4 = virtualConnection3.getMessageReciever();
-		reciever4->setSimulatedLag(CLIENT_2_TO_SERVER_SIMULATED_LAG);
+		reciever4->setSimulatedLag(CLIENT_2_TO_SERVER_SIMULATED_LAG_DEFAULT);
 
 		sender4 = virtualConnection4.getMessageSender();
 		reciever3 = virtualConnection4.getMessageReciever();
-		reciever3->setSimulatedLag(SERVER_TO_CLIENT_2_SIMULATED_LAG);
+		reciever3->setSimulatedLag(SERVER_TO_CLIENT_2_SIMULATED_LAG_DEFAULT);
 		#endif
 		
 		if (SHOW_CLIENT_1)
@@ -521,6 +523,8 @@ namespace Prototype
 	
 		client1.getKeyHandler()->setClient1Keys();
 		client2.getKeyHandler()->setClient2Keys();
+
+		// default aim mode
 		client1.getUserInputHandler()->aimMode = UserInputHandler::KEYBOARD;
 		client2.getUserInputHandler()->aimMode = UserInputHandler::MOUSE;
 	}
