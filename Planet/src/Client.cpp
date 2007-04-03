@@ -374,7 +374,7 @@ namespace Planet
 				
 					setPlayerId(welcomeClient->playerId);
 					getIdGenerator()->setPlayerId(welcomeClient->playerId);
-					currentMap = "maps/test/"; //welcomeClient->map;
+					currentMap = std::string(welcomeClient->map);
 
 					predictionHandler = new PredictionHandler(welcomeClient->playerId, &planet);
 					assert(predictionHandler->isConsistent());

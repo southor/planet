@@ -27,7 +27,7 @@ namespace Planet
 
 		// Update direction and position
 		SpherePoint sp = position.toSpherePoint();
-		sp.p = planetBody->getHeight(sp.phi, sp.theta);
+		sp.p = planetBody->getHeight(sp.phi, sp.theta) + 0.5f;
 		position = sp.toVector();
 		
 		reference = reference - reference.dot(normal) * normal;

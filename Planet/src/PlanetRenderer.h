@@ -29,7 +29,7 @@ namespace Planet
 
 			// Disable lights for ship and sight rendering
 			glDisable(GL_LIGHTING);
-			glDisable(GL_DEPTH_TEST);
+			//glDisable(GL_DEPTH_TEST);
 
 			Planet::PlayerObjs::Iterator playerObjsIt = planet.getPlayerObjs().begin();
 			Planet::PlayerObjs::Iterator playerObjsEnd = planet.getPlayerObjs().end();
