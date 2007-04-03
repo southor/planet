@@ -215,7 +215,7 @@ namespace Planet
 		client.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_LEFT, SDLK_c);
 		client.getUserInputHandler()->setStateCmdKey(Cmds::ROTATE_RIGHT, SDLK_v);
 		//client.getUserInputHandler()->setActionCmdKey(Cmds::SHOOT, SDLK_SPACE);
-		client.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);
+		//client.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);
 		client.getUserInputHandler()->setActionCmdKey(Cmds::SWITCH_WEAPON, SDLK_x);
 
 		client.getUserInputHandler()->setActionCmdKey(Cmds::TOGGLE_MENU, SDLK_F1);

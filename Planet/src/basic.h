@@ -15,7 +15,7 @@
 
 namespace Planet
 {
-	const bool SERVER_PRINT_NETWORK_DEBUG = false;
+	const bool SERVER_PRINT_NETWORK_DEBUG = true;
 	const bool CLIENT_PRINT_NETWORK_DEBUG = true;
 	const int MAX_N_PLAYERS = 128;
 
