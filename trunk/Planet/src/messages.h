@@ -1,6 +1,8 @@
 #ifndef __Messages_h__
 #define __Messages_h__
 
+#include <cctype>
+
 #include "Color.h"
 #include "basic.h"
 #include "Projectile.h"
@@ -184,7 +186,8 @@ namespace Planet
 		WelcomeClient(PlayerId playerId, std::string map) 
 			: playerId(playerId) 
 		{
-			strcpy_s(this->map, MAP_NAME_SIZE, map.c_str());
+			strlcpy(this->map, map.c_str(), MAP_NAME_SIZE);
+			//strcpy_s(this->map, MAP_NAME_SIZE, map.c_str());
 		}
 
 		bool isConsistent()
