@@ -10,6 +10,8 @@ namespace Prototype
 
 	void PlayerObj::UpdateData::interExtraPolate(int tick1, const UpdateData &data1, int tick2, const UpdateData &data2, Tickf resultTick, UpdateData &resultData)
 	{
+		//if (data1.angle == data2.angle) std::cout << "angles equal!" << std::endl;
+		//else std::cout << "-";
 		standardInterExtraPolate(tick1, data1, tick2, data2, resultTick, resultData);
 		resultData.nextShootTick = resultTick;
 	}

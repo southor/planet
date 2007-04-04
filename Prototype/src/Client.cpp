@@ -13,7 +13,7 @@ namespace Prototype
 
 	const double Client::OBJECT_LAG_MODIFIER_DEFAULT = 1.2;
 	const int Client::OBJECT_LAG_ADD_TIME_DEFAULT = 18;
-	const int Client::OBJECT_LAG_ADD_TICK_DEFAULT = 1;
+	const int Client::OBJECT_LAG_ADD_TICK_DEFAULT = 2;
 
 	Client::Client() : ClientGlobalAccess(&clientGlobalObj), worldModel(&clientGlobalObj), worldRenderer(WorldRenderer::FOLLOW_PLAYER),
 						connectionPhase(0), requestRender(false), currentObjLag(0), predictionHandler(0)
