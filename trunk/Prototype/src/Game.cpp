@@ -333,10 +333,12 @@ namespace Prototype
 			// guichan
 			//gui.gui->logic();
 
-			// RENDER			
+			// RENDER
+			/*
 			if ((client1.getRequestRender() || !SHOW_CLIENT_1) &&
 				(client2.getRequestRender() || !SHOW_CLIENT_2) &&
 				(server.getRequestRender() || !SHOW_SERVER))
+			*/
 			{
 				render(0);
 			}

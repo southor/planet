@@ -186,8 +186,11 @@ namespace Planet
 		WelcomeClient(PlayerId playerId, std::string map) 
 			: playerId(playerId) 
 		{
+#ifdef _WIN32
+			strcpy_s(this->map, MAP_NAME_SIZE, map.c_str());
+#else
 			strlcpy(this->map, map.c_str(), MAP_NAME_SIZE);
-			//strcpy_s(this->map, MAP_NAME_SIZE, map.c_str());
+#endif
 		}
 
 		bool isConsistent()
