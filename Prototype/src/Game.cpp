@@ -62,6 +62,7 @@ namespace Prototype
 				SHOW_SERVER = true;
 				SHOW_CLIENT_1 = true;
 				client1.getUserInputHandler()->aimMode = UserInputHandler::MOUSE;
+				client1.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);		
 				break;
 			}
 			
@@ -69,6 +70,7 @@ namespace Prototype
 			{
 				SHOW_CLIENT_1 = true;
 				client1.getUserInputHandler()->aimMode = UserInputHandler::MOUSE;
+				client1.getUserInputHandler()->setActionCmdKey(Cmds::START_SHOOTING, Cmds::STOP_SHOOTING, SDL_BUTTON_LEFT);		
 				break;
 			}
 
@@ -82,7 +84,6 @@ namespace Prototype
 			if (client1.getKeyHandler()->isPressed(CMD_RIGHT))
 			{
 				SHOW_CLIENT_2 = true;
-				client2.getUserInputHandler()->aimMode = UserInputHandler::MOUSE;
 				break;
 			}
 				
