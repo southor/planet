@@ -49,11 +49,13 @@ namespace Prototype
 		Projectiles::Iterator projectileEnd(getProjectiles().end());
 		for(; projectileIt != projectileEnd; ++projectileIt)
 		{
-			Projectile *projectile = projectileIt->second;
-			
-			// move projectile
-			Vec moveVec(projectile->getLine().getDirection() * projectile->getSpeed());
-			projectile->setPos(projectile->getPos() + moveVec);
+			//Projectile *projectile = projectileIt->second;
+			//
+			//// move projectile
+			//Vec moveVec(projectile->getLine().getDirection() * projectile->getSpeed());
+			//projectile->setPos(projectile->getPos() + moveVec);
+
+			projectileIt->second->move();
 		}
 		
 		
@@ -84,156 +86,174 @@ namespace Prototype
 		//}
 	}
 
-	void ServerWorldModel::performProjectileHits(ServerPlayers &players)
+	bool ServerWorldModel::performProjectileHit(GameObjId projectileId, ServerPlayers &players, ProjectileHit &projectileHit)
 	{
-
-		std::vector<ProjectileHit> projectilesHit;
+		// get projectile
 		
-		Projectiles::Iterator projectileIt(getProjectiles().begin());
-		Projectiles::Iterator projectileEnd(getProjectiles().end());
-		for(; projectileIt != projectileEnd; ++projectileIt)
+		Projectile *projectile = projectiles[projectileId];
+			//projectileIt->second;
+
+		assert(projectile);
+		Line projectileLine(projectile->getLine());
+
+
+		// Hit collision, find hit point
+
+		float minHitDist = 2.0f;			
+		GameObjId obstacleIdHit;
+
+		Obstacles::Iterator obstacleIt = getObstacles().begin();
+		Obstacles::Iterator obstacleEnd = getObstacles().end();		
+		for(; obstacleIt != obstacleEnd; ++obstacleIt)
 		{
-			// get projectile
-			Projectile *projectile = projectileIt->second;
-			Line projectileLine(projectile->getLine());
-
-
-			// Hit collision, find hit point
-
-			float minHitDist = 2.0f;			
-			GameObjId obstacleIdHit;
-
-			Obstacles::Iterator obstacleIt = getObstacles().begin();
-			Obstacles::Iterator obstacleEnd = getObstacles().end();		
-			for(; obstacleIt != obstacleEnd; ++obstacleIt)
+			float localMinHitDist =  projectileLine.minCrossPoint(*(obstacleIt->second));
+			if (Line::crossing(localMinHitDist) && (localMinHitDist < minHitDist))
 			{
-				float localMinHitDist =  projectileLine.minCrossPoint(*(obstacleIt->second));
+				minHitDist = localMinHitDist;
+				obstacleIdHit = obstacleIt->first;
+			}
+		}
+
+		bool hitPlayerObj = false;
+		GameObjId playerIdHit;
+
+		PlayerObjs::Iterator playerObjIt = getPlayerObjs().begin();
+		PlayerObjs::Iterator playerObjEnd = getPlayerObjs().end();		
+		for(; playerObjIt != playerObjEnd; ++playerObjIt)
+		{
+			GameObjId targetPlayerObjId = playerObjIt->first;
+			PlayerObj *targetPlayerObj = playerObjIt->second;
+			
+			if (targetPlayerObjId != static_cast<GameObjId>(projectile->getShooterId())) // cannot hit the shooter itself
+			{
+				///*
+				// * Update the playerObj to the object lag that the shooting
+				// * client was using when the projectile was fired
+				// */
+				//targetPlayerObj->updateToTickData(getTimeHandler()->getTick() - projectile->getObjLag());
+			
+				Rectangle rectangle;
+				targetPlayerObj->getRectangle(rectangle);
+				float localMinHitDist = projectileLine.minCrossPoint(rectangle);
 				if (Line::crossing(localMinHitDist) && (localMinHitDist < minHitDist))
 				{
+					hitPlayerObj = true;
 					minHitDist = localMinHitDist;
-					obstacleIdHit = obstacleIt->first;
+					playerIdHit = targetPlayerObjId;
 				}
+
+				//// Update the playerObj to the current tick again
+				//targetPlayerObj->updateToTickData(getTimeHandler()->getTick());
 			}
+		}
+		
 
-			bool hitPlayerObj = false;
-			GameObjId playerIdHit;
+		
+		if (minHitDist <= 1.0f) // did hit any object?
+		{
+			Pos hitPos(projectileLine.getPosAlong(minHitDist));
 
-			PlayerObjs::Iterator playerObjIt = getPlayerObjs().begin();
-			PlayerObjs::Iterator playerObjEnd = getPlayerObjs().end();		
+			// Calculate and apply damage to playerobjects
+			playerObjIt = getPlayerObjs().begin();
+			playerObjEnd = getPlayerObjs().end();		
 			for(; playerObjIt != playerObjEnd; ++playerObjIt)
 			{
 				GameObjId targetPlayerObjId = playerObjIt->first;
 				PlayerObj *targetPlayerObj = playerObjIt->second;
-				
-				if (targetPlayerObjId != static_cast<GameObjId>(projectile->getShooterId())) // cannot hit the shooter itself
-				{
-					/*
-					 * Update the playerObj to the object lag that the shooting
-					 * client was using when the projectile was fired
-					 */
-					targetPlayerObj->updateToTickData(getTimeHandler()->getTick() - projectile->getObjLag());
-				
-					Rectangle rectangle;
-					targetPlayerObj->getRectangle(rectangle);
-					float localMinHitDist = projectileLine.minCrossPoint(rectangle);
-					if (Line::crossing(localMinHitDist) && (localMinHitDist < minHitDist))
-					{
-						hitPlayerObj = true;
-						minHitDist = localMinHitDist;
-						playerIdHit = targetPlayerObjId;
-					}
 
-					// Update the playerObj to the current tick again
-					targetPlayerObj->updateToTickData(getTimeHandler()->getTick());
-				}
-				//else
+				//// Update the target playerObj to the object lag
+				//if (playerObjIt->first != static_cast<GameObjId>(projectile->getShooterId()))
 				//{
-				//	std::cout << "the shooter was not hit by himself" << std::endl;
+				//	targetPlayerObj->updateToTickData(getTimeHandler()->getTick() - projectile->getObjLag());
 				//}
-			}
-			
 
-			
-			if (minHitDist <= 1.0f) // did hit any object?
-			{
-				Pos hitPos(projectileLine.getPosAlong(minHitDist));
-
-				//// debug render hit pos
-				//glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-				//Rectangle crossBox(hitPos, 15.0f);	
-				//WorldRenderer::renderRectangle(crossBox, GL_QUADS);
-
-				// Calculate and apply damage to playerobjects
-				playerObjIt = getPlayerObjs().begin();
-				playerObjEnd = getPlayerObjs().end();		
-				for(; playerObjIt != playerObjEnd; ++playerObjIt)
+				// calculate damage
+				int damage;
+				if (hitPlayerObj && (targetPlayerObjId == playerIdHit))
 				{
-					GameObjId targetPlayerObjId = playerObjIt->first;
-					PlayerObj *targetPlayerObj = playerObjIt->second;
-
-					// Update the target playerObj to the object lag
-					if (playerObjIt->first != static_cast<GameObjId>(projectile->getShooterId()))
-					{
-						targetPlayerObj->updateToTickData(getTimeHandler()->getTick() - projectile->getObjLag());
-					}
-
-					// calculate damage
-					int damage;
-					if (hitPlayerObj && (targetPlayerObjId == playerIdHit))
-					{
-						// direct hit damage
-						damage = projectile->getDirectDamage();
-					}
-					else
-					{
-						// blast damage
-						damage = projectile->getBlastDamage(minHitDist, targetPlayerObj->getPos());
-					}
-
-					// Update the playerObj back to the current tick again
-					targetPlayerObj->updateToTickData(getTimeHandler()->getTick());
-					
-					// apply damage to playerobject
-					if (damage > 0)
-					{
-						std::cout << "damage =  " << damage << std::endl;
-						targetPlayerObj->hurt(damage);
-						if (targetPlayerObj->isDead())
-						{
-							std::cout << "!!! a player was killed !!!  " << std::endl;
-
-							// player was kiled
-							PlayerId killerId = projectile->getShooterId();
-							//++((*playerObjs)[killerId]->frags);
-							
-							// produce an unpredictable respawn place
-							Pos tmpPos = targetPlayerObj->pos + projectile->getPos();
-							size_t respawnPosId = static_cast<size_t>(abs(targetPlayerObj->health + static_cast<int>(tmpPos.x + tmpPos.y))) % respawnPoss.size();
-							
-							Pos &respawnPos = respawnPoss[respawnPosId];						
-							targetPlayerObj->respawn(respawnPos);
-
-							// send kill message to all players
-							Kill kill(killerId, targetPlayerObjId, respawnPos);
-							pushMessageToAll(players, kill, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-						}
-					}
-					//else if (targetPlayerId != projectile->getShooterId())
-					//{
-					//	std::cout << "no damage to an enemy" << std::endl;
-					//}
-
-					
+					// direct hit damage
+					damage = projectile->getDirectDamage();
+				}
+				else
+				{
+					// blast damage
+					damage = projectile->getBlastDamage(minHitDist, targetPlayerObj->getPos());
 				}
 
-				// push projectile hit for later
-				ProjectileHit projectileHit(projectileIt->first, hitPos);
-				projectilesHit.push_back(projectileHit);
-				//std::cout << "((((( projectile hit! )))))" << std::endl;
+				//// Update the playerObj back to the current tick again
+				//targetPlayerObj->updateToTickData(getTimeHandler()->getTick());
 				
+				// apply damage to playerobject
+				if (damage > 0)
+				{
+					std::cout << "damage =  " << damage << std::endl;
+					targetPlayerObj->hurt(damage);
+					if (targetPlayerObj->isDead())
+					{
+						std::cout << "!!! a player was killed !!!  " << std::endl;
+
+						// player was kiled
+						PlayerId killerId = projectile->getShooterId();
+						//++((*playerObjs)[killerId]->frags);
+						
+						// produce an unpredictable respawn place
+						Pos tmpPos = targetPlayerObj->pos + projectile->getPos();
+						size_t respawnPosId = static_cast<size_t>(abs(targetPlayerObj->health + static_cast<int>(tmpPos.x + tmpPos.y))) % respawnPoss.size();
+						
+						Pos &respawnPos = respawnPoss[respawnPosId];						
+						targetPlayerObj->respawn(respawnPos);
+
+						// send kill message to all players
+						Kill kill(killerId, targetPlayerObjId, respawnPos);
+						pushMessageToAll(players, kill, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+					}
+				}	
 			}
+			
+			ProjectileHit projectileHitTmp(projectileId, hitPos);
+			projectileHit = projectileHitTmp;
+
+			return true;
 		}
 
+		return false;
+	}
+
+	void ServerWorldModel::performProjectileHits(ServerPlayers &players)
+	{
+		int currentTick = getTimeHandler()->getTick();
+		
+		
+		std::vector<ProjectileHit> projectilesHit;
+
+		Projectiles::Iterator projectileIt(getProjectiles().begin());
+		Projectiles::Iterator projectileEnd(getProjectiles().end());
+		for(; projectileIt != projectileEnd; ++projectileIt)
+		{			
+			Projectile *projectile = projectileIt->second;
+			int objLag = projectile->getObjLag();
+
+			// update the opponents and shooter to the correct tick
+			if (objLag != 0)
+			{
+				updatePlayerObjsToTickData(currentTick - objLag);
+				(getPlayerObjs())[projectile->getShooterId()]->updateToTickData(currentTick);
+			}
+
+			// test projectile hit
+			ProjectileHit projectileHit(projectileIt->first, Pos(0.0f, 0.0f));			
+			if (performProjectileHit(projectileIt->first, players, projectileHit))
+			{
+				// push projectile hit for later
+				projectilesHit.push_back(projectileHit);
+			}			
+		}
+
+		// update playerObjs back to current tick
+		updatePlayerObjsToTickData(currentTick);
+		
+
+		// make the hits reality
 		if (projectilesHit.size() > 0)
 		{
 			//std::cout << "---- number of projectiles to remove: " << move.getProjectilesHit().size() << std::endl;
@@ -249,14 +269,6 @@ namespace Prototype
 				// send message			
 				pushMessageToAll(players, *it, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 			}
-
-			//std::cout << "\tprojectiles left: " << projectiles.getSize() << std::endl;
-			//Projectiles::Iterator it2 = projectiles.begin();
-			//Projectiles::Iterator it2End = projectiles.end();
-			//for(; it2 != it2End; ++it2)
-			//{
-			//	std::cout << "\tprojectile left: " << it2->first << std::endl;
-			//}
 		}
 	}
 

@@ -67,6 +67,13 @@ namespace Prototype
 		resultPos = tmpPos2;
 	}
 
+	void Projectile::move()
+	{
+		// move projectile
+		Vec moveVec(getLine().getDirection() * getSpeed());
+		setPos(getPos() + moveVec);
+	}
+
 };
 
 

@@ -19,7 +19,7 @@ namespace Prototype
 	//debug
 	static std::string nowRunning;
 
-	static const bool USE_DELAY = true;
+	static const bool USE_DELAY = false;
 
 	const static std::string CONFIG_FILENAME("data/config.txt");
 

@@ -106,6 +106,8 @@ namespace Prototype
 
 		bool render;
 
+		void move();
+
 	private:
 		static const Properties properties[N_TYPES];
 

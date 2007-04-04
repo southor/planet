@@ -35,6 +35,9 @@ namespace Prototype
 	class NetworkMessageReciever : public MessageReciever
 	{
 	public:
+
+		static const bool PRINT_NETWORK_DEBUG = false;
+
 		NetworkMessageReciever() 
 			: MessageReciever(), retrieveMessagePhase(0), retrieveSize(0), retrieveTime(0), retrieveTick(0), retrieveType(0)	{}
 		~NetworkMessageReciever()																			{}

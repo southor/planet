@@ -131,7 +131,7 @@ namespace Prototype
 		const int maxIterations = 50;
 		int iteration = 0;
 		
-		if ((retrieveMessagePhase != 0) && SERVER_PRINT_NETWORK_DEBUG) printf("retrieve at phase %d\n", retrieveMessagePhase);
+		if ((retrieveMessagePhase != 0) && PRINT_NETWORK_DEBUG) printf("retrieve at phase %d\n", retrieveMessagePhase);
 	
 		// Loop until maxIterations or until there is no data to be read
 		while (iteration++ < maxIterations)

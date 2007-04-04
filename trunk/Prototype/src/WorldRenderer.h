@@ -93,7 +93,7 @@ namespace Prototype
 				//render explosion
 				RenderExplosion renderExplosion;
 				//ForEach(explosions.begin(), explosions.end(), renderExplosion);
-				for (int i = 0; i < explosions.size(); i++)
+				for (size_t i = 0; i < explosions.size(); i++)
 				{
 					Explosion explosion = explosions[i];
 					

@@ -211,7 +211,7 @@ namespace Prototype
 			// Check tick timeout
 			if (getTimeHandler()->getTickFromTimeWithTimeout() >= tick)      //if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
 			{
-				if (SERVER_PRINT_NETWORK_DEBUG) printf("#################### TIMEOUT ######################\n");
+				if (configHandler.getIntValue("server_print_timeout_debug", SERVER_PRINT_TIMEOUT_DEBUG_DEFAULT) == 1) printf("#################### TIMEOUT ######################\n");
 				waitingForClients = false;
 				break; // exit for loop
 			}
@@ -220,9 +220,9 @@ namespace Prototype
 		//std::cout << "20 ";
 		if (!waitingForClients)
 		{
-			if (SERVER_PRINT_NETWORK_DEBUG) printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
+			if (configHandler.getIntValue("server_print_tick_debug", SERVER_PRINT_TICK_DEBUG_DEFAULT) == 1) printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
 
-			if ((static_cast<int>(getTimeHandler()->getTick()) % (2000/TimeHandler::TICK_DELTA_TIME)) == 0)
+			if ((static_cast<int>(getTimeHandler()->getTick()) % (3000/TimeHandler::TICK_DELTA_TIME)) == 0)
 			{
 				debugPrintState();
 			}
@@ -366,7 +366,7 @@ namespace Prototype
 			
 			//std::cout << "60 ";
 
-			requestRender = true;			
+			requestRender = true;
 		}
 	}
 
