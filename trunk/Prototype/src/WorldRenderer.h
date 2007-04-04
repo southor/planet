@@ -92,8 +92,16 @@ namespace Prototype
 				ForEach(projectiles.begin(), projectiles.end(), renderProjectile);
 				//render explosion
 				RenderExplosion renderExplosion;
-				ForEach(explosions.begin(), explosions.end(), renderExplosion);
-				explosions.clear();
+				//ForEach(explosions.begin(), explosions.end(), renderExplosion);
+				for (int i = 0; i < explosions.size(); i++)
+				{
+					Explosion explosion = explosions[i];
+					
+					bool remove = renderExplosion(explosion);
+
+					if (remove)
+						explosions.erase(explosions.begin() + i);
+				}
 			glPopMatrix();
 		}
 		
@@ -111,10 +119,12 @@ namespace Prototype
 		{
 			static const float BULLET_EXPLOSION_SIZE;
 			static const float ROCKET_EXPLOSION_SIZE;
+			static const float EXPLOSION_TIME;
 
 			Pos pos;
 			float size;
 			Color color;
+			float startTime;
 		};
 		std::vector<Explosion> explosions;
 		
@@ -216,7 +226,7 @@ namespace Prototype
 		{
 		public:
 			// visual effects
-			void operator ()(const Explosion &explosion);
+			bool operator ()(const Explosion &explosion);
 		};
 
 

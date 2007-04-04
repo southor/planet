@@ -11,8 +11,9 @@ namespace Prototype
 
 	const Vec WorldRenderer::RENDER_SIZE = Vec(400.0f / 2.0f, 300.0f * (3.0f / 4.0f));
 
-	const float WorldRenderer::Explosion::BULLET_EXPLOSION_SIZE = 5.0f;
-	const float WorldRenderer::Explosion::ROCKET_EXPLOSION_SIZE = 20.0f;
+	const float WorldRenderer::Explosion::BULLET_EXPLOSION_SIZE = 8.0f;
+	const float WorldRenderer::Explosion::ROCKET_EXPLOSION_SIZE = 15.0f;
+	const float WorldRenderer::Explosion::EXPLOSION_TIME = 300.0f;
 
 	// --------------------------------------------------------------------------------------
 	// ----------------------------------   WorldRenderer  ----------------------------------
@@ -82,12 +83,12 @@ namespace Prototype
 	void WorldRenderer::projectileHit(Projectile *projectile, const Pos &hitPos)
 	{
 		float size;
-		Color color = Color(0.0f, 0.0f, 0.0f); //Color::BLACK;
+		Color color = Color(8.0f, 0.0f, 0.0f); //Color::BLACK;
 
 		if (projectile->getType() == Projectile::BULLET) size = Explosion::BULLET_EXPLOSION_SIZE;
 		else if (projectile->getType() == Projectile::ROCKET) size = Explosion::ROCKET_EXPLOSION_SIZE;
 		
-		Explosion explosion = {hitPos, size, color};
+		Explosion explosion = {hitPos, size, color, SDL_GetTicks()};
 		explosions.push_back(explosion);
 	}
 
@@ -208,14 +209,15 @@ namespace Prototype
 		
 	}
 
-	void WorldRenderer::RenderExplosion::operator ()(const Explosion &explosion)
+	bool WorldRenderer::RenderExplosion::operator ()(const Explosion &explosion)
 	{
 		const Color &color = explosion.color;
 		glColor4f(color.r, color.g, color.b, 0.8f);
 		Rectangle explosionRectangle(explosion.pos, explosion.size);
 		WorldRenderer::renderRectangle(explosionRectangle, GL_QUADS);
+		
+		return explosion.startTime + Explosion::EXPLOSION_TIME < SDL_GetTicks();
 	}
-	
 
 };
 
