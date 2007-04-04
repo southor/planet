@@ -344,8 +344,9 @@ namespace Prototype
 
 			// RENDER
 			if (((client1.getRequestRender() || !SHOW_CLIENT_1) &&
-				(client2.getRequestRender() || !SHOW_CLIENT_2) &&
-				(server.getRequestRender() || !SHOW_SERVER)) || 
+				(client2.getRequestRender() || !SHOW_CLIENT_2) // &&
+				//(server.getRequestRender() || !SHOW_SERVER)
+				) ||
 				(configHandler.getIntValue("render_at_least_every_tick", RENDER_AT_LEAST_EVERY_TICK_DEFAULT) == 1))
 			{
 				render(0);
