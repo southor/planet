@@ -29,6 +29,10 @@ namespace Prototype
 		static const int CLIENT_2_TO_SERVER_SIMULATED_LAG_DEFAULT = 200;
 		
 	private:
+
+		static const int RENDER_AT_LEAST_EVERY_TICK_DEFAULT = 0;
+
+
 		void init();
 		void initWidgets();
 
@@ -58,6 +62,8 @@ namespace Prototype
 		//Gui gui;
 
 		Uint32 mStartTime;
+
+		ConfigHandler configHandler;
 	};
 };
 

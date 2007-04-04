@@ -78,6 +78,8 @@ namespace Prototype
 		
 		void updatePlayerObjMovements();
 		void updateProjectileMovements();
+		
+		bool performProjectileHit(GameObjId projectileId, ServerPlayers &players, ProjectileHit &projectileHit);		
 		void performProjectileHits(ServerPlayers &players);
 
 

@@ -331,7 +331,7 @@ namespace Prototype
 		{
 			if (getTimeHandler()->isNewTick())
 			{
-				if ((static_cast<int>(getTimeHandler()->getStepTick()) % (2000/TimeHandler::TICK_DELTA_TIME)) == 0)
+				if ((static_cast<int>(getTimeHandler()->getStepTick()) % (6000/TimeHandler::TICK_DELTA_TIME)) == 0)
 				{
 					debugPrintState();
 				}

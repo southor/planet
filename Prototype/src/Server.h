@@ -72,6 +72,9 @@ namespace Prototype
 
 	private:
 
+		static const int SERVER_PRINT_TIMEOUT_DEBUG_DEFAULT = 0;
+		static const int SERVER_PRINT_TICK_DEBUG_DEFAULT = 0;
+
 		static const double PREDICTION_AMOUNT_MODIFIER_DEFAULT;
 		static const int PREDICTION_AMOUNT_ADD_TIME_DEFAULT;
 		

@@ -26,6 +26,15 @@ namespace Prototype
 		running = true;
 
 		//debugOutput = std::cout;
+
+		if (configHandler.loadFile(CONFIG_FILENAME))
+		{
+			std::cout << "Game: using config file for game parameters" << std::endl;
+		}
+		else
+		{
+			std::cout << "* * * Game: Config file not found, using default values!!! * * *" << std::endl;
+		}
 	}
 
 	Game::~Game()
@@ -334,15 +343,13 @@ namespace Prototype
 			//gui.gui->logic();
 
 			// RENDER
-			/*
-			if ((client1.getRequestRender() || !SHOW_CLIENT_1) &&
+			if (((client1.getRequestRender() || !SHOW_CLIENT_1) &&
 				(client2.getRequestRender() || !SHOW_CLIENT_2) &&
-				(server.getRequestRender() || !SHOW_SERVER))
-			*/
+				(server.getRequestRender() || !SHOW_SERVER)) || 
+				(configHandler.getIntValue("render_at_least_every_tick", RENDER_AT_LEAST_EVERY_TICK_DEFAULT) == 1))
 			{
 				render(0);
 			}
-			//render(0);
 
 			if (USE_DELAY) SDL_Delay(1);
 		}
