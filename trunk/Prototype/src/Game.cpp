@@ -503,9 +503,12 @@ namespace Prototype
 			static const uint BORDER_WIDTH = 1;
 			uint w2 = w - BORDER_WIDTH*2;
 			
-			client1.setViewport(0, h/4, w2/3, (h*3)/4);
-			client2.setViewport(w2/3 + BORDER_WIDTH, h/4, w2/3, (h*3)/4);
-			server.setViewport(((w2*2)/3) + BORDER_WIDTH*2, h/4, w2/3, (h*3)/4);
+			//client1.setViewport(0, h/4, w2/3, (h*3)/4);
+			//client2.setViewport(w2/3 + BORDER_WIDTH, h/4, w2/3, (h*3)/4);
+			//server.setViewport(((w2*2)/3) + BORDER_WIDTH*2, h/4, w2/3, (h*3)/4);
+			server.setViewport(0, h/4, w2/3, (h*3)/4);
+			client1.setViewport(w2/3 + BORDER_WIDTH, h/4, w2/3, (h*3)/4);
+			client2.setViewport(((w2*2)/3) + BORDER_WIDTH*2, h/4, w2/3, (h*3)/4);
 		}
 
 		
