@@ -62,7 +62,8 @@ namespace Planet
 			if (connectedToServer)
 				client.runStep();
 
-			render(0);
+			if (!connectedToServer || client.getRequestRender())
+				render(0);
 
 			if (client.getUserInputHandler()->hasActionCmdOnQueue())
 			{
@@ -120,7 +121,8 @@ namespace Planet
 
 			glEnable(GL_LIGHT0);
 				
-			if (connectedToServer || client.getRequestRender())
+			//if (connectedToServer || client.getRequestRender())
+			if (connectedToServer)
 				client.renderAndUpdate();			
 
 			if (debugRenderPlanet)
