@@ -57,14 +57,13 @@ namespace Planet
 						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj);
 						if (differ)
 						{
-							//std::cout << "old prediction differ!" << std::endl;
-							//predictionHandler.serverInput(playerId, link.getPoppedTick());
+							std::cout << "old prediction differ!" << std::endl;							
 							assert(predictionHandler);
 							predictionHandler->serverInput(link.getPoppedTick());
 						}
 						else
 						{
-							//std::cout << "old prediction ok!" << std::endl;
+							std::cout << "old prediction ok" << std::endl;
 						}
 					}
 					else
@@ -326,7 +325,6 @@ namespace Planet
 				// planet.handlePlayerShooting(playerId);
 
 				// perform prediction
-				//predictionHandler.predict(playerId, currentTick + 1);
 				predictionHandler->predict(currentTick + 1);
 
 				Ship *ship = playerObj->getShip();
