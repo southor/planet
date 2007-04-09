@@ -10,7 +10,7 @@ namespace Prototype
 	const double Server::PREDICTION_AMOUNT_MODIFIER_DEFAULT = 1.1;
 	const int Server::PREDICTION_AMOUNT_ADD_TIME_DEFAULT = 10;
 
-	Server::Server() : worldRenderer(WorldRenderer::FOLLOW_PLAYER), lastUpdateTime(0),
+	Server::Server() : worldRenderer(WorldRenderer::WORLD_CENTER), lastUpdateTime(0),
 						ServerGlobalAccess(&serverGlobalObj), worldModel(&serverGlobalObj),
 						requestRender(false)
 	{
@@ -289,7 +289,7 @@ namespace Prototype
 			transmitAll(players);
 
 			// handle projectile hits, will update to history!!!
-			worldModel.performProjectileHits(players);
+			worldModel.performProjectileHits(players, &worldRenderer);
 
 			// update movements of objects, from currentTick to currentTick + 1
 			worldModel.updateProjectileMovements();

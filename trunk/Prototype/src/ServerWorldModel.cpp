@@ -219,7 +219,7 @@ namespace Prototype
 		return false;
 	}
 
-	void ServerWorldModel::performProjectileHits(ServerPlayers &players)
+	void ServerWorldModel::performProjectileHits(ServerPlayers &players, WorldRenderer *worldRenderer)
 	{
 		int currentTick = getTimeHandler()->getTick();
 		
@@ -246,6 +246,10 @@ namespace Prototype
 			{
 				// push projectile hit for later
 				projectilesHit.push_back(projectileHit);
+
+				// render explosion at server
+				assert(worldRenderer);
+				worldRenderer->projectileHit(projectile, projectileHit.hitPosition);
 			}			
 		}
 
@@ -268,6 +272,7 @@ namespace Prototype
 				
 				// send message			
 				pushMessageToAll(players, *it, getTimeHandler()->getTime(), getTimeHandler()->getTick());
+				
 			}
 		}
 	}

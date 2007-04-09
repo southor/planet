@@ -10,6 +10,10 @@
 
 namespace Prototype
 {
+
+
+	class WorldRenderer;
+
 	class ServerWorldModel : public WorldModel, public ServerGlobalAccess
 	{
 	private:
@@ -80,7 +84,7 @@ namespace Prototype
 		void updateProjectileMovements();
 		
 		bool performProjectileHit(GameObjId projectileId, ServerPlayers &players, ProjectileHit &projectileHit);		
-		void performProjectileHits(ServerPlayers &players);
+		void performProjectileHits(ServerPlayers &players, WorldRenderer *worldRenderer);
 
 
 
