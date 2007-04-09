@@ -20,6 +20,8 @@ namespace Prototype
 
 		static const Vec RENDER_SIZE;
 
+		static const Pos WORLD_CENTER_POS; // (for rendering the server)
+
 		inline Rectangle getRenderArea(PlayerObj *centeredPlayerObj)
 		{
 			if (renderMode == HOLE_WORLD)
@@ -28,8 +30,8 @@ namespace Prototype
 			}
 			else if (renderMode == WORLD_CENTER)
 			{
-				Pos tmpPos(WorldModel::WORLD_SIZE / 2.0f);
-				Rectangle rectangle(tmpPos, RENDER_SIZE);
+				//Pos tmpPos(WorldModel::WORLD_SIZE / 2.0f);
+				Rectangle rectangle(WORLD_CENTER_POS, RENDER_SIZE);
 				//rectangle.setCenterPos(tmpPos);
 				return rectangle;
 			}

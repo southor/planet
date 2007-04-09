@@ -9,7 +9,11 @@
 namespace Prototype
 {
 
+	
+	
 	const Vec WorldRenderer::RENDER_SIZE = Vec(400.0f / 2.0f, 300.0f * (3.0f / 4.0f));
+
+	const Pos WorldRenderer::WORLD_CENTER_POS = Pos(280.0f / 2.0f, 170.0f * (3.0f / 4.0f));
 
 	const float WorldRenderer::Explosion::BULLET_EXPLOSION_SIZE = 8.0f;
 	const float WorldRenderer::Explosion::ROCKET_EXPLOSION_SIZE = 15.0f;
