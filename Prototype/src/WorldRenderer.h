@@ -14,6 +14,7 @@ namespace Prototype
 		enum RenderMode
 		{
 			HOLE_WORLD,
+			WORLD_CENTER,
 			FOLLOW_PLAYER
 		};
 
@@ -25,8 +26,16 @@ namespace Prototype
 			{
 				return Rectangle(Pos(0.0f, 0.0f), WorldModel::WORLD_SIZE);
 			}
+			else if (renderMode == WORLD_CENTER)
+			{
+				Pos tmpPos(WorldModel::WORLD_SIZE / 2.0f);
+				Rectangle rectangle(tmpPos, RENDER_SIZE);
+				//rectangle.setCenterPos(tmpPos);
+				return rectangle;
+			}
 			else if (renderMode == FOLLOW_PLAYER)
 			{
+				assert(centeredPlayerObj);
 				// setting center pos
 				Pos tmpPos;
 				Rectangle rectangle(tmpPos, RENDER_SIZE);
