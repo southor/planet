@@ -197,7 +197,7 @@ namespace Prototype
 						}
 						else
 						{
-							std::cout << "old prediction ok!" << std::endl;
+							//std::cout << "old prediction ok!" << std::endl;
 						}
 						//playerObj->angle = tmpAngle;
 
