@@ -4,6 +4,7 @@
 #include "Obstacle.h"
 #include "PlayerObj.h"
 #include "Projectile.h"
+#include "ServerPlayers.h"
 
 #include "IdMap.h"
 #include "GameObjId.h"
@@ -13,6 +14,9 @@
 
 namespace Prototype
 {
+
+	//class ServerPlayers;
+
 	class WorldModel
 	{
 	public:
@@ -66,6 +70,10 @@ namespace Prototype
 			return playerTryShoot(playerId, currentTick, shotN, projectileId, dummyTick);
 		}
 		
+
+		bool performProjectileHit(GameObjId projectileId, ProjectileHit &projectileHit);
+
+
 
 		bool isConsistent();
 

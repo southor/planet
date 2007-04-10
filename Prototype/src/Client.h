@@ -87,6 +87,9 @@ namespace Prototype
 		static const double OBJECT_LAG_MODIFIER_DEFAULT;
 		static const int OBJECT_LAG_ADD_TIME_DEFAULT;
 		static const int OBJECT_LAG_ADD_TICK_DEFAULT;
+
+		static const int CLIENT_REMOVE_PROJECTILE_DEFAULT = 1;
+		static const int CLIENT_CREATE_PROJECTILE_DEFAULT = 1;
 		
 		ClientGlobalObj clientGlobalObj;
 
@@ -130,6 +133,7 @@ namespace Prototype
 
 		int calcCurrentObjLag() const;
 
+		void projectileHit(GameObjId projectileId);
 
 		//debug
 		bool isConsistent()

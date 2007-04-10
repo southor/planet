@@ -190,14 +190,14 @@ namespace Prototype
 						bool differ = playerObj->setTickDataAndCompare(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle, updatePlayerObj->nextShootTick);
 						if (differ)
 						{
-							//std::cout << "old prediction differ!" << std::endl;
+							std::cout << "old prediction differ!" << std::endl;
 							//predictionHandler.serverInput(playerId, link.getPoppedTick());
 							assert(predictionHandler);
 							predictionHandler->serverInput(link.getPoppedTick());
 						}
 						else
 						{
-							//std::cout << "old prediction ok!" << std::endl;
+							std::cout << "old prediction ok!" << std::endl;
 						}
 						//playerObj->angle = tmpAngle;
 
@@ -241,12 +241,18 @@ namespace Prototype
 					//printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
 
 					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();					
-					bool projectileAlreadyCreated = false;
+					bool projectileAlreadyExists= false;
 					if (static_cast<PlayerId>(addProjectile->shooterId) == playerId)
 					{
-						projectileAlreadyCreated = worldModel.getProjectiles().exists(addProjectile->projectileId);
+						projectileAlreadyExists = worldModel.getProjectiles().exists(addProjectile->projectileId);
 					}
-					if (!projectileAlreadyCreated)
+					
+					if (projectileAlreadyExists)
+					{
+						assert((configHandler.getIntValue("client_create_projectile", CLIENT_CREATE_PROJECTILE_DEFAULT) == 1)
+								&& (addProjectile->shooterId == static_cast<GameObjId>(playerId)));
+					}
+					else if (addProjectile->shooterId != static_cast<GameObjId>(playerId))
 					{
 						assert(static_cast<int>(addProjectile->shootTick) == link.getPoppedTick());
 						worldModel.addProjectile(addProjectile->projectileId, static_cast<Projectile::Type>(addProjectile->type), addProjectile->pos, addProjectile->angle, addProjectile->shooterId, addProjectile->shootTick, addProjectile->objLag);
@@ -258,12 +264,22 @@ namespace Prototype
 					//printf("CLIENT: handling update_projectile @ %d\n", timeHandler.getTime());
 					
 					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
-					Projectile *projectile = (worldModel.getProjectiles())[updateProjectile->projectileId];
-					//projectile->setPos(updateProjectile->pos);
-					assert(projectile);
-					if (projectile) projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
-					//projectile->setPos(updateProjectile->pos);
-					//std::cout << "client projectile:  pos.x = " << projectile->getPos().x << "  pos.y = " << projectile->getPos().y << std::endl;
+					
+					WorldModel::Projectiles::Iterator it = (worldModel.getProjectiles()).find(updateProjectile->projectileId);
+					
+					if (it != (worldModel.getProjectiles()).end())
+					{
+						Projectile *projectile = it->second;
+						//projectile->setPos(updateProjectile->pos);
+						assert(projectile);
+						if (projectile) projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
+						//projectile->setPos(updateProjectile->pos);
+						//std::cout << "client projectile:  pos.x = " << projectile->getPos().x << "  pos.y = " << projectile->getPos().y << std::endl;
+					}
+					else
+					{
+						assert(configHandler.getIntValue("client_remove_projectile", CLIENT_REMOVE_PROJECTILE_DEFAULT) == 1);
+					}
 				}
 				break;
 			case REMOVE_PROJECTILE:
@@ -273,7 +289,8 @@ namespace Prototype
 					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
 					//worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
 					bool removed = worldModel.getProjectiles().remove(removeProjectile->projectileId);
-					assert(removed);
+					assert(removed || configHandler.getIntValue("client_remove_projectile", CLIENT_REMOVE_PROJECTILE_DEFAULT) == 1);
+
 					//if (removed) std::cout << "projectile removed" << std::endl;					
 				}
 				break;
@@ -282,14 +299,23 @@ namespace Prototype
 					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
 					
 					ProjectileHit *projectileHit = link.getPoppedData<ProjectileHit>();
-					Projectile *projectile = (worldModel.getProjectiles())[projectileHit->projectileId];
-					assert(projectile);
-					if (projectile)
+					
+					WorldModel::Projectiles::Iterator it = (worldModel.getProjectiles()).find(projectileHit->projectileId);
+					
+					if (it != (worldModel.getProjectiles()).end())
 					{
-						worldRenderer.projectileHit(projectile, projectileHit->hitPosition);
-						bool removed = worldModel.getProjectiles().remove(projectileHit->projectileId);
-						assert(removed);
-						//if (removed) std::cout << "projectile removed" << std::endl;						
+						Projectile *projectile = it->second;
+						projectile->setHit(link.getPoppedTick(), projectileHit->hitPosition);
+						
+						
+						//worldRenderer.projectileHit(projectile, projectileHit->hitPosition);
+						//bool removed = worldModel.getProjectiles().remove(projectileHit->projectileId);
+						//assert(removed);
+						////if (removed) std::cout << "projectile removed" << std::endl;						
+					}
+					else
+					{
+						assert(configHandler.getIntValue("client_remove_projectile", CLIENT_REMOVE_PROJECTILE_DEFAULT) == 1);
 					}
 				}
 				break;
@@ -363,13 +389,55 @@ namespace Prototype
 				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 				playerObj->updateToTickData(currentTick);
 				playerObj->setUserCmd(&userCmd);
-				worldModel.handlePlayerShooting(playerId, configHandler.getIntValue("client_create_projectile", 1) == 1);
+				worldModel.handlePlayerShooting(playerId, configHandler.getIntValue("client_create_projectile", CLIENT_CREATE_PROJECTILE_DEFAULT) == 1);
 
 				// perform prediction
 				//predictionHandler.predict(playerId, currentTick + 1);
 				predictionHandler->predict(currentTick + 1);
 				//requestRender = true;
 				//std::cout << nowRunning << " runstep: " << currentTick << std::endl;
+
+
+
+
+
+				// remove projectiles that have hit something
+				std::vector<GameObjId> projectileRemoves;
+				WorldModel::Projectiles::Iterator projectilesIt(worldModel.getProjectiles().begin());
+				WorldModel::Projectiles::Iterator projectilesEnd(worldModel.getProjectiles().end());
+				for(; projectilesIt != projectilesEnd; ++projectilesIt)
+				{
+					GameObjId projectileId = projectilesIt->first;
+					Projectile *projectile = projectilesIt->second;
+					
+					// predict hits of own projectiles
+					if ((projectile->getShooterId() == static_cast<GameObjId>(playerId)) && configHandler.getIntValue("client_remove_projectile", CLIENT_REMOVE_PROJECTILE_DEFAULT) == 1)
+					{
+						projectile->updateToTickData(currentTick - 1);
+						
+						ProjectileHit projectileHit(projectileId, Pos(0.0f, 0.0f));						
+						if (worldModel.performProjectileHit(projectileId, projectileHit))
+						{
+							projectile->setHit(currentTick, projectileHit.hitPosition);
+						}
+					}
+					
+					// check hits and remove them later
+					int checkTick = currentTick;
+					if (projectile->getShooterId() != static_cast<GameObjId>(playerId)) checkTick -= this->currentObjLag;					
+					if (projectile->getHitTick() <= checkTick)
+						projectileRemoves.push_back(projectileId);
+
+
+				}
+				for(size_t removeId = 0; removeId < projectileRemoves.size(); ++removeId)
+				{
+					projectileHit(projectileRemoves[removeId]);
+				}
+
+
+
+
 			}
 			else
 			{
@@ -403,6 +471,16 @@ namespace Prototype
 		
 		// do not allow negative objLag
 		return tmax(currentObjLag, 0);
+	}
+
+	void Client::projectileHit(GameObjId projectileId)
+	{
+		Projectile *projectile = (worldModel.getProjectiles())[projectileId];
+		worldRenderer.projectileHit(projectile, //projectileHit->hitPosition);
+									projectile->getHitPos());
+		bool removed = worldModel.getProjectiles().remove(projectileId);
+		assert(removed);
+		//if (removed) std::cout << "projectile removed" << std::endl;
 	}
 
 	bool Client::initConnection()
@@ -586,7 +664,7 @@ namespace Prototype
 		// if this is me
 		bool isMe = (playerId == this->playerId);
 
-		worldModel.addPlayerObj(playerId, playerPos, isMe, tick);
+		worldModel.addPlayerObj(playerId, playerPos, isMe, tick, configHandler.getIntValue("player_obj_health", PlayerObj::HEALTH_DEFAULT));
 		
 		
 		if (isMe)

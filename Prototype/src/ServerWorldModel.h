@@ -3,7 +3,7 @@
 
 #include "WorldModel.h"
 #include "IdMap.h"
-#include "ServerPlayers.h"
+//#include "ServerPlayers.h"
 #include "ServerGlobalAccess.h"
 
 #include <vector>
@@ -75,7 +75,7 @@ namespace Prototype
 		const Projectiles& getProjectiles() const		{ return projectiles; }
 
 
-		void addPlayerObj(PlayerId playerId, const Pos &playerPos);
+		void addPlayerObj(PlayerId playerId, const Pos &playerPos, int fullHealth);
 		GameObjId addObstacle(const Rectangle &obstacleArea);
 
 		void addRespawnPos(Pos pos)						{ respawnPoss.push_back(pos); }
@@ -83,7 +83,7 @@ namespace Prototype
 		void updatePlayerObjMovements();
 		void updateProjectileMovements();
 		
-		bool performProjectileHit(GameObjId projectileId, ServerPlayers &players, ProjectileHit &projectileHit);		
+		//bool performProjectileHit(GameObjId projectileId, ServerPlayers &players, ProjectileHit &projectileHit);		
 		void performProjectileHits(ServerPlayers &players, WorldRenderer *worldRenderer);
 
 

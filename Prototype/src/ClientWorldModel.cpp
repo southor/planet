@@ -15,9 +15,9 @@ namespace Prototype
 	//	playerObjs.add(playerObjId, new PlayerObj(playerId, playerPos));
 	//}
 
-	void ClientWorldModel::addPlayerObj(PlayerId playerId, const Pos &playerPos, bool isMe, int tick)
+	void ClientWorldModel::addPlayerObj(PlayerId playerId, const Pos &playerPos, bool isMe, int tick, int fullHealth)
 	{		
-		playerObjs.add(playerId, new PlayerObj(playerId, playerPos, (isMe ? CLIENT_PREDICTION_N_HISTORY_TICKS : CLIENT_INTERPOOLATION_N_HISTORY_TICKS), tick));
+		playerObjs.add(playerId, new PlayerObj(playerId, playerPos, (isMe ? CLIENT_PREDICTION_N_HISTORY_TICKS : CLIENT_INTERPOOLATION_N_HISTORY_TICKS), tick, fullHealth));
 	}
 
 	void ClientWorldModel::addObstacle(GameObjId obstacleId, const Rectangle &obstacleArea)

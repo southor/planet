@@ -77,6 +77,14 @@ namespace Prototype
 		return tmin(tmin(a, b), tmin(c, d));		
 	}
 
+	template <typename T>
+	inline void tswap(T &a, T &b)
+	{
+		T c(a);
+		a = b;
+		b = c;
+	}
+
 
 	//typedef size_t GameObjId;
 
@@ -84,6 +92,8 @@ namespace Prototype
 
 
 	//#define PRINT_VARIABLE (x)  std::cout << "x:"
+
+	static const int TICK_MAX = 2147483647; // TODO not used enough (check if game needs to end)
 
 
 

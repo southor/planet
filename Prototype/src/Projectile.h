@@ -108,6 +108,11 @@ namespace Prototype
 
 		void move();
 
+		void setHit(int hitTick, Pos &hitPos)					{ this->hitTick = hitTick;
+																  this->hitPos = hitPos; }
+		int getHitTick()										{ return hitTick; }
+		Pos getHitPos()											{ return hitPos; }
+
 	private:
 		static const Properties properties[N_TYPES];
 
@@ -117,6 +122,8 @@ namespace Prototype
 		GameObjId shooterId;
 		Tickf shootTick; // the exact moment when it is shot.
 		int objLag; // The client object lag that this projectile was shot with
+		int hitTick; // the tick when it will be removed
+		Pos hitPos;
 	};
 };
 

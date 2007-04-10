@@ -28,8 +28,8 @@ namespace Prototype
 	//	 strafingLeft(false), strafingRight(false)
 	//{}
 
-	PlayerObj::PlayerObj(PlayerId playerId, const Pos &pos, size_t nHistoryTicks, int tick)
-		: historyList(nHistoryTicks, UpdateData::interExtraPolate), pos(pos), angle(Angle::PI/2.0f), health(100),
+	PlayerObj::PlayerObj(PlayerId playerId, const Pos &pos, size_t nHistoryTicks, int tick, int fullHealth)
+		: historyList(nHistoryTicks, UpdateData::interExtraPolate), pos(pos), angle(Angle::PI/2.0f), health(fullHealth), fullHealth(fullHealth),
 		 //movingForward(false), movingBackward(false),
 		 //strafingLeft(false), strafingRight(false),
 		 //currentWeapon(Projectile::DEFAULT_PROJECTILE),
@@ -87,11 +87,20 @@ namespace Prototype
 		//if (health <= 0) nDeaths++;
 	}
 
+	void PlayerObj::hurt(int damage, PlayerId playerObjId)
+	{
+		if (damage > 0)
+		{
+			lastHurter = playerObjId;			
+			hurt(damage);
+		}
+	}
+
 	void PlayerObj::respawn(const Pos &respawnPos)
 	{ 
 		assert(isDead());
 		this->pos = respawnPos;
-		health = 100;
+		health = fullHealth;
 	}
 
 	//void PlayerObj::switchWeapon()
