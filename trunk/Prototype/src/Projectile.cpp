@@ -8,12 +8,12 @@ namespace Prototype
 	const Projectile::RenderLagMods Projectile::RENDER_LAG_MODS = Projectile::RenderLagMods(0.0f, 1.0f);
 	
 	const Projectile::Properties Projectile::properties[2] = {{200.0f/1000.0f, 20, 0, 0, 75},
-															   {200.0f/1000.0f, 100, 50, 100.0f, 500}};
+															   {120.0f/1000.0f, 100, 50, 100.0f, 500}};
 
 	//Projectile::Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, int currentTick, Tickf shootTick, int objLag)
 	//	: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
 	Projectile::Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, Tickf shootTick, int objLag)
-		: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag), render(true)
+		: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag), render(true), hitTick(TICK_MAX)
 	{
 		// Set position at currentTick, Projectiles current tick is actually shootTick before we set position
 		int tick = static_cast<int>(shootTick);
@@ -26,7 +26,7 @@ namespace Prototype
 
 	Line Projectile::getLine() const
 	{
-		float length = getSpeed() * 1.2f;
+		float length = getSpeed() * 1.4f;
 		Vec direction(cos(angle.getFloat()), sin(angle.getFloat()));		
 		Line line(pos, direction * length);
 		return line;
@@ -57,7 +57,7 @@ namespace Prototype
 	}
 
 	void Projectile::getPosAtTick(int tick, const Pos &pos, Tickf resultTick, Pos &resultPos, Projectile *projectile)
-	{		
+	{
 		Pos tmpPos1(projectile->getPos());
 		projectile->setPos(pos);
 

@@ -1,0 +1,25 @@
+Nätverk:
+
+	Vi kör fasta tidssteg, (eventuellt kan man köra varierbara steg om fysiken-motorn är
+				av sådan art att resultatet ej varierar när man varierar
+				steglängden.)
+
+problem med extrapolation:
+
+	Exempel med att springa fram mot ett hörn och stanna, springer utanför hörnet..¨
+
+
+
+
+problem med slutgiltig modell:
+
+	Långsamma skott: Man ser motståndarens skott i fel tid och kan inte
+			 garanterat "undvika det" bara genom att titta hur
+			 det rör sig.
+
+
+
+
+vid presentation:
+
+	vid förklaring av prediktion:MÅL  kunna gå tillbaks till föregående slide "problem" sliden.

@@ -118,7 +118,7 @@ namespace Prototype
 	// TODO: MAKE PRIVATE
 	void Server::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
-		worldModel.addPlayerObj(playerId, playerPos);
+		worldModel.addPlayerObj(playerId, playerPos, configHandler.getIntValue("player_obj_health", PlayerObj::HEALTH_DEFAULT));
 	}
 
 	void Server::startGame()
@@ -187,6 +187,7 @@ namespace Prototype
 		}
 
 		bool waitingForClients = false;
+		//bool timeout = false; // debug
 		int latestTick = 10000000; // used for debugging
 
 		//std::cout << "10 ";
@@ -213,6 +214,7 @@ namespace Prototype
 			{
 				if (configHandler.getIntValue("server_print_timeout_debug", SERVER_PRINT_TIMEOUT_DEBUG_DEFAULT) == 1) printf("#################### TIMEOUT ######################\n");
 				waitingForClients = false;
+				//timeout = true; // debug
 				break; // exit for loop
 			}
 		}
@@ -252,7 +254,10 @@ namespace Prototype
 						assert(userCmd->isConsistent(playerId, player->link.getPoppedTick()));
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
 						
+						//assert((getTimeHandler()->getTick() == player->link.getPoppedTick()) || timeout);
 					}
+
+					
 				}
 
 				//std::cout << "30.2 ";
@@ -263,13 +268,20 @@ namespace Prototype
 				UserCmd userCmd;
 				player->getUserCmd(userCmd, getTimeHandler()->getTick());
 				userCmd.isConsistent(getTimeHandler()->getTick());
+				
+				//Angle tmpAngle = playerObj->angle; //TODO bad code, will fix a problem for now
+				
 				playerObj->setUserCmd(&userCmd);
+
+				//tswap(tmpAngle, playerObj->angle); //TODO bad code, will fix a problem for now
 
 				// All player object data for this tick has been set, send and store to history!
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				assert(playerObj->isConsistent(getTimeHandler()->getTick()));
 				playerObj->storeToTickData(getTimeHandler()->getTick());
+
+				//tswap(tmpAngle, playerObj->angle); //TODO bad code, will fix a problem for now
 
 				// Send tick0Time to client
 				{

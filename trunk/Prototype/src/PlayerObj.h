@@ -21,6 +21,7 @@ namespace Prototype
 		//Projectile::Type currentWeapon;
 		int ammo[N_WEAPONS];
 		Tickf nextShootTick;
+		int fullHealth;
 
 		//struct UpdateData : public UpdateData2<Pos, Angle>
 		//{
@@ -81,7 +82,7 @@ namespace Prototype
 
 	public:
 
-
+		static const int HEALTH_DEFAULT = 100;
 
 		
 		static const float RECTANGLE_SIZE;
@@ -91,6 +92,7 @@ namespace Prototype
 		
 
 		int health;
+		GameObjId lastHurter;
 
 		//bool movingForward;
 		//bool movingBackward;
@@ -99,7 +101,7 @@ namespace Prototype
 		
 
 		//PlayerObj(size_t playerId, const Pos &pos);
-		PlayerObj(PlayerId playerId, const Pos &pos, size_t nHistoryTicks, int tick);
+		PlayerObj(PlayerId playerId, const Pos &pos, size_t nHistoryTicks, int tick, int fullHealth);
 
 		~PlayerObj()										{}
 
@@ -116,6 +118,8 @@ namespace Prototype
 		//size_t getPlayerId() const						{ return playerId; }	
 
 		void hurt(int damage);
+
+		void hurt(int damage, PlayerId playerObjId);
 
 		bool isDead()										{ return health <= 0; }
 
