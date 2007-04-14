@@ -5,9 +5,6 @@
 
 namespace Prototype
 {
-	
-	
-
 	class IdGenerator
 	{
 	protected:

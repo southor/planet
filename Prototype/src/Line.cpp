@@ -3,41 +3,6 @@
 
 namespace Prototype
 {
-	//float Line::crossPoint(const Line &line)
-	//{
-	//	//if (ext == line.ext) return 2.0f;
-
-
-	//	if (line.ext.x == 0.0f)
-	//	{
-	//		if (ext.x == 0.0f) return 2.0f;
-	//		float k = ext.y / ext.x;
-	//		float xDiff = line.pos.x - pos.x;
-	//		float yCross = xDiff;
-	//	}
-
-
-
-
-	//	
-
-	//	float posXDiff = this->pos.x - line.pos.x;
-	//	
-	//	if ((line.ext.x == 0.0f) && ((posXDiff == 0.0f) || (this->ext.x == 0.0f))) return 2.0f;
-
-	//	float k = line.ext.y / line.ext.x;
-
-	//	
-	//	float s = (k*posXDiff + line.pos.y - this->pos.y) /
-	//				(this->ext.y - k * this->ext.x);
-
-	//	float t = (posXDiff + this->ext.x * s) / line.ext.x;
-
-	//	if (!line.crossing(t)) return 2.0f;
-
-	//	return s;
-	//}
-
 	float Line::crossPoint(OrthogonalLine line)
 	{
 		float OUTSIDE = 2.0f;

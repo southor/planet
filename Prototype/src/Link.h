@@ -16,8 +16,6 @@ namespace Prototype
 		Message poppedMessage;
 		bool hasPoppedMessage;
 
-		//bool hasPoppedMessage()		{ poppedMessage.data != NULL; }
-		//void resetPoppedMessage()		{ hasPoppedMessage = false; }
 		void destroyPoppedMessage();
 
 		// pushes a Message to the send queue, also sets time of message
@@ -73,7 +71,6 @@ namespace Prototype
 
 		// --------------------------------- recieving messages ------------------------------
 
-		//int getNMessages() const; // returns number of recieve messages on the queue
 		bool hasMessageOnQueue() const; // returns true if at least 1 message is on recieve queue
 		bool hasMessageOnQueueWithTick(int tick) const; // returns true if at least 1 message is on recieve queue		
 		int getTickOfMessageOnQueue() const; // returns the tick of the top message on queue

@@ -30,9 +30,7 @@ namespace Prototype
 			}
 			else if (renderMode == WORLD_CENTER)
 			{
-				//Pos tmpPos(WorldModel::WORLD_SIZE / 2.0f);
 				Rectangle rectangle(WORLD_CENTER_POS, RENDER_SIZE);
-				//rectangle.setCenterPos(tmpPos);
 				return rectangle;
 			}
 			else if (renderMode == FOLLOW_PLAYER)
@@ -72,38 +70,18 @@ namespace Prototype
 					glScalef(scaleAmount.x, scaleAmount.y, 1.0f);
 					glTranslatef(-renderArea.pos.x, -renderArea.pos.y, 0.0f);			
 				}		
-				
-				//// execute camera properties
-				//switch(renderMode)
-				//{
-				//case HOLE_WORLD:
-				//	// nothing to do, we are rendering the hole world
-				//	break;
-				//case FOLLOW_PLAYER:
-				//	{
-				//		
-				//	}
-				//	break;
-				//default:
-				//	assert(false);
-				//	break;
-				//}
 
 				// render all objects			
-				//RenderGameObj renderGameObj(&players);
 				RenderObstacle renderObstacle;
-				//RenderPlayerObj<Players> renderPlayerObj(&players, tick);
 				RenderPlayerObj<Players> renderPlayerObj(&players);
-				//RenderProjectile renderProjectile(tick);
 				RenderProjectile renderProjectile;
 				WorldModel::Projectiles &projectiles = worldModel.getProjectiles();
-				//if (projectiles.getSize() > 0) std::cout << "[[[[[[[[[[[[[[[ Have projectiles to render ]]]]]]]]]]]]]]]]]" << std::endl;
 				ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderObstacle);
 				ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderPlayerObj);
 				ForEach(projectiles.begin(), projectiles.end(), renderProjectile);
+
 				//render explosion
 				RenderExplosion renderExplosion;
-				//ForEach(explosions.begin(), explosions.end(), renderExplosion);
 				for (size_t i = 0; i < explosions.size(); i++)
 				{
 					Explosion explosion = explosions[i];
@@ -139,26 +117,6 @@ namespace Prototype
 		};
 		std::vector<Explosion> explosions;
 		
-
-		//// Functor for rendering a game object
-		//class RenderGameObj
-		//{
-		//private:
-		//	Players *players;
-		//public:
-		//	
-		//	RenderGameObj(Players *players) : players(players)
-		//	{}
-
-		//	// game objects
-		//	void operator ()(const WorldModel::Obstacles::Pair &obstaclePair);
-		//	void operator ()(const WorldModel::PlayerObjs::Pair &playerObjPair);
-		//	void operator ()(const WorldModel::Projectiles::Pair &projectilePair);
-		//	
-		//	// visual effects
-		//	void operator ()(const Explosion &explosion);
-		//};
-
 		class RenderObstacle
 		{
 		public:
@@ -170,10 +128,8 @@ namespace Prototype
 		{
 		private:
 			Players *players;
-			//Tickf tick;
 		public:
 			
-			//inline RenderPlayerObj(Players *players, Tickf tick) : players(players), tick(tick)
 			inline RenderPlayerObj(Players *players) : players(players)
 			{}
 
@@ -184,8 +140,6 @@ namespace Prototype
 				
 				PlayerId playerId = playerObjPair.first;
 				PlayerObj *playerObj = playerObjPair.second;
-				//playerObj->updateToTickData(tick);
-				
 				
 				Rectangle rect;
 				playerObj->getRectangle(rect);
@@ -199,13 +153,7 @@ namespace Prototype
 				Vec2f v1(rect.getBottomLeft());
 				Vec2f v2(rect.getBottomRight());
 
-				// get a player color
-				//size_t playerId = playerObj->getPlayerId();
-				//Color playerColor(0.7f, 0.7f, 0.7f);
-				//if (players->isValid(playerId))
-				//{
 				Color playerColor = (*players)[playerId]->color;
-				//}
 
 				// render triangle
 				glPushMatrix();
@@ -225,11 +173,7 @@ namespace Prototype
 
 		class RenderProjectile
 		{
-		private:
-			//Tickf renderTick;
 		public:
-			//inline RenderProjectile(Tickf renderTick) : renderTick(renderTick)
-			//{}
 			void operator ()(const WorldModel::Projectiles::Pair &projectilePair);			
 		};
 
@@ -239,8 +183,6 @@ namespace Prototype
 			// visual effects
 			bool operator ()(const Explosion &explosion);
 		};
-
-
 
 		void renderViewBox();
 

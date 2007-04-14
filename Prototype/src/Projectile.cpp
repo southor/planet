@@ -10,8 +10,6 @@ namespace Prototype
 	const Projectile::Properties Projectile::properties[2] = {{200.0f/1000.0f, 20, 0, 0, 75},
 															   {120.0f/1000.0f, 100, 50, 100.0f, 500}};
 
-	//Projectile::Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, int currentTick, Tickf shootTick, int objLag)
-	//	: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
 	Projectile::Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, Tickf shootTick, int objLag)
 		: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag), render(true), hitTick(TICK_MAX)
 	{

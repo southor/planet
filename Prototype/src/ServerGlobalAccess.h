@@ -13,7 +13,6 @@ namespace Prototype
 		ServerIdGenerator idGenerator;
 	};
 	
-	
 	class ServerGlobalAccess
 	{
 	private:

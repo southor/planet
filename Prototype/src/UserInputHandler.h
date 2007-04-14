@@ -67,8 +67,6 @@ namespace Prototype
 
 		// ------- set State cmd keys and mouse buttons -------
 		void setStateCmdKey(int stateCmd, int key);
-		//void setStateCmdKey(int stateCmd, int key); // keyboard key
-		//void setStateCmdButton(int stateCmd, int button); // mouse button
 
 		// ------- set Action cmd keys and mouse buttons -------
 		void setActionCmdKey(int actionCmdPress, int actionCmdRelease, int key);
@@ -76,9 +74,6 @@ namespace Prototype
 		{
 			setActionCmdKey(actionCmd, NO_ACTION_CMD, key);
 		}		
-		//void setActionCmdKey(int actionCmd, int key); // keyboard key
-		//void setActionCmdButton(int actionCmd, int button); // mouse button
-
 
 		// ------- get state cmd input -------
 		inline StateCmds getCurrentStates()				{ return currentStates; }
@@ -96,21 +91,9 @@ namespace Prototype
 
 		// ------- mouse move input -----------
 		inline Vec2<int>& getMouseScreenPos()		{ return mouseScreenPos; }
-		//inline bool hasMousePosChanged()
-		//{
-		//	bool tmp = mousePosChanged;
-		//	mousePosChanged = false;
-		//	return tmp;
-		//}		
-		
+
 		// ------ primitive event input --------
 		void pushInput(const SDL_Event &event);
-
-	private:
-
-		
-
-		//void setCurrentMousePos(Vec2<int> mouseScreenPos, const ViewportHandler &viewportHandler);
 
 	};
 };

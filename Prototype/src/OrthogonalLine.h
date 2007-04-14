@@ -1,7 +1,6 @@
 #ifndef __orthogonal_line_h__
 #define __orthogonal_line_h__
 
-//#include <cmath>
 #include "basic.h"
 
 namespace Prototype

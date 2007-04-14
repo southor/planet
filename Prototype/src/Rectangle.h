@@ -51,9 +51,6 @@ namespace Prototype
 		bool overlapping(const Rectangle &rectangle);
 		bool contains(const Pos &pos) const;
 
-
-
-
 	};
 };
 

@@ -13,8 +13,6 @@
 namespace Prototype
 {
 
-	//const bool SERVER_PRINT_NETWORK_DEBUG_DEFAULT = false;
-
 	class MessageReciever
 	{
 	private:

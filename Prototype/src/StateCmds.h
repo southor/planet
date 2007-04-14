@@ -13,8 +13,6 @@ namespace Prototype
 		bool getCurrentState(int stateCmd) const;
 		void setCurrentState(int stateCmd, bool state);
 
-		//int getStates()	{ return states; }
-
 		StateCmds operator |(StateCmds rh) const		{ return StateCmds(states | rh.states); }
 		StateCmds operator &(StateCmds rh) const		{ return StateCmds(states & rh.states); }
 		StateCmds operator +(StateCmds rh) const		{ return StateCmds(states + rh.states); }

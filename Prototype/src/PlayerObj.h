@@ -7,31 +7,18 @@
 #include "HistoryList.inl"
 #include "Angle.h"
 #include "messages.h"
-//#include "UpdateData2.h"
 
 namespace Prototype
 {
 	class PlayerObj : public MovableObj
 	{
 	private:
-		//size_t playerId;
-		
 		static const int N_WEAPONS = Projectile::N_TYPES;
 
-		//Projectile::Type currentWeapon;
 		int ammo[N_WEAPONS];
 		Tickf nextShootTick;
 		int fullHealth;
 
-		//struct UpdateData : public UpdateData2<Pos, Angle>
-		//{
-		//	inline UpdateData()					{}
-		//	inline UpdateData(const Pos &pos, Angle angle) : UpdateData2<Pos, Angle>(pos, angle)
-		//	{}
-
-		//	const Pos& getPos()		{ return v1; }
-		//	Angle getAngle()		{ return v2; }
-		//};
 		struct UpdateData
 		{
 
@@ -94,13 +81,6 @@ namespace Prototype
 		int health;
 		GameObjId lastHurter;
 
-		//bool movingForward;
-		//bool movingBackward;
-		//bool strafingLeft;
-		//bool strafingRight;
-		
-
-		//PlayerObj(size_t playerId, const Pos &pos);
 		PlayerObj(PlayerId playerId, const Pos &pos, size_t nHistoryTicks, int tick, int fullHealth);
 
 		~PlayerObj()										{}
@@ -112,10 +92,7 @@ namespace Prototype
 		static float getStrafeSpeed()						{ return STRAFE_SPEED * static_cast<float>(TimeHandler::TICK_DELTA_TIME); }
 
 		Pos getPos() const									{ return pos; }
-		//inline Angle getAngle()							{ return userCmd.aimAngle; }
-		//inline void setAngle(Angle angle)					{ userCmd.aimAngle = angle; }
 		void getRectangle(Rectangle &rectangle) const;
-		//size_t getPlayerId() const						{ return playerId; }	
 
 		void hurt(int damage);
 
@@ -130,13 +107,10 @@ namespace Prototype
 		void setNextShootTick(Tickf nextShootTick)			{ this->nextShootTick = nextShootTick; }
 		inline Projectile::Type getCurrentWeapon() const	{ return userCmd.weapon; }
 		void setAmmoSupply(int seed);
-		//void switchWeapon();
 		Projectile::Type getNextWeapon(Projectile::Type weapon);
 
 		const int* getAmmo() const							{ return ammo; }
 		int getAmmoCurrentWeapon() const					{ return ammo[getCurrentWeapon()]; }
-		//inline bool canShoot(int time) const				{ return (getAmmoCurrentWeapon() > 0) && (nextShootTick <= time); }
-		//void shoot(int time);
 
 		inline void setTickData(int tick, const Pos &pos, Angle angle, Tickf nextShootTick)
 		{
@@ -161,8 +135,6 @@ namespace Prototype
 
 		int getNTickShots(Projectile::Type weapon, int currentTick);
 
-		//static Projectile::Type switchWeapon(Projectile::Type currentWeapon)
-		
 		// Updates nextShootTick for next tick (currentTick + 1)
 		void updateNextShootTick(int currentTick);
 

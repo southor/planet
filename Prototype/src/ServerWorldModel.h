@@ -3,7 +3,6 @@
 
 #include "WorldModel.h"
 #include "IdMap.h"
-//#include "ServerPlayers.h"
 #include "ServerGlobalAccess.h"
 
 #include <vector>
@@ -18,11 +17,6 @@ namespace Prototype
 	{
 	private:
 
-
-/*		typedef IdMap<GameObjId, Obstacle*> ServerObstacles;
-		typedef IdMap<GameObjId, PlayerObj*> ServerPlayerObjs;
-		typedef IdMap<GameObjId, Projectile*> ServerProjectiles;	*/	
-
 		Obstacles obstacles;
 		PlayerObjs playerObjs;
 		Projectiles projectiles;
@@ -30,35 +24,7 @@ namespace Prototype
 		typedef std::vector<Pos> RespawnPoss;
 		RespawnPoss respawnPoss;
 
-
-
-		//class MoveProjectile : public Move, public ServerGlobalAccess
-		//{
-		//private:
-
-		//	RespawnPoss *respawnPoss;
-		//	ServerPlayers *players;
-		//	PlayerObjs *playerObjs;
-
-		//	std::vector<RemoveProjectile> projectilesHit;
-
-		//public:
-		//	// @param deltaTime Time in milliseconds since last move.
-		//	MoveProjectile(Obstacles *obstacles, ServerPlayers *players, const ServerGlobalAccess &serverGlobalAccess, PlayerObjs *playerObjs, RespawnPoss *respawnPoss)
-		//		: Move(obstacles), ServerGlobalAccess(serverGlobalAccess), respawnPoss(respawnPoss), players(players), playerObjs(playerObjs)
-		//	{}
-
-		//	void operator ()(const Projectiles::Pair &projectilePair);
-
-		//	inline std::vector<RemoveProjectile>& getProjectilesHit()	
-		//	{
-		//		return projectilesHit;
-		//	}
-		//};
-
 	public:
-
-		
 
 		ServerWorldModel(ServerGlobalObj *serverGlobalObj)
 			: ServerGlobalAccess(serverGlobalObj)
@@ -83,10 +49,7 @@ namespace Prototype
 		void updatePlayerObjMovements();
 		void updateProjectileMovements();
 		
-		//bool performProjectileHit(GameObjId projectileId, ServerPlayers &players, ProjectileHit &projectileHit);		
 		void performProjectileHits(ServerPlayers &players, WorldRenderer *worldRenderer);
-
-
 
 		void handlePlayerShooting(PlayerId playerId, ServerPlayers &players);
 	};

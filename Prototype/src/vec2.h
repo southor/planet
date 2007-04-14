@@ -144,7 +144,6 @@ namespace Prototype
 			float tmp = 1.0f / length();
 			x = x * tmp;
 			y = y * tmp;
-			//z = z * tmp;
 		}
 
 		bool isConsistent() const			{ return true; }

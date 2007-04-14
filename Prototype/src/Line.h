@@ -1,7 +1,6 @@
 #ifndef __line_h__
 #define __line_h__
 
-//#include <cmath>
 #include "OrthogonalLine.h"
 
 namespace Prototype
@@ -40,7 +39,6 @@ namespace Prototype
 		bool crossingRectangle(const Rectangle & rectangle);
 
 		////@return position along line
-		//float crossPoint(const Line &line);
 		float crossPoint(OrthogonalLine line);
 
 		// @return position along line
@@ -51,12 +49,6 @@ namespace Prototype
 		{
 			return (d >= 0.0f) && (d <= 1.0f);
 		}
-
-		//inline bool crossing(const Line &line)
-		//{
-		//	float d = crossPoint(line);
-		//	return crossing(d);			
-		//}
 
 		// @param d position along line
 		inline Pos getPosAlong(float d)

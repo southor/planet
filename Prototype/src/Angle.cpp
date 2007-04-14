@@ -2,7 +2,6 @@
 
 namespace Prototype
 {
-
 	const Angle Angle::PI = Angle(PI_F);
 
 	float Angle::unifyAngle(float angle)

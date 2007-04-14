@@ -15,16 +15,6 @@ namespace Prototype
 			: type(type), size(size), data(data), time(time), tick(tick)	{}
 	};
 
-	//struct TimeMessage
-	//{
-	//	Message message;
-	//	int time;
-	//	
-	//	TimeMessage(const Message &message, int time)
-	//		: message(message), time(time)
-	//	{}
-	//};
-
 };
 
 #endif

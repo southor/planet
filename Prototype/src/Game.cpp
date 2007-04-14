@@ -22,10 +22,7 @@ namespace Prototype
 	Game::Game()
 	{
 		init();
-		//gui.init();
 		running = true;
-
-		//debugOutput = std::cout;
 
 		if (configHandler.loadFile(CONFIG_FILENAME))
 		{
@@ -51,7 +48,6 @@ namespace Prototype
 
 		server.getTimeHandler()->incrementTime(1234);
 
-		
 		printf("Choose.\n");
 		
 		while (true)
@@ -98,11 +94,6 @@ namespace Prototype
 				
 			SDL_Delay(20);
 		}
-		
-		
-		//SHOW_SERVER = true;
-		//SHOW_CLIENT_1 = true;
-		//SHOW_CLIENT_2 = true;
 		
 		#ifndef USE_VIRTUAL_CONNECTION
 		NetworkServer networkServer;
@@ -225,8 +216,6 @@ namespace Prototype
 		}
 		#endif
 		
-		//timeHandler.reset();
-
 		#ifdef USE_VIRTUAL_CONNECTION
 
 		// Initialize virtual connections
@@ -274,13 +263,11 @@ namespace Prototype
 			// --------------
 			if (SHOW_SERVER)
 			{
-				//if (!client1Connected)
-					if (server.clientConnected(sender2, reciever2))
-						clientsConnected++;
+				if (server.clientConnected(sender2, reciever2))
+					clientsConnected++;
 				
-				//if (!client2Connected)
-					if (server.clientConnected(sender4, reciever4))
-						clientsConnected++;
+				if (server.clientConnected(sender4, reciever4))
+					clientsConnected++;
 			}
 
 			// --------------
@@ -310,42 +297,27 @@ namespace Prototype
 
 		while (running) 
 		{
-			//printf("serverT: %d, clientT: %d\n", server.getTimeHandler()->getTime(), client1.getTimeHandler()->getTime());
-
 			pollEvents();
 
 			if (SHOW_CLIENT_1)
 			{
-				//nowRunning = "client1 logic: ";
-				//std::cout << nowRunning;
 				client1.runStep();
-				//std::cout << std::endl;
 			}
 				
 			if (SHOW_CLIENT_2)
 			{
-				//nowRunning = "client2 logic: ";
-				//std::cout << nowRunning;
 				client2.runStep();
-				//std::cout << std::endl;
-				
 			}
 
 			if (SHOW_SERVER)
 			{
-				//nowRunning = "server logic: ";
-				//std::cout << nowRunning;
 				for (int i = 0; i < 3; i++)
 					server.logic();
-				//std::cout << std::endl;
 			}
-			// guichan
-			//gui.gui->logic();
 
 			// RENDER
 			if (((client1.getRequestRender() || !SHOW_CLIENT_1) &&
 				(client2.getRequestRender() || !SHOW_CLIENT_2) // &&
-				//(server.getRequestRender() || !SHOW_SERVER)
 				) ||
 				(configHandler.getIntValue("render_at_least_every_tick", RENDER_AT_LEAST_EVERY_TICK_DEFAULT) == 1))
 			{
@@ -364,41 +336,29 @@ namespace Prototype
 
 	void Game::render(Uint32 time)
 	{
-		//glClear(GL_COLOR_BUFFER_BIT);
-
 		glDisable(GL_LIGHTING);
 
 		if (SHOW_CLIENT_1)
 		{
-			//nowRunning = "client1 render: ";
 			client1.useViewport();
 			client1.renderAndUpdate();
-			//std::cout << std::endl;
 		}
 
 		if (SHOW_CLIENT_2)
 		{
-			//nowRunning = "client2 render: ";
 			client2.useViewport();
 			client2.renderAndUpdate();
-			//std::cout << std::endl;
 		}
 
 		if (SHOW_SERVER)
 		{
-			//nowRunning = "server render: ";
 			server.useViewport();
 			server.render();
-			//std::cout << std::endl;
 		}
 		
-		// guichan
 		glViewport(0, 0, WINDOW_SIZE.x, WINDOW_SIZE.y); 
-		//gui.gui->draw();
-
 
 		draw(time);
-		
 		
 		glEnable(GL_LIGHTING);
 		glFlush();
@@ -494,30 +454,19 @@ namespace Prototype
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClearDepth(1.0f);
 		glClearAccum(0.0, 0.0, 0.0, 0.0);
-		//glEnable(GL_DEPTH_TEST);
-		//glDepthFunc(GL_LEQUAL);
+
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 		// ------- set viewports -----------		
 		{
 			static const uint BORDER_WIDTH = 1;
 			uint w2 = w - BORDER_WIDTH*2;
-			
-			//client1.setViewport(0, h/4, w2/3, (h*3)/4);
-			//client2.setViewport(w2/3 + BORDER_WIDTH, h/4, w2/3, (h*3)/4);
-			//server.setViewport(((w2*2)/3) + BORDER_WIDTH*2, h/4, w2/3, (h*3)/4);
+
 			server.setViewport(0, h/4, w2/3, (h*3)/4);
 			client1.setViewport(w2/3 + BORDER_WIDTH, h/4, w2/3, (h*3)/4);
 			client2.setViewport(((w2*2)/3) + BORDER_WIDTH*2, h/4, w2/3, (h*3)/4);
 		}
 
-		
-
-		//client1.viewportHandler.screenRenderPos = Vec2<int>(0, h/4);
-		//viewportHandler1.screenRenderSize = Vec2<int>(w/2, (h*3)/4);
-		//viewportHandler2.screenRenderPos = Vec2<int>(w/2, h/4);
-		//viewportHandler2.screenRenderSize = viewportHandler1.screenRenderSize;
-		
 		client1.getUserInputHandler()->setStateCmdKey(Cmds::LEFT, SDLK_a);
 		client1.getUserInputHandler()->setStateCmdKey(Cmds::RIGHT, SDLK_d);
 		client1.getUserInputHandler()->setStateCmdKey(Cmds::FORWARD, SDLK_w);
@@ -575,15 +524,8 @@ namespace Prototype
 				client1.getKeyHandler()->setKeyReleased(event.key.keysym.sym);
 				client2.getKeyHandler()->setKeyReleased(event.key.keysym.sym);
 			
-			case SDL_MOUSEMOTION:
-				{
-
-					//Vec2<int> mouseScreenPos(event.motion.x, event.motion.y);
-					//mouseScreenPos.y = WINDOW_SIZE.y - mouseScreenPos.y; // convert from SDL to GL position
-					//client2.setCurrentMousePos(mouseScreenPos);
-				}
-			break;
 				break;
+				
 			case SDL_QUIT:
 				running = false;
 		  break;
@@ -593,73 +535,10 @@ namespace Prototype
 	     
 			} // end switch
 			
-
 			client1.getUserInputHandler()->pushInput(event);
 			client2.getUserInputHandler()->pushInput(event);
 
-			// Pass event to guichan
-			//gui.input->pushInput(event);
 		} // end while
 		
 	}
 };
-
-
-
-
-
-
-
-
-
-
-// -------------------------------------------------------------------
-// DEBUG CODE
-// -------------------------------------------------------------------
-
-		/*
-		Link clientLink(networkClient2.getMessageSender(), networkClient2.getMessageReciever());
-		
-		ShootCmd shootCmd(3, 4);
-		
-		Color color(1.0f, 0.5f, 0.3f);
-		InitClient initClient(color);
-		
-		UserCmd userCmd;
-		userCmd.cmdUp = true;
-		userCmd.cmdDown = false;
-		userCmd.cmdRight = false;
-		userCmd.cmdLeft = true;
-		userCmd.viewangle = 0.5f;
-
-		clientLink.pushMessage(shootCmd);
-		clientLink.pushMessage(userCmd);
-		clientLink.pushMessage(initClient);
-		clientLink.transmit();
-		
-		SDL_Delay(10);
-		
-
-		Link serverLink(&(serverClient->sender), &(serverClient->reciever));
-
-		if (serverLink.hasMessageOnQueue())
-		{
-			serverLink.popMessage();
-			ShootCmd *shootCmd2 = serverLink.getPoppedData<ShootCmd>();
-			printf("playerId: %d, weapon: %d\n", shootCmd2->playerId, shootCmd2->weapon);
-		}
-
-		if (serverLink.hasMessageOnQueue())
-		{
-			serverLink.popMessage();
-			UserCmd *userCmd2 = serverLink.getPoppedData<UserCmd>();
-			printf("usercmd: up: %d, down: %d\n", userCmd2->cmdUp, userCmd2->cmdDown);
-		}
-		
-		if (serverLink.hasMessageOnQueue())
-		{
-			serverLink.popMessage();
-			InitClient *initClient2 = serverLink.getPoppedData<InitClient>();
-			printf("color: %f, %f, %f\n", initClient2->color.r, initClient2->color.g, initClient2->color.b);
-		}
- 		*/

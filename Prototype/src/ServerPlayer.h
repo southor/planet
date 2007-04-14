@@ -22,13 +22,6 @@ namespace Prototype
 	public:
 		Link link;
 		
-		
-
-		//ServerPlayer() : userCmdHistoryList(USER_CMD_HISTORY_SIZE, UserCmd::interExtraPolate)
-		//{
-		//	userCmdHistoryList.setDefaultData(UserCmd::DEFAULT_USER_CMD);
-		//}
-		
 		ServerPlayer(PlayerId playerId, const Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 			: Player(color), link(messageSender, messageReciever), userCmdHistoryList(USER_CMD_HISTORY_SIZE, UserCmd::interExtraPolate)
 		{

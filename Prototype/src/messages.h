@@ -45,7 +45,6 @@ namespace Prototype
 	{
 		static const size_t messageType = UPDATE_PLAYER_OBJ;
 
-		//size_t playerObjId;
 		PlayerId playerId;
 		Pos pos;
 		Angle angle;
@@ -227,20 +226,6 @@ namespace Prototype
 	{
 		static const size_t messageType = USER_CMD;
 
-		//enum ShootAction
-		//{
-		//	START_SHOOTING,
-		//	CONTINUE_SHOOTING,
-		//	NOT_SHOOTING
-		//};
-
-		//bool cmdLeft;
-		//bool cmdRight;
-		//bool cmdUp;
-		//bool cmdDown;
-		//float viewangle;
-
-		//int stateCmds; // bitpattern
 		StateCmds stateCmds;
 		Angle aimAngle;
 		
@@ -252,21 +237,9 @@ namespace Prototype
 		int objLag; // The object lag the client uses this tick
 		GameObjId firstProjectileId; // the id of the first projectile shot during this tick
 		
-
-
-
-		//ShootAction shootAction;
-		//bool continuosShooting
-
-		
-
 		UserCmd()
 		{}
 
-		//UserCmd(StateCmds stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
-		//{}
-
-		//UserCmd(int stateCmds, Angle aimAngle) : stateCmds(stateCmds), aimAngle(aimAngle)
 		UserCmd(StateCmds stateCmds, Angle aimAngle, Projectile::Type weapon, int nShots,
 				bool shooting, Tickf firstShotTick, GameObjId firstProjectileId, int objLag)
 			: stateCmds(stateCmds), aimAngle(aimAngle), weapon(weapon), nShots(nShots), shooting(shooting),
@@ -278,41 +251,14 @@ namespace Prototype
 
 		static UserCmd getDefaultUserCmd(PlayerId playerId);
 
-		//inline bool isShooting() const				{ return (shootAction != NOT_SHOOTING); }
 		inline bool isShooting() const					{ return shooting; }
 		
-		//UserCmd operator +(const UserCmd &rh) const
-		//{			
-		//	
-		//	//int resultNShots;
-		//	UserCmd result(stateCmds | rh.stateCmds, aimAngle + rh.aimAngle, Projectile::DEFAULT_TYPE, 0, NOT_SHOOTING);
-		//	return result;
-		//}
-
-		//UserCmd operator -(const UserCmd &rh) const
-		//{
-		//	UserCmd result(stateCmds & rh.stateCmds, aimAngle - rh.aimAngle, Projectile::DEFAULT_TYPE, 0, NOT_SHOOTING);
-		//	return result;
-		//}
-
-		//UserCmd operator *(float rh) const
-		//{			
-		//	UserCmd result(stateCmds, aimAngle * rh, Projectile::DEFAULT_TYPE, 0, NOT_SHOOTING);
-		//	return result;
-		//}
-
 		static void interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData);
-
 
 		// Produces the next legal UserCmd from this one.
 		void assumeNext(UserCmd &resultData) const;
 
-
-		//inline static const UserCmd& getDefaultUserCmd()		{ return defaultUserCmd; }
 		static const UserCmd DEFAULT_USER_CMD;
-
-		// debug
-		//inline bool isConsistent() const						{ return isConsistent(0); }
 
 		bool isConsistent(PlayerId playerId, int currentTick) const;
 
@@ -321,18 +267,6 @@ namespace Prototype
 		bool isConsistent() const;
 
 	};	
-
-	//struct ShootCmd
-	//{
-	//	static const size_t messageType = SHOOT_CMD;
-
-	//	PlayerId playerId;
-	//	int weapon;
-	//	
-	//	ShootCmd(PlayerId playerId, int weapon)
-	//		: playerId(playerId), weapon(weapon)
-	//	{}
-	//};
 
 };
 

@@ -118,16 +118,4 @@ namespace Prototype
 		}
 	}
 
-	//void UserInputHandler::setCurrentMousePos(Vec2<int> mouseScreenPos)
-	//{
-	//	mousePosChanged = true;
-		//if (playerObj)
-		//{			
-			//viewportHandler.renderArea.size = WorldRenderer::RENDER_SIZE; // set current render area
-			//viewportHandler.renderArea.setCenterPos(playerObj->pos); // set current render area
-			//mousePos = viewportHandler.screenToGame(mouseScreenPos); // mouse position in game
-		//}
-		
-	//}
-	
 };
