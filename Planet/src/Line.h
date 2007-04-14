@@ -2,14 +2,9 @@
 #define __line_h__
 
 #include "basic.h"
-//#include "vec3f.h"
-
 
 namespace Planet
 {
-
-	//typedef Vec3f Pos;
-
 	class Line
 	{
 	public:

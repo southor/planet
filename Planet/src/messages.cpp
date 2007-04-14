@@ -76,18 +76,4 @@ namespace Planet
 		if (firstProjectileId.isPlayerObjId()) return false;
 		return firstShotTick >= 0.0;
 	}
-
-	//bool UserCmd::isConsistent(int currentTick) const
-	//{
-	//	if ((weapon < 0) || (weapon >= Projectile::N_TYPES)) return false;
-	//	if (nShots < 0) return false;
-	//	if (objLag < 0) return false;
-	//	if (!firstProjectileId.isConsistent()) return false;
-	//	return firstShotTick >= static_cast<Tickf>(currentTick);
-	//}
-
-	//bool UserCmd::isConsistent(int currentTick) const
-	//{
-
-	//}
 };

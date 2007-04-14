@@ -28,10 +28,6 @@ namespace Planet
 		inline int getTick0Time()				{ return tick0TimeBufferSum / TICK0TIME_BUFFER_SIZE; }
 		void setTick0Time(int tick0Time);
 		void enterTick0Time(int tick0Time);
-
-
-
-		
 		
 	private:
 		Tickf stepTickf;

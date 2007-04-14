@@ -12,7 +12,7 @@ namespace Planet
 		static const int TICKS_PER_SECOND = 20;
 		static const int TICK_DELTA_TIME = 1000 / TICKS_PER_SECOND;
 
-		TimeHandler() : startTime(0)//, deltaTime(1), stepTime(0)
+		TimeHandler() : startTime(0)
 		{}
 
 		inline int getTime()				{ return SDL_GetTicks() - startTime; }

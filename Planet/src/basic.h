@@ -1,17 +1,11 @@
 #ifndef __basic_h__
 #define __basic_h__
 
-//#include <vector>
-
 #include "vec2.h"
 #include "assert.h"
 #include "vec3f.h"
 #include "templatefunctions.h"
 #include "macros.h"
-//#include "mat3f.h"
-//#include "SpherePoint.h"
-
-
 
 namespace Planet
 {
@@ -32,12 +26,10 @@ namespace Planet
 
 	typedef float Tickf;
 
-	//template <typename T>
 	inline float radianToDegree(float angle)
 	{
 		return angle * 360.0f / (2.0f * PI_F);
 	}
-	
 
 	typedef uint PlayerId;
 };

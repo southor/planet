@@ -17,7 +17,6 @@ int main(int argc, char **argv)
 
 	Planet::Game game;
 	game.run();
-	//game.run2();
 	
 	return 0;
 }

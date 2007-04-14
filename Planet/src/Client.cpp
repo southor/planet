@@ -12,13 +12,10 @@ namespace Planet
 	Client::Client() : ClientGlobalAccess(&clientGlobalObj), connectionPhase(0),
 						planet(&clientGlobalObj), requestRender(false), currentObjLag(0), predictionHandler(0)
 	{
-		//predictionHandler.setPlanet(&planet);
-		//assert(predictionHandler.isConsistent());
 	}
 
 	void Client::init()
 	{
-		std::cout << "running client::init()" << std::endl;
 		planet.init(currentMap);
 		sight.init();
 		sight.setCamera(&camera);
@@ -40,8 +37,6 @@ namespace Planet
 		while(link.hasMessageOnQueue())
 		{
 			int messageType = link.popMessage();
-			
-			//if (CLIENT_PRINT_NETWORK_DEBUG) printf("CLIENT: got message with type: %d\n", messageType);
 			
 			switch(messageType)
 			{
@@ -68,15 +63,6 @@ namespace Planet
 					}
 					else
 					{
-						/*
-						DEBUG!
-						Pos pos = updatePlayerObj->pos;
-						int tick = link.getPoppedTick();
-						printf("CLIENT: #1# updating other client (%d) position to: (%f, %f, %f), tick: %d\n", updatePlayerObj->playerId, pos.x, pos.y, pos.z, tick);
-						pos = playerObj->getPos();
-						printf("CLIENT: #2# updating other client (%d) position to: (%f, %f, %f), tick: %d\n", updatePlayerObj->playerId, pos.x, pos.y, pos.z, tick);
-						*/
-
 						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj);
 					}
 				}
@@ -93,21 +79,8 @@ namespace Planet
 						connectionPhase++;
 				}
 				break;
-			/*
-			case ADD_OBSTACLE:
-				{
-					AddObstacle *addObstacle = link.getPoppedData<AddObstacle>();
-					worldModel.addObstacle(addObstacle->obstacleId, addObstacle->obstacleArea);
-					
-					if (connectionPhase == ClientPhase::GET_ADDOBSTACLE)
-						connectionPhase++; 
-				}
-				break;
-			*/
 			case ADD_PROJECTILE:
 				{
-					//printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
-
 					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();
 					assert(addProjectile->isConsistent());
 
@@ -125,8 +98,6 @@ namespace Planet
 				break;
 			case UPDATE_PROJECTILE:
 				{
-					//printf("CLIENT: handling update_projectile @ %d\n", timeHandler.getTime());
-					
 					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
 					assert(updateProjectile->isConsistent());
 
@@ -134,14 +105,10 @@ namespace Planet
 
 					assert(projectile);
 					if (projectile) projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
-
-					//std::cout << "client projectile:  pos.x = " << projectile->getPos().x << "  pos.y = " << projectile->getPos().y << std::endl;
 				}
 				break;
 			case REMOVE_PROJECTILE:
 				{
-					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
-					
 					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
 					assert(removeProjectile->isConsistent());					
 					bool removed = planet.getProjectiles().remove(removeProjectile->projectileId);
@@ -150,8 +117,6 @@ namespace Planet
 				break;
 			case PROJECTILE_HIT:
 				{
-					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
-					
 					ProjectileHit *projectileHit = link.getPoppedData<ProjectileHit>();
 					assert(projectileHit->isConsistent());					
 					
@@ -163,7 +128,6 @@ namespace Planet
 				break;
 			case SET_TICK_0_TIME:
 				getTimeHandler()->enterTick0Time((link.getPoppedData<SetTick0Time>())->tick0Time);
-				//std::cout << "tick0Time: " << timeHandler.getTick0Time() << std::endl;
 				break;
 			default:
 				break;
@@ -176,9 +140,6 @@ namespace Planet
 	void Client::getCurrentUserCmd(UserCmd &userCmd)
 	{
 		assert(predictionHandler);
-		//static int lastTick = -100;
-		//assert(timeHandler.getStepTick() >= (lastTick +1));
-		//lastTick = timeHandler.getStepTick();
 
 		// get current tick
 		int currentTick = static_cast<int>(getStepTick());
@@ -211,16 +172,13 @@ namespace Planet
 		// set shooting action and nShots
 		assert(userCmd.nShots == 0);
 		userCmd.firstShotTick = playerObj->getNextShootTick();
-		//if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING)		
+
 		if (userCmd.isShooting())
 		{			
 			assert(userCmd.firstShotTick >= static_cast<Tickf>(currentTick));
 			userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);
 		}
-		//else
-		//{
-		//	assert(userCmd.shootAction == UserCmd::NOT_SHOOTING);
-		//}
+
 		bool startShootingThisTick = false;
 		while(userInputHandler.hasActionCmdOnQueue())
 		{
@@ -263,7 +221,6 @@ namespace Planet
 		}
 		if ((userCmd.isShooting() || (userCmd.nShots > 0)) && DEBUG_SHOOTING)
 		{			
-			//userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick, userCmd.shootAction == UserCmd::CONTINUE_SHOOTING);
 			std::cout << "-- " << currentTick << " shooting, nShots = " << userCmd.nShots;
 			std::cout << "   playerObj.nextShootTick  = " << playerObj->getNextShootTick() << std::endl;
 		}
@@ -274,8 +231,6 @@ namespace Planet
 
 	void Client::runStep()
 	{
-		//printf("Client::runStep(), phase: %d\n", connectionPhase);
-
 		assert(isConsistent());
 
 		link.retrieve(getTimeHandler()->getTime());
@@ -289,16 +244,14 @@ namespace Planet
 				{
 					debugPrintState();
 				}
-				
-				//assert(predictionHandler.isConsistent());
+
 				assert(predictionHandler->isConsistent());
 				
 				int currentTick = static_cast<int>(getStepTick());
-				
 
 				// calculate current objectLag
 				int tick0Time = getTimeHandler()->getTick0Time();
-				//std::cout << "tick0Time: " << tick0Time << std::endl;
+
 				double tmp = static_cast<double>(link.getCurrentLag() - tick0Time);
 				this->currentObjLag = static_cast<int>(tmp * OBJECT_LAG_MODIFIER + OBJECT_LAG_ADD_TIME)
 													/ TimeHandler::TICK_DELTA_TIME + OBJECT_LAG_ADD_TICK;
@@ -322,18 +275,12 @@ namespace Planet
 				PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
 				playerObj->updateToTickData(currentTick);
 				playerObj->setUserCmd(&userCmd);
-				// planet.handlePlayerShooting(playerId);
 
 				// perform prediction
 				predictionHandler->predict(currentTick + 1);
 
 				Ship *ship = playerObj->getShip();
 				camera.update(ship->position, ship->reference);
-				/*
-				Pos p(5.0f, 3.0f, 3.0f);
-				Pos r(0.0f, 1.0f, 0.0f);
-				camera.update(p, r);
-				*/
 			}
 			else
 			{
@@ -442,22 +389,10 @@ namespace Planet
 		planet.updatePlayerObjsToTickData(playerObjRenderTickf);
 		(planet.getPlayerObjs())[playerId]->updateToTickData(currentTickf);
 
-
 		//render
-		//planet.getPlanetBody()->render();
 		planetRenderer.render(planet);
 
-		//// Disable lights for ship and sight rendering
-		//glDisable(GL_LIGHTING);
-		//glDisable(GL_DEPTH_TEST);
-
-
-		//PlayerObj *playerObj = (planet.getPlayerObjs())[playerId];
-
-		//playerObj->getShip()->render();
 		sight.render();
-
-		//planetRenderer.render(ship.position, ship.getDirection());
 
 		requestRender = false;
 		handleServerMessages();
@@ -465,13 +400,7 @@ namespace Planet
 
 	void Client::addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, const Pos &playerAimPos, int tick)
 	{
-		
-		//size_t playerId = players.getSize();
-		//size_t playerObjId = playerId; // for now
-		
 		players.add(playerId, new Player(playerColor));
-		//players[playerId].playerObjId = playerObjId;
-		//worldModel.addPlayerObj(playerId, playerObjId, playerPos);
 		
 		// if this is me
 		bool isMe = (playerId == this->playerId);

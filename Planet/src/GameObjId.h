@@ -2,9 +2,6 @@
 #define __gameobjid_h__
 
 #include "basic.h"
-//#include <limits>
-//#include "PlayerId.h"
-//#define max(x) max(x)
 
 namespace Planet
 {

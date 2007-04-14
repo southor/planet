@@ -107,8 +107,6 @@ namespace Planet
 
 	void Server::startGame()
 	{
-		//getTimeHandler()->reset();
-		
 		Planet::PlayerObjs::Iterator playerObjsIt = planet.getPlayerObjs().begin();
 		Planet::PlayerObjs::Iterator playerObjsEnd = planet.getPlayerObjs().end();
 		for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
@@ -116,37 +114,13 @@ namespace Planet
 			PlayerId playerId = playerObjsIt->first;
 			PlayerObj *playerObj = playerObjsIt->second;
 
-			//Color color(static_cast<float>(playerId % 2), 1.0f-static_cast<float>(playerId % 2), 0.0f); // the correct color should be retrieved from Player
-
 			AddPlayerObj addPlayerObj(playerId, players[playerId]->color, playerObj->getPos(), playerObj->getAimPos());
 
 			pushMessageToAll(players, addPlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 		}
 
 		transmitAll(players);
-		
-	
-		//// TODO Send the hole worldmodel to clients, all players and everything
-		//ServerPlayers::Iterator playersIt;
-		//for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
-		//{			
-		//	const ServerPlayer *player = playersIt->second;
-
-		//	WorldModel::Obstacles::Iterator obstaclesIt = worldModel.getObstacles().begin();
-		//	WorldModel::Obstacles::Iterator obstaclesEnd = worldModel.getObstacles().end();
-		//	for(; obstaclesIt != obstaclesEnd; ++obstaclesIt)
-		//	{
-		//		GameObjId obstacleId = obstaclesIt->first;
-		//		Obstacle *obstacle = obstaclesIt->second;
-		//		
-		//		AddObstacle addObstacle(obstacleId, *obstacle);
-		//		player->link.pushMessage(addObstacle, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-		//	}
-
-		//	player->link.transmit();
-		//}
 	}
-
 
 	bool Server::clientConnected(MessageSender *messageSender, MessageReciever *messageReciever)
 	{
@@ -221,7 +195,6 @@ namespace Planet
 			int tickFromTime = 10 + getTimeHandler()->getTickFromTime();
 			getTimeHandler()->setTick(tickFromTime);
 			
-			
 			// Update next shoot tick for currentTick
 			
 			playerObjsIt = planet.getPlayerObjs().begin();
@@ -229,7 +202,6 @@ namespace Planet
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{				
 				playerObjsIt->second->tickInit(playerObjsIt->first, getTimeHandler()->getTick());
-				//playerObjsIt->second->updateNextShootTick(getTimeHandler()->getTick() - 1);
 				assert(playerObjsIt->second->isConsistent(getTimeHandler()->getTick()));
 			}
 			
@@ -251,13 +223,11 @@ namespace Planet
 			// set waitingForClients to true if player doesn't have current tick
 			waitingForClients = waitingForClients || (player->link.getLatestTick() < tick);
 
-			//printf("playerId: %d, latestTick: %d\n", playerId, player.link.getLatestTick());
-
 			if (player->link.getLatestTick() < latestTick) // used for debugging
 				latestTick = player->link.getLatestTick(); // used for debugging
 
 			// Check tick timeout
-			if (getTimeHandler()->getTickFromTimeWithTimeout() >= tick)      //if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
+			if (getTimeHandler()->getTickFromTimeWithTimeout() >= tick)
 			{
 				if (SERVER_PRINT_NETWORK_DEBUG) printf("#################### TIMEOUT ######################\n");
 				waitingForClients = false;
@@ -279,7 +249,6 @@ namespace Planet
 			planet.isConsistent();
 
 			// Read messages from clients
-			//ServerPlayers::Iterator playersIt;
 			for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 			{
 				PlayerId playerId = playersIt->first;
@@ -360,8 +329,6 @@ namespace Planet
 				UpdateProjectile updateProjectile(projectilesIt->first, projectile->getPos());
 				
 				pushMessageToAll(players, updateProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-
-				//projectile->storeToTickData(getTimeHandler()->getTick());
 			}
 
 			transmitAll(players);

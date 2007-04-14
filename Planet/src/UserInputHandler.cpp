@@ -109,8 +109,6 @@ namespace Planet
 			{
 				Vec2<int> tmpMouseScreenPos(event.motion.x, event.motion.y);
 				tmpMouseScreenPos.y = Game::WINDOW_SIZE.y - tmpMouseScreenPos.y; // convert from SDL to GL position
-				//setCurrentMousePos(mouseScreenPos);
-				//mousePosChanged = true;
 				this->mouseScreenPos = tmpMouseScreenPos;			
 			}
 			break;

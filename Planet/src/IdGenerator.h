@@ -5,8 +5,6 @@
 
 namespace Planet
 {
-	
-	
 
 	class IdGenerator
 	{

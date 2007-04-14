@@ -13,9 +13,6 @@ namespace Planet
 	{
 	public:
 
-		// Render area in game coordinates
-		//Rectangle renderArea;
-		
 		// Render area in GL screen coordinates
 		Vec2<int> screenRenderPos;
 		Vec2<int> screenRenderSize;
@@ -24,12 +21,6 @@ namespace Planet
 
 		//Setups gl viewport
 		void useViewport();
-
-		/**
-		 * @param screenPos position in GL screen coordinates
-		 * @return position in game coordinates
-		 */
-		//virtual Pos screenToGame(const Rectangle &renderArea, Vec2<int> screenPos);
 
 	};
 };

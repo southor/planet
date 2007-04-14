@@ -1,19 +1,14 @@
 #ifndef __projectile_h__
 #define __projectile_h__
 
-//#include "MovableObj.h"
 #include "Line.h"
 #include "basic.h"
 #include "GameObjId.h"
 #include "HistoryList.inl"
-//#include "Angle.h"
 #include "TimeHandler.h"
 
 namespace Planet
 {
-	
-	
-	
 	class Projectile : public Line
 	{
 	private:
@@ -27,9 +22,6 @@ namespace Planet
 			double shooterObjLagMod;
 			double viewerObjLagMod;
 			
-
-			//RenderLagMods(float viewerObjLagMod, float viewerRecieveLagMod, float shooterRecieveLagMod)
-			//	: viewerObjLagMod(viewerObjLagMod), viewerRecieveLagMod(viewerRecieveLagMod), shooterRecieveLagMod(shooterRecieveLagMod)
 			RenderLagMods(double shooterObjLagMod, double viewerObjLagMod)
 				: shooterObjLagMod(shooterObjLagMod), viewerObjLagMod(viewerObjLagMod)
 			{}
@@ -50,10 +42,6 @@ namespace Planet
 			int blastDamage;
 			float blastDistance;
 			int shootInterval; // time interval in milliseconds
-
-			//Properties(float speed, int directDamage, int blastDamage, float blastDistance)
-			//	: speed(speed), directDamage(directDamage), blastDamage(blastDamage), blastDistance(blastDistance)
-			//{}
 		};
 
 		static const int N_TYPES = 2;
@@ -65,10 +53,6 @@ namespace Planet
 		};
 		static const Type DEFAULT_TYPE = BULLET;
 
-		//Pos pos;
-
-		//Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, int currentTick, Tickf shootTick, int objLag);
-		//Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, Tickf shootTick, int objLag);
 		Projectile(Type type, const Pos &pos, const Vec &ext, GameObjId shooterId, size_t nHistoryTicks, Tickf shootTick, int objLag);
 
 		~Projectile()											{}
@@ -79,7 +63,6 @@ namespace Planet
 		inline Vec getExt() const								{ return ext; }
 		inline Tickf getShootTick() const						{ return shootTick; }
 
-		//Line getLine() const;
 		const Line& getLine() const								{ return *this; }
 
 		
@@ -92,8 +75,6 @@ namespace Planet
 		inline int getObjLag() const							{ return objLag; }
 		inline int getDirectDamage() const						{ return properties[type].directDamage; }
 		static inline int getDirectDamage(Type type)			{ return properties[type].directDamage; }
-		//static inline int getShootIntervalTime(Type type)		{ return properties[type].shootInterval; }
-		//static inline Tickf getShootIntervalTicks(Type type)	{ return static_cast<Tickf>(getShootIntervalTime(type)) / static_cast<Tickf>(TimeHandler::TICK_DELTA_TIME); }
 		
 		// time interval in ticks
 		static inline Tickf getShootInterval(Type type)			{ return static_cast<Tickf>(properties[type].shootInterval) / static_cast<Tickf>(TimeHandler::TICK_DELTA_TIME); }
@@ -115,7 +96,6 @@ namespace Planet
 		static const Properties properties[N_TYPES];
 
 		Type type;
-		//Angle angle;
 		
 		GameObjId shooterId;
 		Tickf shootTick; // the exact moment when it is shot.

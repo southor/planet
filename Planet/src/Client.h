@@ -36,10 +36,6 @@ namespace Planet
 
 		static const bool DEBUG_SHOOTING = true;
 
-		//static const int MAX_N_PLAYERS = 2;
-
-
-
 		Client();
 
 		~Client();
@@ -57,22 +53,13 @@ namespace Planet
 		void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, const Pos &playerAimPos, int tick);
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
-		//KeyHandler* getKeyHandler();
+
 		Camera* getCamera() { return &camera; }	
 		inline UserInputHandler* getUserInputHandler()	{ return &userInputHandler; }
 		inline bool getRequestRender()					{ return requestRender; }
 
 		void setPlayerId(PlayerId playerId)				{ this->playerId = playerId; }
 		void setColor(Color color)						{ this->color = color; }
-		//inline void setViewport(int x, int y, int w, int h)
-		//{
-		//	viewportHandler.screenRenderPos.x = x;
-		//	viewportHandler.screenRenderPos.y = y;
-		//	viewportHandler.screenRenderSize.x = w;
-		//	viewportHandler.screenRenderSize.y = h;
-		//}
-		//inline void useViewport()						{ viewportHandler.useViewport(); }
-		
 
 	private:
 
@@ -92,8 +79,6 @@ namespace Planet
 		PlanetRenderer planetRenderer;
 	private:
 
-		//ClientWorldModel worldModel;
-		//WorldRenderer worldRenderer;
 		ClientPlayers players;
 		PredictionHandler *predictionHandler;
 		int currentObjLag; // controls the interpolation of objects
@@ -101,22 +86,12 @@ namespace Planet
 		PlayerId playerId;
 		Color color;	// should this exist or should the client have an Player object before we connect to server?
 
-		// stores viewport parameters
-		//ViewportHandler viewportHandler;
 		bool requestRender;
-
-		/**
-		 * Will calculate the player obj aiming angle from the mouse position.		
-		 * @param mouseScreenPos The mouse position in screen coordinates
-		 */
-		//Angle calcPlayerObjAngle(Vec2<int> mouseScreenPos);
 
 	public:
 		std::string currentMap;
-		//PlanetBody planetBody;
 		Camera camera;
 		Sight sight;
-		//Angle calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds);
 
 		//debug
 		bool isConsistent()

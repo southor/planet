@@ -121,7 +121,6 @@ namespace Planet
 
 			glEnable(GL_LIGHT0);
 				
-			//if (connectedToServer || client.getRequestRender())
 			if (connectedToServer)
 				client.renderAndUpdate();			
 
@@ -178,7 +177,6 @@ namespace Planet
 
 		SDL_ShowCursor(SDL_ENABLE);
 		SDL_WM_SetCaption("Planet", "planet");
-		//SDL_WM_SetIcon(IMG_Load("planet.bmp"), 0);
 
 		glViewport(0, 0, w, h);
 		
@@ -202,8 +200,6 @@ namespace Planet
 
 		glShadeModel(GL_SMOOTH);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
-		//glClearDepth(1.0f);
-		//glClearAccum(0.0, 0.0, 0.0, 0.0);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 

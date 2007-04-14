@@ -39,8 +39,6 @@ namespace Planet
 			: MessageReciever(), retrieveMessagePhase(0), retrieveSize(0), retrieveTime(0), retrieveTick(0), retrieveType(0)	{}
 		~NetworkMessageReciever()																			{}
 
-		//Message popMessage();
-
 		void setSocket(TCPsocket socket);
 
 		void retrieve(int currentTime);

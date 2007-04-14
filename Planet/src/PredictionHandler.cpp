@@ -6,29 +6,22 @@ namespace Planet
 
 	PredictionHandler::PredictionHandler(PlayerId playerId, ClientPlanet *planet) :
 		userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS, UserCmd::interExtraPolate),
-		//userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS),
 		planet(planet), latestServerInputTick(0), playerId(playerId), rePredictNeeded(false)
 	{		
 		userCmdHistoryList.setDefaultData(UserCmd::getDefaultUserCmd(playerId));
 		assert(isTick0UserCmdConsistent());
 	}
-
-	//int PredictionHandler::getlastTick(PlayerId playerId)
 	int PredictionHandler::getlastTick()
 	{
 		return getPlayerObj(playerId)->getLastStoredTick();
 	}
 
-	//void PredictionHandler::predict(PlayerId playerId, int fromTick, int toTick)
 	void PredictionHandler::predict(int fromTick, int toTick)
 	{
 		PlayerObj *playerObj = getPlayerObj(playerId);
 		
 		assert(playerObj);
 		assert(planet);
-		//assert(getlastTick(playerId) >= fromTick);
-		
-		//if (fromTick != 0) std::cout << "a prediction from " << fromTick << " to " << toTick << std::endl;
 
 		//debug
 		assert(isTick0UserCmdConsistent());
@@ -63,7 +56,6 @@ namespace Planet
 		//just test some things for now
 
 		if (!userCmdHistoryList.isConsistent()) return false;
-		//std::cout << "userCmdList consistent" << std::endl;
 		return isTick0UserCmdConsistent();
 	}
 		
