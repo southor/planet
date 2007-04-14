@@ -9,11 +9,18 @@ object_lag_time 18
 prediction_amount_modifier 1.1
 prediction_amount_add_time 10
 
-client_1_to_server_simulated_lag 250
-server_to_client_1_simulated_lag 250
+client_1_to_server_init_simulated_lag 250
+server_to_client_1_init_simulated_lag 250
 
-client_2_to_server_simulated_lag 0
-server_to_client_2_simulated_lag 0
+client_2_to_server_init_simulated_lag 0
+server_to_client_2_init_simulated_lag 0
+
+
+client_1_to_server_final_simulated_lag 250
+server_to_client_1_final_simulated_lag 250
+
+client_2_to_server_final_simulated_lag 0
+server_to_client_2_final_simulated_lag 0
 
 player_obj_health 300
 
