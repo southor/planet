@@ -23,18 +23,12 @@ namespace Prototype
 		
 		while (!sendDeque.empty())
 		{
-			//std::cout << "tl1 ";
-			
 			// Retrieve message from queue
 			Message message = sendDeque.front();
 			sendDeque.pop_front();
 			
 			//printf("%d sending message: type: %d, time: %d, size: %d\n", v, message.type, message.time, message.size);
 			
-			//type = SDL_SwapBE32(type);
-			
-
-			//std::cout << "tl2 ";
 			// Send message on socket
 			result = SDLNet_TCP_Send(socket, &(message.type), sizeof(message.type));
 			if (result < sizeof(message.type))
@@ -42,7 +36,6 @@ namespace Prototype
 				printf("SDLNet_TCP_Send: %s (sending message.typec)\n", SDLNet_GetError());
 				return; 
 			}
-			//std::cout << "tl3 ";
 			
 			// Send time on socket
 			result = SDLNet_TCP_Send(socket, &(message.time), sizeof(message.time));
@@ -51,22 +44,15 @@ namespace Prototype
 				printf("SDLNet_TCP_Send: %s (sending message.time)\n", SDLNet_GetError());
 				return; 
 			}
-			//std::cout << "tl4 (message.tick)" << (message.tick) << " " << sizeof(message.tick) << "  " << SDLNet_GetError() << std::endl;
-
 
 			// Send tick on socket
 			result = SDLNet_TCP_Send(socket, &(message.tick), sizeof(message.tick));
-			//std::cout << "tl4.5 ";
 			if (result < sizeof(message.tick))
 			{ 
 				printf("SDLNet_TCP_Send: %s (sending message.tick)\n", SDLNet_GetError());
 				return; 
 			}
-			//std::cout << "tl5 ";
-			
-			
-			//len = SDL_SwapBE32(len);
-			
+	
 			// Send length of message.data
 			result = SDLNet_TCP_Send(socket, &(message.size), sizeof(message.size));
 			if (result < sizeof(message.size))
@@ -74,9 +60,6 @@ namespace Prototype
 				printf("SDLNet_TCP_Send: %s (sending message.size)\n", SDLNet_GetError());
 				return; 
 			}
-			//std::cout << "tl6 ";
-
-			//len = SDL_SwapBE32(len);
 
 			// Send message.data
 			result = SDLNet_TCP_Send(socket, message.data, message.size);
@@ -85,14 +68,8 @@ namespace Prototype
 				printf("SDLNet_TCP_Send: %s (sending message.data)\n", SDLNet_GetError());
 				return; 
 			}
-			//std::cout << "tl7 ";
 			
 			delete message.data;
-
-			//std::cout << "tl8 ";
-
-			//if (result < len)
-			//	printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
 		}
 	}
 
@@ -192,10 +169,6 @@ namespace Prototype
 
 				Message message(retrieveType, retrieveSize, data, retrieveTime, retrieveTick);
 				
-				//if (retrieveType == 5 || retrieveType == 12)
-				//if (v == 2)
-				//	printf("retrieving message: type: %d, size: %d, time: %d, tick: %d @ %d\n", retrieveType, retrieveSize, retrieveTime, retrieveTick, currentTime);
-				
 				putMessageToLagQueue(message, currentTime);
 				
 				// reset messagePhase
@@ -219,7 +192,7 @@ namespace Prototype
 			printf("SDLNet_AllocSocketSet: %s\n", SDLNet_GetError());
 			SDLNet_Quit();
 			SDL_Quit();
-			exit(4); //most of the time this is a major error, but do what you want.
+			exit(4);
 		}		
 
 		if (SDLNet_TCP_AddSocket(set, socket) == -1)
@@ -273,10 +246,6 @@ namespace Prototype
 		{
 			return 0;
 		}
-		
-		//char message[1024];
-		//int len;
-		//Uint32 ipaddr;
 
 		// check for new connection from a client
 		if (SDLNet_SocketReady(socket))
@@ -368,8 +337,6 @@ namespace Prototype
 	bool NetworkClient::openConnection(std::string &host)
 	{
 		IPaddress ip;
-		//char message[1024];
-		//int len;
 		Uint16 port = 12333;
 
 		// Resolve the argument into an IPaddress type

@@ -71,7 +71,6 @@ namespace Prototype
 	private:
 		Cmd cmd;
 		int key;
-		//int category;
 		KeyState keystate;
 	};
 };

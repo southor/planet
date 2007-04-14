@@ -7,26 +7,6 @@ namespace Prototype
 {
 	const Vec WorldModel::WORLD_SIZE = Vec(800.0f / 2.0f, 600.0f * (3.0f / 4.0f));
 
-	//void WorldModel::storeToTickData(int tick)
-	//{
-	//	PlayerObjs::Iterator it = getPlayerObjs().begin();
-	//	PlayerObjs::Iterator end = getPlayerObjs().end();
-	//	for(; it != end; ++it)
-	//	{
-	//		it->second->storeToTickData(tick);
-	//	}
-	//}
-
-	//void WorldModel::updatePlayerObjsToTickData(int tick)
-	//{
-	//	PlayerObjs::Iterator it = getPlayerObjs().begin();
-	//	PlayerObjs::Iterator end = getPlayerObjs().end();
-	//	for(; it != end; ++it)
-	//	{
-	//		it->second->updateToTickData(tick);
-	//	}
-	//}
-
 	void WorldModel::updatePlayerObjsToTickData(Tickf tick)
 	{
 		PlayerObjs::Iterator it = getPlayerObjs().begin();
@@ -53,8 +33,6 @@ namespace Prototype
 		
 		PlayerObj *playerObj = getPlayerObjs()[playerId];		
 
-		//Projectile::Type weapon = userCmd.weapon;
-		
 		shotTick = playerObj->getShotTick(currentTick, shotN);
 		if ((shotTick >= currentTickf) && (playerObj->getAmmoCurrentWeapon() >= 0))
 		{
@@ -68,12 +46,8 @@ namespace Prototype
 		return false;
 	}
 
-
-
-
 	void WorldModel::deleteAllObjs()
 	{
-		//Delete del;
 		DeleteObstacle deleteObstacle;
 		DeletePlayerObj deletePlayerObj;
 		DeleteProjectile deleteProjectile;
@@ -107,23 +81,23 @@ namespace Prototype
 		if (moveAlignedToAngle) moveAngle = playerObj->angle;
 		else moveAngle = PI_F/2.0f;
 		Vec moveVec(0.0f, 0.0f);
-		//if (playerObj->movingForward == true)
+
 		const StateCmds &stateCmds(playerObj->getUserCmd().stateCmds);
 		if (stateCmds.getCurrentState(Cmds::FORWARD))
 		{
 			moveVec += Vec(cos(moveAngle.getFloat()) * fbMoveDistance, sin(moveAngle.getFloat()) * fbMoveDistance);
 		}
-		//if (playerObj->movingBackward == true)
+
 		if (stateCmds.getCurrentState(Cmds::BACKWARD))
 		{
 			moveVec += Vec(cos((moveAngle + Angle::PI).getFloat()) * fbMoveDistance, sin((moveAngle + Angle::PI).getFloat()) * fbMoveDistance);
 		}
-		//if (playerObj->strafingLeft == true)
+
 		if (stateCmds.getCurrentState(Cmds::LEFT))
 		{
 			moveVec += Vec(cos((moveAngle + Angle::PI/2.0f).getFloat()) * strafeMoveDistance, sin((moveAngle + Angle::PI/2.0f).getFloat()) * strafeMoveDistance);
 		}
-		//if (playerObj->strafingRight == true)
+
 		if (stateCmds.getCurrentState(Cmds::RIGHT))
 		{
 			moveVec += Vec(cos((moveAngle - Angle::PI/2.0f).getFloat()) * strafeMoveDistance, sin((moveAngle - Angle::PI/2.0f).getFloat()) * strafeMoveDistance);
@@ -177,11 +151,9 @@ namespace Prototype
 		// get projectile
 		
 		Projectile *projectile = (getProjectiles())[projectileId];
-			//projectileIt->second;
 
 		assert(projectile);
 		Line projectileLine(projectile->getLine());
-
 
 		// Hit collision, find hit point
 
@@ -212,12 +184,6 @@ namespace Prototype
 			
 			if (targetPlayerObjId != static_cast<GameObjId>(projectile->getShooterId())) // cannot hit the shooter itself
 			{
-				///*
-				// * Update the playerObj to the object lag that the shooting
-				// * client was using when the projectile was fired
-				// */
-				//targetPlayerObj->updateToTickData(getTimeHandler()->getTick() - projectile->getObjLag());
-			
 				Rectangle rectangle;
 				targetPlayerObj->getRectangle(rectangle);
 				float localMinHitDist = projectileLine.minCrossPoint(rectangle);
@@ -227,9 +193,6 @@ namespace Prototype
 					minHitDist = localMinHitDist;
 					playerIdHit = targetPlayerObjId;
 				}
-
-				//// Update the playerObj to the current tick again
-				//targetPlayerObj->updateToTickData(getTimeHandler()->getTick());
 			}
 		}
 		
@@ -247,12 +210,6 @@ namespace Prototype
 				GameObjId targetPlayerObjId = playerObjIt->first;
 				PlayerObj *targetPlayerObj = playerObjIt->second;
 
-				//// Update the target playerObj to the object lag
-				//if (playerObjIt->first != static_cast<GameObjId>(projectile->getShooterId()))
-				//{
-				//	targetPlayerObj->updateToTickData(getTimeHandler()->getTick() - projectile->getObjLag());
-				//}
-
 				// calculate damage
 				int damage;
 				if (hitPlayerObj && (targetPlayerObjId == playerIdHit))
@@ -265,38 +222,12 @@ namespace Prototype
 					// blast damage
 					damage = projectile->getBlastDamage(minHitDist, targetPlayerObj->getPos());
 				}
-
-				//// Update the playerObj back to the current tick again
-				//targetPlayerObj->updateToTickData(getTimeHandler()->getTick());
 				
 				// apply damage to playerobject
 				if (damage > 0)
 				{
 					std::cout << "damage =  " << damage << std::endl;
 					targetPlayerObj->hurt(damage, projectile->getShooterId());
-					
-					//if (targetPlayerObj->isDead())
-					//{
-					//	std::cout << "!!! a player was killed !!!  " << std::endl;
-
-					//	// player was kiled
-					//	PlayerId killerId = projectile->getShooterId();
-					//	//++((*playerObjs)[killerId]->frags);
-					//	
-					//	// produce an unpredictable respawn place
-					//	Pos tmpPos = targetPlayerObj->pos + projectile->getPos();
-					//	size_t respawnPosId = static_cast<size_t>(abs(targetPlayerObj->health + static_cast<int>(tmpPos.x + tmpPos.y))) % respawnPoss.size();
-					//	
-					//	Pos &respawnPos = respawnPoss[respawnPosId];						
-					//	targetPlayerObj->respawn(respawnPos);
-
-					//	if (players)
-					//	{
-					//		// send kill message to all players
-					//		Kill kill(killerId, targetPlayerObjId, respawnPos);
-					//		pushMessageToAll(*players, kill, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-					//	}
-					//}
 				}	
 			}
 			

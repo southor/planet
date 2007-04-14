@@ -8,8 +8,6 @@
 
 namespace Prototype
 {
-	//const std::string CONFIG_FILENAME = std::string("config.txt");
-	
 	bool ConfigHandler::loadFile(std::string fileName)
 	{
 		std::ifstream file(fileName.c_str());
@@ -35,26 +33,11 @@ namespace Prototype
 		
 		return false;
 	}
-	
-	//double ConfigHandler::getDoubleValue(std::string option)
-	//{
-	//	if (configMap.count(option) > 0)
-	//	{
-	//		return configMap[option];
-	//	}
-	//	else
-	//	{
-	//		assert(false);
-	//		printf("Can't load option: %s\n", option.c_str());
-	//		return 0.0f;
-	//	}
-	//}
 
 	bool ConfigHandler::getValue(std::string option, double &result) const
 	{
 		if (configMap.count(option) > 0)
 		{
-			//result = configMap[option];
 			result = configMap.find(option)->second;
 			return true;
 		}

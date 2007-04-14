@@ -119,19 +119,6 @@ namespace Prototype
 			y = y * tmp;
 			z = z * tmp;
 		}
-/*
-		static void transformVec(GLfloat *matrix, GLfloat *from, GLfloat *to) 
-		{
-			for(int i=0;i<4.0f;i++) 
-			{ 
-				*(to+i) = 0.0f; 
-				for(int j=0;j<4;j++) 
-				{ 
-					*(to+i) = *(to+i) + (*(from+j) * (*(matrix+j*4+i))); 
-				} 
-			} 
-		}
-*/
 
 		bool isConsistent() const			{ return true; }
 	};

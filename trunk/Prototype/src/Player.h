@@ -11,7 +11,6 @@ namespace Prototype
 	{
 	public:
 		Color color;
-		//size_t playerObjId;
 		
 		Player()											{}
 		Player(const Color &color) : color(color)			{}

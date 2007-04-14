@@ -10,11 +10,6 @@ namespace Prototype
 		deleteAllObjs();		
 	}
 
-	//void ClientWorldModel::addPlayerObj(PlayerId playerId, size_t playerObjId, const Pos &playerPos)
-	//{
-	//	playerObjs.add(playerObjId, new PlayerObj(playerId, playerPos));
-	//}
-
 	void ClientWorldModel::addPlayerObj(PlayerId playerId, const Pos &playerPos, bool isMe, int tick, int fullHealth)
 	{		
 		playerObjs.add(playerId, new PlayerObj(playerId, playerPos, (isMe ? CLIENT_PREDICTION_N_HISTORY_TICKS : CLIENT_INTERPOOLATION_N_HISTORY_TICKS), tick, fullHealth));
@@ -37,7 +32,6 @@ namespace Prototype
 		MovePlayerObj move(&getObstacles(), moveAlignedToAngle);
 		PlayerObjs::Pair playerObjPair(playerId, (getPlayerObjs())[playerId]);
 		move(playerObjPair);
-		//ForEach(getPlayerObjs().begin(), getPlayerObjs().end(), move);
 	}
 
 	void ClientWorldModel::handlePlayerShooting(PlayerId playerId, bool createProjectile)

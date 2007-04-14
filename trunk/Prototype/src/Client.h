@@ -36,17 +36,9 @@ namespace Prototype
 
 		static const bool DEBUG_SHOOTING = true;
 
-		//static const int MAX_N_PLAYERS = 2;
-
-
-
 		Client();
-
 		~Client();
 
-		
-		//void handleEvents();
-		//void logic();		
 		void getCurrentUserCmd(UserCmd &userCmd);
 		void handleServerMessages();
 		void runStep();
@@ -54,13 +46,11 @@ namespace Prototype
 		bool initConnection();
 		void renderAndUpdate();
 		
-		
 		void addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, int tick);
 
 		void setConnection(MessageSender *messageSender, MessageReciever *messageReciever);
 		KeyHandler* getKeyHandler();
 		inline UserInputHandler* getUserInputHandler()	{ return &userInputHandler; }
-		//inline ClientTimeHandler* getTimeHandler()		{ return &timeHandler; }
 		inline bool getRequestRender()					{ return requestRender; }
 		
 		void setPlayerId(PlayerId playerId)				{ this->playerId = playerId; }
@@ -73,11 +63,8 @@ namespace Prototype
 			viewportHandler.screenRenderSize.y = h;
 		}
 		inline void useViewport()						{ viewportHandler.useViewport(); }
-		//void setCurrentMousePos(Vec2<int> mouseScreenPos);
-		//inline void setAimMode(UserInputHandler::AimMode aimMode)				{ userInputHandler. }
 		
 		inline const ConfigHandler& getConfigHandler()	{ return configHandler; }
-
 
 		//debug
 		void debugPrintState();
@@ -95,8 +82,6 @@ namespace Prototype
 
 		Link link;
 		size_t connectionPhase;
-		//ClientTimeHandler timeHandler;
-
 
 		KeyHandler kh;
 		UserInputHandler userInputHandler;
@@ -116,12 +101,6 @@ namespace Prototype
 		bool requestRender;
 
 		ConfigHandler configHandler;
-
-		///**
-		// * will set player object angle if player aiming is mouse controlled
-		// * @param mouseScreenPos The mouse position in screen coordinates
-		// */
-		//void updatePlayerObjAngle(Vec2<int> mouseScreenPos);
 
 		/**
 		 * Will calculate the player obj aiming angle from the mouse position.		

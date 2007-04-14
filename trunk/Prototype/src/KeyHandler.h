@@ -86,29 +86,6 @@ namespace Prototype
 		 */
 		bool changeReleasedToUpState();
 		
-		/**
-		 * @return Size of container holding all key commands, i.e. number of key commands
-		 */
-//		int getSize();
-
-		/**
-		 * @param cmd Command of KeyCommand
-		 * @return The state of wanted KeyCommand
-		 */
-//		KeyState getKeyState(Cmd cmd);
-
-		/**
-		 * @param cmd Command of KeyCommand
-		 * @return The state of wanted KeyCommand
-		 */
-//		KeyCmd getKeyCommandFromCmd(Cmd cmd);
-
-		/**
-		 * @param key Key of KeyCommand
-		 * @return The wanted KeyCommand
-		 */
-//		KeyCmd getKeyCommandFromKey(int key);
-
 	private:
 		std::vector<KeyCmd> cmds;
 	};

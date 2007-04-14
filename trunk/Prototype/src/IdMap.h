@@ -1,7 +1,6 @@
 #ifndef __idmap_h__
 #define __idmap_h__
 
-//#include <vector>
 #include <map>
 
 #include "assert.h"

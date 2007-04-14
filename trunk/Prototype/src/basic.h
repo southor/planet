@@ -1,8 +1,6 @@
 #ifndef __basic_h__
 #define __basic_h__
 
-//#include <vector>
-
 #include "vec2.h"
 #include "assert.h"
 #include "vec3f.h"
@@ -40,19 +38,6 @@ namespace Prototype
 		return angle * 360.0f / (2.0f * PI_F);
 	}
 
-
-	//// Functor
-	//template <class T>
-	//class HasId
-	//{
-	//private:
-	//	int id;
-	//public:
-	//	HasId(int id) : id(id)	{}
-	//	bool operator ()(const T &o)	{ return o.id == this->id; }
-	//	bool operator ()(const T *o)	{ return o->id == this->id; }
-	//};
-
 	template <class It, class Functor>
 	void ForEach(It begin, It end, Functor &fun)
 	{
@@ -62,8 +47,6 @@ namespace Prototype
 			fun(*it);
 		}
 	}
-
-
 
 	template <typename T>
 	inline T tmin(T a, T b)			{ return a < b ? a : b; }
@@ -85,19 +68,9 @@ namespace Prototype
 		b = c;
 	}
 
-
-	//typedef size_t GameObjId;
-
 	typedef uint PlayerId;
 
-
-	//#define PRINT_VARIABLE (x)  std::cout << "x:"
-
 	static const int TICK_MAX = 2147483647; // TODO not used enough (check if game needs to end)
-
-
-
-	
 };
 
 #endif

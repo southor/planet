@@ -2,10 +2,8 @@
 #include "StandardInterExtraPolate.h"
 #include "IdGenerator.h"
 
-
 namespace Prototype
 {
-	
 	const UserCmd UserCmd::DEFAULT_USER_CMD = UserCmd(0, 0.0f, Projectile::DEFAULT_TYPE, 0, false, 0.0, GameObjId(0, 1), 0);
 	
 	void UserCmd::interExtraPolate(int tick1, const UserCmd& data1, int tick2, const UserCmd& data2, Tickf resultTick, UserCmd& resultData)
@@ -31,11 +29,6 @@ namespace Prototype
 
 	void UserCmd::clear(PlayerId playerId, int tick)
 	{
-		//stateCmds = 0;
-		//aimAngle = 0.0f;
-		//weapon = Projectile::DEFAULT_PROJECTILE;
-		//nShots = 0;
-		//shootAction = NOT_SHOOTING;
 		*this = getDefaultUserCmd(playerId);
 		firstShotTick = static_cast<Tickf>(tick);
 	}
@@ -49,20 +42,6 @@ namespace Prototype
 		resultData.nShots = 0;
 		resultData.firstShotTick += 1.0;
 		resultData.firstProjectileId += this->nShots;
-		//if (isShooting())
-		//{
-		//	resultData.shootAction = CONTINUE_SHOOTING;
-		//}
-		
-		//if (shootAction == NOT_SHOOTING)
-		//{
-		//	resultData.nShots = 0;
-		//}
-		//else
-		//{
-		//	assert(isShooting());
-		//	resultData.shootAction = CONTINUE_SHOOTING;
-		//}
 	}
 
 	UserCmd UserCmd::getDefaultUserCmd(PlayerId playerId)

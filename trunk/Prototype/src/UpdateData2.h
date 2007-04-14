@@ -49,7 +49,6 @@ namespace Prototype
 			return *this;
 		}
 	};
-
 	
 };
 

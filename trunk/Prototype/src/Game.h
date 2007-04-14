@@ -1,14 +1,11 @@
 #ifndef __game_h__
 #define __game_h__
 
-//#include <vector>
-
 #include "common.h"
 #include "KeyHandler.h"
 #include "VirtualConnection.h"
 #include "Client.h"
 #include "Server.h"
-//#include "Gui.h"
 #include "UserInputHandler.h"
 
 namespace Prototype
@@ -32,7 +29,6 @@ namespace Prototype
 
 		static const int RENDER_AT_LEAST_EVERY_TICK_DEFAULT = 0;
 
-
 		void init();
 		void initWidgets();
 
@@ -54,12 +50,6 @@ namespace Prototype
 
 		Client client1;
 		Client client2;
-
-		//// used for storing viewport and translating positions from screen to game
-		//ViewportHandler viewportHandler1;
-		//ViewportHandler viewportHandler1;
-
-		//Gui gui;
 
 		Uint32 mStartTime;
 

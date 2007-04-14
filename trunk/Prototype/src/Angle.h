@@ -54,18 +54,9 @@ namespace Prototype
 			return angle != rh.angle;
 		}
 
-		//inline operator float ()
-		//{
-		//	return angle;
-		//}
-
 		inline float getFloat() const			{ return angle; }
 
 	};
-
-	//inline float sin(Angle angle)				{ return sin(angle.getFloat()); }
-	//inline float cos(Angle angle)				{ return cos(angle.getFloat()); }
-	
 
 };
 

@@ -117,11 +117,6 @@ namespace Prototype
 			Move(Obstacles *obstacles)
 				: obstacles(obstacles)
 			{}
-
-			//// @param deltaTime Time in milliseconds since last move.
-			//Move(Obstacles *obstacles, PlayerObjs *playerObjs, float deltaTime)
-			//	: obstacles(obstacles), playerObjs(playerObjs), deltaTime(deltaTime), moveAlignedToAngle(false)
-			//{}
 		};
 
 		class MovePlayerObj : public Move

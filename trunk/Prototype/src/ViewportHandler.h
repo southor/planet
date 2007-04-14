@@ -12,9 +12,6 @@ namespace Prototype
 	class ViewportHandler
 	{
 	public:
-
-		// Render area in game coordinates
-		//Rectangle renderArea;
 		
 		// Render area in GL screen coordinates
 		Vec2<int> screenRenderPos;

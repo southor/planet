@@ -6,20 +6,17 @@ namespace Prototype
 
 	PredictionHandler::PredictionHandler(PlayerId playerId, ClientWorldModel *worldModel) :
 		userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS, UserCmd::interExtraPolate),
-		//userCmdHistoryList(CLIENT_PREDICTION_N_HISTORY_TICKS),
 		worldModel(worldModel), latestServerInputTick(0), playerId(playerId), rePredictNeeded(false)
 	{		
 		userCmdHistoryList.setDefaultData(UserCmd::getDefaultUserCmd(playerId));
 		assert(isTick0UserCmdConsistent());
 	}
 
-	//int PredictionHandler::getlastTick(PlayerId playerId)
 	int PredictionHandler::getlastTick()
 	{
 		return getPlayerObj(playerId)->getLastStoredTick();
 	}
 
-	//void PredictionHandler::predict(PlayerId playerId, int fromTick, int toTick)
 	void PredictionHandler::predict(int fromTick, int toTick)
 	{
 		PlayerObj *playerObj = getPlayerObj(playerId);
@@ -39,7 +36,6 @@ namespace Prototype
 			UserCmd userCmd;
 			userCmdHistoryList.getData(tick, userCmd);
 			playerObj->setUserCmd(&userCmd);
-			//playerObj->setUserCmd = userCmd;
 			
 			worldModel->updatePlayerObjMovement(playerId);
 			playerObj->updateNextShootTick(tick);

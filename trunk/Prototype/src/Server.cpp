@@ -103,19 +103,14 @@ namespace Prototype
 		return false; // no client did try to connect
 	}
 
-	// TODO: MAKE PRIVATE
 	PlayerId Server::addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever)
 	{
-		//PlayerId playerId = players.findFreeId();
 		PlayerId playerId = getIdGenerator()->generatePlayerId();
 		players.add(playerId, new ServerPlayer(playerId, color, messageSender, messageReciever));
+
 		return playerId;
-		
-		//ServerClient client(messageSender, messageReciever);
-		//addClient(client);
 	}
 
-	// TODO: MAKE PRIVATE
 	void Server::addPlayerObj(PlayerId playerId, const Pos &playerPos)
 	{
 		worldModel.addPlayerObj(playerId, playerPos, configHandler.getIntValue("player_obj_health", PlayerObj::HEALTH_DEFAULT));
@@ -130,14 +125,11 @@ namespace Prototype
 			PlayerId playerId = playerObjsIt->first;
 			PlayerObj *playerObj = playerObjsIt->second;
 
-			//Color color(static_cast<float>(playerId % 2), 1.0f-static_cast<float>(playerId % 2), 0.0f); // the correct color should be retrieved from Player
-
 			AddPlayerObj addPlayerObj(playerId, players[playerId]->color, playerObj->pos);
 
 			pushMessageToAll(players, addPlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 		}
 	
-		// TODO Send the hole worldmodel to clients, all players and everything
 		ServerPlayers::Iterator playersIt;
 		for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 		{			
@@ -164,8 +156,8 @@ namespace Prototype
 		const int time = getTimeHandler()->getTime();
 		
 
-		WorldModel::PlayerObjs::Iterator playerObjsIt;// = worldModel.getPlayerObjs().begin();
-		WorldModel::PlayerObjs::Iterator playerObjsEnd;// = worldModel.getPlayerObjs().end();
+		WorldModel::PlayerObjs::Iterator playerObjsIt;
+		WorldModel::PlayerObjs::Iterator playerObjsEnd;
 
 		if (tick == 0)
 		{
@@ -179,7 +171,6 @@ namespace Prototype
 			for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
 			{				
 				playerObjsIt->second->tickInit(playerObjsIt->first, getTimeHandler()->getTick());
-				//playerObjsIt->second->updateNextShootTick(getTimeHandler()->getTick() - 1);
 				assert(playerObjsIt->second->isConsistent(getTimeHandler()->getTick()));
 			}
 
@@ -187,10 +178,7 @@ namespace Prototype
 		}
 
 		bool waitingForClients = false;
-		//bool timeout = false; // debug
 		int latestTick = 10000000; // used for debugging
-
-		//std::cout << "10 ";
 
 		// check if current tick is recieved from all clients, otherwise set waitingForClients to true
 		ServerPlayers::Iterator playersIt;
@@ -204,22 +192,19 @@ namespace Prototype
 			// set waitingForClients to true if player doesn't have current tick
 			waitingForClients = waitingForClients || (player->link.getLatestTick() < tick);
 
-			//printf("playerId: %d, latestTick: %d\n", playerId, player.link.getLatestTick());
-
 			if (player->link.getLatestTick() < latestTick) // used for debugging
 				latestTick = player->link.getLatestTick(); // used for debugging
 
 			// Check tick timeout
-			if (getTimeHandler()->getTickFromTimeWithTimeout() >= tick)      //if (time > lastUpdateTime + 100) //ServerTimeHandler::TICK_DELTA_TIME + ServerTimeHandler::WAIT_FOR_TICK_TIMEOUT)
+			if (getTimeHandler()->getTickFromTimeWithTimeout() >= tick)
 			{
 				if (configHandler.getIntValue("server_print_timeout_debug", SERVER_PRINT_TIMEOUT_DEBUG_DEFAULT) == 1) printf("#################### TIMEOUT ######################\n");
 				waitingForClients = false;
-				//timeout = true; // debug
+
 				break; // exit for loop
 			}
 		}
 
-		//std::cout << "20 ";
 		if (!waitingForClients)
 		{
 			if (configHandler.getIntValue("server_print_tick_debug", SERVER_PRINT_TICK_DEBUG_DEFAULT) == 1) printf("run tick: %d, tickFromTime: %d, tickWithTO: %d, latest: %d @ %d\n", tick, getTimeHandler()->getTickFromTime(), getTimeHandler()->getTickFromTimeWithTimeout(), latestTick, time);
@@ -234,15 +219,12 @@ namespace Prototype
 			assert(worldModel.isConsistent());
 
 			// Read messages from clients
-			//ServerPlayers::Iterator playersIt;
 			for (playersIt = players.begin(); playersIt != players.end(); ++playersIt)
 			{
 				PlayerId playerId = playersIt->first;
 				ServerPlayer *player(playersIt->second);
 
 				player->link.retrieve(getTimeHandler()->getTime());
-
-				//std::cout << "30.1 ";
 
 				while (player->link.hasMessageOnQueueWithTick(tick))
 				{
@@ -253,35 +235,22 @@ namespace Prototype
 												
 						assert(userCmd->isConsistent(playerId, player->link.getPoppedTick()));
 						player->setUserCmd(*userCmd, player->link.getPoppedTick());
-						
-						//assert((getTimeHandler()->getTick() == player->link.getPoppedTick()) || timeout);
 					}
-
-					
 				}
-
-				//std::cout << "30.2 ";
 
 				PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
 				assert(playerObj->isConsistent(getTimeHandler()->getTick()));
-				//playerObj->updateToTickData(getTimeHandler()->getTick() - 1);
 				UserCmd userCmd;
 				player->getUserCmd(userCmd, getTimeHandler()->getTick());
 				userCmd.isConsistent(getTimeHandler()->getTick());
 				
-				//Angle tmpAngle = playerObj->angle; //TODO bad code, will fix a problem for now
-				
 				playerObj->setUserCmd(&userCmd);
-
-				//tswap(tmpAngle, playerObj->angle); //TODO bad code, will fix a problem for now
 
 				// All player object data for this tick has been set, send and store to history!
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				assert(playerObj->isConsistent(getTimeHandler()->getTick()));
 				playerObj->storeToTickData(getTimeHandler()->getTick());
-
-				//tswap(tmpAngle, playerObj->angle); //TODO bad code, will fix a problem for now
 
 				// Send tick0Time to client
 				{
@@ -294,7 +263,6 @@ namespace Prototype
 				}
 				
 				worldModel.handlePlayerShooting(playerId, players);
-
 			}
 
 			// transmit some messages
@@ -306,8 +274,6 @@ namespace Prototype
 			// update movements of objects, from currentTick to currentTick + 1
 			worldModel.updateProjectileMovements();
 			worldModel.updatePlayerObjMovements();
-
-			
 			
 			// Update next shoot tick for currentTick + 1
 			playerObjsIt = worldModel.getPlayerObjs().begin();
@@ -322,42 +288,6 @@ namespace Prototype
 			getTimeHandler()->nextTick();
 			lastUpdateTime = time;
 
-			//for(playerObjsIt = worldModel.getPlayerObjs().begin(); playerObjsIt != worldModel.getPlayerObjs().end(); ++playerObjsIt)
-			//{
-			//	assert(playerObjsIt->second->isConsistent(getTimeHandler()->getTick()));
-			//}
-
-			//// Send playerObj updates and store state to history, also send tick0Time
-			//playerObjsIt = worldModel.getPlayerObjs().begin();
-			//playerObjsEnd = worldModel.getPlayerObjs().end();
-			//for(; playerObjsIt != playerObjsEnd; ++playerObjsIt)
-			//{
-			//	
-
-			//	//GameObjId playerObjId = playerObjsIt->first;
-			//	PlayerId playerId = playerObjsIt->first;
-			//	PlayerObj *playerObj = playerObjsIt->second;
-			//	
-			//	//UpdatePlayerObj updatePlayerObj(playerObjId, playerObj->pos, playerObj->angle);
-			//	UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
-
-			//	pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-
-			//	//playerObj->isConsistent();
-			//	playerObj->storeToTickData(getTimeHandler()->getTick());
-
-			//	// Send tick0Time to client
-			//	{
-			//		Link &link = players[playerId]->link;
-			//		double lag = tmax(static_cast<double>(link.getCurrentLag()), 0.0);
-			//		int extraPredictionTime = static_cast<int>(lag * PREDICTION_AMOUNT_MODIFIER) + PREDICTION_AMOUNT_ADD_TIME;
-			//		SetTick0Time tick0Time(-extraPredictionTime);
-			//		link.pushMessage(tick0Time, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-			//	}
-			//}
-
-			//std::cout << "40 ";
-
 			// Send projectile updates
 			WorldModel::Projectiles::Iterator projectilesIt = worldModel.getProjectiles().begin();
 			WorldModel::Projectiles::Iterator projectilesEnd = worldModel.getProjectiles().end();
@@ -368,15 +298,9 @@ namespace Prototype
 				UpdateProjectile updateProjectile(projectilesIt->first, projectile->getPos());
 				
 				pushMessageToAll(players, updateProjectile, getTimeHandler()->getTime(), getTimeHandler()->getTick());
-
-				//projectile->storeToTickData(getTimeHandler()->getTick());
 			}
 
-			//std::cout << "50 ";
-
 			transmitAll(players);
-			
-			//std::cout << "60 ";
 
 			requestRender = true;
 		}

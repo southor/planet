@@ -6,13 +6,10 @@
 
 namespace Prototype
 {
-	//const std::string CONFIG_FILENAME;
-	
 	class ConfigHandler
 	{
 	public:
 		bool loadFile(std::string filename);
-
 		
 		double getDoubleValue(std::string option, double defaultValue) const
 		{

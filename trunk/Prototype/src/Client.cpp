@@ -1,7 +1,7 @@
 #include "basic.h"
 #include "Client.h"
 #include "Player.h"
-//#include <iostream>
+
 #include <string>
 #include <algorithm>
 
@@ -10,7 +10,6 @@
 
 namespace Prototype
 {
-
 	const double Client::OBJECT_LAG_MODIFIER_DEFAULT = 1.2;
 	const int Client::OBJECT_LAG_ADD_TIME_DEFAULT = 18;
 	const int Client::OBJECT_LAG_ADD_TICK_DEFAULT = 2;
@@ -18,8 +17,6 @@ namespace Prototype
 	Client::Client() : ClientGlobalAccess(&clientGlobalObj), worldModel(&clientGlobalObj), worldRenderer(WorldRenderer::FOLLOW_PLAYER),
 						connectionPhase(0), requestRender(false), currentObjLag(0), predictionHandler(0)
 	{
-		//predictionHandler->setWorldModel(&worldModel);
-		//assert(predictionHandler.isConsistent());
 		if (configHandler.loadFile(CONFIG_FILENAME))
 		{
 			std::cout << "Client: using config file for game parameters" << std::endl;
@@ -45,9 +42,6 @@ namespace Prototype
 	void Client::getCurrentUserCmd(UserCmd &userCmd)
 	{
 		assert(predictionHandler);
-		//static int lastTick = -100;
-		//assert(timeHandler.getStepTick() >= (lastTick +1));
-		//lastTick = timeHandler.getStepTick();
 
 		// get current tick
 		int currentTick = static_cast<int>(getStepTick());
@@ -67,7 +61,6 @@ namespace Prototype
 
 		// get userCmd to start with (could contain postponed actionCmds from previous tick)
 		predictionHandler->getUserCmd(userCmd, currentTick);		
-
 		
 		// get stateCmds
 		StateCmds stateCmds = userInputHandler.getCurrentStates();
@@ -83,7 +76,6 @@ namespace Prototype
 			else
 			{
 				assert(userInputHandler.aimMode == UserInputHandler::KEYBOARD);
-				//playerAngle = (worldModel.getPlayerObjs())[playerId]->angle;				
 				Angle preAngle(preUserCmd.aimAngle);
 				aimAngle = calcPlayerObjAngle(preUserCmd.aimAngle, stateCmds);
 			}
@@ -97,16 +89,12 @@ namespace Prototype
 		// set shooting action and nShots
 		assert(userCmd.nShots == 0);
 		userCmd.firstShotTick = playerObj->getNextShootTick();
-		//if (userCmd.shootAction == UserCmd::CONTINUE_SHOOTING)		
 		if (userCmd.isShooting())
 		{			
 			assert(userCmd.firstShotTick >= static_cast<Tickf>(currentTick));
 			userCmd.nShots = playerObj->getNTickShots(userCmd.weapon, currentTick);
 		}
-		//else
-		//{
-		//	assert(userCmd.shootAction == UserCmd::NOT_SHOOTING);
-		//}
+
 		bool startShootingThisTick = false;
 		while(userInputHandler.hasActionCmdOnQueue())
 		{
@@ -176,14 +164,7 @@ namespace Prototype
 				{
 					UpdatePlayerObj *updatePlayerObj = link.getPoppedData<UpdatePlayerObj>();
 					
-					//PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerObjId];
 					PlayerObj *playerObj = (worldModel.getPlayerObjs())[updatePlayerObj->playerId];
-					//playerObj->pos = updatePlayerObj->pos;
-					//printf("CLIENT: updating client position to: %f, %f\n", playerObj->pos.x, playerObj->pos.y);
-					
-
-					//Angle tmpAngle = playerObj->angle;
-					//std::cout << "n_history_ticks" << CLIENT_PREDICTION_N_HISTORY_TICKS << std::endl;
 					
 					if (playerId == updatePlayerObj->playerId)
 					{
@@ -191,7 +172,6 @@ namespace Prototype
 						if (differ)
 						{
 							std::cout << "old prediction differ!" << std::endl;
-							//predictionHandler.serverInput(playerId, link.getPoppedTick());
 							assert(predictionHandler);
 							predictionHandler->serverInput(link.getPoppedTick());
 						}
@@ -199,23 +179,12 @@ namespace Prototype
 						{
 							//std::cout << "old prediction ok!" << std::endl;
 						}
-						//playerObj->angle = tmpAngle;
-
-						// Use this PlayerObj Update message for Prediction.						
-						
-						//predictionHandler.predict(playerId, link.getPoppedTick(), predictToTick);						
 					}
 					else
 					{
 						playerObj->setTickData(link.getPoppedTick(), updatePlayerObj->pos, updatePlayerObj->angle, updatePlayerObj->nextShootTick);
 					}
 						
-					//playerObj->pos = updatePlayerObj->pos;
-					//if (playerId != updatePlayerObj->playerId)
-					//{
-					//	playerObj->angle = updatePlayerObj->angle;
-					//}
-					//playerObj->storeToTickData(
 				}
 				break;
 			case ADD_PLAYER_OBJ:
@@ -238,8 +207,6 @@ namespace Prototype
 				break;
 			case ADD_PROJECTILE:
 				{
-					//printf("CLIENT: handling add_projectile @ %d\n", timeHandler.getTime());
-
 					AddProjectile *addProjectile = link.getPoppedData<AddProjectile>();					
 					bool projectileAlreadyExists= false;
 					if (static_cast<PlayerId>(addProjectile->shooterId) == playerId)
@@ -261,8 +228,6 @@ namespace Prototype
 				break;
 			case UPDATE_PROJECTILE:
 				{
-					//printf("CLIENT: handling update_projectile @ %d\n", timeHandler.getTime());
-					
 					UpdateProjectile *updateProjectile = link.getPoppedData<UpdateProjectile>();
 					
 					WorldModel::Projectiles::Iterator it = (worldModel.getProjectiles()).find(updateProjectile->projectileId);
@@ -270,11 +235,8 @@ namespace Prototype
 					if (it != (worldModel.getProjectiles()).end())
 					{
 						Projectile *projectile = it->second;
-						//projectile->setPos(updateProjectile->pos);
 						assert(projectile);
 						if (projectile) projectile->setTickData(link.getPoppedTick(), updateProjectile->pos);
-						//projectile->setPos(updateProjectile->pos);
-						//std::cout << "client projectile:  pos.x = " << projectile->getPos().x << "  pos.y = " << projectile->getPos().y << std::endl;
 					}
 					else
 					{
@@ -284,20 +246,13 @@ namespace Prototype
 				break;
 			case REMOVE_PROJECTILE:
 				{
-					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
-					
 					RemoveProjectile *removeProjectile = link.getPoppedData<RemoveProjectile>();
-					//worldRenderer.projectileHit((worldModel.getProjectiles())[removeProjectile->projectileId], removeProjectile->hitPosition);
 					bool removed = worldModel.getProjectiles().remove(removeProjectile->projectileId);
 					assert(removed || configHandler.getIntValue("client_remove_projectile", CLIENT_REMOVE_PROJECTILE_DEFAULT) == 1);
-
-					//if (removed) std::cout << "projectile removed" << std::endl;					
 				}
 				break;
 			case PROJECTILE_HIT:
 				{
-					//printf("CLIENT: handling remove_projectile @ %d\n", timeHandler.getTime());
-					
 					ProjectileHit *projectileHit = link.getPoppedData<ProjectileHit>();
 					
 					WorldModel::Projectiles::Iterator it = (worldModel.getProjectiles()).find(projectileHit->projectileId);
@@ -306,12 +261,6 @@ namespace Prototype
 					{
 						Projectile *projectile = it->second;
 						projectile->setHit(link.getPoppedTick(), projectileHit->hitPosition);
-						
-						
-						//worldRenderer.projectileHit(projectile, projectileHit->hitPosition);
-						//bool removed = worldModel.getProjectiles().remove(projectileHit->projectileId);
-						//assert(removed);
-						////if (removed) std::cout << "projectile removed" << std::endl;						
 					}
 					else
 					{
@@ -321,13 +270,10 @@ namespace Prototype
 				break;
 			case START_GAME:
 				{
-					//timeHandler.reset();
-					
 				}
 				break;
 			case SET_TICK_0_TIME:
 				getTimeHandler()->enterTick0Time((link.getPoppedData<SetTick0Time>())->tick0Time);
-				//std::cout << "tick0Time: " << timeHandler.getTick0Time() << std::endl;
 				break;
 			default:
 				break;
@@ -335,15 +281,6 @@ namespace Prototype
 		}
 
 		predictionHandler->rePredictIfNeeded();
-
-		//if (connectionPhase == ClientPhase::RUNNING)
-		//{
-		//	// start
-		//	UserCmd startUserCmd;
-		//	startUserCmd.clear();
-		//	timeHandler.nextStep();				
-		//	predictionHandler.setUserCmd(startUserCmd, static_cast<int>(timeHandler.getStepTick()));
-		//}
 	}
 
 	void Client::runStep()
@@ -362,12 +299,10 @@ namespace Prototype
 					debugPrintState();
 				}
 				
-				//assert(predictionHandler.isConsistent());
 				assert(predictionHandler->isConsistent());
 				
 				int currentTick = static_cast<int>(getStepTick());
 				
-
 				// calculate current objectLag
 				this->currentObjLag = calcCurrentObjLag();
 
@@ -392,14 +327,7 @@ namespace Prototype
 				worldModel.handlePlayerShooting(playerId, configHandler.getIntValue("client_create_projectile", CLIENT_CREATE_PROJECTILE_DEFAULT) == 1);
 
 				// perform prediction
-				//predictionHandler.predict(playerId, currentTick + 1);
 				predictionHandler->predict(currentTick + 1);
-				//requestRender = true;
-				//std::cout << nowRunning << " runstep: " << currentTick << std::endl;
-
-
-
-
 
 				// remove projectiles that have hit something
 				std::vector<GameObjId> projectileRemoves;
@@ -427,22 +355,15 @@ namespace Prototype
 					if (projectile->getShooterId() != static_cast<GameObjId>(playerId)) checkTick -= this->currentObjLag;					
 					if (projectile->getHitTick() <= checkTick)
 						projectileRemoves.push_back(projectileId);
-
-
 				}
 				for(size_t removeId = 0; removeId < projectileRemoves.size(); ++removeId)
 				{
 					projectileHit(projectileRemoves[removeId]);
 				}
-
-
-
-
 			}
 			else
 			{
 				requestRender = true;
-				//std::cout << "wants to render" << std::endl;
 			}
 		}
 		else
@@ -476,7 +397,7 @@ namespace Prototype
 	void Client::projectileHit(GameObjId projectileId)
 	{
 		Projectile *projectile = (worldModel.getProjectiles())[projectileId];
-		worldRenderer.projectileHit(projectile, //projectileHit->hitPosition);
+		worldRenderer.projectileHit(projectile,
 									projectile->getHitPos());
 		bool removed = worldModel.getProjectiles().remove(projectileId);
 		assert(removed);
@@ -578,26 +499,14 @@ namespace Prototype
 			worldModel.updatePlayerObjsToTickData(playerObjRenderTickf);
 			(worldModel.getPlayerObjs())[playerId]->updateToTickData(currentTickf);
 
-
-			
-			//WorldModel::PlayerObjs::Iterator playerObjIt = worldModel.getPlayerObjs().begin();
-			//WorldModel::PlayerObjs::Iterator playerObjEnd = worldModel.getPlayerObjs().end();
-			//for(; it != end; ++it)
-			//{
-			//	it->second->updateToTickData(tick);
-			//}
-			//(worldModel.getPlayerObjs())[playerId]->updateToTickData(currentTickf);
-
 			WorldModel::Projectiles::Iterator projectilesIt = worldModel.getProjectiles().begin();
 			WorldModel::Projectiles::Iterator projectilesEnd = worldModel.getProjectiles().end();
 			for(; projectilesIt != projectilesEnd; ++projectilesIt)
 			{
-				//std::cout << "projectile at client!" << std::endl;
-				
 				Projectile *projectile = projectilesIt->second;
 				assert(projectile);
 				Tickf projectileRenderTickf;
-				//std::cout << " " << projectile << " ";
+
 				if (projectile->getShooterId() == static_cast<GameObjId>(playerId))
 				{
 					projectileRenderTickf = currentTickf;
@@ -609,10 +518,7 @@ namespace Prototype
 
 				projectile->updateToTickData(projectileRenderTickf);
 				projectile->render = (projectileRenderTickf >= projectile->getShootTick());
-
-				
 			}
-
 
 			worldRenderer.render(worldModel, players, (worldModel.getPlayerObjs())[playerId]);//, timeHandler.getStepTick());
 		}
@@ -620,56 +526,19 @@ namespace Prototype
 
 		//update
 		handleServerMessages();
-
-
-		//// testing Line testing cross point
-		
-		//static float x = 0.0f;
-		//x += 0.5f;
-		//Line testLine1(0.0f, 0.0f, 200.0f, 200.0f);
-		//Line testLine2(0.0f, x, 200.0f, 0.0f);
-		//Rectangle crossBox(testLine1.getPosAlong(testLine1.crossPoint(testLine2)), 15.0f);
-
-		//glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-		//WorldRenderer::renderLine(testLine1, 2.0f, 1.0f);
-		//glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-		//WorldRenderer::renderLine(testLine2, 2.0f, 1.0f);
-		//glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-		//WorldRenderer::renderRectangle(crossBox, GL_QUADS);
-
-		//Rectangle rect;
-		//(worldModel.getPlayerObjs())[0]->getRectangle(rect);		
-		//Line leftTest(rect.getLeftLine());
-		//Line rightTest(rect.getRightLine());
-		//Line topTest(rect.getTopLine());
-		//Line bottomTest(rect.getBottomLine());
-
-		//glColor4f(1.0f, 0.5f, 0.0f, 1.0f);
-		//WorldRenderer::renderLine(leftTest, 1.0f, 1.0f);
-		//WorldRenderer::renderLine(rightTest, 1.0f, 1.0f);
-		//WorldRenderer::renderLine(topTest, 1.0f, 1.0f);
-		//WorldRenderer::renderLine(bottomTest, 1.0f, 1.0f);
 	}
 
 	void Client::addPlayer(PlayerId playerId, const Color &playerColor, const Pos &playerPos, int tick)
 	{
-		
-		//size_t playerId = players.getSize();
-		//size_t playerObjId = playerId; // for now
-		
 		players.add(playerId, new Player(playerColor));
-		//players[playerId].playerObjId = playerObjId;
-		//worldModel.addPlayerObj(playerId, playerObjId, playerPos);
 		
 		// if this is me
 		bool isMe = (playerId == this->playerId);
 
 		worldModel.addPlayerObj(playerId, playerPos, isMe, tick, configHandler.getIntValue("player_obj_health", PlayerObj::HEALTH_DEFAULT));
 		
-		
 		if (isMe)
 		{
-			
 			// set ammo supply			
 			(worldModel.getPlayerObjs())[playerId]->setAmmoSupply(static_cast<int>(playerPos.x + playerPos.y));
 		}
@@ -677,12 +546,8 @@ namespace Prototype
 
 	void Client::setConnection(MessageSender *messageSender, MessageReciever *messageReciever)
 	{
-		//this->messageSender = messageSender;
-		//this->messageReciever = messageReciever;
 		link.setMessageSender(messageSender);
 		link.setMessageReciever(messageReciever);
-
-		//link.setSimulatedRecieveLag(2);
 	}
 
 	KeyHandler* Client::getKeyHandler()
@@ -690,31 +555,11 @@ namespace Prototype
 		return &kh;
 	}
 
-	//void Client::setCurrentMousePos(Vec2<int> mouseScreenPos)
-	//{
-	//	mousePosChanged = true;
-	//	if (worldModel.getPlayerObjs().exists(playerId))
-	//	{
-	//		PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-	//		
-	//		viewportHandler.renderArea.size = WorldRenderer::RENDER_SIZE; // set current render area
-	//		viewportHandler.renderArea.setCenterPos(playerObj->pos); // set current render area
-	//		mousePos = viewportHandler.screenToGame(mouseScreenPos); // mouse position in game
-	//	}
-	//}
-
 	Angle Client::calcPlayerObjAngle(Vec2<int> mouseScreenPos)
 	{
-		//std::cout << mouseScreenPos.y << std::endl;
-		
 		if (worldModel.getPlayerObjs().exists(playerId))
 		{
 			PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-			
-			//viewportHandler.renderArea.size = WorldRenderer::RENDER_SIZE; // set current render area
-			//viewportHandler.renderArea.setCenterPos(playerObj->pos); // set current render area
-			//Pos mousePos = viewportHandler.screenToGame(mouseScreenPos); // mouse position in game
-			//std::cout << mousePos.y << std::endl;
 
 			float angle;
 			Pos mousePos(viewportHandler.screenToGame(worldRenderer.getRenderArea(playerObj), mouseScreenPos));
@@ -730,17 +575,15 @@ namespace Prototype
 				angle = acos(aimVec.x);
 				if (aimVec.y < 0.0f) angle = -angle;
 			}
-			//playerObj->angle = angle;
-			return angle;
 
+			return angle;
 		}
+		
 		return 0.0f;
 	}
 
 	Angle Client::calcPlayerObjAngle(Angle preAngle, StateCmds stateCmds)
 	{
-		//PlayerObj *playerObj = (worldModel.getPlayerObjs())[playerId];
-
 		bool left = stateCmds.getCurrentState(Cmds::ROTATE_LEFT);
 		bool right = stateCmds.getCurrentState(Cmds::ROTATE_RIGHT);
 		float rotateAmount(PlayerObj::getRotateSpeed());

@@ -9,8 +9,6 @@
 namespace Prototype
 {
 
-	
-	
 	const Vec WorldRenderer::RENDER_SIZE = Vec(400.0f / 2.0f, 300.0f * (3.0f / 4.0f));
 
 	const Pos WorldRenderer::WORLD_CENTER_POS = Pos(280.0f / 2.0f, 170.0f * (3.0f / 4.0f));
@@ -23,7 +21,6 @@ namespace Prototype
 	// ----------------------------------   WorldRenderer  ----------------------------------
 	// --------------------------------------------------------------------------------------
 
-
 	WorldRenderer::WorldRenderer(RenderMode renderMode)
 		: renderMode(renderMode)
 	{}
@@ -35,54 +32,6 @@ namespace Prototype
 		glOrtho(0.0, WorldModel::WORLD_SIZE.x, 0.0, WorldModel::WORLD_SIZE.y, -1.0, 1.0);
 		glMatrixMode(GL_MODELVIEW);
 	}
-
-	//template <class Players>
-	//void WorldRenderer::render(WorldModel &worldModel, Players &players, PlayerObj *localPlayerObj, Tickf tick)
-	//{
-	//	glLoadIdentity();
-
-	//	// render box around render area
-	//	renderViewBox();
-
-	//	// camera
-	//	glPushMatrix();
-	//		{			
-	//			Rectangle renderArea(getRenderArea(localPlayerObj));
-	//			Vec scaleAmount = WorldModel::WORLD_SIZE / renderArea.size;
-	//			glScalef(scaleAmount.x, scaleAmount.y, 1.0f);
-	//			glTranslatef(-renderArea.pos.x, -renderArea.pos.y, 0.0f);			
-	//		}		
-	//		
-	//		//// execute camera properties
-	//		//switch(renderMode)
-	//		//{
-	//		//case HOLE_WORLD:
-	//		//	// nothing to do, we are rendering the hole world
-	//		//	break;
-	//		//case FOLLOW_PLAYER:
-	//		//	{
-	//		//		
-	//		//	}
-	//		//	break;
-	//		//default:
-	//		//	assert(false);
-	//		//	break;
-	//		//}
-
-	//		// render all objects			
-	//		//RenderGameObj renderGameObj(&players);
-	//		RenderObstacle renderObstacle;
-	//		RenderPlayerObj<Players> renderPlayerObj(&players, tick);
-	//		RenderProjectile renderProjectile(tick);
-	//		ForEach(worldModel.getObstacles().begin(), worldModel.getObstacles().end(), renderObstacle);
-	//		ForEach(worldModel.getPlayerObjs().begin(), worldModel.getPlayerObjs().end(), renderPlayerObj);
-	//		ForEach(worldModel.getProjectiles().begin(), worldModel.getProjectiles().end(), renderProjectile);			
-	//		//render explosion
-	//		RenderExplosion renderExplosion;
-	//		ForEach(explosions.begin(), explosions.end(), renderExplosion);
-	//		explosions.clear();
-	//	glPopMatrix();
-	//}
 
 	void WorldRenderer::projectileHit(Projectile *projectile, const Pos &hitPos)
 	{
@@ -145,52 +94,6 @@ namespace Prototype
 		WorldRenderer::renderRectangle(*(obstaclePair.second), GL_QUADS);
 	}
 
-	//template <class Players>
-	//void WorldRenderer::RenderPlayerObj<Players>::operator ()(const WorldModel::PlayerObjs::Pair &playerObjPair)
-	//{
-	//	static const Color PLAYER_RECTANGLE_COLOR = Color(0.7f,0.7f,0.7f);
-	//	static const float PLAYER_RECTANGLE_ALPHA = 0.5f;
-	//	
-	//	PlayerId playerId = playerObjPair.first;
-	//	PlayerObj *playerObj = playerObjPair.second;
-	//	playerObj->updateToTickData(tick);
-	//	
-	//	
-	//	Rectangle rect;
-	//	playerObj->getRectangle(rect);
-
-	//	// render rectangle
-	//	glColor4f(PLAYER_RECTANGLE_COLOR.r, PLAYER_RECTANGLE_COLOR.g, PLAYER_RECTANGLE_COLOR.b, PLAYER_RECTANGLE_ALPHA);
-	//	WorldRenderer::renderRectangle(rect, GL_QUADS);
-	//	
-	//	// setup some vertexes
-	//	Vec2f v0((rect.getTopLeft() + rect.getTopRight()) / 2.0f);
-	//	Vec2f v1(rect.getBottomLeft());
-	//	Vec2f v2(rect.getBottomRight());
-
-	//	// get a player color
-	//	//size_t playerId = playerObj->getPlayerId();
-	//	//Color playerColor(0.7f, 0.7f, 0.7f);
-	//	//if (players->isValid(playerId))
-	//	//{
-	//	Color playerColor = (*players)[playerId].color;
-	//	//}
-
-	//	// render triangle
-	//	glPushMatrix();
-	//		glTranslatef(playerObj->pos.x, playerObj->pos.y, 0.0f);
-	//		glRotatef(radianToDegree(playerObj->angle.getFloat()) - 90.0f, 0.0f, 0.0f, 1.0f); 
-	//		glTranslatef(-playerObj->pos.x, -playerObj->pos.y, 0.0f);
-	//		glBegin(GL_TRIANGLES);
-	//			glColor3fv(reinterpret_cast<float*>(&playerColor));
-	//			glVertex2fv(reinterpret_cast<float*>(&v0));
-	//			glColor4f(PLAYER_RECTANGLE_COLOR.r, PLAYER_RECTANGLE_COLOR.g, PLAYER_RECTANGLE_COLOR.b, PLAYER_RECTANGLE_ALPHA);
-	//			glVertex2fv(reinterpret_cast<float*>(&v1));
-	//			glVertex2fv(reinterpret_cast<float*>(&v2));
-	//		glEnd();
-	//	glPopMatrix();
-	//}
-
 	void WorldRenderer::RenderProjectile::operator ()(const WorldModel::Projectiles::Pair &projectilePair)
 	{
 		static const Color projectileColors[Projectile::N_TYPES] = {Color(0.0f,0.0f,0.0f), Color(0.0f, 0.0f, 0.0f)};
@@ -200,9 +103,6 @@ namespace Prototype
 		Projectile *projectile = projectilePair.second;
 		if (projectile->render)
 		{
-
-			//projectile->updateToTickData(tick);
-			
 			Projectile::Type type = projectile->getType();		
 			Line line(projectile->getLine());
 

@@ -26,7 +26,6 @@ namespace Prototype
 		};
 	};
 
-
 	class Server : public ServerGlobalAccess
 	{
 	public:
@@ -41,18 +40,10 @@ namespace Prototype
 		// @return The PlayerId that the new player got
 		PlayerId addClient(Color &color, MessageSender *messageSender, MessageReciever *messageReciever);
 
-		//// @return The PlayerObjId that the new player object got
-		//GameObjId addPlayerObj(size_t playerId, const Pos &playerPos);
-
 		void addPlayerObj(PlayerId playerId, const Pos &playerPos);
-
-
-		// @return The ObstacleId that the new obstacle got		 
-		//size_t addObstacle(const Rectangle &obstacleArea);
 
 		// start game, no more clients can join
 		void startGame();
-
 
 		// (server debug rendering)
 		inline void setViewport(int x, int y, int w, int h)
@@ -62,6 +53,7 @@ namespace Prototype
 			viewportHandler.screenRenderSize.x = w;
 			viewportHandler.screenRenderSize.y = h;
 		}
+		
 		inline void useViewport()						{ viewportHandler.useViewport(); }
 		void render();
 
@@ -78,24 +70,15 @@ namespace Prototype
 		static const double PREDICTION_AMOUNT_MODIFIER_DEFAULT;
 		static const int PREDICTION_AMOUNT_ADD_TIME_DEFAULT;
 		
-		
-		
-		//size_t addPlayer(const ServerPlayer &player);
-
-		
-
 		ServerWorldModel worldModel;
 		ServerPlayers players;
 
-		//ServerTimeHandler timeHandler;
 		ServerGlobalObj serverGlobalObj;
 		int lastUpdateTime;
 
-		//std::vector<ServerClient> clients;
-
-
 		// stores viewport parameters (server debug rendering)
 		ViewportHandler viewportHandler;
+
 		// worldrenderer (server debug rendering)
 		WorldRenderer worldRenderer;
 		bool requestRender;
