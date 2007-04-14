@@ -23,19 +23,10 @@ namespace Planet
 	const float PlayerObj::STRAFE_SPEED = 100.0f / 1000.0f;
 	const float PlayerObj::RECTANGLE_SIZE = 20.0f;
 
-	//PlayerObj::PlayerObj(size_t playerId, const Pos &pos)
-	//	: playerId(playerId), pos(pos), angle(0.0f),
-	//	 movingForward(false), movingBackward(false),
-	//	 strafingLeft(false), strafingRight(false)
-	//{}
-
 	PlayerObj::PlayerObj(PlayerId playerId, const Color &playerColor, const Pos &pos, const Pos &aimPos, size_t nHistoryTicks, int tick, PlanetBody *planetBody)
 		: historyList(nHistoryTicks, UpdateData::interExtraPolate), 
-			ship(playerColor, pos, aimPos, planetBody), //pos(pos), angle(Angle::PI/2.0f),
+			ship(playerColor, pos, aimPos, planetBody),
 			health(100),
-		 //movingForward(false), movingBackward(false),
-		 //strafingLeft(false), strafingRight(false),
-		 //currentWeapon(Projectile::DEFAULT_PROJECTILE),
 		 nextShootTick(static_cast<Tickf>(tick))
 	{
 		
@@ -44,7 +35,7 @@ namespace Planet
 		if (N_WEAPONS >= 2) ammoSupply[1] = 10;
 
 		// insert data into history list
-		UpdateData firstTickData(getPos(), //angle,
+		UpdateData firstTickData(getPos(),
 									getAimPos(),
 									nextShootTick,
 									ammoSupply
@@ -77,38 +68,12 @@ namespace Planet
 			}
 		}
 		ammoSupply[0] = 10000;
-		//ammo[1] = 10000;
 	}
-
-	//void PlayerObj::getRectangle(Rectangle &rectangle) const
-	//{
-	//	Vec size(RECTANGLE_SIZE, RECTANGLE_SIZE);
-	//	
-	//	rectangle.pos = this->pos - size/2.0f;
-	//	rectangle.size = size;
-	//}
 
 	void PlayerObj::hurt(int damage)
 	{
 		health -= damage;
-		//if (health <= 0) nDeaths++;
 	}
-
-	//void PlayerObj::respawn(const Pos &respawnPos)
-	//{ 
-	//	assert(isDead());
-	//	this->pos = respawnPos;
-	//	health = 100;
-	//}
-
-	//void PlayerObj::switchWeapon()
-	//{		
-	//	for(int i=1; i<=N_WEAPONS; ++i)
-	//	{
-	//		currentWeapon = (currentWeapon + 1) % N_WEAPONS;
-	//		if (ammo[currentWeapon] > 0) break;
-	//	}
-	//}
 
 	Projectile::Type PlayerObj::getNextWeapon(Projectile::Type weapon)
 	{
@@ -119,15 +84,6 @@ namespace Planet
 		}
 		return weapon;
 	}
-	
-	//void PlayerObj::shoot(int time)
-	//{
-	//	int currentWeapon = getCurrentWeapon();
-	//	assert(ammo[currentWeapon] >= 0);
-	//	ammo[currentWeapon]--;
-	//	nextShootTick = time + Projectile::getShootInterval(currentWeapon);
-	//	//if (ammo[currentWeapon] == 0) switchWeapon();		
-	//}
 
 	bool PlayerObj::setTickDataAndCompare(int tick, const UpdatePlayerObj *updatePlayerObj)
 	{
@@ -145,18 +101,11 @@ namespace Planet
 		UpdateData data;
 		historyList.getData(tick, data);
 
-
-		//setPos(data.pos);
-		//setAimPos(data.aimPos);
 		ship.setState(data.pos, data.aimPos);
 
 		this->nextShootTick = data.nextShootTick;
 		
 		ammoSupply = data.ammoSupply;
-		//for(int i=0; i<Projectile::N_TYPES; ++i)
-		//{
-		//	this->ammoSupply[i] = data.ammoSupply[i];
-		//}
 		
 		assert(data.nextShootTick >= tick);
 	}
@@ -166,9 +115,6 @@ namespace Planet
 		UpdateData data;
 		historyList.getData(tick, data);
 
-		//TODO
-		//this->pos = data.pos;
-		//this->angle = data.angle;
 		ship.setState(data.pos, data.aimPos);
 
 		this->nextShootTick = data.nextShootTick;
@@ -182,20 +128,12 @@ namespace Planet
 	void PlayerObj::setUserCmd(const UserCmd *userCmd)
 	{
 		this->userCmd = *userCmd;
-		//angle = userCmd->aimAngle;
 		ship.aimPos = userCmd->aimPos;
-
 	}
 
 	int PlayerObj::getNTickShots(Projectile::Type weapon, int currentTick)
 	{ 
 		assert(nextShootTick >= currentTick);
-		//Tickf missedShootTicks = nextShootTick - static_cast<Tickf>(currentTick);
-		//int missedShots = static_cast<int>(missedShootTicks / Projectile::getShootInterval(weapon));
-
-
-		//Tickf shootInterval = Projectile::getShootInterval(weapon);
-		//int nShots = static_cast<int>(0.9999 / shootInterval) - missedShots;
 
 		Tickf nextTickf = static_cast<Tickf>(currentTick + 1);
 		Tickf shootInterval = Projectile::getShootInterval(weapon);
@@ -214,10 +152,8 @@ namespace Planet
 	{
 		assert(userCmd.isConsistent(currentTick));
 
-		//Tickf oldNextShootTick = nextShootTick;
 		Tickf currentTickf = static_cast<Tickf>(currentTick);
 		
-		//assert(nextShootTick >= currentTickf);
 		assert((nextShootTick >= currentTickf) || (userCmd.nShots == 0));
 		nextShootTick = getShotTick(currentTick, userCmd.nShots);
 		
@@ -226,14 +162,6 @@ namespace Planet
 		currentTickf = static_cast<Tickf>(currentTick);
 
 		if (nextShootTick < currentTickf) nextShootTick = currentTickf;
-
-		//if (userCmd.nShots > 0) std::cout << "        ##       nextShootTick is now: " << nextShootTick << std::endl;
-
-		//if (userCmd.shootAction == UserCmd::START_SHOOTING)
-		//{
-		//	nextShootTick = tmax(nextShootTick, static_cast<Tickf>(currentTick));
-		//}
-		//nextShootTick += Projectile::getShootInterval(userCmd.weapon) * static_cast<Tickf>(userCmd.nShots);
 	}
 
 	Tickf PlayerObj::getShotTick(int currentTick, int shotN)
@@ -241,16 +169,7 @@ namespace Planet
 		assert(nextShootTick >= currentTick);
 		assert(userCmd.isConsistent(currentTick));
 		
-		Tickf startShootTick;
-		//if (userCmd.shootAction == UserCmd::START_SHOOTING)
-		//{
-		//	startShootTick = tmax(nextShootTick, static_cast<Tickf>(currentTick));
-		//}
-		//else
-		//{
-			//startShootTick = nextShootTick;
-			startShootTick = tmax(nextShootTick, userCmd.firstShotTick);
-		//}
+		Tickf startShootTick = tmax(nextShootTick, userCmd.firstShotTick);
 
 		return startShootTick + Projectile::getShootInterval(userCmd.weapon) * static_cast<Tickf>(shotN);
 	}

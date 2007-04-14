@@ -108,15 +108,6 @@ namespace Planet
 			return Vec2(-x, -y);
 		}
 
-		//inline Vec2<T>& operator=(const Vec2<T>& rh)
-		//{
-		//	x = rh.x;
-		//	y = rh.y;
-		//	return *this;
-		//}
-
-
-
 		inline bool operator==(const Vec2<T>& rh) const
 		{
 			return (rh.x == x) && (rh.y == y);
@@ -144,7 +135,6 @@ namespace Planet
 			float tmp = 1.0f / length();
 			x = x * tmp;
 			y = y * tmp;
-			//z = z * tmp;
 		}
 
 	};

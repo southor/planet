@@ -39,42 +39,10 @@ namespace Planet
 	
 	void MessageReciever::retrieve(int currentTime)
 	{
-		/*
-		// ------------------ DEBUG PURPOSE --------------------
-		if (lagQueue.size() > 0 && (lagTimeHandler.getTime() >= (lagQueue.front().time + 10)))
-		{
-			if (lagQueue.size() != 0)
-			{
-				printf("%d YES lagQueue.size(): %d, lagTimeHanlder.getTime(): %d, lagQueue.front().time: %d\n", 
-					v, lagQueue.size(), lagTimeHandler.getTime(), lagQueue.front().time);
-			}
-			else
-			{
-				printf("%d YES lagQueue.size(): %d\n", 
-					v, lagQueue.size());
-			}
-		}
-		else
-		{
-			if (lagQueue.size() != 0)
-			{
-				printf("%d NO lagQueue.size(): %d, lagTimeHanlder.getTime(): %d, lagQueue.front().time: %d\n", 
-					v, lagQueue.size(), lagTimeHandler.getTime(), lagQueue.front().time);
-			}
-			else
-			{
-				printf("%d NO lagQueue.size(): %d\n", 
-					v, lagQueue.size());
-			}
-		}
-		*/
- 
 		while (lagQueue.size() > 0 && (lagTimeHandler.getTime() >= (lagQueue.front().time + simulatedLag)))
 		{
 			Message message = lagQueue.front();
 			lagQueue.pop_front();
-		
-			//printf("%d pop %d from lagqueue and push to recievequeue\n", v, message.tick);
 					
 			recieveQueue.push_back(message);
 
@@ -89,9 +57,6 @@ namespace Planet
 
 		message.time = lagTimeHandler.getTime();
 		lagQueue.push_back(message);
-
-		//printf("%d putting %d on lag queue\n", v, message.tick);
-
 	}
 	
 	Message MessageReciever::popMessage()

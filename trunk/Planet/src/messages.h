@@ -165,17 +165,6 @@ namespace Planet
 		}
 	};
 
-	//struct AddObstacle
-	//{
-	//	static const size_t messageType = ADD_OBSTACLE;
-
-	//	GameObjId obstacleId;
-	//	Rectangle obstacleArea;
-	//	AddObstacle(GameObjId obstacleId, const Rectangle &obstacleArea)
-	//		: obstacleId(obstacleId), obstacleArea(obstacleArea)
-	//	{}
-	//};
-
 	struct WelcomeClient
 	{
 		static const size_t messageType = WELCOME_CLIENT;
@@ -205,10 +194,7 @@ namespace Planet
 
 		PlayerId playerId;
 		Color color;
-		//Pos startPos;
-		
-		//AddPlayer(PlayerId playerId, Color color, Pos startPos) 
-		//	: playerId(playerId), color(color), startPos(startPos) {}
+
 		AddPlayer(PlayerId playerId, Color color) 
 			: playerId(playerId), color(color)
 		{}

@@ -61,7 +61,6 @@ namespace Planet
 		gui->setInput(input);
 		gui->setTop(top);
 
-		//font = new gcn::ImageFont("images/fixedfont.bmp", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 		font = new gcn::ImageFont("images/rpgfont.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`'*#=[]\""); 	
 		bigFont = new gcn::ImageFont("images/techyfontbig.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`'*#=[]\""); 	
 		gcn::Widget::setGlobalFont(font);
@@ -127,9 +126,6 @@ namespace Planet
 		top->add(labelColor, 10, 175);
 		top->add(dropDownColors, 200, 175);
 		top->add(buttonConnectToServer, 200, 200);
-
-		//top->add(checkBox1, 500, 130);
-		//top->add(window, 100, 350);
 	}
 	
 	void Gui::logic()

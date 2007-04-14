@@ -162,13 +162,6 @@ namespace Planet
 				PFNGLCLIENTACTIVETEXTUREARBPROC glClientActiveTextureARB = 0;
 				glClientActiveTextureARB = (PFNGLCLIENTACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress( "glClientActiveTextureARB" ) ;
 			#endif
-			/*		
-			typedef void (*GL_ActiveTextureARB_Func)(unsigned int);
-			GL_ActiveTextureARB_Func glActiveTextureARB_ptr = (GL_ActiveTextureARB_Func)SDL_GL_GetProcAddress("glActiveTextureARB");
-
-			typedef void (*GL_ClientActiveTextureARB_Func)(unsigned int);
-			GL_ClientActiveTextureARB_Func glClientActiveTextureARB_ptr = (GL_ClientActiveTextureARB_Func)SDL_GL_GetProcAddress("glClientActiveTextureARB");
-			*/
 
 			glVertexPointer(3, GL_FLOAT, sizeof(VertData), vertices);
 			glNormalPointer(GL_FLOAT, sizeof(VertData), &(vertices[0].normal));
@@ -228,32 +221,6 @@ namespace Planet
 
 			glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_INT, indices);
 		#endif
-		
-		
-		// DEBUG - render normals and planenormals
-		/*	
-		glDisable(GL_LIGHTING);
-		for (int i = 0; i < (resolution * resolution); i++)
-		{
-			VertData data = vertices[i];
-			Vec v = data.vertex;
-			Vec v2 = v + data.normal;
-			Vec v3 = v + data.planeNormal;
-			
-			glColor3f(1.0f, 0.0f, 0.0f);
-			glBegin(GL_LINES);
-				glVertex3f(v.x, v.y, v.z);
-				glVertex3f(v2.x, v2.y, v2.z);
-			glEnd();
-
-			glColor3f(1.0f, 1.0f, 1.0f);
-		 	glBegin(GL_LINES);
-				glVertex3f(v.x, v.y, v.z);
-				glVertex3f(v3.x, v3.y, v3.z);
-			glEnd();
-		}
-		glEnable(GL_LIGHTING);
-		*/		
 	}
 
 	bool PlanetFace::findIntersection(SpherePoint &sp, float &s, float &t)
@@ -299,15 +266,6 @@ namespace Planet
 		s /= v1v2.length();
 		t /= v1v4.length();
 
-		/*
-		// DEBUG
-		printf("pv: (%f,%f,%f)\n", pv.x, pv.y, pv.z);
-		printf("v1v2: (%f,%f,%f)\n", v1v2.x, v1v2.y, v1v2.z);
-		printf("v1v4: (%f,%f,%f)\n", v1v4.x, v1v4.y, v1v4.z);
-		//printf("u: %f, (%f,%f,%f)\n", u, p.x, p.y, p.z);
-		printf("s: %f, t: %f\n\n", s, t);
-		*/
-		
 		return insideFace;
 	}
 	
@@ -317,6 +275,10 @@ namespace Planet
 		if (t == 1.0f) t -= 0.0001;
 
 		/*
+		//
+		// Interpolation code
+		//
+		
 		float height;
 		float res = static_cast<float>(resolution - 1);
 

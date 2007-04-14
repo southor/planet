@@ -22,7 +22,6 @@ namespace Planet
 		glEnable(GL_BLEND);		
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_CULL_FACE);
-		//glEnableClientState(GL_VERTEX_ARRAY);
 	}
 	
 	void LaserBeamRenderHandler::render()

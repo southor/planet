@@ -10,11 +10,9 @@ namespace Planet
 	const Projectile::Properties Projectile::properties[2] = {{200.0f/1000.0f, 20, 0, 0, 75},
 															   {200.0f/1000.0f, 100, 50, 100.0f, 500}};
 
-	//Projectile::Projectile(Type type, const Pos &pos, Angle angle, GameObjId shooterId, size_t nHistoryTicks, int currentTick, Tickf shootTick, int objLag)
-	//	: historyList(nHistoryTicks, getPosAtTick, this), type(type), pos(pos), angle(angle), shooterId(shooterId), shootTick(shootTick), objLag(objLag)
-	Projectile::Projectile(Type type, const Pos &pos, const Vec &ext, //Angle angle,
+	Projectile::Projectile(Type type, const Pos &pos, const Vec &ext,
 							GameObjId shooterId, size_t nHistoryTicks, Tickf shootTick, int objLag)
-		: historyList(nHistoryTicks, getPosAtTick, this), type(type), //pos(pos), angle(angle),
+		: historyList(nHistoryTicks, getPosAtTick, this), type(type),
 																		Line(pos, ext),
 																		shooterId(shooterId), shootTick(shootTick), objLag(objLag), render(true)
 	{
@@ -26,14 +24,6 @@ namespace Planet
 		historyList.setDefaultData(this->pos);
 		historyList.setData(static_cast<int>(shootTick), pos);
 	}
-
-	//Line Projectile::getLine() const
-	//{
-	//	float length = getSpeed() * 1.2f;
-	//	Vec direction(cos(angle.getFloat()), sin(angle.getFloat()));		
-	//	Line line(pos, direction * length);
-	//	return line;
-	//}
 
 	int Projectile::getBlastDamage(float blastPos, const Pos &targetPos) const
 	{

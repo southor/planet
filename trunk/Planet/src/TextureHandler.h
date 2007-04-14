@@ -34,11 +34,6 @@ namespace Planet
 		  
 			SDL_Surface* image = SDL_ConvertSurface(tmp, colordata->format, SDL_SWSURFACE);
 			SDL_FreeSurface(colordata);
-			/*
-				SDL_Surface *image = 0;
-
-				image = SDL_DisplayFormatAlpha(tmp);
-			*/
 
 			SDL_FreeSurface(tmp);
 

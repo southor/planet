@@ -39,9 +39,6 @@ namespace Planet
 
 		bool clientConnected(MessageSender *messageSender, MessageReciever *messageReciever);
 
-		//ServerTimeHandler* getTimeHandler() { return getTimeHandler(); }
-		//ServerIdGenerator* getIdGenerator() { return getIdGenerator(); }
-
 		void setMap(const std::string &map) { currentMap = map; }
 
 	private:

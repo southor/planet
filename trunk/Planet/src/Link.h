@@ -46,7 +46,6 @@ namespace Planet
 		Link(MessageSender *messageSender, MessageReciever *messageReciever) 
 			: messageSender(messageSender), messageReciever(messageReciever)
 		{
-			//resetPoppedMessage();
 			hasPoppedMessage = false;
 		}
 
@@ -70,7 +69,6 @@ namespace Planet
 
 		// --------------------------------- recieving messages ------------------------------
 
-		//int getNMessages() const; // returns number of recieve messages on the queue
 		bool hasMessageOnQueue() const; // returns true if at least 1 message is on recieve queue
 		bool hasMessageOnQueueWithTick(int tick) const; // returns true if at least 1 message is on recieve queue		
 		int getTickOfMessageOnQueue() const; // returns the tick of the top message on queue

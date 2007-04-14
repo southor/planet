@@ -6,10 +6,8 @@
 #pragma comment(lib, "SDLmain.lib")
 #pragma comment(lib, "SDL_image.lib")
 #pragma comment(lib, "SDL_net.lib")
-//#pragma comment(lib, "SDL_mixer.lib")
 #pragma comment( lib, "opengl32.lib" )
 #pragma comment( lib, "glu32.lib" )
-//#pragma comment( lib, "glaux.lib" )
 
 #endif
 
@@ -32,8 +30,6 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_net.h"
-//#include "SDL_mixer.h"
-//#include <GL/glu.h>
 
 #endif
 

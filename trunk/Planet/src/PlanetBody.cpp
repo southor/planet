@@ -7,10 +7,6 @@
 namespace Planet
 {
 
-	//const float PlanetBody::DEFAULT_RADIUS = 10.0f;
-	//const float PlanetBody::DEFAULT_DETAIL_SCALE = 1.0f;
-	//const float PlanetBody::DEFAULT_HEIGHT_MAP_MULTI = 1.0f;
-
 	PlanetBody::PlanetBody() : xFront(0), xBack(0), yFront(0), yBack(0), zFront(0), zBack(0)
 	{
 	}
@@ -68,32 +64,8 @@ namespace Planet
 		
 	void PlanetBody::render()
 	{
-		
 		glLineWidth(2.0);
 		glPointSize(3.0);
-
-		/*
-		glDisable(GL_LIGHTING);
-		glBegin(GL_LINES);
-			glColor3f(1.0f, 1.0f, 0.0f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glColor3f(1.0f, 0.0f, 0.0f);
-			glVertex3f(10.0f, 0.0f, 0.0f);
-		glEnd();
-		glBegin(GL_LINES);
-			glColor3f(0.0f, 1.0f, 1.0f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glColor3f(0.0f, 1.0f, 0.0f);
-			glVertex3f(0.0f, 10.0f, 0.0f);
-		glEnd();
-		glBegin(GL_LINES);
-			glColor3f(1.0f, 0.0f, 1.0f);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glColor3f(0.0f, 0.0f, 1.0f);
-			glVertex3f(0.0f, 0.0f, 10.0f);
-		glEnd();
-		glEnable(GL_LIGHTING);
-		*/
 
 		xFront->render();
 		xBack->render();

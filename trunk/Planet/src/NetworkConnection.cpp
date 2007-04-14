@@ -27,10 +27,6 @@ namespace Planet
 			Message message = sendDeque.front();
 			sendDeque.pop_front();
 			
-			//printf("%d sending message: type: %d, time: %d, size: %d\n", v, message.type, message.time, message.size);
-			
-			//type = SDL_SwapBE32(type);
-			
 			// Send message on socket
 			result = SDLNet_TCP_Send(socket, &(message.type), sizeof(message.type));
 			if (result < sizeof(message.type))
@@ -55,9 +51,6 @@ namespace Planet
 				return; 
 			}
 			
-			
-			//len = SDL_SwapBE32(len);
-			
 			// Send length of message.data
 			result = SDLNet_TCP_Send(socket, &(message.size), sizeof(message.size));
 			if (result < sizeof(message.size))
@@ -65,8 +58,6 @@ namespace Planet
 				printf("SDLNet_TCP_Send: %s (sending message.size)\n", SDLNet_GetError());
 				return; 
 			}
-
-			//len = SDL_SwapBE32(len);
 
 			// Send message.data
 			result = SDLNet_TCP_Send(socket, message.data, message.size);
@@ -77,9 +68,6 @@ namespace Planet
 			}
 			
 			delete message.data;
-
-			//if (result < len)
-			//	printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
 		}
 	}
 
@@ -178,11 +166,7 @@ namespace Planet
 				}
 
 				Message message(retrieveType, retrieveSize, data, retrieveTime, retrieveTick);
-				
-				//if (retrieveType == 5 || retrieveType == 12)
-				//if (v == 2)
-				//	printf("retrieving message: type: %d, size: %d, time: %d, tick: %d @ %d\n", retrieveType, retrieveSize, retrieveTime, retrieveTick, currentTime);
-				
+					
 				putMessageToLagQueue(message, currentTime);
 				
 				// reset messagePhase
@@ -260,10 +244,6 @@ namespace Planet
 		{
 			return 0;
 		}
-		
-		//char message[1024];
-		//int len;
-		//Uint32 ipaddr;
 
 		// check for new connection from a client
 		if (SDLNet_SocketReady(socket))
@@ -355,8 +335,6 @@ namespace Planet
 	bool NetworkClient::openConnection(std::string &host)
 	{
 		IPaddress ip;
-		//char message[1024];
-		//int len;
 		Uint16 port = 12333;
 
 		// Resolve the argument into an IPaddress type

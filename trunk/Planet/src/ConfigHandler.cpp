@@ -29,20 +29,6 @@ namespace Planet
 		file.close();
 	}
 	
-	//double ConfigHandler::getDoubleValue(std::string option)
-	//{
-	//	if (configMap.count(option) > 0)
-	//	{
-	//		return configMap[option];
-	//	}
-	//	else
-	//	{
-	//		assert(false);
-	//		printf("Can't load option: %s\n", option.c_str());
-	//		return 0.0f;
-	//	}
-	//}
-
 	bool ConfigHandler::getValue(std::string option, double &result)
 	{
 		if (configMap.count(option) > 0)
@@ -52,8 +38,6 @@ namespace Planet
 		}
 		else
 		{
-			//assert(false);
-			//printf("Can't load option: %s\n", option.c_str());
 			std::cout << "config option " << option << " missing in file, using default value." << std::endl; 
 			return false;
 		}

@@ -79,12 +79,6 @@ namespace Planet
 			glTexCoord2f(1.0f, 1.0f); glVertex3f(bottomRight.x, bottomRight.y, bottomRight.z); 
 			glTexCoord2f(0.0f, 1.0f); glVertex3f(bottomLeft.x, bottomLeft.y, bottomLeft.z);
 		glEnd();
-		/*
-		glPointSize(10.0);
-		glBegin(GL_POINTS);
-			glVertex3f(position.x, position.y, position.z);
-		glEnd();
-		*/
 		
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);

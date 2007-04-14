@@ -4,7 +4,6 @@
 #include <guichan.hpp>
 #include <guichan/sdl.hpp>
 #include <guichan/opengl.hpp>
-// A class used to load images for OpenGL using SDL
 #include <guichan/opengl/openglsdlimageloader.hpp>
 #include "Color.h"
 

@@ -1,7 +1,6 @@
 #ifndef __Planet_h__
 #define __Planet_h__
 
-//#include "Obstacle.h"
 #include "PlayerObj.h"
 #include "Projectile.h"
 #include "PlanetBody.h"
@@ -21,7 +20,6 @@ namespace Planet
 
 		static const Vec WORLD_SIZE;		
 
-		//typedef IdMap<GameObjId, Obstacle*> Obstacles;
 		typedef IdMap<GameObjId, PlayerObj*> PlayerObjs;
 		typedef IdMap<GameObjId, Projectile*> Projectiles;
 
@@ -32,11 +30,9 @@ namespace Planet
 
 		void deleteAllObjs();
 		
-		//virtual Obstacles& getObstacles() = 0;
 		inline PlayerObjs& getPlayerObjs()						{ return playerObjs; }
 		inline Projectiles& getProjectiles()					{ return projectiles; }
 
-		//virtual const Obstacles& getObstacles() const = 0;
 		inline const PlayerObjs& getPlayerObjs() const			{ return playerObjs; }
 		inline const Projectiles& getProjectiles() const		{ return projectiles; }
 
@@ -68,8 +64,6 @@ namespace Planet
 		void updateProjectileMovements()						{ assert(true) ;}
 		
 		inline PlanetBody* getPlanetBody()						{ return &planetBody; }
-		
-		
 
 		bool isConsistent();
 
@@ -79,38 +73,6 @@ namespace Planet
 
 		PlayerObjs playerObjs;
 		Projectiles projectiles;
-
-
-		//class Move
-		//{
-		//protected:
-		//	Obstacles *obstacles;
-		//	
-		//	Obstacle* findAnyOverlap(const Rectangle &rectangle);
-		//public:
-		//	// @param deltaTime Time in milliseconds since last move.
-		//	Move(Obstacles *obstacles)
-		//		: obstacles(obstacles)
-		//	{}
-
-		//	//// @param deltaTime Time in milliseconds since last move.
-		//	//Move(Obstacles *obstacles, PlayerObjs *playerObjs, float deltaTime)
-		//	//	: obstacles(obstacles), playerObjs(playerObjs), deltaTime(deltaTime), moveAlignedToAngle(false)
-		//	//{}
-		//};
-
-		//class MovePlayerObj : public Move
-		//{
-		//protected:
-		//	bool moveAlignedToAngle;
-		//public:
-		//	// @param deltaTime Time in milliseconds since last move.
-		//	MovePlayerObj(Obstacles *obstacles, bool moveAlignedToAngle)
-		//		: Move(obstacles), moveAlignedToAngle(moveAlignedToAngle)
-		//	{}
-
-		//	void operator ()(const PlayerObjs::Pair &playerObjPair);
-		//};
 	};
 };
 
