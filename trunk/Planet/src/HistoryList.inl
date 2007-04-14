@@ -7,32 +7,15 @@
 namespace Planet
 {
 
-	//template <typename Data, typename Host>
-	//HistoryList<Data, Host>::HistoryList(size_t size)
-	//	: size(size), nextTick(1), data(0), interExtraPolate(0), hostInterExtraPolate(0), hostObj(0)
-	//{
-	//	assert(size >= 1);
-	//	data = new Data[size];
-	//	Data defaultData;
-	//	setDefaultData(defaultData);
-	//	
-	//	//assert(isConsistent());
-	//}
-
 	template <typename Data, typename Host>
 	HistoryList<Data, Host>::HistoryList(size_t size, InterExtraPolateFun interExtraPolate)
 		: size(size), nextTick(1), data(0), interExtraPolate(interExtraPolate), hostInterExtraPolate(0), hostObj(0)
 	{
-		
-		//if (interExtraPolate) this->interExtraPolate = interExtraPolate;
-		//else this->interExtraPolate = standardInterExtraPolate<Data>;
 
 		assert(size >= 1);
 		data = new Data[size];
 		Data defaultData;
-		setDefaultData(defaultData);		
-
-		//assert(isConsistent());
+		setDefaultData(defaultData);
 	}
 
 	template <typename Data, typename Host>
@@ -44,15 +27,6 @@ namespace Planet
 		Data defaultData;
 		setDefaultData(defaultData);
 	}
-
-	//template <typename Data, typename S>
-	//HistoryList<Data, S>::HistoryList(size_t size, const T &defaultData, InterExtraPolateFun interExtraPolate)
-	//	: size(size), nextTick(1), data(0), interExtraPolate(interExtraPolate)
-	//{
-	//	assert(size >= 1);		
-	//	data = new Data[size];
-	//	setDefaultData(defaultData);
-	//}
 
 	template <typename Data, typename Host>
 	HistoryList<Data, Host>::~HistoryList()
@@ -68,26 +42,7 @@ namespace Planet
 		else return 0;		
 	}
 
-	//template <typename Data, typename Host>
-	//void HistoryList<Data, Host>::localInterExtraPolate(int tick1, const Data& data1, int tick2, const Data& data2, Tickf resultTick, Data& resultData)
-	//{		
-	//	if (interExtraPolate) // specific, no host
-	//	{
-	//		interExtraPolate(tick1, data1, tick2, data2, resultTick, resultData);
-	//	}
-	//	else if (hostInterExtraPolate) // specific, host
-	//	{
-	//		assert(hostObj);
-	//		hostInterExtraPolate(tick1, data1, tick2, data2, resultTick, resultData, hostObj);
-	//	}
-	//	else // standard, no host
-	//	{
-	//		standardInterExtraPolate(tick1, data1, tick2, data2, resultTick, resultData);
-	//	}
-	//}
-
 	template <typename Data, typename Host>
-	//const T& HistoryList<T>::getData(int tick)
 	void HistoryList<Data, Host>::getData(int tick, Data &data)
 	{
 		int firstTickTmp = firstTick();
@@ -98,19 +53,6 @@ namespace Planet
 
 			int tick1 = tmax(firstTickTmp, nextTick - 2);
 			int tick2 = tmax(firstTickTmp, nextTick - 1);
-
-			//float distFromTick1 = tick - tick1;
-			//T::extrapolate(tickToDataRef(tick1), tickToDataRef(tick2), distFromTick1, data);
-
-			//if (tick1 == tick2) 
-			//{
-			//	// avoiding division by zero
-			//	data = tickToDataRef(tick1);
-			//	//return tickToDataRef(tick1); 
-			//}
-			//else
-			//{
-			//	
 
 
 			if (interExtraPolate) // no host, ordinary interExtraPolation
@@ -123,12 +65,6 @@ namespace Planet
 				assert(hostObj);
 				hostInterExtraPolate(tick1, tickToDataRef(tick1), static_cast<Tickf>(tick), data, hostObj);
 			}
-			//localInterExtraPolate(tick1, tickToDataRef(tick1), tick2, tickToDataRef(tick2), static_cast<Tickf>(tick), data);
-				
-				
-
-				
-			//}
 		}
 		else if (tick < firstTickTmp)
 		{
@@ -151,7 +87,6 @@ namespace Planet
 		{
 			// just get data
 			data = tickToDataRef(tick);
-			//return tickToDataRef(tick);
 		}
 	}
 
@@ -181,7 +116,6 @@ namespace Planet
 			assert(hostObj);
 			hostInterExtraPolate(tick1, tick1Data, tick, data, hostObj);
 		}
-		//localInterExtraPolate(tick1, tick1Data, tick2, tick2Data, tick, data);
 		
 	}
 
@@ -235,14 +169,6 @@ namespace Planet
 
 			// write new data
 			tickToDataRef(tick) = data;
-
-
-
-			//for(int fillTick = startFillTick; fillTick < tick; ++fillTick)
-			//{
-			//	assert(isConsistent());
-			//	localInterExtraPolate(tmpDataTick, tmpData, tick, data, static_cast<Tickf>(fillTick), tickToDataRef(fillTick));
-			//}
 		}
 	}
 
@@ -258,9 +184,6 @@ namespace Planet
 			assert(tmp);
 			if (!tmp) return false;
 		}
-		
-		//Data testData;
-		//localInterExtraPolate(nextTick-2, tickToDataRef(nextTick-2), nextTick-1, tickToDataRef(nextTick-1), nextTick, testData);
 		return true;
 	}
 };
