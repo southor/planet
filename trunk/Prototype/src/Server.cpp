@@ -246,7 +246,7 @@ namespace Prototype
 				
 				playerObj->setUserCmd(&userCmd);
 
-				// All player object data for this tick has been set, send and store to history!
+				// All player object data for this tick has been set, now send and store to history!
 				UpdatePlayerObj updatePlayerObj(playerId, playerObj->pos, playerObj->angle, playerObj->getNextShootTick(), playerObj->getAmmo());
 				pushMessageToAll(players, updatePlayerObj, getTimeHandler()->getTime(), getTimeHandler()->getTick());
 				assert(playerObj->isConsistent(getTimeHandler()->getTick()));
